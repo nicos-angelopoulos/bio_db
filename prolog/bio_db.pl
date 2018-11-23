@@ -193,17 +193,17 @@ Tokens
   * rnuc
     RNA nucleic sequence ID to HGNC symbol.
 
-   * unig
-     uniprotein gene id
+  * unig
+    uniprotein gene id
     
-   * sprt
-     Swiss-Prot part of Uniprot (high quality, curated)
+  * sprt
+    Swiss-Prot part of Uniprot (high quality, curated)
 
-   * trem
-     TrEMBL part of Uniprot (non curated)
+  * trem
+    TrEMBL part of Uniprot (non curated)
 
-   * mgim
-     MGI Marker (identifier for Mouse Genome Informatics Markers)
+  * mgim
+    MGI Marker (identifier for Mouse Genome Informatics Markers)
 
 The name convension for maps is
   ==

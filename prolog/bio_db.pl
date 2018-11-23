@@ -164,10 +164,10 @@ Tokens
     human, often missing as originally was the only organism supported)
 
   * symb
-    HGNC gene symbol (=short name)
+    HGNC gene symbol (short, unique name for genes)
 
   * name
-    HGNC gene name (longer, less startardinse that symb)
+    HGNC gene name (long, less standarised version of gene name)
 
   * prev
     HGNC previous gene symbol

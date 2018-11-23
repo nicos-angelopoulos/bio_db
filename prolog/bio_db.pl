@@ -150,14 +150,19 @@ Databases
   * String 
     Protein-Protein interactions data base
 
-  * Interactome 
-    pathways (not yet included to public release)
+  * MGI
+    mouse specific datasets 
 
 For each database a token with the same token means 
 that the field is the unique identifier of the object
 in that database.
 
 Tokens
+  * mouse
+    mouse 
+  * hs
+    human, often missing as originally was the only organism supported)
+
   * symb
     HGNC gene symbol (=short name)
 
@@ -196,6 +201,9 @@ Tokens
 
    * trem
      TrEMBL part of Uniprot (non curated)
+
+   * mgim
+     MGI Marker (identifier for Mouse Genome Informatics Markers)
 
 The name convension for maps is
   ==

@@ -1,0 +1,100 @@
+---   Releases   ---
+--------------------
+
+SWI:              Harmonization of bdb and rocks db ? 
+                  Rocks allows aliases.
+						Duplicate option for rocksdb.
+						Rocks doesn't have mode (and does not open as read only so no 2 processes can open the db?)
+						Would be nice to have the "correct" types when opening an existing database with no options.
+						Rocks: Enumerate connections ? rocks_current(X).
+
+
+1.2   
+      18.03.30    FIXED:   load pack(lib) in auxil/build_repo/std.pl
+                  CHANGED: std_repo to look into new dir structure (bio_db_repo... rather than bio_db)
+                  ADDED:   auto detection of latest string version
+                  ADDED:   use of new tables in building std tables that depend on existing bio_db relations
+      18.03.13    DEL:     moved url_url/3 to pack(stoics_lib)
+      17.10.14    FIXED:   mislocated map_uniprot.pl
+                  FIXED:   bio_db stem in aliases to bio_db_repo
+                  CHANGED: std_maps_psit.pl to new structure
+                  RENAME:  std_maps_psit.pl std_maps_pros.pl
+1.1   17.10.13    VER:     1.1
+                  CHANGED: Huge restructuring of auxil/
+1.0   17.10.09    VER:     1.0
+      17.09.27    FIXED:   man_ense_esg_hgncvcsv -> man_ense_esg_hgnc.csv  typo
+                  CHANGE:  parts of the URL for string
+                  CHANGE:  bio_db_pl_info now from bio_db
+                  FIXED:   std_maps_psit.pl untested yet
+      17.08.15    VER:     1.0 (candidate)
+      17.08.11    CHANGED: implementation of pl_prosqlite now .sqlite file is removed if op fails/excepts
+                  CHANGED: examples/cpu/cpu.pl
+      17.08.10    REMOVED: spurious loading of break_list_on/4 from has_extension/3
+                  FIXED:   en_list/2 loads from stoics_lib now not options (various auxil sources)
+      17.06.27    ADDED: examples/gene_map_compare.pl
+                  UPDTE: load via stoics_lib:message_report/3  in auxil/lib/link_to_bio_sub.pl
+                  FIXED: dependency of std_maps_ense is now to std_maps_hgnc and not to absolute file locations
+
+0.9   17.03.10    VERSION: works with pack(lib) v1.1
+      16.11.28    ADDED: rule in asserting alias, that does not complain if New==Old
+0.8   16.11.22    DISTRO: back to stoics.org.uk (github gives no adequate statistics) 
+0.7   16.11.21    EXAMPLES: cpu/
+      16.11.20    DOC: added rocks in bio_db_interface/1 blur and corrected typo.
+						DOC: fixed prediate -> predicate x2
+						ADDED: bio_interface/2
+						FIXED: bio_db_rocks_multi_key_args -> bio_db_rocks_multi_key_value
+						FIXED: failure on call mode bio_db_info_gen( -, -, -, - ). And doc format.
+						ADDED: examples/cpu/ with all code neccessary to reproduce cpu comparison graphs
+						ADDED: bio_db_install/2,3
+						ADDED: bio_db_info/2
+						ADDED: full support for .qlf
+		16.11.14    Started a GitHub repository
+		            Jan Wielemaker found bug for obsolete call to map_gont_include/2 (and assoc. preds)
+		            added flag bio_db_qcomplie (def: true) to control the following addition:
+                  a retractall/1 fix and qcompile(large) options in lad_files/2 by Jan Wielemaker
+		16.10.28    added  map_ncbi_dnuc_symb/2
+      16.10.27    added  map_hgnc_hgnc_ccds/2 & map_hgnc_ccds_hgnc/2
+      16.10.13    minor doc fix about what repo contains
+
+0.6   16.10.13    published
+      16.10.13    fixed doc to more interface predicates.
+		            added prosite zip files to web-server (were missing)
+		            added map_unip_hgnc_unip/2.
+      16.09.19    added bio_db_info/4 to the documentation
+      16.09.17    pl_bdb correction to open call and now more aware that it
+                  can be called from within bio_db
+                  a couple of small typos in bio_db.pl
+
+0.5   16.09.11    published
+
+      16.09.11    bio_db_citation/2 (2 clauses added)
+                  bio_db_close_connections/0 and register it with at_halt/1
+						Handle N-ary tables in berkeley and 
+						New bio_db_info( [Inteface,] +Pid, ?Key, -Value ).
+						Can now close current connections with pack_error if not open
+						bio_db_interface/1 prints a proper error message now
+                  Started using lib(pack_errors)  (arg_enumerating/3 was the first one)
+      16.09.08 -  Updates to almost all std_ scripts in auxil
+                  new helper independent preds in auxil/lib
+						Full successful download of data and creation of prolog dbs.
+					   Check script auxil/bio_db_check.pl
+						Shortened bio_db_load_prolog_map/2 -> bio_db_serve/1 (load as 2nd arg)
+
+      16.09.06 -  Added auto-reply via prolog_flag(bio_db_ok,true).
+		         +  Canonical downloads are now from .zip files.
+					+  Many improvements to the downloads logic.
+		         +  pl-> berkeley and pl-> sqlite are now user.
+					+  pl-> sqlite are done in batches of 500, so there is no need for sqlite exec now
+
+0.4  16th Sept 2015
+		15.09.13 -  Added Berkeley DB interface (via SWI's own library(bdb)).
+		15.07.25 -  Added edges for is-a (and reverses inc(cludes)) from GO.
+		15.07.25 -  Added bio_db_version.
+
+0.3  Spring 2015
+     First releases including maps from hgnc, ncbi and uniprot.
+	  Graph edges from string (with weights).
+
+0.2
+
+0.1

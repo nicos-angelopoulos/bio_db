@@ -1,0 +1,10 @@
+% timing: qlf
+% 760,773,908 inferences, 203.691 CPU in 204.354 seconds (100% CPU, 3734944 Lips)
+% timing: berkeley
+% Skipping deletion of non-existing file: '/usr/local/users/nicos/local/git/lib/swipl-7.3.31/pack/bio_db_repo/data/graphs/string/edge_string_hs.db'
+% 86,101,763 inferences, 63.759 CPU in 65.962 seconds (97% CPU, 1350417 Lips)
+% timing: prosqlite
+% 1,335,648,794 inferences, 772.820 CPU in 4178.882 seconds (18% CPU, 1728279 Lips)
+% timing: rocks
+% Skipping deletion of non-existing file: '/usr/local/users/nicos/local/git/lib/swipl-7.3.31/pack/bio_db_repo/data/graphs/string/edge_string_hs.rocks'
+% 4,647,688,763 inferences, 2097.118 CPU in 2152.967 seconds (97% CPU, 2216226 Lips)

@@ -1,6 +1,6 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %    Authors:       Nicos Angelopoulos
-%    E-mail:        Nicos Angelopoulos firstn.lastn@gmail.com
+%    E-mail:        Nicos Angelopoulos http://stoics.org.uk/~nicos/sware/contact.html
 %    Copyright (C): Nicos Angelopoulos, 2015-2018
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 /*
@@ -13,7 +13,8 @@
 
 */
 :- module( bio_db, [
-                % This interface has 4 sections: housekeeping, graph edgess, maps and derived.
+                % This interface has now being split according to 
+                % biological organisms, see files in cell/
                 % % 1. housekeeping:
                 % bio_db/0,
                 bio_db_close/1,
@@ -29,8 +30,8 @@
                 bio_db_version/2,
                 bio_db_citation/2,
                 bio_db_close_connections/0
-                % see cell: hs (cell/hs.pl)
-                ] ).
+                % see (organims based ell: hs (cell/hs.pl)
+             ] ).
 
 :- dynamic( bio_db_handle/4 ).
 
@@ -40,6 +41,8 @@
 :- lib(source(bio_db), homonyms(true)).
 :- lib(stoics_lib:date_two_digit_dotted/1).
 :- lib(end(bio_db)).
+
+:- initialization( lib(& bio_db, load_main(false)), after_load ).
 
 bio_db_organism(hs). % defaulty
 bio_db_organism(mouse).

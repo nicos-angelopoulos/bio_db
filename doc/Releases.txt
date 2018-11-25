@@ -10,6 +10,7 @@ SWI:              Harmonization of bdb and rocks db ?
 
 
 1.2   
+      18.11.25    LOAD:    load full cell version when loading main file
       18.03.30    FIXED:   load pack(lib) in auxil/build_repo/std.pl
                   CHANGED: std_repo to look into new dir structure (bio_db_repo... rather than bio_db)
                   ADDED:   auto detection of latest string version

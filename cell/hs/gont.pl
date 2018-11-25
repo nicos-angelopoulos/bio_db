@@ -16,7 +16,7 @@
                 ] ).
 
 :- use_module(library(lib)).
-:- lib(bio_db).
+:- lib(& bio_db).
 
 /**  bio_db_hs_gont.
 

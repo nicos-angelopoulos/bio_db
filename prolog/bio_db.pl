@@ -42,7 +42,8 @@
 :- lib(stoics_lib:date_two_digit_dotted/1).
 :- lib(end(bio_db)).
 
-:- initialization( lib(& bio_db, load_main(false)), after_load ).
+% :- initialization( lib(& bio_db, load_main(false)), after_load ).
+:- initialization( lib(@(bio_db)), after_load ).
 
 bio_db_organism(hs). % defaulty
 bio_db_organism(mouse).

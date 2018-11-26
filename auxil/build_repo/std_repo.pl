@@ -102,7 +102,8 @@ std_repo_create( Work+BioDbDir+BioDb, _Opts ) :-
     os_dir( RepoSubs, [dir(Rata),solutions(findall)] ),
     % os_dir_dirs( Rata, RepoSubs ),
     debug( std_repo, 'Subs: ~w', [RepoSubs] ),
-    maplist( std_repo_zip_cat(Rata), RepoSubs ),
+    % maplist( std_repo_zip_cat(Rata), RepoSubs ),
+    zip_pl_files_in( Rata ),
     expand_file_name( '~/pl/packs/src/bio_db_repo', [PackRoot] ),
     os_path( PackRoot, doc, PackDoc ),
     os_path( PackRoot, prolog, PackPl ),
@@ -161,6 +162,7 @@ std_repo_to_web_page( Tgz, _BioDbDir, _Date ) :-
     debug( std_repo, 'Skipping this bit as it is only relevent for Nicos\' own set-up.', true ),
     debug( std_repo, 'You can publish the pack from tgz file: ~p', [Tgz] ).
 
+/** fixme: delete, no longer used....*/
 std_repo_zip_cat( Rata, Sub ) :-
     os_path( Rata, Sub, Path ),
     os_dir( PathSubs, [dir(Path),solutions(findall)] ),
@@ -195,3 +197,20 @@ opt_pl_cline( Opt, Crg ) :-
     Opt =.. [Tn|Ta],
     atomic_list_concat( [Tn,Ta], '=', Crg ).
 
+zip_pl_files_in( Dir ) :-
+    os_files( Files, [dir(Dir),stem(abs)] ),
+    maplist( zip_file_if_pl, Files ),
+    os_dirs( Dirs, [dir(Dir),stem(abs)] ),
+    maplist( zip_pl_files_in, Dirs ).
+
+zip_file_if_pl( AbsFile ) :-
+    % fixme:  just sticking tape for now
+    ( os_ext(pl,_Stem,AbsFile) -> 
+            os_path( Path, File, AbsFile ),
+            working_directory( Old, Path ),
+            os_ext( zip, File, ZipF ),
+            @ zip( ZipF, File ),
+            working_directory( _, Old )
+            ;
+            true 
+    ).

@@ -19,6 +19,7 @@
                 % bio_db/0,
                 bio_db_close/1,
                 bio_db_db_predicate/1,
+                bio_db_data_predicate/4,
                 bio_db_info/2,
                 bio_db_info/3,
                 bio_db_info/4,
@@ -37,7 +38,11 @@
 
 :- dynamic( '$bio_db_handle'/2 ). % this is needed for the asserted server preds 
 
+
 :- ensure_loaded(library(lib)).
+
+:- ensure_loaded('../src/bio_db_data_predicate').
+
 :- lib(source(bio_db), homonyms(true)).
 :- lib(stoics_lib:date_two_digit_dotted/1).
 :- lib(end(bio_db)).
@@ -102,16 +107,19 @@ management and translation of biological data to Prolog friendly formats.
 
 There are currently 2 major types of data supported: maps, and graphs.
 Maps define product mappings, translations and memberships, while graphs define interactions which
-can be visualised as weighed graphs.
+can be visualised as weighed graphs (see bio_db_data_predicate/4 for a full list of 
+statically generated list of bio_db data  predicates).
 
 There are 2 prolog flags (see current_prolog_flag/2) that can control the behaviour of the 
 library: bio_db_qcompile (def: true) and bio_db_interface (def: prolog).
 When the first one is set to false, it can disable the compilation to 
 
-Bio_db itself does not come with the datasets. You can either download the separate pack(bio_db_repo)
-which contains all of the Prolog datasets (111Mb compressed data), or let auto-downloading retrieve the datasets 
+Bio_db itself does include any of the datasets. You can either download the separate pack(bio_db_repo)
+which contains all of the Prolog datasets (249Mb compressed data), or let auto-downloading retrieve the datasets 
 serving each of the data predicates as you query them. Auto-downloading works 
 transparently to the user, where a data set is downloaded by simply calling the predicate.
+
+
 For example
 ==
 ?- map_hgnc_symb_hgnc( 'LMTK3', Hgnc ).
@@ -136,6 +144,57 @@ false.
 Prv = 'A1BG-AS',
 Symb = 'A1BG-AS1' .
 ==
+
+The current pack(bio_db_repo) holds a total 67 data predicates and serves 38710918 records.
+
+See bio_db_data_predicate/4.
+
+As of version 2.0 bio_db is formed of a number of hierarchically organised cells that 
+can be loaded independently. This is because there now too many predicates and is also a devise
+for better supporting organism specific data. There are currently two main cells, hs (human) and mouse. Each
+sub-celled by data source of origin.
+
+==
+?- use_module(library(bio_db)).
+==
+Loads the whole interface (all cells), without the user needing to be aware of anything.
+The only difference is that the user will not be able to see all the module predicates
+at the first line of file pack(bio_db/prolog/bio_db.pl)).
+
+==
+?- lib(bio_db).
+==
+Also loads everything.
+
+==
+?- lib(& bio_db).
+==
+Loads the skeleton of the module (cells usually laod the module dependencies like this).
+
+==
+?- lib(& bio_db(hs)).
+==
+Loads _hs_ cell (and skeleton). _hs_ comprises of a number of sub-cells.
+
+==
+?- lib(& bio_db(hs(hgnc))).
+==
+Loads the hs/hgnc primary cell (and the skeleton).
+
+In both the above loads, the following becomes available, however, the former load
+also loads additional predicates for human, but non hgnc based.
+
+==
+?- map_hgnc_hgnc_symb( Hgnc, 'LMTK3' ).
+Hgnc = 19295.
+==
+
+The following
+==
+?- use_module( pack('bio_db/cell/hs/hgnc') ).
+==
+also loads just the HGNC part of the human section of bio_db, but it is not a 
+recommended way to do so.
 
 
 Databases
@@ -298,7 +357,7 @@ Thanks to Jan Wielemaker for a retractall fix and for code for fast loading of p
 @version  0.7 2016/10/21,  experimenting with distros in github
 @version  0.9 2017/3/10,   small changes for pack(requires) -> pack(lib) v1.1
 @version  1.0 2017/10/9    to coincide with ppdp paper presentation
-@version  2.0 2018/11/23   introduces cells and mouse data
+@version  2.0 2018/11/26   introduces cells and mouse data
 @see doc/Realeases.txt for version details.
 
 */
@@ -316,13 +375,14 @@ Thanks to Jan Wielemaker for a retractall fix and for code for fast loading of p
     bio_db_downloads defaults to sub directory =downloads= of the alias bio_db.
     The canonical subdirectory name for (a) is data and for (b) is downloads.
 
-    pack(bio_db_repo) can also be installed as a standalone package from SWI's manager.
+    pack(bio_db_repo) can also be installed as a complete package from SWI's manager.
 
     ==
     ?- pack_install( bio_db_repo ).
     ==
 
-    This will install all but one of the Prolog database files. Sqlite files can only be downloaded
+    This will install all the Prolog database files. The single tar and gzipped file is 1/4 Gb and the expanded 
+    version takes up 2.4 Gb. Sqlite files can only be downloaded
     on-demand. The one Prolog DB file missing is edge_string_hs.pl from data/graphs/string/. 
     It has been excluded because it is way bigger than the rest, sizing at 0.5 Gb. 
     It can be downloaded on-demand, transparently to the user upon invocation of the associated, 
@@ -1042,9 +1102,12 @@ bio_db_close_connections.
 
 /** bio_db_db_predicate( ?Pid ).
 
-    True if Pid is a predicate identifier which is defined in bio_db
+    True if Pid is a predicate identifier which is defined in current bio_db session,
     and starts with either edge_ or map_. When Pid is a free variable
     all such predicate identifiers are returned on backtracking.
+
+    For a statically produced list of all data predicates in _bio_db_
+    see, bio_db_data_predicate/4.
 
 ==
   ?- bio_db_db_predicate( map_hgnc_hgnc_symb/2 ).
@@ -1065,8 +1128,9 @@ bio_db_db_predicate( Pname/Arity) :-
     predicate_property(bio_db:Head, defined), !.  
     % fixme: when called from closing,  maybe do a bit of checking ? \+ (rule=:=1,clauses=:=1)
 bio_db_db_predicate( Pname/Arity) :-
-    module_property(bio_db, exports(List)),
-    member(Pname/Arity, List),
+    % module_property(bio_db, exports(List)),
+    % member(Pname/Arity, List),
+    current_predicate( bio_db:Pname/Arity ),
     bio_db_predicate_name(Pname).
 
 bio_db_predicate_name(Pname) :-
@@ -1302,7 +1366,7 @@ bio_db_repo_skeleton_pack :-
         true
         ;
         make_directory_path( RepoD ),
-        ensure_loaded( pack('bio_db/auxil/src/bio_db_repo_info') ),
+        ensure_loaded( pack('bio_db/auxil/lib/bio_db_repo_info') ),
         findall( InfTerm, bio_db_repo_info(InfTerm), [InfNm,InfTi|Infs] ),
         date_two_digit_dotted( Dotted ),
         atomic_list_concat( [YrA,MnA,DyA], '.', Dotted ),
@@ -1316,7 +1380,7 @@ bio_db_repo_skeleton_pack :-
         make_directory_path( RepoPlD ),
         directory_file_path( RepoPlD, 'bio_db_repo_version.pl', ModVersF ),
         portray_clauses( [bio_db_repo_version(Yr:Mn:DyPsfx,date(FullY,Mn,Dy))], file(ModVersF) ),
-        directory_file_path( BioDbD, 'auxil/src/bio_db_repo.pl', BioDbRepoPlF ),
+        directory_file_path( BioDbD, 'auxil/lib/bio_db_repo.pl', BioDbRepoPlF ),
         directory_file_path( RepoPlD, 'bio_db_repo.pl', DstRepoF ),
         copy_file( BioDbRepoPlF, DstRepoF )
     ).

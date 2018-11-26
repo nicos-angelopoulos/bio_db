@@ -119,6 +119,16 @@ csv_ids_interface_map( prolog, Pname, Stem, Tnm1, Tnm2, Filt1, Filt2, File, Opts
     ),
     HdrInfo =.. [Pinfo,header,HdrRow],
     Clauses = [UrlInfo,DtInfo,DataTypeInfo,UnqInfo,RelInfo,HdrInfo], 
+    write( file(File) ), nl,
+    ( File == 'maps/map_unip_mouse_unip_symb.pl' -> 
+        findall( ARow, ( member(ARow,Map),arg(1,ARow,'Q80YZ1'),write(row(ARow)),nl,
+                         arg(2,ARow,SecA),
+                         ( atomic(SecA) -> write( true(SecA) ), nl ; write( no_atomic(SecA) ), nl )
+                        ), _Rows )
+        % trace
+
+        ; 
+        true ),
     portray_clauses( Clauses, stream(Out) ),
     nl( Out ),
     portray_clauses( Map, stream(Out) ),
@@ -185,7 +195,8 @@ collect_map( [F|Fs], [T|Ts], Tv1, Tv2, Pname, Clauses ) :-
     % collect_map_to_values( F, T, Seen, Tv1, Tv2, Pname, Clauses, Next, TClauses ),
     ( (call(Tv1,F,V1Prv),call(Tv2,T,V2Prv)) ->
         Clause =.. [Pname,V1,V2],
-        findall( Clause, ((is_list(V1Prv) -> member(V1,V1Prv);V1=V1Prv), ((is_list(V2Prv) -> member(V2,V2Prv));V2=V2Prv) ), Hlauses ),
+        findall( Clause, ((is_list(V1Prv) -> member(V1,V1Prv);V1=V1Prv), ((is_list(V2Prv) -> 
+                member(V2,V2Prv));V2=V2Prv) ), Hlauses ),
         append( Hlauses, TClauses, Clauses )
         ;
         TClauses = Clauses

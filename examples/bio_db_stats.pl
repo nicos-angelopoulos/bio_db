@@ -112,6 +112,7 @@ bio_db_stats :-
 
 bio_db_stats( Pn, Pa, Len ) :-
     current_predicate( bio_db:Pn/Pa ),
+    % ( Pn == map_unip_mouse_unip_symb -> trace; true ),
     member( Pfx, [map_,edge_] ),
     atom_concat( Pfx, _, Pn ),
     functor( G, Pn, Pa ),

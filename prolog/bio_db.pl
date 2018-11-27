@@ -80,8 +80,11 @@ bio_db_default_interface( prolog ).
    bio_db_default_interface( Def ),
    create_prolog_flag( bio_db_interface, Def, Opts ).
 
-:- Opts = [access(read_write),type(boolean),keep(true)],
-   create_prolog_flag( bio_db_qcompile, true, Opts ).
+:- Opts = [access(read_write),type(atom),keep(true)],
+   create_prolog_flag( bio_db_pl_from_zip, user, Opts ).  % true/false/user
+
+:- Opts = [access(read_write),type(atom),keep(true)],
+   create_prolog_flag( bio_db_del_zip, user, Opts ).  % true/false/user, only asked for pl files
 
 :- use_module( library(lib) ).
 :- lib( source(bio_db), homonyms(true) ).
@@ -94,6 +97,7 @@ bio_db_default_interface( prolog ).
 :- lib(stoics_lib:url_file/2).
 
 :- lib(ui_yes_no/5).
+:- lib(message_report/3).
 :- lib(bio_db_map/2).
 :- ensure_loaded( '../auxil/lib/bio_db_pl_info' ).   % /2.
 :- lib( end(bio_db) ).
@@ -349,6 +353,20 @@ false.
 
 ==
 
+As of version 2.0 there are two flags that can automate some of the interactions.
+
+==
+:- set_prolog_flag(bio_db_pl_from_zip, user).
+:- set_prolog_flag(bio_db_del_zip, user).
+==
+
+In both cases the recognised values for the flags are: [user,true,false].
+User is for prompting the user and true is progressing with an implicit yes answer.
+The first flag automates conversion from .pl.zip to .pl (which will be the case
+for the first time you access any dataset if you have installed bio_db_repo),
+and the secondpertains to the qquestion of deleteling the zip file once the .pl file has been created.
+
+
 Thanks to Jan Wielemaker for a retractall fix and for code for fast loading of precompiled fact bases
 (and indeed for the changes in SWI that made this possible).
 
@@ -357,7 +375,7 @@ Thanks to Jan Wielemaker for a retractall fix and for code for fast loading of p
 @version  0.7 2016/10/21,  experimenting with distros in github
 @version  0.9 2017/3/10,   small changes for pack(requires) -> pack(lib) v1.1
 @version  1.0 2017/10/9    to coincide with ppdp paper presentation
-@version  2.0 2018/11/26   introduces cells and mouse data
+@version  2.0 2018/11/27   introduces cells and mouse data
 @see doc/Realeases.txt for version details.
 
 */
@@ -382,8 +400,9 @@ Thanks to Jan Wielemaker for a retractall fix and for code for fast loading of p
     ==
 
     This will install all the Prolog database files. The single tar and gzipped file is 1/4 Gb and the expanded 
-    version takes up 2.4 Gb. Sqlite files can only be downloaded
-    on-demand. The one Prolog DB file missing is edge_string_hs.pl from data/graphs/string/. 
+    version takes up 2.4 Gb. Sqlite files can only be downloaded on-demand (expanding to 3.2 when the .qlf files
+    are auto-generated for each access dataset). 
+    The one Prolog DB file missing is edge_string_hs.pl from data/graphs/string/. 
     It has been excluded because it is way bigger than the rest, sizing at 0.5 Gb. 
     It can be downloaded on-demand, transparently to the user upon invocation of the associated, 
     arity 3 predicate.
@@ -1246,7 +1265,7 @@ bio_db_serve_pname( Load, Ictive, Org, Db, Pname, Arity, Iface, Call ) :-
     Iface \== prolog,
     bio_db_interface_extensions( prolog, [Ext|_] ),
     bio_db_pname_source( Org, Db, Pname, read, Ext, File ),
-    Mess = '~a DB:table ~w:~w is not installed, but the prolog db exists. Shall it be created from prolog',
+    Mess = '~a DB:table ~w:~w is not installed, but the Prolog db exists. Shall it be created from Prolog',
     Args = [Iface,Db,Pname/Arity],
     ui_yes_no( Ictive, Mess, Args, y, Reply ),
     Reply == true,
@@ -1261,9 +1280,16 @@ bio_db_serve_pname( Load, Ictive, Org, Db, Pname, Arity, Iface, Call ) :-
     bio_db_pname_source( Org, Db, Pname, read, prolog+zip, ZLoad ),
     !,
     file_name_extension( PlLoad, zip, ZLoad ),
-    Mess = '~a DB:table ~w:~w is not installed, but the zipped prolog db exists. Shall it be created from this',
-    Args = [Iface,Db,Pname/Arity],
-    ui_yes_no( Ictive, Mess, Args, y, Reply ),
+    current_prolog_flag( bio_db_pl_from_zip, PlFromZipFlag ),
+    ( PlFromZipFlag == user ->
+        Mess = '~a DB:table ~w:~w is not installed, but the zipped prolog db exists. Shall it be created from this',
+        Args = [Iface,Db,Pname/Arity],
+        ui_yes_no( Ictive, Mess, Args, y, Reply )
+        ;
+        MessFg = '~a DB:table ~w:~w is not installed, but the zipped prolog db exists. Flag bio_db_pl_from_zip says: ~w',
+        message_report( MessFg, [Iface,Db,Pname/Arity,PlFromZipFlag], informational ),
+        Reply = PlFromZipFlag
+    ),
     ( Reply == true ->
         file_directory_name( ZLoad, Dir ),
         archive_extract( ZLoad, Dir, [] ),
@@ -1271,6 +1297,16 @@ bio_db_serve_pname( Load, Ictive, Org, Db, Pname, Arity, Iface, Call ) :-
             bio_db_pl_nonpl_interface( Iface, PlLoad, NonPlLoad ),
             bio_db_reply_delete_file( true, PlLoad )
             ;
+            current_prolog_flag(bio_db_del_zip,DelZipFlag),
+            ( DelZipFlag == user ->
+                ZipDelMess = 'Delete the zip file: ~p',
+                ui_yes_no( Ictive, ZipDelMess, [ZLoad], n, ZipDelReply )
+                ;
+                MessDelFg = 'Zip file will be deleted depending on value of flag bio_db_del_zip, which is: ~w',
+                message_report( MessDelFg, [DelZipFlag], informational ),
+                ZipDelReply = DelZipFlag
+            ),
+            bio_db_reply_delete_file( ZipDelReply, ZLoad ),
             NonPlLoad = PlLoad
         ),
         !,

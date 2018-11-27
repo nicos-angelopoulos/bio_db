@@ -210,6 +210,8 @@ zip_file_if_pl( AbsFile ) :-
             working_directory( Old, Path ),
             os_ext( zip, File, ZipF ),
             @ zip( ZipF, File ),
+            @ chmod( 'go+r', ZipF ),
+            @ rm( -f, File ),
             working_directory( _, Old )
             ;
             true 

@@ -1,6 +1,6 @@
 
 :- use_module(library(lib)).
-:- lib( & bio_db ).
+:- lib( bio_db ).
 
 :- lib(debug).
 :- debug(bio_db_stats).
@@ -119,6 +119,6 @@ bio_db_stats( Pn, Pa, Len ) :-
     \+ atom_concat( _, info, Pn ),  % currently map_mgim_mouse_syno_mgim_info/2 is tried...
     findall( 1, G, Ones ),
     length( Ones, Len ),
-    debug( bio_db_stats, '~w/~d has ~d records.', [Pn,Pa,Len] ),
+    debug( bio_db_stats, '~w/~d has ~d records.', [Pn,Pa,Len] ).
     % abolish( bio_db:Pn/Pa ).
-    retractall( bio_db:G ).
+    % retractall( bio_db:G ).

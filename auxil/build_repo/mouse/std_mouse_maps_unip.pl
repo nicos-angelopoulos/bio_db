@@ -1,4 +1,5 @@
 
+:- set_prolog_flag(allow_dot_in_atom,false).
 :- set_prolog_flag(stack_limit, 8 000 000 000).
 
 % if library(lib) is missing, install via pack_install(lib).

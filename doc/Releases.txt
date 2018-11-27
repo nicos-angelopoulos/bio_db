@@ -9,6 +9,9 @@ SWI:              Harmonization of bdb and rocks db ?
 						Rocks: Enumerate connections ? rocks_current(X).
 
 
+2.1          @    18.11.27
+      18.11.27    FIXED:   new dependency to write_message/3 was pointing to wrong directory...
+
 2.0          @    18.11.17
       18.11.27    FLAGS:   bio_db_pl_from_zip and bio_db_del_zip
                   REPO:    make sure mouse_maps_unip.pl writes out with no flag allow_dot_in_atoms as false 

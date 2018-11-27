@@ -97,8 +97,8 @@ bio_db_default_interface( prolog ).
 :- lib(stoics_lib:url_file/2).
 
 :- lib(ui_yes_no/5).
-:- lib(message_report/3).
 :- lib(bio_db_map/2).
+:- ensure_loaded('../auxil/lib/message_report').  % /3.
 :- ensure_loaded( '../auxil/lib/bio_db_pl_info' ).   % /2.
 :- lib( end(bio_db) ).
 
@@ -119,8 +119,19 @@ library: bio_db_qcompile (def: true) and bio_db_interface (def: prolog).
 When the first one is set to false, it can disable the compilation to 
 
 Bio_db itself does include any of the datasets. You can either download the separate pack(bio_db_repo)
-which contains all of the Prolog datasets (249Mb compressed data), or let auto-downloading retrieve the datasets 
-serving each of the data predicates as you query them. Auto-downloading works 
+which contains all of the Prolog datasets.
+bio_db_repo   will install all the Prolog database files. The single tar and gzipped file is  
+246 Mb in size and the fully expanded version of a Prolog installation can take up to 3.1Gb. 
+The precise size depends on how many tables 
+are accessed at least once (each producing an expanded .pl and a .qlf file).
+The current pack(bio_db_repo) holds a total 67 data predicates and serves 38710918 records.
+This pack can be installed as per usual via
+==
+?- pack(bio_db_repo).
+==
+
+If you do not install all datasets, each data table will be auto-downloaded the first 
+time you try to access some of its data.  Auto-downloading works 
 transparently to the user, where a data set is downloaded by simply calling the predicate.
 
 
@@ -148,8 +159,6 @@ false.
 Prv = 'A1BG-AS',
 Symb = 'A1BG-AS1' .
 ==
-
-The current pack(bio_db_repo) holds a total 67 data predicates and serves 38710918 records.
 
 See bio_db_data_predicate/4.
 
@@ -375,7 +384,7 @@ Thanks to Jan Wielemaker for a retractall fix and for code for fast loading of p
 @version  0.7 2016/10/21,  experimenting with distros in github
 @version  0.9 2017/3/10,   small changes for pack(requires) -> pack(lib) v1.1
 @version  1.0 2017/10/9    to coincide with ppdp paper presentation
-@version  2.0 2018/11/27   introduces cells and mouse data
+@version  2.1 2018/11/27   introduces cells and mouse data (and fixed dependency of 2.0)
 @see doc/Realeases.txt for version details.
 
 */
@@ -399,13 +408,10 @@ Thanks to Jan Wielemaker for a retractall fix and for code for fast loading of p
     ?- pack_install( bio_db_repo ).
     ==
 
-    This will install all the Prolog database files. The single tar and gzipped file is 1/4 Gb and the expanded 
-    version takes up 2.4 Gb. Sqlite files can only be downloaded on-demand (expanding to 3.2 when the .qlf files
-    are auto-generated for each access dataset). 
-    The one Prolog DB file missing is edge_string_hs.pl from data/graphs/string/. 
-    It has been excluded because it is way bigger than the rest, sizing at 0.5 Gb. 
-    It can be downloaded on-demand, transparently to the user upon invocation of the associated, 
-    arity 3 predicate.
+    This will install all the Prolog database files. The single tar and gzipped file is  
+    246 Mb in size and the fully expanded version of a Prolog installation 
+    can take up to 3.1Gb. The precise size depends on how many tables 
+    are accessed at least once (each producing an expanded .pl and a .qlf file).
 
     Directory locations for (a) and (b) above can be given as either prolog flags with
     key bio_db_root and bio_dn_root respectively or via environment variables
@@ -566,8 +572,8 @@ Version Mj:Mn:Fx, and release date date(Y,M,D).
 
 ==
 ?- bio_db_version( V, D ).
-V = 2:0:0,
-D = date(2018, 11, 23).
+V = 2:1:0,
+D = date(2018, 11, 27).
 
 ==
 
@@ -583,7 +589,8 @@ D = date(2018, 11, 23).
 % bio_db_version( 0:9:0, date(2017,03,10) ).   % beta for 1:0
 % bio_db_version( 1:0:0, date(2017,10,08) ).   
 % bio_db_version( 1:1:0, date(2017,10,13) ).   
-bio_db_version( 2:0:0, date(2018,11,23) ).   
+% bio_db_version( 2:0:0, date(2018,11,23) ).   
+bio_db_version( 2:1:0, date(2018,11,27) ).   
 
 %% bio_db_citation( -Atom, -Bibterm ).
 %

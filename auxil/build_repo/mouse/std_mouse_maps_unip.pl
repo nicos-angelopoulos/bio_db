@@ -76,12 +76,15 @@ std_mouse_maps_unip( Args ) :-
 	map_uniprot( 'MGI', Csv, [MgiF], Sem ),
 
 	Ifc = [uniprot('MOUSE_10090_idmapping.dat'),org(mouse),interface(prolog)],
+	Rfc = [uniprot('MOUSE_10090_idmapping.dat'),org(mouse),interface(prolog),reverse(true)],
 
 	map_uniprot( 'GeneID', Csv, [EtzF], Ifc ),
 	map_uniprot( 'UniGene', Csv, [UniGF], Ifc ),
 	map_uniprot( 'Gene_Name', Csv, [SymbF], Ifc ),
+	map_uniprot( 'Gene_Synonym', Csv, [GynoF], Rfc ),
+
 	% Files = [HgncF,FromHgncF,EtzF,UniGF,EnspF],
-	Files = [MgiF,EtzF,UniGF,EnspF,SymbF],
+	Files = [MgiF,EtzF,UniGF,EnspF,SymbF,GynoF],
 	% working_directory( _, maps ),
  	% maplist( link_to_map_sub(unip), Files ),
     maplist( link_to_bio_sub(mouse,unip,maps), Files ),
@@ -94,6 +97,7 @@ std_mouse_maps_unip( Args ) :-
 	% bio_db_add_infos_to( [header(row('Uni Protein','HGNC ID'))|SwOpts], 'maps/map_unip_mouse_unip_hgnc.pl' ),
 	bio_db_add_infos_to( [header(row('Uni_Protein','Uni_Gene'))|SwOpts], 'maps/map_unip_mouse_unip_unig.pl' ),
 	bio_db_add_infos_to( [header(row('Uni_Protein','Symbol'))|SwOpts], 'maps/map_unip_mouse_unip_symb.pl' ),
+	bio_db_add_infos_to( [header(row('Symbol','Uni_Protein'))|SwOpts], 'maps/map_unip_mouse_gyno_unip.pl' ),
 
 	working_directory( _, DnDir ),
 

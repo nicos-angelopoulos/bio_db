@@ -195,3 +195,4 @@ uniprot_cname_known(  'UniGene', unig ).
 % mouse
 uniprot_cname_known(  'MGI', mgim ).
 uniprot_cname_known(  'Gene_Name', symb ).
+uniprot_cname_known(  'Gene_Synonym', gyno ).

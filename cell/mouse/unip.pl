@@ -6,7 +6,8 @@
                 map_unip_mouse_trem_nucs/2,
                 map_unip_mouse_unip_entz/2,
                 map_unip_mouse_unip_symb/2,
-                map_unip_mouse_unip_unig/2
+                map_unip_mouse_unip_unig/2,
+                map_unip_mouse_gyno_unip/2
                 ] ).
 
 :- use_module( library(lib) ).
@@ -95,3 +96,25 @@ Map predicate from Uniprot protein to Uniprot Gene.
 */
 map_unip_mouse_unip_unig( X, Y ) :-
     bio_db:bio_db_serve( map_unip_mouse_unip_unig(X,Y) ).
+
+/*  map_unip_mouse_gyno_unip( ?Symbol, ?UniP ).
+
+Map predicate from gene symbol synonym to uniprot accession.
+Not entirely sure, which symbol annotation is used, but it is useful 
+for hunting withdrawn proteins (via symbol mapping). 
+
+As far as I can see Uniprot does not provide a database of withdrawn protein ids.
+So this can be used as a substitute.
+
+==
+?- map_unip_mouse_gyno_unip( 'Tmem254', UniP ).
+UniP = 'P0DN89'.
+==
+
+@author Nicos Angelopoulos
+@version  0.1 2018/12/03
+
+*/
+
+map_unip_mouse_gyno_unip( X, Y ) :-
+    bio_db:bio_db_serve( map_unip_mouse_gyno_unip(X,Y) ).

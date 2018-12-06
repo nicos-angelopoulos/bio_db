@@ -34,7 +34,7 @@
                 % see (organims based ell: hs (cell/hs.pl)
              ] ).
 
-:- dynamic( bio_db_handle/4 ).
+:- dynamic( bio_db_handle/5 ).
 
 :- dynamic( '$bio_db_handle'/2 ). % this is needed for the asserted server preds 
 
@@ -572,8 +572,8 @@ Version Mj:Mn:Fx, and release date date(Y,M,D).
 
 ==
 ?- bio_db_version( V, D ).
-V = 2:1:0,
-D = date(2018, 11, 27).
+V = 2:2:0,
+D = date(2018, 12, 6).
 
 ==
 
@@ -590,7 +590,8 @@ D = date(2018, 11, 27).
 % bio_db_version( 1:0:0, date(2017,10,08) ).   
 % bio_db_version( 1:1:0, date(2017,10,13) ).   
 % bio_db_version( 2:0:0, date(2018,11,23) ).   
-bio_db_version( 2:1:0, date(2018,11,27) ).   
+% bio_db_version( 2:1:0, date(2018,11,27) ).   
+bio_db_version( 2:2:0, date(2018,12,6) ).   
 
 %% bio_db_citation( -Atom, -Bibterm ).
 %
@@ -1007,7 +1008,7 @@ bio_db_info( Pid, _Key, _Value ) :-
     throw( Err ).
 
 bio_db_info_pred( Pid, Key, Value ) :-
-    bio_db_handle( Pid, Iface, File, Handle ),
+    bio_db_handle( Pid, Iface, File, Handle, _Mod ),
     !,
     bio_db_info_interface( Iface, Pid, File, Handle, Key, Value ).
 
@@ -1088,7 +1089,7 @@ bio_db_close( Pid ) :-
     throw( Err ).
 
 bio_db_close_pred( Pid ) :-
-    bio_db_handle( Pid, Iface, File, Handle ),
+    bio_db_handle( Pid, Iface, File, Handle, Mod ),
     !,
     bio_db_close_connection( Iface, Handle ),
     Pid = Pname/Arity,
@@ -1097,7 +1098,7 @@ bio_db_close_pred( Pid ) :-
     atom_concat( Pname, '_info', InfoPname ),
     functor( InfoHead, InfoPname, 2 ),
     retractall( InfoHead ),
-    retractall( bio_db_handle(Pid,Iface,File,Handle) ),
+    retractall( bio_db_handle(Pid,Iface,File,Handle,Mod) ),
     assert( (Head :- bio_db_serve(Head)) ).
 bio_db_close_pred( Pid ) :-
     % debug( bio_db, 'No server for predicate: ~w, found', Pid ),
@@ -1121,7 +1122,7 @@ This is called by bio_db at halt.
 
 */
 bio_db_close_connections:-
-    bio_db:bio_db_handle( Pid, _B, _C, _D ),
+    bio_db:bio_db_handle( Pid, _B, _C, _D, _Mod ),
     bio_db_close( Pid ),
     fail.
 bio_db_close_connections.
@@ -1462,22 +1463,22 @@ bio_db_pl_nonpl_interface( Iface, Load, NonPlLoad ) :-
     bio_db_interface_extensions( Iface, [Ext|_] ),
     file_name_extension( LoadStem, Ext, NonPlLoad ).
 
-bio_db_ensure_loaded( Iface, Pid, Load, Handle ) :-
+bio_db_ensure_loaded( Iface, Pid, Load, Handle, From ) :-
     atom( Iface ),
-    bio_db_ensure_loaded_1( Iface, Pid, Load, Handle ),
+    bio_db_ensure_loaded_1( Iface, Pid, Load, Handle, From ),
     !.
-bio_db_ensure_loaded( Iface, Pid, Load, _Handle ) :-
+bio_db_ensure_loaded( Iface, Pid, Load, _Handle, _From ) :-
     % fixme: Goal in error can be supplied ?
     Err = pack_error(bio_db,bio_db_ensure_loaded/4,failed_to_load(Iface,Pid,Load) ),
     throw( Err ).
 
-bio_db_ensure_loaded_1( prolog, Pid, Load, [] ) :-
+bio_db_ensure_loaded_1( prolog, Pid, Load, [], From ) :-
     Pid = Pname/_Arity,
     atomic_list_concat( [Ppfx|_], '_', Pname ),
-    bio_db_pl_load( Ppfx, Pid, Load ).
-bio_db_ensure_loaded_1( prosqlite, Pname/_Arity, Load, Pname ) :-
+    bio_db_pl_load( Ppfx, Pid, Load, From ).
+bio_db_ensure_loaded_1( prosqlite, Pname/_Arity, Load, Pname, _From ) :-
     sqlite_connect( Load, Pname, [as_predicates(true),at_module(bio_db)] ).
-bio_db_ensure_loaded_1( berkeley, Pname/Arity, Load, Berkeley ) :-
+bio_db_ensure_loaded_1( berkeley, Pname/Arity, Load, Berkeley, _From ) :-
     \+ '$bio_db_handle'(Pname,_),
     % fixme: is the option needed ? we are just reading- check
     % bio_db_info_interface( berkeley, _Pid, Load, _Handle, data_types, data_types(Ktype,Vtype) ),
@@ -1497,7 +1498,7 @@ bio_db_ensure_loaded_1( berkeley, Pname/Arity, Load, Berkeley ) :-
     arg( 1, RelType, Vrt ),
     ground( Arity ),
     bio_db_berkeley_predicate_assert_arity( Arity, Krt, Vrt, Pname, bdb_get, bdb_enum, Berkeley ).
-bio_db_ensure_loaded_1( rocks, Pname/Arity, Load, Handle ) :-
+bio_db_ensure_loaded_1( rocks, Pname/Arity, Load, Handle, _From ) :-
     /*
     bio_db_info_interface( rocks, _Pid, Load, _Handle, data_types, data_types(Ktype,Vtype) ),
     */
@@ -1516,13 +1517,13 @@ bio_db_ensure_loaded_1( rocks, Pname/Arity, Load, Handle ) :-
     bio_db_rocks_predicate_assert_arity( Arity, Dup, Pname, rocks_get, rocks_enum, Handle ).
     % bio_db_rocks_predicate_assert_arity( Kbype/Vbype, Arity, Pname, rocks_get, rocks_enum, Handle ).
 
-% bio_db_pl_load( map, Pid, Load ).
-bio_db_pl_load( _Type, Pid, Load ) :-
-    dynamic( Pid ),  % fixme: we should be able to remove this? 
+% bio_db_pl_load( map, Pid, Load, From ).
+bio_db_pl_load( _Type, Pid, Load, Mod ) :-
+    dynamic( Mod:Pid ),  % fixme: we should be able to remove this? 
     % ensure_loaded( Load ).  % following is an elaboration of code by JW: 16.11.13:
     (   (file_name_extension(Base,pl,Load), \+ current_prolog_flag(bio_db_qcompile,false))
-    ->  load_files( Base, [qcompile(auto), if(not_loaded)] )
-    ;   ensure_loaded( Load )
+    ->  Mod:load_files( Base, [qcompile(auto),if(not_loaded)] )
+    ;   ensure_loaded( Mod:Load )  % fixme: use load_files/2 ?
     ).
 
 % bio_db_pl_load( edge, Pname/_Arity, Load ) :-
@@ -1746,13 +1747,24 @@ bio_db_load_call( false, Pname, Arity, Iface, File, _Call ) :-
 bio_db_load_call( true, Pname, Arity, Iface, File, Call ) :-
     debug( bio_db, 'Loading pred: ~w, interface: ~a, file: ~w', [Pname/Arity,Iface,File] ),
     ground( Iface ),
-    abolish( Pname/Arity ),    % fixme: retractall/1 if we have problem with regenerations ?
+    functor( Phead, Pname, Arity ),
+    ( predicate_property(Phead,imported_from(From) ) -> true; From = bio_db ),
+    abolish( From:Pname/Arity ),    % fixme: retractall/1 if we have problem with regenerations ?
+    % retractall(Phead),
     atom_concat( Pname, '_info', InfoPname ),
-    dynamic( InfoPname/2 ),
+    dynamic( From:InfoPname/2 ),
+    % functor( Ihead, InfoPname, 2 ),
+    ( (From \== bio_db,\+ current_predicate(bio_db:InfoPname/2)) -> 
+            % fixme: test again:
+            From:export(InfoPname/2),
+            bio_db:import(From:InfoPname/2)
+            ;
+            true
+    ),
     functor( InfoHead, InfoPname, 2),
-    retractall( InfoHead ),
-    bio_db_ensure_loaded( Iface, Pname/Arity, File, Handle ),
-    assert( bio_db_handle(Pname/Arity,Iface,File,Handle) ),
+    retractall( From:InfoHead ),
+    bio_db_ensure_loaded( Iface, Pname/Arity, File, Handle, From ),
+    assert( bio_db_handle(Pname/Arity,Iface,File,Handle,From) ),
     call( Call ).
 
 bio_db_predicate_type_sub_dir( map, maps ).

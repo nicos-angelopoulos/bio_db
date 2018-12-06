@@ -12,6 +12,8 @@
 :- use_module( library(lib) ).
 :- lib(bio_db).
 
+% :- dynamic( map_mgim_mouse_mgim_symb/2 ).
+
 /**  bio_db_mouse_mgim.
 
 Documentation predicate for mouse data from MGI database.

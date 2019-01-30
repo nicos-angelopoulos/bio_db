@@ -10,6 +10,7 @@ TBD:
          Rocks: Enumerate connections ? rocks_current(X).
 
 2.3   19.01.30    UPDATE:  new way of locating STRING version (valid from STRING 11.0)
+                  ADDED:   convert(false) in csv_read_file/3 call
 
 2.2          @    18.12.06
       18.12.06    FIXED:   cpu deterioration of celled predicates

@@ -20,7 +20,8 @@
 :- lib(url_file_local_date_mirror/3).
 :- lib(bio_db_add_infos/1). % bio_db_add_infos_to/2.
 
-gont_mouse_url('http://geneontology.org/gene-associations/gene_association.mgi.gz').
+% gont_mouse_url('http://geneontology.org/gene-associations/gene_association.mgi.gz').
+gont_mouse_url('http://geneontology.org/gene-associations/mgi.gaf.gz').
 
 std_mouse_maps_gont_defaults([]).
 

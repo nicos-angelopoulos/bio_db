@@ -3,22 +3,23 @@
                     %       + HGNC
                 map_hgnc_ccds_hgnc/2, % concesus protein coding regions
                 map_hgnc_ensg_hgnc/2, %
-                map_hgnc_entz_hgnc/2, %
+                map_hgnc_entz_hgnc/2, %  
                 map_hgnc_entz_symb/2, %
                 map_hgnc_hgnc_ccds/2, % concesus protein coding regions
+                map_hgnc_hgnc_chrb/2,
+                map_hgnc_hgnc_ensg/2, %
+                map_hgnc_hgnc_entz/2,
                 map_hgnc_hgnc_name/2, %
                 map_hgnc_hgnc_symb/2,
                 map_hgnc_prev_symb/2, %
-                map_hgnc_symb_hgnc/2, %
-                map_hgnc_syno_symb/2, %
                 map_hgnc_symb_entz/2, %
-                'map_hgnc_entz-appv_symb'/2,
-                'map_hgnc_entz-ncbi_symb'/2,
-                map_hgnc_hgnc_chrb/2,
-                map_hgnc_hgnc_ensg/2,
-                'map_hgnc_hgnc_entz-appv'/2,
-                'map_hgnc_hgnc_entz-ncbi'/2,
-                map_hgnc_hgnc_entz/2
+                map_hgnc_symb_hgnc/2, %
+                map_hgnc_syno_symb/2  %
+                % removed from the source files, so removed from here 19.02.08
+                % 'map_hgnc_entz-appv_symb'/2,
+                % 'map_hgnc_entz-ncbi_symb'/2,
+                % 'map_hgnc_hgnc_entz-appv'/2,
+                % 'map_hgnc_hgnc_entz-ncbi'/2
                 ] ).
 
 :- use_module(library(lib)).
@@ -175,28 +176,6 @@ Symb = 'LMTK3'.
 map_hgnc_entz_symb( X, Y ) :-
     bio_db:bio_db_serve( map_hgnc_entz_symb(X,Y) ).
 
-/** 'map_hgnc_entz-appv_symb'( ?Entz, ?Symb ).
-
-Map predicate from entrez approved ids to HGNC Symbol.
-
-==
-
-==
-
-*/
-'map_hgnc_entz-appv_symb'( X, Y ) :-
-    bio_db:bio_db_serve( 'map_hgnc_entz-appv_symb'(X,Y) ).
-
-/**  'map_hgnc_entz-ncbi_symb'( ?Entz, ?Symb ).
-
-Map predicate from entrez approved ids to HGNC Symbol.
-==
-==
-*/
-'map_hgnc_entz-ncbi_symb'( X, Y ) :-
-    bio_db:bio_db_serve( 'map_hgnc_entz-ncbi_symb'(X,Y) ).
-
-
 /**  map_hgnc_hgnc_chrb( +Hgnc, -ChrB ).
 
 Map predicate from HGNC ID to Chromosome Band 
@@ -216,24 +195,6 @@ Map predicate from HGNC ID to Ensembl Gene
 */
 map_hgnc_hgnc_ensg( X, Y ) :-
     bio_db:bio_db_serve( map_hgnc_hgnc_ensg(X,Y) ).
-
-/**  'map_hgnc_hgnc_entz-appv'( +Hgnc, -EntzAppv ).
-
-Map predicate from HGNC ID to approved Ensembl Gene
-==
-==
-*/
-'map_hgnc_hgnc_entz-appv'( X, Y ) :-
-    bio_db:bio_db_serve( 'map_hgnc_hgnc_entz-appv'(X,Y) ).
-
-/**  'map_hgnc_hgnc_entz-ncbi'( +Hgnc, -EntzNcbi ).
-
-Map predicate from HGNC ID to NCBI provided Ensembl Gene
-==
-==
-*/
-'map_hgnc_hgnc_entz-ncbi'( X, Y ) :-
-    bio_db:bio_db_serve( 'map_hgnc_hgnc_entz-ncbi'(X,Y) ).
 
 /**  map_hgnc_hgnc_entz( +Hgnc, -Entz ).
 

@@ -102,8 +102,11 @@ std_maps_hgnc( Args ) :-
 	hgnc_std_map( Hgnc, Name, CsvF, Csv, StdO, SrcUrl/DnDt, HgncNameF ),               % hgnc_name
 	hgnc_std_map( Symb, Hgnc, CsvF, Csv, StdO, SrcUrl/DnDt, SymbF ),               % symb_hgnc
 	hgnc_std_map( Entz, Symb, CsvF, Csv, StdO, SrcUrl/DnDt, EntzF ),               % entz_symb
+	hgnc_std_map( Symb, Entz, CsvF, Csv, StdO, SrcUrl/DnDt, SymbEntzF ),               % symb_entz
+	hgnc_std_map( Entz, Hgnc, CsvF, Csv, StdO, SrcUrl/DnDt, EntzHgncF ),               % entz_hgnc
 	hgnc_std_map( Hgnc, Entz, CsvF, Csv, StdO, SrcUrl/DnDt, HgncEntzF ),               % hgnc_entz
 	hgnc_std_map( Ensg, Hgnc, CsvF, Csv, StdO, SrcUrl/DnDt, EnsgF ),      % ensg_hgnc
+	hgnc_std_map( Hgnc, Ensg, CsvF, Csv, StdO, SrcUrl/DnDt, HgncEnsgF ),      % map_hgnc_hgnc_ensg
 	hgnc_std_map( Hgnc, Chrm, CsvF, Csv, StdO, SrcUrl/DnDt, ChrmF ),      	  % e
 	hgnc_std_map( Hgnc, Ccds, CsvF, Csv, StdO, SrcUrl/DnDt, CcdsF ),      	  % 
 	hgnc_std_map( Ccds, Hgnc, CsvF, Csv, StdO, SrcUrl/DnDt, HcdsF ),      	  % 
@@ -111,7 +114,7 @@ std_maps_hgnc( Args ) :-
 	debug( std_maps_hgnc, 'doing links...', [] ),
 	debug( link_to_map_sub ),
 	% Files = [HSf,HNf,SHf,EcHf,EcSf,ESf,SEf,EnSf,HEf,HEnf,HEcf,HNcf,NcHf, SynoF,PrevF,ChrmF, CcdsF,HcdsF ],
-	Files = [HgncF,SynoF,PrevF,HgncNameF,SymbF,EntzF,HgncEntzF,EnsgF,ChrmF,CcdsF,HcdsF],
+	Files = [HgncF,SynoF,PrevF,HgncNameF,SymbF,EntzF,SymbEntzF,HgncEntzF,EntzHgncF,EnsgF,HgncEnsgF,ChrmF,CcdsF,HcdsF],
 	maplist( link_to_map_sub(hgnc), Files ),
 	% file_name_extension( TxtF, gz, GzF ),
 	% delete_file( TxtF ),

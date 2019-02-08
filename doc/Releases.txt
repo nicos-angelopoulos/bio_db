@@ -11,6 +11,7 @@ TBD:
 
 2.3   
       19.02.08    DELETE:  message_report.pl/3 (now in stoics_lib)
+                  UPDATE:  comprehensive overhaul, as location of source file its contents and header names, had changed
       19.01.30    UPDATE:  new way of locating STRING version (valid from STRING 11.0)
                   ADDED:   convert(false) in csv_read_file/3 call
 

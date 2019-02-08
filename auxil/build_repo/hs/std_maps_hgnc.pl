@@ -45,6 +45,7 @@ std_maps_hgnc_defaults( Defs ) :-
 % * dir(Dir=maps)      sub-directory for creating the maps
 % * download(Dn=true)  set to false to skip downloading a fresh copy of the HGNC file(s)
 % * map_prefix(Mfx)    if present is passed on csv_ids_map/6, else their default applies
+%
 %==
 %  ?- std_maps_hgnc.
 %  ?- cd( '$local/../work/db/maps/hgnc' ).

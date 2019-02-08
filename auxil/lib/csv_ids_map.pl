@@ -47,9 +47,9 @@ csv_ids_map_defaults( [ cnm_transform(=),dir('.'),
 %   * sort_by(Sby=1)
 %     sort clauses by 1st (or 2nd) argument
 %   * to_value_1(Tv1=true)
-%     transforms left data, or removes row if it fails
+%     transforms left data, or removes row if it fails (predicate can return list, all of which are considered separate values)
 %   * to_value_2(Tv2=true)
-%     transforms right data, or removes row if it fails
+%     transforms right data, or removes row if it fails (predicate can return list, all of which are considered separate values)
 %
 % @author nicos angelopoulos
 % @version  0.1 2014/7/2

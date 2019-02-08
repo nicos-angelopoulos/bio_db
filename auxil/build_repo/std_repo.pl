@@ -190,6 +190,7 @@ bio_db_data_zip_file( File ) :-
 bio_db_data_zip_file( File ) :-
     debug( bio_db_data_zip, 'Skipping: ~w', [File] ).
 
+my_hostname( krotos, 'άμπελος' ).
 my_hostname( krotos, 'κρότος' ).
 my_hostname( lykos, 'λύκος' ).
 

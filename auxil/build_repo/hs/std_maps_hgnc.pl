@@ -16,6 +16,7 @@
 
 % local libs & sources
 :- lib(de_semi/3).
+:- lib(sep_split/3).
 :- lib(csv_ids_map/6).
 :- lib(link_to_bio_sub/2).  % link_to_map_sub/2
 :- lib(bio_db_dnt_times/3).
@@ -88,6 +89,8 @@ std_maps_hgnc( Args ) :-
 	Hgnc = 'hgnc_id',
 	Symb = 'symbol',
 	Name = 'name',
+    Prev = 'prev_symbol',
+    Syno = 'alias_symbol',
 	Chrm = 'location',
 	Ccds =  'ccds_id',
 
@@ -96,8 +99,10 @@ std_maps_hgnc( Args ) :-
 
 	% fixme allow hgnc_std_map's called predicate to deal with multiple entries from single row
 	% also it needs to be told not to sort some maps (but with ability to check uniqueness
-	hgnc_extra_symbols_column( Csv, 'alias_symbol', map_hgnc_syno_symb, SrcUrl/DnDt, SynoF ),
-	hgnc_extra_symbols_column( Csv, 'prev_symbol', map_hgnc_prev_symb, SrcUrl/DnDt, PrevF ),
+	% hgnc_extra_symbols_column( Csv, 'alias_symbol', map_hgnc_syno_symb, SrcUrl/DnDt, SynoF ),
+	% hgnc_extra_symbols_column( Csv, 'prev_symbol', map_hgnc_prev_symb, SrcUrl/DnDt, PrevF ),
+	hgnc_std_map( Syno, Symb, CsvF, Csv, StdO, SrcUrl/DnDt, SynoF ),               % hgnc_name
+	hgnc_std_map( Prev, Symb, CsvF, Csv, StdO, SrcUrl/DnDt, PrevF ),               % hgnc_name
 
 	hgnc_std_map( Hgnc, Name, CsvF, Csv, StdO, SrcUrl/DnDt, HgncNameF ),               % hgnc_name
 	hgnc_std_map( Symb, Hgnc, CsvF, Csv, StdO, SrcUrl/DnDt, SymbF ),               % symb_hgnc
@@ -154,6 +159,8 @@ hgnc_std_column_to_value_call( 'HGNC ID', de_semi('HGNC') ).  % old
 hgnc_std_column_to_value_call( 'hgnc_id', de_semi('HGNC') ).
 hgnc_std_column_to_value_call( 'Approved Symbol', non_empty_atom ). % old
 hgnc_std_column_to_value_call( 'symbol', non_empty_atom ).
+hgnc_std_column_to_value_call( 'alias_symbol', sep_split('|') ).
+hgnc_std_column_to_value_call( 'prev_symbol', sep_split('|') ).
 hgnc_std_column_to_value_call( 'Approved Name', non_empty_atom ). % old
 hgnc_std_column_to_value_call( 'name', non_empty_atom ). % old
 % hgnc_std_column_to_value_call( 'Entrez Gene ID + supplied by NCBI', pos_integer ).
@@ -217,6 +224,8 @@ hgnc_cname_known( 'Approved Symbol', symb ).
 hgnc_cname_known( 'symbol', symb ).
 hgnc_cname_known( 'Approved Name', name ).
 hgnc_cname_known( 'name', name ).
+hgnc_cname_known( 'prev_symbol', prev ).
+hgnc_cname_known( 'alias_symbol', syno ).
 hgnc_cname_known( 'Chromosome', chrb ).  % chromosome base eg 2p24.1  % old
 hgnc_cname_known( 'location', chrb ).  % chromosome base eg 2p24.1
 hgnc_cname_known( 'CCDS IDs', ccds ).  % 

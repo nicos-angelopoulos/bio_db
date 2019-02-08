@@ -14,6 +14,7 @@ TBD:
                   UPDATE:  comprehensive overhaul, as location of source file its contents and header names, had changed
                   UPDATE:  gene_association.mgi.gz is now mgi.gaf.gz
                   IFACE:   removed dead interace predicates
+                  UPDATE:  use normal calls for prev and synonyms via | sep call
       19.01.30    UPDATE:  new way of locating STRING version (valid from STRING 11.0)
                   ADDED:   convert(false) in csv_read_file/3 call
 

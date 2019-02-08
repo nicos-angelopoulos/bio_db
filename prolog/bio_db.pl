@@ -95,10 +95,10 @@ bio_db_default_interface( prolog ).
 :- lib(stoics_lib:at_con/3).
 :- lib(stoics_lib:portray_clauses/2).
 :- lib(stoics_lib:url_file/2).
+:- lib(stoics_lib:message_report/3).
 
 :- lib(ui_yes_no/5).
 :- lib(bio_db_map/2).
-:- ensure_loaded('../auxil/lib/message_report').  % /3.
 :- ensure_loaded( '../auxil/lib/bio_db_pl_info' ).   % /2.
 :- lib( end(bio_db) ).
 

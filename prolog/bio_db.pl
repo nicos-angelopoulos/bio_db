@@ -352,14 +352,15 @@ possible to have access to information about the dataset such as download date a
 Hgnc = 1,
 Symb = 'A12M1~withdrawn' .
 
-?- bio_db_info( map_hgnc_hgnc_symb, Key, Value ), write( Key-Value ), nl, fail.
+?- bio_db_info( map_hgnc_hgnc_symb/2, Key, Value ), write( Key-Value ), nl, fail.
+interface-prolog
 source_url-ftp://ftp.ebi.ac.uk/pub/databases/genenames/hgnc_complete_set.txt.gz
-datetime-datetime(2016,9,8,0,8,40)
-header-row(HGNC ID,Approved Symbol)
-unique_lengths-unique_lengths(44266,44266,44266)
+datetime-datetime(2018,11,27,12,32,11)
+data_types-data_types(integer,atom)
+unique_lengths-unique_lengths(46023,46023,46023)
 relation_type-relation_type(1,1)
-false.
-
+header-row(HGNC ID,Approved Symbol)
+false
 ==
 
 As of version 2.0 there are two flags that can automate some of the interactions.
@@ -373,7 +374,7 @@ In both cases the recognised values for the flags are: [user,true,false].
 User is for prompting the user and true is progressing with an implicit yes answer.
 The first flag automates conversion from .pl.zip to .pl (which will be the case
 for the first time you access any dataset if you have installed bio_db_repo),
-and the secondpertains to the qquestion of deleteling the zip file once the .pl file has been created.
+and the second controls the deletion of the zip file once the .pl file has been created.
 
 
 Thanks to Jan Wielemaker for a retractall fix and for code for fast loading of precompiled fact bases
@@ -592,7 +593,8 @@ D = date(2019, 2, 11).
 % bio_db_version( 2:0:0, date(2018,11,23) ).   
 % bio_db_version( 2:1:0, date(2018,11,27) ).   
 % bio_db_version( 2:2:0, date(2018,12,6) ).   
-bio_db_version( 2:3:0, date(2019,2,11) ).   
+% bio_db_version( 2:3:0, date(2019,2,11) ).   
+bio_db_version( 2:3:1, date(2019,2,11) ).   
 
 %% bio_db_citation( -Atom, -Bibterm ).
 %

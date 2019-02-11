@@ -10,7 +10,7 @@
 :- ensure_loaded( map_predicate_name ).     % /4.
 
 csv_ids_map_defaults( [ cnm_transform(=),dir('.'),
-                        delim('\t'),
+                        delim('\t'), has_header(true),
                         interface(prolog),map_prefix(true),
                         prefix(''), sort_by(1), 
                         to_value_1(=),to_value_2(=),
@@ -34,6 +34,8 @@ csv_ids_map_defaults( [ cnm_transform(=),dir('.'),
 %     directory for the result
 %   * filter(Cnm,Fgoal)
 %     fixme:
+%   * has_header(HasH=true)
+%     false allows for non header matrices
 %   * header(Hdr)
 %     a header term, something line row(CnmDesc1,CnmDesc2)
 %   * interface(Ifc=prolog)
@@ -61,8 +63,9 @@ csv_ids_map( CsvF, Cid1, Cid2, Tbl, File, Args ) :-
     options_append( csv_ids_map, Args, Opts ),
     options( delim(Dlm), Opts ),
     csv_ids_rows( CsvF, Dlm, Tbl ),
-    csv_or_frame_column( Tbl, Cid1, Clm1, Cnm1 ),
-    csv_or_frame_column( Tbl, Cid2, Clm2, Cnm2 ),
+    options( has_header(HasH), Opts ),
+    csv_or_frame_column( Tbl, HasH, Cid1, Clm1, Cnm1 ),
+    csv_or_frame_column( Tbl, HasH, Cid2, Clm2, Cnm2 ),
 
     % memberchk( Cid2=Clm2, Tbl ), Cnm2 = Cid2, % fixme
     % csv_column( Csv, Cid1, Clm1, Cnm1, _Nhdr1 ),
@@ -190,6 +193,7 @@ map_type_length_op_atom( >, m ).
 map_type_length_op_atom( <, _ ) :- throw( impossible_map_type_op_length_op ).
 
 % collect_map( [], [], _Seen, _Tv1, _Tv2, _Pname, [] ). % old version
+% if either of the two fail, the row is skipped ...
 collect_map( [], [], _Tv1, _Tv2, _Pname, [] ).
 collect_map( [F|Fs], [T|Ts], Tv1, Tv2, Pname, Clauses ) :-
     % collect_map_to_values( F, T, Seen, Tv1, Tv2, Pname, Clauses, Next, TClauses ),
@@ -224,11 +228,21 @@ collect_map_un_seen( V1, V2, Pname, Seen, Next, Clauses, TClauses ) :-
     Clauses = [Clause|TClauses].
 */
 
-csv_or_frame_column( Tbl, Cid1, Clm1, Cnm1 ) :-
+csv_or_frame_column( Tbl, _HasH, Cid1, Clm1, Cnm1 ) :-
     memberchk( Cid1=Clm1, Tbl ), 
     !,
     Cnm1 = Cid1. % fixme
-csv_or_frame_column( Tbl, Cid1, Clm1, Cnm1 ) :-
+csv_or_frame_column( Tbl, HasH, Cid1, Clm1, Cnm1 ) :-
+    ground( HasH ),
+    csv_has_header_column( HasH, Tbl, Cid1, Clm1, Cnm1 ).
+
+% new in 19.02.11, trying to deal with csvs that have no headers ....
+csv_has_header_column( false, Tbl, Cid1, Clm1, Cnm1 ) :-
+    number( Cid1 ),
+    !,
+    maplist( arg(Cid1), Tbl, Clm1 ),
+    Cnm1 = Cid1.
+csv_has_header_column( true, Tbl, Cid1, Clm1, Cnm1 ) :-
     % mtx_column( Tbl, Cid1, Clm1, _, Cnm1 ).
     mtx_column( Tbl, Cid1, Clm1, Cnm1, _ ).
 

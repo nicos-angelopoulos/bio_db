@@ -27,11 +27,11 @@
 mgim_url( 'http://www.informatics.jax.org/downloads/reports' ).
 
 % mgim_report_seq('MRK_Sequence.rpt').
-mgim_report(symb, 'List1').   % List2  only included non-widrawn ones.
-mgim_report(seq,  'Sequence').
-mgim_report(prot, 'SwissProt_TrEMBL').
-mgim_report(swiss_prot, 'SwissProt').
-mgim_report(entrez_gene, 'EntrezGene').
+mgim_report(symb, 'MRK_List1').   % List2  only included non-widrawn ones.
+mgim_report(seq,  'MRK_Sequence').
+mgim_report(prot, 'MRK_SwissProt_TrEMBL').
+mgim_report(swiss_prot, 'MRK_SwissProt').
+mgim_report(entrez, 'MGI_EntrezGene').
 
 std_mouse_maps_mgim_defaults(debug(true)).
 
@@ -49,6 +49,7 @@ Opts
 
 @author nicos angelopoulos
 @version  0.1 2018/11/2
+@version  0.2 2018/2/11, added: map_mouse_mgim_mgim_entz/2.
 
 */
 std_mouse_maps_mgim( Args ) :-
@@ -93,6 +94,15 @@ std_mouse_maps_mgim( Args ) :-
     csv_ids_map( _, 'MGI Marker Accession ID', 'GenBank IDs', GenMtx, GenBMapF, Cims ),
     csv_ids_map( _, 'MGI Marker Accession ID', 'UniProt IDs', GenMtx, UnipMapF, Cims ),
 
+    % entezid ( no header !)
+    mgim_get_report( entrez, Self, EntzUrl, DnDir, _EntzRelF, EntzMtx, EntzDnt ),
+    EntzHdr = hdr('MGI Marker Accession ID','Entrez ID'),
+    EntzOpts = [cnm_transform(mgi_entrez_idx_header),to_value_1(pfx_by_num(true,'MGI:')),prefix(mgim_mouse),to_value_2(atom_number),
+            source(EntzUrl), datetime(EntzDnt), has_header(false),header(EntzHdr)
+           ],
+    csv_ids_map( _, 1, 9, EntzMtx, MapEntzF, EntzOpts ),
+
+
     % symbol & synonyms:
     findall( map_mgim_mouse_mgim_symb(RMgi,RSymb), ( member(SymbRow,SymbRows),
                                                     arg(1,SymbRow,RMgiFull),
@@ -115,17 +125,30 @@ std_mouse_maps_mgim( Args ) :-
             source(SymbUrl), datetime(SymbDnt)
            ],
     csv_ids_map( _, 'Marker Symbol', 'Marker Name', SymbMtx, MapWdraF, WdraOpts ),
-    MapFs = [GenBMapF,ChrlF,UnipMapF,MapSynoF,MapWdraF],
+    MapFs = [GenBMapF,ChrlF,UnipMapF,MapSynoF,MapWdraF,MapEntzF],
     maplist( link_to_bio_sub(mouse,mgim,maps), MapFs ),
 
     working_directory( _, Old ),
     % here( here(GenBMapF,DnDir,SeqRelF) ).
     debug_call( Self, end, true ).
 
+mgi_entrez_idx_header( 1, mgim ).
+mgi_entrez_idx_header( 9, entz ).
+
+/* atom_number/2 does the same, except for exception...
+mgi_entrez_id( '', _ ) :- !, fail.
+mgi_entrez_id( Atom, Number ) :- 
+    atom_number( Atom, Number ),
+    !.
+mgi_entrez_id( Atom, Number ) :- 
+    throw( cannot_entrez_id_this(Atom,Number) ).
+    */
+
 mgim_get_report( Which, Self, Url, DnDir, RelF, Mtx, DntStamp ) :-
     mgim_url( Base ),
     mgim_report( Which, Stem ),
-    atomic_list_concat( [Base,'/MRK_',Stem,'.rpt'], Url ),
+    % atomic_list_concat( [Base,'/MRK_',Stem,'.rpt'], Url ),
+    atomic_list_concat( [Base,'/',Stem,'.rpt'], Url ),
     mgim_dnload_dir( DnDir ),
 	UrlOpts = [debug(url_local),interface(wget),file(RelF),dnt_stamp(DntStamp)],
     url_file_local_date_mirror( Url, DnDir, UrlOpts ),

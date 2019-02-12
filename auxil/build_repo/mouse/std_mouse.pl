@@ -69,6 +69,7 @@ std_upsh( Org, Db, Type, Succ ) :-
     debug_call( Org, task(start), Task ).   % fixme: change colour.. time to optionise debug_call ?
 
 std( mouse, maps, mgim ).
+std( mouse, maps, ncbi ).
 std( mouse, maps, unip ).
 std( mouse, maps, gont ).
 

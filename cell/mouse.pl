@@ -5,6 +5,7 @@
 :- use_module(library(lib)).
 
 :- lib( &(bio_db(mouse(mgim))) ).
+:- lib( &(bio_db(mouse(ncbi))) ).
 :- lib( &(bio_db(mouse(unip))) ).
 :- lib( &(bio_db(mouse(gont))) ).
 :- lib( &(bio_db(mouse(strg))) ).
@@ -16,6 +17,8 @@ Bio_db data sets for mouse.
 Databases
   * mgim
     MGI (Markers) 
+  * ncbi
+    entrez synonyms (entrez ids are taken from MGI)
   * unip
     (mouse) Swiss Prot and Trembl
   * strg
@@ -28,6 +31,7 @@ Databases
 
 @author nicos angelopoulos
 @version  0.1 2018/10/31
+@version  0.2 2019/2/11
 @see 
 
 */

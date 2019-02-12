@@ -65,6 +65,8 @@ std_mouse_maps_ncbi( Args ) :-
                     source(Url),
                     header(row('Entrez Synonym','Symbol'))
         ],
+    os_make_path( maps ),
+    working_directory( _, maps ),
 	csv_ids_map( _, 'Synonyms', 'Symbol', Mtx, EntzSynoF, MapOpts ),
     link_to_bio_sub( mouse, ncbi, maps, EntzSynoF ),
 	working_directory( _, Old ).

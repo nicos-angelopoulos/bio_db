@@ -9,11 +9,13 @@ TBD:
          Would be nice to have the "correct" types when opening an existing database with no options.
          Rocks: Enumerate connections ? rocks_current(X).
 
-2.4   19.02.11    DOC:     arity of bio_db predicate in example query and typos
+2.4
+      19.02.12    BUILD:   scripts for map_ncbi_mouse_syno_symb/2
+                  IFACE:   map_ncbi_mouse_syno_symb/2
+      19.02.11    DOC:     arity of bio_db predicate in example query and typos
                   ADDED:   build script map_mgim_mouse_mgim_entz/2
                   IFACE:   map_mgim_mouse_mgim_entz/2
                   DOC:     1 example per mgi_mouse predicate
-                  BUILD:   scripts for map_ncbi_mouse_syno_symb/2
 2.3          @    19.02.11
       19.02.11    UPDATE:  example bio_db_stats with output 
                   ADDED:   version query and stats output

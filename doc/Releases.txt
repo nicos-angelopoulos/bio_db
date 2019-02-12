@@ -13,6 +13,7 @@ TBD:
                   ADDED:   build script map_mgim_mouse_mgim_entz/2
                   IFACE:   map_mgim_mouse_mgim_entz/2
                   DOC:     1 example per mgi_mouse predicate
+                  BUILD:   scripts for map_ncbi_mouse_syno_symb/2
 2.3          @    19.02.11
       19.02.11    UPDATE:  example bio_db_stats with output 
                   ADDED:   version query and stats output

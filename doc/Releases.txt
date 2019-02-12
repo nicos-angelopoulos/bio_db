@@ -29,9 +29,9 @@ TBD:
 
 2.2          @    18.12.06
       18.12.06    FIXED:   cpu deterioration of celled predicates
-      18.12.03
-                  IFACE:   map_unip_mouse_gyno_unip/2.
+      18.12.03    IFACE:   map_unip_mouse_gyno_unip/2.
                   IFACE:   map_mgim_mouse_syno_mgim/2 
+
 2.1          @    18.11.27
       18.11.27    FIXED:   new dependency to write_message/3 was pointing to wrong directory...
 

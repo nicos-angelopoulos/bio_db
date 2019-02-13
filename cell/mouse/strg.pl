@@ -10,7 +10,7 @@
 
 /**  bio_db_mouse_strg.
 
-Documentation predicate for Homo sapiens data from String database.
+Documentation predicate for mouse data from String database.
 
 ==
 ?- lib( &bio_db(mouse(strg)) ).
@@ -39,7 +39,7 @@ edge_strg_mouse( X, Y, Z ) :-
 
 /**  edge_strg_mouse_symb( ?Symb1, ?Symb2, ?W ).
 
-Weighted graph edges predicate from String database between HGNC symbol ids.
+Weighted graph edges predicate from String database between Mgi marker ids.
 W is an integger in 0 < W < 1000. Note that Symb1 @< Symb2,
 so you need to query with Symb2 (or Symb1) in both positions if Symb1 (or Symb2)
 are unbound.

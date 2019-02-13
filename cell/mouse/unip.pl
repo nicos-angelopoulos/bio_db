@@ -40,12 +40,19 @@ Map predicate from Ensembl protein ids to Uniprot protein ids.
 map_unip_mouse_ensp_unip( X, Y ) :-
     bio_db:bio_db_serve( map_unip_mouse_ensp_unip(X,Y) ).
 
-/**  map_unip_mouse_mgim_unip( ?UniP, ?Hgnc ).
+/**  map_unip_mouse_mgim_unip( +Mgim, -Unip ).
 
-Map predicate from Uniprot proteins to HGNC ids.
+Map predicate from Mgi markers to Uniprot proteins.
 
 ==
-?-  map_unip_mouse_mgim_unip( 'Q96Q04', Hgnc ).
+?- map_mgim_mouse_mgim_symb( Mgim, 'Lmtk3' ), map_unip_mouse_mgim_unip( Mgim, Lmtk3Prot ), write( Lmtk3Prot ), nl, fail.
+A0A0R4J0W7
+A0A1B0GR61
+A0A1B0GRD8
+A0A1B0GSP4
+A0A1B0GSR5
+A0A1B0GSU1
+Q5XJV6
 ==
 */
 map_unip_mouse_mgim_unip( X, Y ) :-

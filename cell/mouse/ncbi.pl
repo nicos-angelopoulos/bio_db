@@ -23,9 +23,9 @@ Documentation predicate for mouse data from NCBI database.
 */
 bio_db_mouse_ncbi.
 
-/**  map_ncbi_mouse_syno_symb( +Ensp, -UniP ).
+/**  map_ncbi_mouse_syno_symb( +Syno, -Symb ).
 
-Map predicate from Ensembl protein ids to Uniprot protein ids.
+Map of symbol synonyms based on the NCBI (Entrez) data.
 
 == 
 ?- map_ncbi_mouse_syno_symb( 'Znf638', Symb ).

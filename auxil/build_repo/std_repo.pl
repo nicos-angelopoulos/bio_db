@@ -159,7 +159,7 @@ std_repo_create( Work+BioDbDir+BioDb, _Opts ) :-
     atomic_list_concat( [stoicos,Hname], '.', Unison ),
     @unison( Unison ).
 std_repo_to_web_page( Tgz, _BioDbDir, _Date ) :-
-    debug( std_repo, 'Skipping this bit as it is only relevent for Nicos\' own set-up.', true ),
+    debug( std_repo, 'Skipping this bit as it is only relevant for Nicos\' own set-up.', true ),
     debug( std_repo, 'You can publish the pack from tgz file: ~p', [Tgz] ).
 
 /** fixme: delete, no longer used....*/

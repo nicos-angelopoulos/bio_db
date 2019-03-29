@@ -122,14 +122,11 @@ csv_ids_interface_map( prolog, Pname, Stem, Tnm1, Tnm2, Filt1, Filt2, File, Opts
     ),
     HdrInfo =.. [Pinfo,header,HdrRow],
     Clauses = [UrlInfo,DtInfo,DataTypeInfo,UnqInfo,RelInfo,HdrInfo], 
-    write( file(File) ), nl,
     ( File == 'maps/map_unip_mouse_unip_symb.pl' -> 
         findall( ARow, ( member(ARow,Map),arg(1,ARow,'Q80YZ1'),write(row(ARow)),nl,
                          arg(2,ARow,SecA),
                          ( atomic(SecA) -> write( true(SecA) ), nl ; write( no_atomic(SecA) ), nl )
                         ), _Rows )
-        % trace
-
         ; 
         true ),
     portray_clauses( Clauses, stream(Out) ),

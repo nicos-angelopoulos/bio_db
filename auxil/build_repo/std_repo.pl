@@ -20,6 +20,8 @@
 :- debug(std_repo).
 :- debug(by_unix).
 
+:- set_prolog_flag(allow_dot_in_atom, false).   % for portaying correctly
+
 std_repo_defaults( [] ).
 
 /** std_repo( Opts ).
@@ -36,6 +38,7 @@ This scripts have been build and (currently only) tested on Linux OS.
 
 @author nicos angelopoulos
 @version  0.2 2018/11/12
+@tbd replace csv_ids_rows/3, with Prolog code, that is currently going through R ?
 @tbd on rerunning fails runs, the check for subdirs should be 
      leaning more to re-generating... ?
 @see http://stoics.org.uk/~nicos/sware/upsh
@@ -109,10 +112,9 @@ std_repo_create( Work+BioDbDir+BioDb, _Opts ) :-
     os_path( PackRoot, prolog, PackPl ),
     @ cp( -r, PackDoc, Repo ),
     @ cp( -r, PackPl,  Repo ),
-    os_path( Repo, 'prolog/bio_db_repo_version.pl', VersF ),
-    atomic_list_concat( [YrA,MnA,DyA], '.', Date ),
-    maplist( atom_number, [YrA,MnA,DyA], [Yr,Mn,Dy] ),
-    portray_clauses( [bio_db_repo_version(Yr:Mn:Dy)], file(VersF) ),
+
+    bio_db_repo_version_file_create( Repo, Date ),
+
     findall( Inf, bio_db_repo_info(Inf), [InfNm,InfTi|Infs] ),
     os_path( Repo, 'pack.pl', RepoPackF ),
     portray_clauses( [InfNm,InfTi,version(Date)|Infs], file(RepoPackF) ),
@@ -130,7 +132,23 @@ std_repo_create( Work+BioDbDir+BioDb, _Opts ) :-
     working_directory( _, Old ),
     debug_call( std_repo, end, true ).
 
- std_repo_to_web_page( TgzF, BioDbDir, Date ) :-
+bio_db_repo_version_file_create( Repo, Date ) :-
+    os_path( Repo, 'prolog/bio_db_repo_version.pl', VersF ),
+    os_postfix( pfx, VersF, PfxF ),
+    os_postfix( psfx, VersF, PsfxF ),
+    @ cp( PfxF, VersF ),
+    atomic_list_concat( [YrA,MnA,DyA], '.', Date ),
+    maplist( atom_number, [YrA,MnA,DyA], [Yr,Mn,Dy] ),
+    portray_clauses( [bio_db_repo_version(Yr:Mn:Dy)], [file(VersF),mode(append)] ),
+    open( PsfxF, read, PsfxS ),
+    open( VersF, append, VersS ),
+    copy_stream_data( PsfxS, VersS ),
+    close( PsfxS ),
+    close( VersS ),
+    @ rm( -f, PfxF ),
+    @ rm( -f, PsfxF ).
+
+std_repo_to_web_page( TgzF, BioDbDir, Date ) :-
     getenv( 'USER', nicos ),
     getenv( 'HOST', Host ),
     my_hostname( Host, Hname ),

@@ -113,7 +113,7 @@ std_repo_create( Work+BioDbDir+BioDb, _Opts ) :-
     @ cp( -r, PackDoc, Repo ),
     @ cp( -r, PackPl,  Repo ),
 
-    bio_db_repo_version_file_create( Repo, Date ),
+    bio_db_repo_file_version( Repo, Date ),
 
     findall( Inf, bio_db_repo_info(Inf), [InfNm,InfTi|Infs] ),
     os_path( Repo, 'pack.pl', RepoPackF ),
@@ -132,7 +132,7 @@ std_repo_create( Work+BioDbDir+BioDb, _Opts ) :-
     working_directory( _, Old ),
     debug_call( std_repo, end, true ).
 
-bio_db_repo_version_file_create( Repo, Date ) :-
+bio_db_repo_file_version( Repo, Date ) :-
     os_path( Repo, 'prolog/bio_db_repo_version.pl', VersF ),
     os_postfix( pfx, VersF, PfxF ),
     os_postfix( psfx, VersF, PsfxF ),
@@ -142,12 +142,13 @@ bio_db_repo_version_file_create( Repo, Date ) :-
     % portray_clauses( [Clause1], [file(VersF),mode(append)] ),
     open( PsfxF, read, PsfxS ),
     open( VersF, append, VersS ),
-    write( VersS, 'V = ' ), write( VersS, Yr:Mn:Dy ), write( VersS, '.' ), nl( VersS ),
+    LgYr is 2000 + Yr,
+    write( VersS, 'V = ' ), write( VersS, Yr:Mn:Dy ), write( VersS, ',' ), nl( VersS ),
+    write( VersS, 'D = ' ), portray_clause( VersS, date(LgYr,Mn,Dy) ),
     copy_stream_data( PsfxS, VersS ),
     close( PsfxS ),
     close( VersS ),
-    Clause1 = bio_db_repo_version(Yr:Mn:Dy),
-    Clauses = [ Clause1, bio_db_repo_version(Yr:Mn:Dy,date(Yr,Mn,Dy))],
+    Clauses = [ bio_db_repo_version(Yr:Mn:Dy), bio_db_repo_version(Yr:Mn:Dy,date(LgYr,Mn,Dy)) ],
     portray_clauses( Clauses, [file(VersF),mode(append)] ),
     @ rm( -f, PfxF ),
     @ rm( -f, PsfxF ).
@@ -159,7 +160,7 @@ std_repo_to_web_page( TgzF, BioDbDir, Date ) :-
     !,
     expand_file_name( '~/web/sware/packs/bio_db_repo/', [WebD]  ),
     os_path( WebD, TgzF, WebTgzF ),
-    ( exists_file(WebTgzF) -> 
+    ( exists_file(WebTgzF) ->
         % working_directory( _, Old ),
         throw( file_exists(WebTgzF) )
         ;

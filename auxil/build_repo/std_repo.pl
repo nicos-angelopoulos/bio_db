@@ -139,12 +139,16 @@ bio_db_repo_version_file_create( Repo, Date ) :-
     @ cp( PfxF, VersF ),
     atomic_list_concat( [YrA,MnA,DyA], '.', Date ),
     maplist( atom_number, [YrA,MnA,DyA], [Yr,Mn,Dy] ),
-    portray_clauses( [bio_db_repo_version(Yr:Mn:Dy)], [file(VersF),mode(append)] ),
+    % portray_clauses( [Clause1], [file(VersF),mode(append)] ),
     open( PsfxF, read, PsfxS ),
     open( VersF, append, VersS ),
+    write( VersS, 'V = ' ), write( VersS, Yr:Mn:Dy ), write( VersS, '.' ), nl( VersS ),
     copy_stream_data( PsfxS, VersS ),
     close( PsfxS ),
     close( VersS ),
+    Clause1 = bio_db_repo_version(Yr:Mn:Dy),
+    Clauses = [ Clause1, bio_db_repo_version(Yr:Mn:Dy,date(Yr,Mn,Dy))],
+    portray_clauses( Clauses, [file(VersF),mode(append)] ),
     @ rm( -f, PfxF ),
     @ rm( -f, PsfxF ).
 

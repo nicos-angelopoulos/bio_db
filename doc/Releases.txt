@@ -10,6 +10,7 @@ TBD:
          Rocks: Enumerate connections ? rocks_current(X).
 
 2.4
+      19.04.01    FIXED:   setting up bio_db_repo_version/1,2 correctly from date repo was created
       19.02.13    DOC:     fixed copy paste mistakes from human onto mouse
       19.02.12    BUILD:   scripts for map_ncbi_mouse_syno_symb/2
                   IFACE:   map_ncbi_mouse_syno_symb/2

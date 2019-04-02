@@ -26,19 +26,15 @@
 %    * map_hgnc_entz_hgnc/2
 %    * map_hgnc_entz_symb/2
 %    * map_hgnc_hgnc_ccds/2
+%    * map_hgnc_hgnc_chrb/2
+%    * map_hgnc_hgnc_ensg/2
+%    * map_hgnc_hgnc_entz/2
 %    * map_hgnc_hgnc_name/2
 %    * map_hgnc_hgnc_symb/2
 %    * map_hgnc_prev_symb/2
+%    * map_hgnc_symb_entz/2
 %    * map_hgnc_symb_hgnc/2
 %    * map_hgnc_syno_symb/2
-%    * map_hgnc_symb_entz/2
-%    * map_hgnc_entz-appv_symb/2
-%    * map_hgnc_entz-ncbi_symb/2
-%    * map_hgnc_hgnc_chrb/2
-%    * map_hgnc_hgnc_ensg/2
-%    * map_hgnc_hgnc_entz-appv/2
-%    * map_hgnc_hgnc_entz-ncbi/2
-%    * map_hgnc_hgnc_entz/2
 %  * hs/ncbi.pl
 %    * map_ncbi_ensg_entz/2
 %    * map_ncbi_ensp_entz/2
@@ -66,11 +62,14 @@
 %    * map_gont_mouse_mgim_gont/3
 %  * mouse/mgim.pl
 %    * map_mgim_mouse_mgim_chrl/5
+%    * map_mgim_mouse_mgim_entz/2
 %    * map_mgim_mouse_mgim_genb/2
 %    * map_mgim_mouse_mgim_symb/2
 %    * map_mgim_mouse_mgim_unip/2
 %    * map_mgim_mouse_symb_wdra/2
 %    * map_mgim_mouse_syno_mgim/2
+%  * mouse/ncbi.pl
+%    * map_ncbi_mouse_syno_symb/2
 %  * mouse/strg.pl
 %    * edge_strg_mouse/3
 %    * edge_strg_mouse_symb/3
@@ -81,8 +80,9 @@
 %    * map_unip_mouse_unip_entz/2
 %    * map_unip_mouse_unip_symb/2
 %    * map_unip_mouse_unip_unig/2
+%    * map_unip_mouse_gyno_unip/2
 %
-% Generated on 18.11.26 from bio_db with pack.pl version: 2.0.
+% Generated on 19.04.01 from bio_db with pack.pl version: 2.4.
 % 
 %
 bio_db_data_predicate(map_ense_ensg_chrl, 5, hs, 'hs/ense.pl').
@@ -102,16 +102,12 @@ bio_db_data_predicate(map_gont_gont_symb, 2, hs, 'hs/gont.pl').
 bio_db_data_predicate(map_gont_symb_gont, 2, hs, 'hs/gont.pl').
 bio_db_data_predicate(map_hgnc_ccds_hgnc, 2, hs, 'hs/hgnc.pl').
 bio_db_data_predicate(map_hgnc_ensg_hgnc, 2, hs, 'hs/hgnc.pl').
-bio_db_data_predicate('map_hgnc_entz-appv_symb', 2, hs, 'hs/hgnc.pl').
-bio_db_data_predicate('map_hgnc_entz-ncbi_symb', 2, hs, 'hs/hgnc.pl').
 bio_db_data_predicate(map_hgnc_entz_hgnc, 2, hs, 'hs/hgnc.pl').
 bio_db_data_predicate(map_hgnc_entz_symb, 2, hs, 'hs/hgnc.pl').
 bio_db_data_predicate(map_hgnc_hgnc_ccds, 2, hs, 'hs/hgnc.pl').
 bio_db_data_predicate(map_hgnc_hgnc_chrb, 2, hs, 'hs/hgnc.pl').
 bio_db_data_predicate(map_hgnc_hgnc_ensg, 2, hs, 'hs/hgnc.pl').
 bio_db_data_predicate(map_hgnc_hgnc_entz, 2, hs, 'hs/hgnc.pl').
-bio_db_data_predicate('map_hgnc_hgnc_entz-appv', 2, hs, 'hs/hgnc.pl').
-bio_db_data_predicate('map_hgnc_hgnc_entz-ncbi', 2, hs, 'hs/hgnc.pl').
 bio_db_data_predicate(map_hgnc_hgnc_name, 2, hs, 'hs/hgnc.pl').
 bio_db_data_predicate(map_hgnc_hgnc_symb, 2, hs, 'hs/hgnc.pl').
 bio_db_data_predicate(map_hgnc_prev_symb, 2, hs, 'hs/hgnc.pl').
@@ -139,14 +135,17 @@ bio_db_data_predicate(map_unip_unip_hgnc, 2, hs, 'hs/unip.pl').
 bio_db_data_predicate(map_unip_unip_unig, 2, hs, 'hs/unip.pl').
 bio_db_data_predicate(map_gont_mouse_mgim_gont, 3, mouse, 'mouse/gont.pl').
 bio_db_data_predicate(map_mgim_mouse_mgim_chrl, 5, mouse, 'mouse/mgim.pl').
+bio_db_data_predicate(map_mgim_mouse_mgim_entz, 2, mouse, 'mouse/mgim.pl').
 bio_db_data_predicate(map_mgim_mouse_mgim_genb, 2, mouse, 'mouse/mgim.pl').
 bio_db_data_predicate(map_mgim_mouse_mgim_symb, 2, mouse, 'mouse/mgim.pl').
 bio_db_data_predicate(map_mgim_mouse_mgim_unip, 2, mouse, 'mouse/mgim.pl').
 bio_db_data_predicate(map_mgim_mouse_symb_wdra, 2, mouse, 'mouse/mgim.pl').
 bio_db_data_predicate(map_mgim_mouse_syno_mgim, 2, mouse, 'mouse/mgim.pl').
+bio_db_data_predicate(map_ncbi_mouse_syno_symb, 2, mouse, 'mouse/ncbi.pl').
 bio_db_data_predicate(edge_strg_mouse, 3, mouse, 'mouse/strg.pl').
 bio_db_data_predicate(edge_strg_mouse_symb, 3, mouse, 'mouse/strg.pl').
 bio_db_data_predicate(map_unip_mouse_ensp_unip, 2, mouse, 'mouse/unip.pl').
+bio_db_data_predicate(map_unip_mouse_gyno_unip, 2, mouse, 'mouse/unip.pl').
 bio_db_data_predicate(map_unip_mouse_mgim_unip, 2, mouse, 'mouse/unip.pl').
 bio_db_data_predicate(map_unip_mouse_trem_nucs, 2, mouse, 'mouse/unip.pl').
 bio_db_data_predicate(map_unip_mouse_unip_entz, 2, mouse, 'mouse/unip.pl').

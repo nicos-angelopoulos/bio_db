@@ -575,9 +575,9 @@ Version Mj:Mn:Fx, and release date date(Y,M,D).
 ?- bio_db_version( V, D ).
 V = 2:3:0,
 D = date(2019, 2, 11).
-
 ==
 
+@see bio_db_data_predicate/4  (which should be generated for each new version)
 @see doc/Releases.txt for more detail on change log
 
 */
@@ -594,7 +594,7 @@ D = date(2019, 2, 11).
 % bio_db_version( 2:1:0, date(2018,11,27) ).   
 % bio_db_version( 2:2:0, date(2018,12,6) ).   
 % bio_db_version( 2:3:0, date(2019,2,11) ).   
-bio_db_version( 2:3:1, date(2019,2,11) ).   
+bio_db_version( 2:4:0, date(2019,4,1) ).   
 
 %% bio_db_citation( -Atom, -Bibterm ).
 %

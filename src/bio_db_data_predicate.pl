@@ -82,7 +82,7 @@
 %    * map_unip_mouse_unip_unig/2
 %    * map_unip_mouse_gyno_unip/2
 %
-% Generated on 19.04.01 from bio_db with pack.pl version: 2.4.
+% Generated on 19.04.02 from bio_db with pack.pl version: 2.4.
 % 
 %
 bio_db_data_predicate(map_ense_ensg_chrl, 5, hs, 'hs/ense.pl').

@@ -386,6 +386,7 @@ Thanks to Jan Wielemaker for a retractall fix and for code for fast loading of p
 @version  0.9 2017/3/10,   small changes for pack(requires) -> pack(lib) v1.1
 @version  1.0 2017/10/9    to coincide with ppdp paper presentation
 @version  2.1 2018/11/27   introduces cells and mouse data (and fixed dependency of 2.0)
+@version  2.4 2019/4/2     test: bio_db_stats, new mouse db predicates, iface: bio_db_data_predicate/4
 @see doc/Realeases.txt for version details.
 
 */
@@ -573,8 +574,8 @@ Version Mj:Mn:Fx, and release date date(Y,M,D).
 
 ==
 ?- bio_db_version( V, D ).
-V = 2:3:0,
-D = date(2019, 2, 11).
+V = 2:4:0,
+D = date(2019, 4, 2).
 ==
 
 @see bio_db_data_predicate/4  (which should be generated for each new version)
@@ -594,7 +595,7 @@ D = date(2019, 2, 11).
 % bio_db_version( 2:1:0, date(2018,11,27) ).   
 % bio_db_version( 2:2:0, date(2018,12,6) ).   
 % bio_db_version( 2:3:0, date(2019,2,11) ).   
-bio_db_version( 2:4:0, date(2019,4,1) ).   
+bio_db_version( 2:4:0, date(2019,4,2) ).   
 
 %% bio_db_citation( -Atom, -Bibterm ).
 %

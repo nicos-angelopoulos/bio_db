@@ -67,15 +67,12 @@ std_mouse_graphs_strg( Args ) :-
     @ gunzip( -k, Bname ),  % keeps .gz file
     % @ gunzip( '9606.protein.links.v10.txt.gz' ),
     Edge = edge_strg_mouse,
-    Opt = [ csv_read(separator(0' )),predicate_name(Edge),
-            rows_transform(maplist(user:de_mouse)),header_remove(true)
-         ],
     file_name_extension( TxtF, gz, Bname ),
-    Mess1 = 'Converting string file: ~p, to Prolog',
-    % file_name_extension( Stem, txt, TxtF ),
-    % file_name_extension( Stem, pl, PlF ),
     debug( Self, 'Directory: ~p', [Parent] ),
+    Mess1 = 'Converting string file: ~p, to Prolog',
     debug( Self, Mess1, [TxtF] ),
+    Opt = [ csv_read(separator(0' )),predicate_name(Edge),
+            rows_transform(maplist(user:de_mouse)),header_remove(true) ],
     mtx_prolog( TxtF, File, Opt ),
     debug( _, 'Edges output: ~w', File ),
     delete_file( TxtF ),
@@ -148,9 +145,10 @@ std_graphs_string_version_base_name( VersionPrv, Bname, Remote ) :-
     directory_file_path( RemoteDir, Bname, Remote ).
     % 10/9606.protein.links.v10.txt.gz
 
-de_mouse( row(MousEnsP1,MousEnsP2,W), row(EnsP1,EnsP2,W) ) :-
+de_mouse( row(MousEnsP1,MousEnsP2,WAtm), row(EnsP1,EnsP2,W) ) :-
     atom_concat( '10090.', EnsP1, MousEnsP1 ),
     atom_concat( '10090.', EnsP2, MousEnsP2 ),
+    ( number(WAtm) -> W = WAtm; atom_number(WAtm,W) ),
     !.
 de_mouse( Row, _ ) :-
     debug( _, 'Failed to translate row: ~w', Row ),

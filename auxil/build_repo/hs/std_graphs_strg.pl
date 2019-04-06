@@ -83,7 +83,8 @@ std_graphs_strg( Args ) :-
 	% @ gunzip( '9606.protein.links.v10.txt.gz' ),
 	Edge = edge_strg_hs,
 	Opt = [ csv_read(separator(0' )),predicate_name(Edge),
-	        rows_transform(maplist(user:de_hs)),header_remove(true)
+	        rows_transform(maplist(user:de_hs)),header_remove(true),
+            mtx_opt(convert(false))
 		 ],
 	file_name_extension( TxtF, gz, Bname ),
 	Mess1 = 'Converting string file: ~p, to Prolog',
@@ -169,6 +170,7 @@ bio_db_std_string :-
 de_hs( row(HsEnsP1,HsEnsP2,W), row(EnsP1,EnsP2,W) ) :-
 	atom_concat( '9606.', EnsP1, HsEnsP1 ),
 	atom_concat( '9606.', EnsP2, HsEnsP2 ),
+    ( number(WAtm) -> W = WAtm; atom_number(WAtm,W) ),
 	!.
 de_hs( Row, _ ) :-
 	debug( _, 'Failed to translate row: ~w', Row ),
@@ -188,5 +190,3 @@ bio_db_std_string_link_target( HsTarget, File ) :-
 bio_db_std_string_link_target( HsTarget, File ) :-
 	atomic_list_concat( ['ln -s',File,HsTarget], ' ', Shell ),
 	shell( Shell ).
-
-

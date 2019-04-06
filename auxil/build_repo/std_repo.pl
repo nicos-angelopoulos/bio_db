@@ -88,6 +88,17 @@ std_sub( Sub, Opts ) :-
     @ Upsh,
     working_directory( _, Old ).
 
+/** std_repo_create( Work+BioDbDir+BioDb, _Opts ).
+
+Create the tgz
+
+==
+?-      W = '/usr/local/users/nicos/local/git/lib/swipl/pack/Downloads',
+	B = 'bio_db_repo-19.04.06',
+        directory_file_path( W, B, P ),
+	std_repo_create( W+B+P, [] ).
+==
+*/
 std_repo_create( Work+BioDbDir+BioDb, _Opts ) :-
     os_path( Work, 'bio_db_repo-publish', PubDir ),
     os_make_path( PubDir, [debug(true),afresh(true)] ),

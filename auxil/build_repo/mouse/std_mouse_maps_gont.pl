@@ -58,7 +58,8 @@ std_mouse_maps_gont( Args ) :-
                       arg(5,Row,GontPrv), at_con([_,GontAtm],':',GontPrv), atom_number(GontAtm,Gont),
                       arg(7,Row,Evid)
                     ),
-                        Facts ),
+                        FactsAll ),
+    sort( FactsAll, Facts ),
     os_make_path( maps ),
     os_dir_stem_ext( maps, map_gont_mouse_mgim_gont, pl, MapF ),
     portray_clauses( Facts, file(MapF) ),

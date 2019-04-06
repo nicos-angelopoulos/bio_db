@@ -13,6 +13,7 @@ TBD:
       19.04.06    FIXED:    make sure weights in string graphs are arithmetic
                   BUILD:    map_gont_mouse_gont_symb/2
                   IFACE:    map_gont_mouse_gont_symb/2
+                  DATA:     GO terms in human are now without GO:
 
 2.4               @ 19.04.02
       19.04.01    FIXED:   setting up bio_db_repo_version/1,2 correctly from date repo was created

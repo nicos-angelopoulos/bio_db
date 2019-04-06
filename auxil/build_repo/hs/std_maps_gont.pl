@@ -77,8 +77,9 @@ std_maps_gont( Args ) :-
 	debug( std_maps_go, 'loaded data...', [] ),
 	make_directory_path( maps ),
 	findall( row(GoTerm,Symb), ( member(Row,Mtx), 
-	                             arg(5,Row,GoTerm),
-				              arg(11,Row,Bared),
+	                             arg(5,Row,GoTermFull),
+                                 (atom_concat('GO:',GoTerm,GoTermFull) -> true; throw(no_go(GoTermFull))),
+				                 arg(11,Row,Bared),
 						    go_bared_symbol(Bared,Symb)
 	                ),
 				 NewRows ),

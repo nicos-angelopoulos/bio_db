@@ -78,7 +78,11 @@ std_maps_gont( Args ) :-
 	make_directory_path( maps ),
 	findall( row(GoTerm,Symb), ( member(Row,Mtx), 
 	                             arg(5,Row,GoTermFull),
-                                 (atom_concat('GO:',GoTerm,GoTermFull) -> true; throw(no_go(GoTermFull))),
+                                 (atom_concat('GO:',GoTermAtom,GoTermFull) -> 
+                                    atom_codes(GoTermAtom,GoTerm) 
+                                    ; 
+                                    throw(no_go(GoTermFull))
+                                 ),
 				                 arg(11,Row,Bared),
 						    go_bared_symbol(Bared,Symb)
 	                ),

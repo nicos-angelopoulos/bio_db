@@ -59,8 +59,6 @@ std_repo( Args ) :-
     debug( Self, 'Subs in download dir: ~p', [DnSubs] ),
     std_repo_subs( DnSubs, Work+BioDbDir+BioDb, Opts ).
 
-% The logic for half-builds is no so good here,
-% but fine for new builds (1st clause).
 std_repo_subs( [], Dirs, Opts ) :-
     !,
     debug( std_repo, 'Downloads dir has no sub dirs.', [] ),
@@ -68,16 +66,23 @@ std_repo_subs( [], Dirs, Opts ) :-
     findall( StdSub, (os_dir(StdSub),StdSub\==lib), StdSubs ),
     Mess = 'Do you want me to run standards in subs: ',
     ui_yes_no( true, Mess, [StdSubs], y, Reply ),
-    std_repo_subs_reply( Reply, StdSubs, Dirs, Opts ).
-std_repo_subs( [_|_], Dirs, Opts ) :-
-    std_repo_create( Dirs, Opts ).
+    std_repo_subs_reply( Reply, StdSubs, Dirs, true, Opts ).
+std_repo_subs( [H|T], Dirs, Opts ) :-
+    debug( std_repo, 'Some sub-dirs exist: ~w', [[H|T]] ),
+    ensure_loaded( pack('bio_db/src/lib/ui_yes_no') ),
+    findall( StdSub, (os_dir(StdSub),StdSub\==lib), StdSubs ),
+    Mess = 'Do you want me to run standards in subs: ',
+    ui_yes_no( true, Mess, [StdSubs], y, Reply ),
+    Alt = std_repo_create( Dirs, Opts ),
+    std_repo_subs_reply( Reply, StdSubs, Dirs, Alt, Opts ).
 
-std_repo_subs_reply( true, Subs, Dirs, Opts ) :-
+std_repo_subs_reply( true, Subs, Dirs, _Alt, Opts ) :-
     map_list_options( std_sub, Subs, Opts ),
     std_repo_create( Dirs, Opts ).
-std_repo_subs_reply( false, _Subs, _Dirs, _Opts ) :-
+std_repo_subs_reply( false, _Subs, _Dirs, Alt, _Opts ) :-
     % ??? debug-write something here ?
-    true.
+    % true.
+    call( Alt ).
 
 std_sub( Sub, Opts ) :-
     working_directory( Old, Sub ),

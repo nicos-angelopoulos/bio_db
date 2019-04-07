@@ -10,6 +10,7 @@ TBD:
          Rocks: Enumerate connections ? rocks_current(X).
 
 2.5   
+      19.04.07    FIXED:    logic for partial builds
       19.04.06    FIXED:    make sure weights in string graphs are arithmetic
                   BUILD:    map_gont_mouse_gont_symb/2
                   IFACE:    map_gont_mouse_gont_symb/2

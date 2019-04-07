@@ -12,6 +12,7 @@ TBD:
 2.5   
       19.04.07    FIXED:    logic for partial builds
                   IFACE:    go_id/2,3
+                  MOVED:    go_term_symbols/3 to pack(bio_analytics)
       19.04.06    FIXED:    make sure weights in string graphs are arithmetic
                   BUILD:    map_gont_mouse_gont_symb/2
                   IFACE:    map_gont_mouse_gont_symb/2

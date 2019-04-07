@@ -79,7 +79,7 @@ std_maps_gont( Args ) :-
 	findall( row(GoTerm,Symb), ( member(Row,Mtx), 
 	                             arg(5,Row,GoTermFull),
                                  (atom_concat('GO:',GoTermAtom,GoTermFull) -> 
-                                    atom_codes(GoTermAtom,GoTerm) 
+                                    atom_number(GoTermAtom,GoTerm) 
                                     ; 
                                     throw(no_go(GoTermFull))
                                  ),

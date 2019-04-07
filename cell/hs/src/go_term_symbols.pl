@@ -2,10 +2,10 @@
 go_term_symbols_defaults( Defs ) :-
 	Defs = [ descent(true), 
 	         as_child_includes(true),
-		    as_child_consists_of(true),
-		    as_child_regulates(false),
-		    as_child_positively_regulates(false),
-		    as_child_negatively_regulates(false)
+		     as_child_consists_of(true),
+		     as_child_regulates(false),
+		     as_child_positively_regulates(false),
+		     as_child_negatively_regulates(false)
 		  ].
 
 go_term_symbols( GO, Symbs, Args ) :-
@@ -69,12 +69,12 @@ go_symbs_descent_term( true, GoT, Child, Term, Opts ) :-
 	           positively_regulates, negatively_regulates
 			 ],
 	findall( Pname, (
-				   member(Rship,Rships),
-				   atom_concat( as_child_, Rship, Oname ),
-				   Opt =.. [Oname,true],
-				   options(Opt,Opts),
-				   atom_concat(edge_gont_,Rship,Pname)
-	                ), 
+				        member(Rship,Rships),
+				        atom_concat( as_child_, Rship, Oname ),
+				        Opt =.. [Oname,true],
+				        options(Opt,Opts),
+				        atom_concat(edge_gont_,Rship,Pname)
+	                ),
 				      Pnames ),
 	go_symbs_descent_disjunction( Pnames, GoT, Child, Term ).
 

@@ -1,7 +1,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %    Authors:       Nicos Angelopoulos
 %    E-mail:        Nicos Angelopoulos http://stoics.org.uk/~nicos/sware/contact.html
-%    Copyright (C): Nicos Angelopoulos, 2015-2018
+%    Copyright (C): Nicos Angelopoulos, 2015-2019
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 /*
    This program is free software; you can redistribute it and/or
@@ -15,7 +15,7 @@
 :- module( bio_db, [
                 % This interface has now being split according to 
                 % biological organisms, see files in cell/
-                % % 1. housekeeping:
+                % 1. housekeeping:
                 % bio_db/0,
                 bio_db_close/1,
                 bio_db_db_predicate/1,
@@ -30,8 +30,10 @@
                 bio_db_source/2,
                 bio_db_version/2,
                 bio_db_citation/2,
-                bio_db_close_connections/0
-                % see (organims based ell: hs (cell/hs.pl)
+                bio_db_close_connections/0,
+                % 2. gene ontology
+                go_id/2,        % +/-Go, -/+Int
+                go_id/3         % +GoOrInt, -Go, -Int
              ] ).
 
 :- dynamic( bio_db_handle/5 ).
@@ -45,6 +47,7 @@
 
 :- lib(source(bio_db), homonyms(true)).
 :- lib(stoics_lib:date_two_digit_dotted/1).
+:- lib(go_id/2).
 :- lib(end(bio_db)).
 
 % :- initialization( lib(& bio_db, load_main(false)), after_load ).

@@ -38,7 +38,7 @@ bio_db_hs_gont.
 %  Reciprocal of edge_gont_is_a/2.
 % 
 edge_gont_includes( Pa, Ch ) :-
-    bio_db:bio_db_serve( edge_gont_includes(Ch,Pa) ).
+    bio_db:bio_db_serve( edge_gont_includes(Pa,CH) ).
 
 %% edge_gont_is_a( ?Ch, ?Pa ).
 %

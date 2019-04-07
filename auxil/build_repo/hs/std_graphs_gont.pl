@@ -24,7 +24,7 @@ std_graphs_gont( Args ) :-
     options_append( Self, Args, Opts ),
     bio_db_build_aliases( Opts ),
     % File = '/usr/local/users/nicos/work/bio_db/dnloads/go/new/go-basic.obo',
-    write( 'fixme these are now maps....' ), nl,
+    % write( 'fixme these are now maps....' ), nl,
     Url = 'http://purl.obolibrary.org/obo/go/go.obo',
     absolute_file_name( bio_db_build_downloads(gont), DnDir ),
     debug( url_local ),
@@ -154,7 +154,8 @@ go_obo_is_a_term( Codes, GoT, Pfx/Tname, In, Edges, Tdges ) :-
     atom_concat( Pfx, Psfx, Line ),
     !,
     atomic_list_concat( [Par|_], ' ', Psfx ),
-    Edge =.. [Tname,GoT,Par],
+    maplist( go_id_strip, [GoT,Par], [GoTint,Parint] ),
+    Edge =.. [Tname,GoTint,Parint],
     Edges = [Edge|Mdges],
     % Edges = [edge_gont_isa(GoT,Par)|Mdges],
     read_line_to_codes( In, Next ), 
@@ -162,6 +163,10 @@ go_obo_is_a_term( Codes, GoT, Pfx/Tname, In, Edges, Tdges ) :-
 go_obo_is_a_term( _Codes, GoT, Pfx, In, Edges, Tdges ) :-
     read_line_to_codes( In, Next ), 
     go_obo_is_a_term( Next, GoT, Pfx, In, Edges, Tdges ).
+
+go_id_strip( GoT, InT ) :-
+    atomic_list_concat( ['GO',IntAtm], ':', GoT ),
+    atom_number( IntAtm, InT ).
 
 go_obo_skip_to_first_term( `[Term]`, _In ) :-
     !.

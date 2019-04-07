@@ -1,7 +1,6 @@
-:- module( bio_db_hs, [bio_db_hs/0,
-                % derived preds:
-                symbols_string_graph/3,
-                hgnc_symbol/1
+:- module( bio_db_hs, [     bio_db_hs/0,
+                            symbols_string_graph/3,
+                            hgnc_symbol/1
                         ] ).  
 
 :- use_module(library(lib)).

@@ -26,6 +26,7 @@
                 bio_db_interface/1,
                 bio_db_interface/2,
                 bio_db_install/2, bio_db_install/3,
+                bio_db_organism/1, bio_db_organism/2,
                 bio_db_paths/0,
                 bio_db_source/2,
                 bio_db_version/2,
@@ -52,18 +53,49 @@
 :- ensure_loaded('../src/bio_db_data_predicate').
 
 :- lib(source(bio_db), homonyms(true)).
+
 :- lib(stoics_lib:date_two_digit_dotted/1).
 :- lib(go_id/2).
 :- lib(is_symbol/2).
 :- lib(entz_symb/3).
-:- lib(end(bio_db)).
 :- lib(edge_strg_symb/4).
+
+:- lib(end(bio_db)).
 
 % :- initialization( lib(& bio_db, load_main(false)), after_load ).
 :- initialization( lib(@(bio_db)), after_load ).
 
+/** bio_db_organism( -Org ).
+
+Organisms supported by bio_db.
+
+hs will always be returned first, and is considered the default organism
+when none is given explicitly (eg via a predicate's Options).
+
+==
+?- bio_db_organism( Org ).
+==
+
+@author nicos angelopoulos
+@version  0:2 2019/4/8
+
+*/
+
 bio_db_organism(hs). % defaulty
 bio_db_organism(mouse).
+
+/** bio_db_organism( ?Alias, -Org ).
+
+Alias is a known and supported alternative name for the canonical Org name for an 
+organism.
+
+==
+==
+
+@author nicos angelopoulos
+@version  0:1 2019/4/8
+*/
+bio_db_organism( human, hs ).
 
 % this search path can be added to requires
 % bio_db_map/2,

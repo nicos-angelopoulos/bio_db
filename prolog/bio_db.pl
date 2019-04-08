@@ -31,7 +31,11 @@
                 bio_db_version/2,
                 bio_db_citation/2,
                 bio_db_close_connections/0,
-                % 2. gene ontology
+                % 2 derived
+                % A.symbols
+                is_symbol/2,
+                entz_symb/3,
+                % B. gene ontology
                 go_id/2,        % +/-Go, -/+Int
                 go_id/3         % +GoOrInt, -Go, -Int
              ] ).
@@ -48,6 +52,8 @@
 :- lib(source(bio_db), homonyms(true)).
 :- lib(stoics_lib:date_two_digit_dotted/1).
 :- lib(go_id/2).
+:- lib(is_symbol/2).
+:- lib(entz_symb/3).
 :- lib(end(bio_db)).
 
 % :- initialization( lib(& bio_db, load_main(false)), after_load ).

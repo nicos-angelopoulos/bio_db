@@ -1,5 +1,5 @@
 :- module( bio_db_hs, [     bio_db_hs/0,
-                            symbols_string_graph/3,
+                            % symbols_string_graph/3,
                             hgnc_symbol/1
                         ] ).  
 
@@ -15,7 +15,7 @@
 
 %   4. derived
 :- lib( source(bio_db(hs)), homonyms(true) ).
-:- lib(symbols_string_graph/3).
+% :- lib(symbols_string_graph/3).
 :- lib( end(bio_db(hs)) ).
 
 /**  bio_db_hs.

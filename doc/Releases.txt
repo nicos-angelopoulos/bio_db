@@ -14,6 +14,7 @@ TBD:
                   IFACE:    go_id/2,3
                   MOVED:    go_term_symbols/3 to pack(bio_analytics)
                   FIXED:    argument switch copy paste in edge_gont_includes/2
+                  IFACE:    is_symbol/2 + entz_symb/3
       19.04.06    FIXED:    make sure weights in string graphs are arithmetic
                   BUILD:    map_gont_mouse_gont_symb/2
                   IFACE:    map_gont_mouse_gont_symb/2

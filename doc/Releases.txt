@@ -10,6 +10,7 @@ TBD:
          Rocks: Enumerate connections ? rocks_current(X).
 
 2.5   
+      19.04.08    IFACE:    edge_strg_symb/4
       19.04.07    FIXED:    logic for partial builds
                   IFACE:    go_id/2,3
                   MOVED:    go_term_symbols/3 to pack(bio_analytics)

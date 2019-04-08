@@ -36,8 +36,10 @@
                 is_symbol/2,
                 entz_symb/3,
                 % B. gene ontology
-                go_id/2,        % +/-Go, -/+Int
-                go_id/3         % +GoOrInt, -Go, -Int
+                go_id/2,          % +/-Go, -/+Int
+                go_id/3,          % +GoOrInt, -Go, -Int
+                % C. string edges
+                edge_strg_symb/4  % ?Org, ?Symb1, ?Symb2, -W
              ] ).
 
 :- dynamic( bio_db_handle/5 ).
@@ -55,6 +57,7 @@
 :- lib(is_symbol/2).
 :- lib(entz_symb/3).
 :- lib(end(bio_db)).
+:- lib(edge_strg_symb/4).
 
 % :- initialization( lib(& bio_db, load_main(false)), after_load ).
 :- initialization( lib(@(bio_db)), after_load ).

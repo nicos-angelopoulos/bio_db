@@ -90,6 +90,8 @@ Alias is a known and supported alternative name for the canonical Org name for a
 organism.
 
 ==
+?- bio_db_organism( human, hs ).
+true.
 ==
 
 @author nicos angelopoulos

@@ -1,6 +1,6 @@
 name( bio_db ).
 title( 'Access, use and manage big, biological datasets.' ).
-version( '2.4' ).
+version( '2.5' ).
 author( 'Nicos Angelopoulos', 'http://stoics.org.uk/~nicos' ).
 packager( 'Nicos Angelopoulos', 'http://stoics.org.uk/~nicos' ).
 maintainer( 'Nicos Angelopoulos', 'http://stoics.org.uk/~nicos' ).

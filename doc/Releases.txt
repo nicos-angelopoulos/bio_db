@@ -9,7 +9,7 @@ TBD:
          Would be nice to have the "correct" types when opening an existing database with no options.
          Rocks: Enumerate connections ? rocks_current(X).
 
-2.5   
+2.5          @    19.04.22
       19.04.08    IFACE:    edge_strg_symb/4
                   IFACE:    bio_db_organism/1,2
       19.04.07    FIXED:    logic for partial builds

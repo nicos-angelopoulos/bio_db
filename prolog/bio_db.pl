@@ -27,6 +27,7 @@
                 bio_db_interface/2,
                 bio_db_install/2, bio_db_install/3,
                 bio_db_organism/1, bio_db_organism/2,
+                bio_db_organism_alias/2,
                 bio_db_paths/0,
                 bio_db_source/2,
                 bio_db_version/2,
@@ -84,20 +85,58 @@ when none is given explicitly (eg via a predicate's Options).
 bio_db_organism(hs). % defaulty
 bio_db_organism(mouse).
 
-/** bio_db_organism( ?Alias, -Org ).
+/* bio_db_organism( ?Known, ?Canon ).
+
+Canon is the canonical representation of Known which is either 
+a known bio_db organism/1 or  an alias (bio_db_organism/2) to one.
+
+Please note this used to have the semantics of bio_db_organism_alias/2
+(until 19.05.02).
+
+==
+?- bio_db_organism( Known, Org ).
+Known = human,
+Org = hs ;
+Known = Org, Org = hs ;
+Known = Org, Org = mouse.
+
+?- bio_db_organism( human, Org ).
+Org = hs.
+
+?- bio_db_organism( KnownAs, hs ).
+KnownAs = human ;
+KnownAs = hs ;
+false.
+==
+
+@author nicos angelopoulos
+@version  0.2 2019/5/2
+
+*/
+bio_db_organism( Alias, Org ) :-
+    ( ground(Alias) -> Backtrack = false; Backtrack = true ),
+    bio_db_organism_alias( Alias, Org ),
+    ( Backtrack == false -> !; true ).
+bio_db_organism( Org, Canon ) :-
+    bio_db_organism( Org ),
+    Canon = Org.
+
+/** bio_db_organism_alias( ?Alias, -Org ).
 
 Alias is a known and supported alternative name for the canonical Org name for an 
 organism.
 
 ==
-?- bio_db_organism( human, hs ).
+?- bio_db_organism_alias( human, hs ).
 true.
 ==
 
+Note this used to be bio_db_organism/2 which has now (19.05.02) changed.
+
 @author nicos angelopoulos
-@version  0:1 2019/4/8
+@version  0:1 2019/5/2
 */
-bio_db_organism( human, hs ).
+bio_db_organism_alias( human, hs ).
 
 % this search path can be added to requires
 % bio_db_map/2,

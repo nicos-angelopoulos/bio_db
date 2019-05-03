@@ -193,7 +193,8 @@ std_repo_to_web_page( TgzF, BioDbDir, Date ) :-
     @ cp( -r, RepoDataDir, WebRepoDataD ),
     working_directory( _WorkA, WebD ),
     % @ ln( -s, RepoDir, data ),
-    @ ln( -s, WebRepoDataD, data ),
+    debug( std_repo, 'When publishing link:~p to data/ in the same directory', [RepoDir] ),
+    % @ ln( -s, WebRepoDataD, data ),
     @ mkvis( WebRepoDataD ),
     atomic_list_concat( [stoicos,Hname], '.', Unison ),
     @unison( Unison ).

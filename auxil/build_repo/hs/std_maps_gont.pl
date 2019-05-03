@@ -111,10 +111,13 @@ std_maps_gont( Args ) :-
 	@ rm( -rf, 'go_daily-termdb-tables' ),
 	file_name_extension( TermTar, gz, TermGz ),
 	@ tar( xf, TermTar ),
-	csv_read_file( 'go_daily-termdb-tables/term.txt', TermRows, [separator(0'\t),convert(false)] ),
+	csv_read_file( 'go_daily-termdb-tables/term.txt', TermRows, [separator(0'\t),convert(true)] ),
 	% consult( go_assoc_db_term:'go_assoc_db_term' ), 
 	% findall( row(GoT,GoN), go_assoc_db_term:term(_,GoN,_,GoT,_,_,_), GTNRows ),
-	findall( row(GoT,GoN), (member(row(_,GoN,_,GoTFull,_,_,_),TermRows),go_term(GoTFull,GoT)), GTNRows ),
+    % 19.05.03, this changed, or did i change it ?
+	% findall( row(GoT,GoN), (member(row(_,GoN,_,GoTFull,_,_,_),TermRows),go_term(GoTFull,GoT)), GTNRows ),
+    % fixme: also add section, 3rd argument
+	findall( row(GoT,GoN), (member(row(GoT,GoN,_,_,_,_,_),TermRows)), GTNRows ),
 	GTopts = predicate_name(map_gont_gont_gonm),
 	sort( GTNRows, OrdGTNRows ),
 	mtx_prolog( OrdGTNRows, 'maps/map_gont_gont_gonm.pl', GTopts ),

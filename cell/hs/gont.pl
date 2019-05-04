@@ -10,9 +10,9 @@
                 edge_gont_consists_of/2,              % reciprocal of part_of/2
                 edge_gont_part_of/2,
                 % B) maps
-                map_gont_gont_symb/2,
+                map_gont_gont_symb/3,
                 map_gont_gont_gonm/2,
-                map_gont_symb_gont/2
+                map_gont_symb_gont/3
                 ] ).
 
 :- use_module(library(lib)).
@@ -97,7 +97,7 @@ false.
 edge_gont_consists_of( Whole, Part ) :-
     bio_db:bio_db_serve( edge_gont_consists_of(Whole,Part) ).
 
-/**  map_gont_gont_symb( ?Gont, ?Symb).
+/**  map_gont_gont_symb( ?Gont, -Evid,  -Symb).
 
 Map predicate from GO terms to approved HGNC Symbol.
 
@@ -108,8 +108,8 @@ Symb = 'AAAS' ;
 Symb = 'AARSD1'...
 ==
 */
-map_gont_gont_symb( X, Y ) :-
-    bio_db:bio_db_serve( map_gont_gont_symb(X,Y) ).
+map_gont_gont_symb( X, Ev, Y ) :-
+    bio_db:bio_db_serve( map_gont_gont_symb(X,Ev,Y) ).
 
 /**  map_gont_gont_gonm( ?Gont, ?Gonm ).
 
@@ -123,7 +123,7 @@ A = 'protein serine/threonine kinase activity'.
 map_gont_gont_gonm( X, Y ) :-
     bio_db:bio_db_serve( map_gont_gont_gonm(X,Y) ).
 
-/**  map_gont_symb_gont( ?Symb, ?Gont ).
+/**  map_gont_symb_gont( +Symb, -Ev, -Gont ).
 
 Map predicate from HGNC symbols to GO terms.
 
@@ -140,5 +140,5 @@ Symb = 'GO:0016021' ;
 Symb = 'GO:0018108'.
 ==
 */
-map_gont_symb_gont( X, Y ) :-
-    bio_db:bio_db_serve( map_gont_symb_gont(X,Y) ).
+map_gont_symb_gont( X, Ev, Y ) :-
+    bio_db:bio_db_serve( map_gont_symb_gont(X,Ev,Y) ).

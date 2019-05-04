@@ -76,11 +76,12 @@ std_maps_gont( Args ) :-
 	clense_goa_hs( MtxPrv, Mtx ),
 	debug( std_maps_go, 'loaded data...', [] ),
 	make_directory_path( maps ),
-	findall( row(GoTerm,Symb), ( member(Row,Mtx), 
+	findall( row(GoTerm,Evid,Symb), ( member(Row,Mtx), 
 	                             arg(5,Row,GoTermFull),
                                  go_term( GoTermFull, GoTerm ),
 				                 arg(11,Row,Bared),
-						    go_bared_symbol(Bared,Symb)
+						         go_bared_symbol(Bared,Symb),
+                                 arg(7,Row,Evid)
 	                ),
 				 NewRows ),
 	% fixme: parse Go through grammar
@@ -93,13 +94,13 @@ std_maps_gont( Args ) :-
 	% bio_db_dnt_times( 'gene_association.goa_human.gz', UrlDntSt, _DntEnd ),
 	bio_db_dnt_times( GoaHsGz , UrlDntSt, _DntEnd ),
 	AddOpts = [source(Url),datetime(UrlDntSt)],
-	bio_db_add_infos_to( [header(row('GO Term','HGNC Symbol'))|AddOpts], 'maps/map_gont_gont_symb.pl' ),
+	bio_db_add_infos_to( [header(row('GO Term','Evidence','HGNC Symbol'))|AddOpts], 'maps/map_gont_gont_symb.pl' ),
 	
-	findall( row(Symb,Gont), member(row(Gont,Symb),OrdRows), SGRows ),
+	findall( row(Symb,Evid,Gont), member(row(Gont,Evid,Symb),OrdRows), SGRows ),
 	sort( SGRows, OrdSGRows ),
 	SGopts = [predicate_name(map_gont_symb_gont)],
 	mtx_prolog( OrdSGRows, 'maps/map_gont_symb_gont.pl', SGopts ),
-	bio_db_add_infos_to( [header(row('HGNC Symbol','GO Term'))|AddOpts], 'maps/map_gont_symb_gont.pl' ),
+	bio_db_add_infos_to( [header(row('HGNC Symbol','Evidence','GO Term'))|AddOpts], 'maps/map_gont_symb_gont.pl' ),
 	
 	debug( std_maps_go, 'Building term to name map', true ),
 	gont_term_db_url( TermUrl ),
@@ -107,18 +108,17 @@ std_maps_gont( Args ) :-
 	url_file_local_date_mirror( TermUrl, DnDir, true ),
 
 	TermGz = 'go_daily-termdb-tables.tar.gz',
-	@ gunzip( --force, -k, TermGz ),
-	@ rm( -rf, 'go_daily-termdb-tables' ),
+	@ gunzip(--force, -k, TermGz),
+	@ rm(-rf, 'go_daily-termdb-tables'),
 	file_name_extension( TermTar, gz, TermGz ),
-	@ tar( xf, TermTar ),
+	@ tar(xf, TermTar),
 	csv_read_file( 'go_daily-termdb-tables/term.txt', TermRows, [separator(0'\t),convert(true)] ),
 	% consult( go_assoc_db_term:'go_assoc_db_term' ), 
 	% findall( row(GoT,GoN), go_assoc_db_term:term(_,GoN,_,GoT,_,_,_), GTNRows ),
-    % 19.05.03, this changed, or did i change it ?
+    % 19.05.04 term.txt 
 	% findall( row(GoT,GoN), (member(row(_,GoN,_,GoTFull,_,_,_),TermRows),go_term(GoTFull,GoT)), GTNRows ),
-    % fixme: also add section, 3rd argument
 	findall( row(GoT,GoN), (member(row(GoT,GoN,_,_,_,_,_),TermRows)), GTNRows ),
-	GTopts = predicate_name(map_gont_gont_gonm),
+	GTopts = [predicate_name(map_gont_gont_gonm)],
 	sort( GTNRows, OrdGTNRows ),
 	mtx_prolog( OrdGTNRows, 'maps/map_gont_gont_gonm.pl', GTopts ),
 	debug( std_maps_go, 'Fixme: add GOterm -> go Section', true ),

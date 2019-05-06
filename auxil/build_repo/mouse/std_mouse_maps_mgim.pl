@@ -97,7 +97,8 @@ std_mouse_maps_mgim( Args ) :-
     % entezid ( no header !)
     mgim_get_report( entrez, Self, EntzUrl, DnDir, _EntzRelF, EntzMtx, EntzDnt ),
     EntzHdr = hdr('MGI Marker Accession ID','Entrez ID'),
-    EntzOpts = [cnm_transform(mgi_entrez_idx_header),to_value_1(pfx_by_num(true,'MGI:')),prefix(mgim_mouse),to_value_2(atom_number),
+    % EntzOpts = [cnm_transform(mgi_entrez_idx_header),to_value_1(pfx_by_num(true,'MGI:')),prefix(mgim_mouse),to_value_2(atom_number),
+    EntzOpts = [cnm_transform(mgi_entrez_idx_header),to_value_1(pfx_by_num(true,'MGI:')),prefix(mgim_mouse),to_value_2(=),
             source(EntzUrl), datetime(EntzDnt), has_header(false),header(EntzHdr)
            ],
     csv_ids_map( _, 1, 9, EntzMtx, MapEntzF, EntzOpts ),

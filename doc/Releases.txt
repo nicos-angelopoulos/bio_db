@@ -11,6 +11,7 @@ TBD:
 
 2.6   
       19.05.06    FIXED:    correct go id and remove all traces of go_term_symbols
+                  CHANGED:  entrez ids are now read as integers ....
       19.05.04    DATA:     added evidence to map_gont_symb_gont/2 and gont_symb/2
                   IFACE:    map_gont_gont_symb/2 -> 3, and symb_gont/2->3
       19.05.03    DATA:     map_gont_gont_gomn/2, both new Gont id (as integer) and changes in go source files

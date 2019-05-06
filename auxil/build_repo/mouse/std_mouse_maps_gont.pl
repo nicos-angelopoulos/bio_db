@@ -68,10 +68,10 @@ std_mouse_maps_gont( Args ) :-
 	InfoOpts = [header(row('MGI Marker Accession ID','Evidence','GO_Term')),source(Url),datetime(DnDt)],
 	bio_db_add_infos_to( InfoOpts, 'maps/map_gont_mouse_mgim_gont.pl' ),
 
-    ensure_loaded( mgim:bio_db_build_downloads('mgim/maps/map_mgim_mouse_mgim_symb') ),
+    ensure_loaded( mgim_tmp:bio_db_build_downloads('mgim/maps/map_mgim_mouse_mgim_symb') ),
     
     findall( row(Gont1,Symb1), ( member(map_gont_mouse_mgim_gont(Mgim1,_,Gont1),Facts),
-                                 map_mgim_mouse_mgim_symb(Mgim1,Symb1)
+                                 mgim_tmp:map_mgim_mouse_mgim_symb(Mgim1,Symb1)
                                ), GSRowsAll ),
     sort( GSRowsAll, GSRows ),
 

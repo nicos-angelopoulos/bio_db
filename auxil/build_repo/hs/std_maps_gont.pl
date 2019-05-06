@@ -78,7 +78,8 @@ std_maps_gont( Args ) :-
 	make_directory_path( maps ),
 	findall( row(GoTerm,Evid,Symb), ( member(Row,Mtx), 
 	                             arg(5,Row,GoTermFull),
-                                 go_term( GoTermFull, GoTerm ),
+                                 % go_term( GoTermFull, GoTerm ),
+                                 go_id( GoTermFull, GoTerm ),
 				                 arg(11,Row,Bared),
 						         go_bared_symbol(Bared,Symb),
                                  arg(7,Row,Evid)
@@ -115,9 +116,10 @@ std_maps_gont( Args ) :-
 	csv_read_file( 'go_daily-termdb-tables/term.txt', TermRows, [separator(0'\t),convert(true)] ),
 	% consult( go_assoc_db_term:'go_assoc_db_term' ), 
 	% findall( row(GoT,GoN), go_assoc_db_term:term(_,GoN,_,GoT,_,_,_), GTNRows ),
+	% findall( row(GoT,GoN), (member(row(_,GoN,SECTION,GoTFull,_,_,_),TermRows),go_term(GoTFull,GoT)), GTNRows ),
+	findall( row(GoT,GoN), (member(row(_,GoN,_,GoTFull,_,_,_),TermRows),go_id(GoTFull,GoT)), GTNRows ),
     % 19.05.04 term.txt 
-	% findall( row(GoT,GoN), (member(row(_,GoN,_,GoTFull,_,_,_),TermRows),go_term(GoTFull,GoT)), GTNRows ),
-	findall( row(GoT,GoN), (member(row(GoT,GoN,_,_,_,_,_),TermRows)), GTNRows ),
+	% findall( row(GoT,GoN), (member(row(GoT,GoN,_,_,_,_,_),TermRows)), GTNRows ),
 	GTopts = [predicate_name(map_gont_gont_gonm)],
 	sort( GTNRows, OrdGTNRows ),
 	mtx_prolog( OrdGTNRows, 'maps/map_gont_gont_gonm.pl', GTopts ),

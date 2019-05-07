@@ -70,7 +70,7 @@ std_mouse_maps_gont( Args ) :-
 
     ensure_loaded( mgim_tmp:bio_db_build_downloads('mgim/maps/map_mgim_mouse_mgim_symb') ),
     
-    findall( row(Gont1,Symb1), ( member(map_gont_mouse_mgim_gont(Mgim1,_,Gont1),Facts),
+    findall( row(Gont1,Evid,Symb1), ( member(map_gont_mouse_mgim_gont(Mgim1,Evid,Gont1),Facts),
                                  mgim_tmp:map_mgim_mouse_mgim_symb(Mgim1,Symb1)
                                ), GSRowsAll ),
     sort( GSRowsAll, GSRows ),
@@ -78,7 +78,7 @@ std_mouse_maps_gont( Args ) :-
     GSopts = [predicate_name(map_gont_mouse_gont_symb)],
 	mtx_prolog( GSRows, 'maps/map_gont_mouse_gont_symb.pl', GSopts ),
     GsF = 'maps/map_gont_mouse_gont_symb.pl',
-    GShdr = header(row('GO_Term','MGI Marker Accession ID')),
+    GShdr = header(row('GO_Term','Evidence','MGI Marker Accession ID')),
 	bio_db_add_infos_to( [GShdr|GSopts], GsF ),
     % maplist( link_to_map_sub(gont), OutFs ),  % does this work ?
     link_to_bio_sub( mouse, gont, maps, GsF  ),

@@ -2,7 +2,7 @@
                 bio_db_mouse_gont/0,
                 %       + Gene ontology
                 map_gont_mouse_mgim_gont/3,
-                map_gont_mouse_gont_symb/2
+                map_gont_mouse_gont_symb/3
                 ] ).
 
 :- use_module( library(lib) ).

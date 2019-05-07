@@ -186,7 +186,7 @@ std_repo_to_web_page( TgzF, BioDbDir, Date ) :-
     @ chmod( 'go+r', WebTgzF ),
     os_path( WebD, data, WebDataD ),
     @ rm( -f, WebDataD ),
-    % os_path( RepoDir, data, RepoDataDir ),
+    os_path( RepoDir, data, RepoDataDir ),
     os_path( BioDbDir, data, RepoDataDir ),
     atomic_list_concat( [data,Date], '-', DataDatedD ),
     os_path( WebD, DataDatedD, WebRepoDataD ),

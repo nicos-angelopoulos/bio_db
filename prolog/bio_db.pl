@@ -473,7 +473,8 @@ Thanks to Jan Wielemaker for a retractall fix and for code for fast loading of p
 @version  2.1 2018/11/27   introduces cells and mouse data (and fixed dependency of 2.0)
 @version  2.4 2019/4/2     test: bio_db_stats, new mouse db predicates, iface: bio_db_data_predicate/4
 @version  2.5 2019/4/22    edge_strg_symb/4; bio_db_organism/1,2; go_id/2,3
-@see doc/Realeases.txt for version details.
+@version  2.6 2019/5/8     changed to organism alias interface; evidence in gont maps
+@see doc/Realeases.txt     for version details.
 
 */
 
@@ -660,29 +661,16 @@ Version Mj:Mn:Fx, and release date date(Y,M,D).
 
 ==
 ?- bio_db_version( V, D ).
-V = 2:5:0,
-D = date(2019, 4, 22).
+V = 2:6:0,
+D = date(2019, 5, 8).
 ==
 
 @see bio_db_data_predicate/4  (which should be generated for each new version)
 @see doc/Releases.txt for more detail on change log
 
 */
-% bio_db_version( 0:3:1, date(2015,7,25) ).
-% bio_db_version( 0:4:0, date(2015,9,16) ).
-% bio_db_version( 0:5:0, date(2016,9,10) ).
-% bio_db_version( 0:6:0, date(2016,10,13) ).
-% bio_db_version( 0:7:0, date(2016,11,21) ).   % experimenting with github distros
-% bio_db_version( 0:8:0, date(2016,11,22) ).
-% bio_db_version( 0:9:0, date(2017,03,10) ).   % beta for 1:0
-% bio_db_version( 1:0:0, date(2017,10,08) ).   
-% bio_db_version( 1:1:0, date(2017,10,13) ).   
-% bio_db_version( 2:0:0, date(2018,11,23) ).   
-% bio_db_version( 2:1:0, date(2018,11,27) ).   
-% bio_db_version( 2:2:0, date(2018,12,6) ).   
-% bio_db_version( 2:3:0, date(2019,2,11) ).   
-% bio_db_version( 2:4:0, date(2019,4,2) ).   
-bio_db_version( 2:5:0, date(2019,5,22) ).   
+% bio_db_version( 2:5:0, date(2019,5,22) ).   
+bio_db_version( 2:6:0, date(2019,5,h) ).   
 
 %% bio_db_citation( -Atom, -Bibterm ).
 %

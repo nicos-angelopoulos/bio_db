@@ -36,7 +36,7 @@ MGI marker to gene ontology term and evidence.
 map_gont_mouse_mgim_gont( Mgi, Evid, Gont ) :-
     bio_db:bio_db_serve( map_gont_mouse_mgim_gont(Mgi,Evid,Gont) ).
 
-/** map_gont_mouse_gont_symb( +GoTerm, -Symb ).
+/** map_gont_mouse_gont_symb( +GoTerm, -Evidence, -Symb ).
 
 GO term to mouse Symbol.
 
@@ -59,7 +59,8 @@ Go = 46872.
 ==
 
 @version 0:1 2019/4/6
+@version 0:2 2019/5/8, added evidence
 
 */
-map_gont_mouse_gont_symb( Gont, Symb ) :-
-    bio_db:bio_db_serve( map_gont_mouse_gont_symb(Gont,Symb) ).
+map_gont_mouse_gont_symb( Gont, Evid, Symb ) :-
+    bio_db:bio_db_serve( map_gont_mouse_gont_symb(Gont,Evid,Symb) ).

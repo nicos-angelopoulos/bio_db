@@ -142,7 +142,7 @@ TBD:
                +  pl-> berkeley and pl-> sqlite are now user.
                +  pl-> sqlite are done in batches of 500, so there is no need for sqlite exec now
 
-0.4  16th Sept 2015
+0.4                @ 15.09.16
       15.09.13 -  Added Berkeley DB interface (via SWI's own library(bdb)).
       15.07.25 -  Added edges for is-a (and reverses inc(cludes)) from GO.
       15.07.25 -  Added bio_db_version.

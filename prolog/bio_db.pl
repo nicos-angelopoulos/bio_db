@@ -475,6 +475,7 @@ Thanks to Jan Wielemaker for a retractall fix and for code for fast loading of p
 @version  2.5 2019/4/22    edge_strg_symb/4; bio_db_organism/1,2; go_id/2,3
 @version  2.6 2019/5/8     changed to organism alias interface; evidence in gont maps
 @version  2.7 2019/5/12    edge_strg_symb/4 -> org_edge_strg_symb/4
+@version  3.0 2019/5/15    paper submission
 @see doc/Realeases.txt     for version details.
 
 */
@@ -662,15 +663,15 @@ Version Mj:Mn:Fx, and release date date(Y,M,D).
 
 ==
 ?- bio_db_version( V, D ).
-V = 2:7:0,
-D = date(2019, 5, 12).
+V = 3:0:0,
+D = date(2019, 5, 15).
 ==
 
 @see bio_db_data_predicate/4  (which should be generated for each new version)
 @see doc/Releases.txt for more detail on change log
 
 */
-bio_db_version( 2:7:0, date(2019,5,12) ).   
+bio_db_version( 3:0:0, date(2019,5,15) ).   
 
 %% bio_db_citation( -Atom, -Bibterm ).
 %

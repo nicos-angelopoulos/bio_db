@@ -49,7 +49,7 @@ std_repo( Args ) :-
     options_append( std_repo, Args, Opts ),
     bio_db_build_aliases( Opts ),
     absolute_file_name( bio_db_build_downloads('.'), DnDir ),
-    debug( Self, start, true ),
+    debug_call( Self, start, true ),
     os_path( BioDb, dnloads, DnDir ),
     write( bio_db(BioDb) ), nl,
     os_path( Work, BioDbDir, BioDb ),
@@ -64,14 +64,14 @@ std_repo_subs( [], Dirs, Opts ) :-
     debug( std_repo, 'Downloads dir has no sub dirs.', [] ),
     ensure_loaded( pack('bio_db/src/lib/ui_yes_no') ),
     findall( StdSub, (os_dir(StdSub),StdSub\==lib), StdSubs ),
-    Mess = 'Do you want me to run standards in subs: ',
+    Mess = 'Do you want me to run standards in subs: ~w',
     ui_yes_no( true, Mess, [StdSubs], y, Reply ),
     std_repo_subs_reply( Reply, StdSubs, Dirs, true, Opts ).
 std_repo_subs( [H|T], Dirs, Opts ) :-
     debug( std_repo, 'Some sub-dirs exist: ~w', [[H|T]] ),
     ensure_loaded( pack('bio_db/src/lib/ui_yes_no') ),
     findall( StdSub, (os_dir(StdSub),StdSub\==lib), StdSubs ),
-    Mess = 'Do you want me to run standards in subs: ',
+    Mess = 'Do you want me to run standards in subs: ~w',
     ui_yes_no( true, Mess, [StdSubs], y, Reply ),
     Alt = std_repo_create( Dirs, Opts ),
     std_repo_subs_reply( Reply, StdSubs, Dirs, Alt, Opts ).
@@ -200,7 +200,7 @@ std_repo_to_web_page( TgzF, BioDbDir, Date ) :-
     atomic_list_concat( [stoicos,Hname], '.', Unison ),
     @unison( Unison ).
 std_repo_to_web_page( Tgz, _BioDbDir, _Date ) :-
-    debug( std_repo, 'Skipping this bit as it is only relevant for Nicos\' own set-up.', true ),
+    debug_call( std_repo, 'Skipping this bit as it is only relevant for Nicos\' own set-up.', true ),
     debug( std_repo, 'You can publish the pack from tgz file: ~p', [Tgz] ).
 
 /** fixme: delete, no longer used....*/

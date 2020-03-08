@@ -29,7 +29,7 @@ std_graphs_gont( Args ) :-
     absolute_file_name( bio_db_build_downloads(gont), DnDir ),
     debug( url_local ),
     url_file_local_date_mirror( Url, DnDir, true ),
-    debug( Self, 'Dnload done: ~w', true ),
+    debug_call( Self, 'Dnload done: ~w', true ),
     working_directory( Old, DnDir ), 
     File = 'go.obo',
     Pfx = 'is_a: '/edge_gont_is_a,

@@ -10,7 +10,7 @@
 :- lib(debug_call).
 :- lib(stoics_lib:at_con/3).
 :- lib(stoics_lib:map_succ_list/3).
-:- lib(stoics_lib:portray_clauses/3).
+:- lib(stoics_lib:portray_clauses/2).
 :- lib(stoics_lib:io_lines/2).
 
 % also sets lib alias to that dir
@@ -56,7 +56,7 @@ std_maps_pros( Args ) :-
     unip:ensure_loaded( bio_db_build_downloads('unip/maps/map_unip_sprt_seqn') ),
     unip:ensure_loaded( bio_db_build_downloads('unip/maps/map_unip_unip_hgnc') ),
     hgnc:ensure_loaded( bio_db_build_downloads('hgnc/maps/map_hgnc_hgnc_symb') ),
-	debug( std_maps_pros, 'Starting Prosite maps', true ),
+	debug_call( std_maps_pros, 'Starting Prosite maps', true ),
 	pros_dnload_dir( Old, DnDir, Opts ),
 	pros_alignments_url( Url ),
 	UrlOpts = [debug(url_local),interface(wget),file(ProsF),ext('tar.gz')],
@@ -66,7 +66,7 @@ std_maps_pros( Args ) :-
 	( os_dir(prosite_alignments) ->
         @rm( -rf, '/tmp/prosite_alignments' ),
 		@mv( prosite_alignments, /tmp ),
-		debug( Self, 'Moved existing dir prosite alignments to /tmp/', true )
+		debug_call( Self, 'Moved existing dir prosite alignments to /tmp/', true )
 		;
 		true
 	),
@@ -97,7 +97,7 @@ std_maps_pros( Args ) :-
 
     maplist( link_to_map_sub(pros), [RelPrsnF,RelSprtF] ),
 	working_directory( _, Old ),
-	debug( std_maps_pros, 'Done Prosite maps', true ).
+	debug_call( std_maps_pros, 'Done Prosite maps', true ).
 	
 msa_file_pros_prsn( File, map_pros_pros_prsn(Base,Prsn) ) :-
 	% debug( std_maps_pros, 'prositing prosite names: ~p', File ),

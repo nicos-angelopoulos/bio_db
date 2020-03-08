@@ -77,8 +77,9 @@ std_maps_unip( Args ) :-
 
 	Ifc = interface(prolog),
 	map_uniprot( 'GeneID', Csv, [EtzF], Ifc ),
-	map_uniprot( 'UniGene', Csv, [UniGF], Ifc ),
-	Files = [HgncF,FromHgncF,EtzF,UniGF,EnspF],
+	% map_uniprot( 'UniGene', Csv, [UniGF], Ifc ),
+	% Files = [HgncF,FromHgncF,EtzF,UniGF,EnspF],
+	Files = [HgncF,FromHgncF,EtzF,EnspF],
 	% working_directory( _, maps ),
  	maplist( link_to_map_sub(unip), Files ),
 
@@ -87,7 +88,7 @@ std_maps_unip( Args ) :-
 	bio_db_add_infos_to( [header(row('Ensembl Protein','Uni Protein'))|SwOpts], 'maps/map_unip_ensp_unip.pl' ),
 	bio_db_add_infos_to( [header(row('Uni Protein','Entrez ID'))|SwOpts], 'maps/map_unip_unip_entz.pl' ),
 	bio_db_add_infos_to( [header(row('Uni Protein','HGNC ID'))|SwOpts], 'maps/map_unip_unip_hgnc.pl' ),
-	bio_db_add_infos_to( [header(row('Uni Protein','Uni Gene'))|SwOpts], 'maps/map_unip_unip_unig.pl' ),
+	% bio_db_add_infos_to( [header(row('Uni Protein','Uni Gene'))|SwOpts], 'maps/map_unip_unip_unig.pl' ),
 
 	working_directory( _, DnDir ),
 

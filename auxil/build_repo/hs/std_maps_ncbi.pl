@@ -185,7 +185,7 @@ std_maps_ncbi( Args ) :-
 	std_maps_ncbi( RemS, Url, DnDt ),
 	delete_file( RemS ),
 	maps_ncbi_rnuc_symb,
-	maps_ncbi_unig_entz,
+	% maps_ncbi_unig_entz,  % unigene is no longer maintained as of Feb.2019
 	working_directory( _, Old ).
 
 std_maps_ncbi( File, Url, DnDt ) :-

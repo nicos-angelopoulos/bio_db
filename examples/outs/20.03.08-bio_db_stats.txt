@@ -1,0 +1,205 @@
+linux% swipl -l bio_db_stats.pl 
+%  /home/nicos/.rcpl compiled 0.00 sec, 8 clauses
+Welcome to SWI-Prolog (threaded, 64 bits, version 8.1.24-10-g61a937543)
+SWI-Prolog comes with ABSOLUTELY NO WARRANTY. This is free software.
+Please run ?- license. for legal details.
+
+For online help and background, visit https://www.swi-prolog.org
+For built-in help, use ?- help(Topic). or ?- apropos(Word).
+
+?- bio_db_stats.
+% prolog DB:table strg:edge_strg_mouse/3 is not installed, but the zipped prolog db exists. Flag bio_db_pl_from_zip says: true
+% Zip file will be deleted depending on value of flag bio_db_del_zip, which is: true
+% edge_strg_mouse/3 has 11944806 records.
+% prolog DB:table gont:map_gont_gont_gonm/2 is not installed, but the zipped prolog db exists. Flag bio_db_pl_from_zip says: true
+% Zip file will be deleted depending on value of flag bio_db_del_zip, which is: true
+% map_gont_gont_gonm/2 has 47342 records.
+% prolog DB:table hgnc:map_hgnc_ensg_hgnc/2 is not installed, but the zipped prolog db exists. Flag bio_db_pl_from_zip says: true
+% Zip file will be deleted depending on value of flag bio_db_del_zip, which is: true
+% map_hgnc_ensg_hgnc/2 has 38558 records.
+% prolog DB:table hgnc:map_hgnc_entz_hgnc/2 is not installed, but the zipped prolog db exists. Flag bio_db_pl_from_zip says: true
+% Zip file will be deleted depending on value of flag bio_db_del_zip, which is: true
+% map_hgnc_entz_hgnc/2 has 41742 records.
+% prolog DB:table gont:map_gont_mouse_gont_symb/3 is not installed, but the zipped prolog db exists. Flag bio_db_pl_from_zip says: true
+% Zip file will be deleted depending on value of flag bio_db_del_zip, which is: true
+% map_gont_mouse_gont_symb/3 has 375038 records.
+% prolog DB:table hgnc:map_hgnc_hgnc_ccds/2 is not installed, but the zipped prolog db exists. Flag bio_db_pl_from_zip says: true
+% Zip file will be deleted depending on value of flag bio_db_del_zip, which is: true
+% map_hgnc_hgnc_ccds/2 has 19009 records.
+% prolog DB:table unip:map_unip_mouse_gyno_unip/2 is not installed, but the zipped prolog db exists. Flag bio_db_pl_from_zip says: true
+% Zip file will be deleted depending on value of flag bio_db_del_zip, which is: true
+% map_unip_mouse_gyno_unip/2 has 26278 records.
+% prolog DB:table hgnc:map_hgnc_hgnc_chrb/2 is not installed, but the zipped prolog db exists. Flag bio_db_pl_from_zip says: true
+% Zip file will be deleted depending on value of flag bio_db_del_zip, which is: true
+% map_hgnc_hgnc_chrb/2 has 43262 records.
+% prolog DB:table unip:map_unip_ensp_unip/2 is not installed, but the zipped prolog db exists. Flag bio_db_pl_from_zip says: true
+% Zip file will be deleted depending on value of flag bio_db_del_zip, which is: true
+% map_unip_ensp_unip/2 has 108659 records.
+% prolog DB:table hgnc:map_hgnc_hgnc_ensg/2 is not installed, but the zipped prolog db exists. Flag bio_db_pl_from_zip says: true
+% Zip file will be deleted depending on value of flag bio_db_del_zip, which is: true
+% map_hgnc_hgnc_ensg/2 has 38558 records.
+% prolog DB:table hgnc:map_hgnc_hgnc_entz/2 is not installed, but the zipped prolog db exists. Flag bio_db_pl_from_zip says: true
+% Zip file will be deleted depending on value of flag bio_db_del_zip, which is: true
+% map_hgnc_hgnc_entz/2 has 41742 records.
+% prolog DB:table unip:map_unip_hgnc_unip/2 is not installed, but the zipped prolog db exists. Flag bio_db_pl_from_zip says: true
+% Zip file will be deleted depending on value of flag bio_db_del_zip, which is: true
+% map_unip_hgnc_unip/2 has 74025 records.
+% prolog DB:table gont:map_gont_mouse_mgim_gont/3 is not installed, but the zipped prolog db exists. Flag bio_db_pl_from_zip says: true
+% Zip file will be deleted depending on value of flag bio_db_del_zip, which is: true
+% map_gont_mouse_mgim_gont/3 has 375058 records.
+% prolog DB:table gont:map_gont_gont_symb/3 is not installed, but the zipped prolog db exists. Flag bio_db_pl_from_zip says: true
+% Zip file will be deleted depending on value of flag bio_db_del_zip, which is: true
+% map_gont_gont_symb/3 has 329630 records.
+% prolog DB:table unip:map_unip_unip_entz/2 is not installed, but the zipped prolog db exists. Flag bio_db_pl_from_zip says: true
+% Zip file will be deleted depending on value of flag bio_db_del_zip, which is: true
+% map_unip_unip_entz/2 has 33039 records.
+% prolog DB:table hgnc:map_hgnc_hgnc_name/2 is not installed, but the zipped prolog db exists. Flag bio_db_pl_from_zip says: true
+% Zip file will be deleted depending on value of flag bio_db_del_zip, which is: true
+% map_hgnc_hgnc_name/2 has 43549 records.
+% prolog DB:table hgnc:map_hgnc_prev_symb/2 is not installed, but the zipped prolog db exists. Flag bio_db_pl_from_zip says: true
+% Zip file will be deleted depending on value of flag bio_db_del_zip, which is: true
+% map_hgnc_prev_symb/2 has 15105 records.
+% prolog DB:table unip:map_unip_trem_nucs/2 is not installed, but the zipped prolog db exists. Flag bio_db_pl_from_zip says: true
+% Zip file will be deleted depending on value of flag bio_db_del_zip, which is: true
+% map_unip_trem_nucs/2 has 953184 records.
+% prolog DB:table gont:map_gont_symb_gont/3 is not installed, but the zipped prolog db exists. Flag bio_db_pl_from_zip says: true
+% Zip file will be deleted depending on value of flag bio_db_del_zip, which is: true
+% map_gont_symb_gont/3 has 329630 records.
+% prolog DB:table unip:map_unip_sprt_seqn/2 is not installed, but the zipped prolog db exists. Flag bio_db_pl_from_zip says: true
+% Zip file will be deleted depending on value of flag bio_db_del_zip, which is: true
+% map_unip_sprt_seqn/2 has 20365 records.
+% prolog DB:table hgnc:map_hgnc_symb_entz/2 is not installed, but the zipped prolog db exists. Flag bio_db_pl_from_zip says: true
+% Zip file will be deleted depending on value of flag bio_db_del_zip, which is: true
+% map_hgnc_symb_entz/2 has 41742 records.
+% prolog DB:table mgim:map_mgim_mouse_mgim_symb/2 is not installed, but the zipped prolog db exists. Flag bio_db_pl_from_zip says: true
+% Zip file will be deleted depending on value of flag bio_db_del_zip, which is: true
+% map_mgim_mouse_mgim_symb/2 has 302908 records.
+% map_hgnc_symb_hgnc/2 has 43549 records.
+% prolog DB:table unip:map_unip_unip_hgnc/2 is not installed, but the zipped prolog db exists. Flag bio_db_pl_from_zip says: true
+% Zip file will be deleted depending on value of flag bio_db_del_zip, which is: true
+% map_unip_unip_hgnc/2 has 74025 records.
+% prolog DB:table hgnc:map_hgnc_hgnc_symb/2 is not installed, but the zipped prolog db exists. Flag bio_db_pl_from_zip says: true
+% Zip file will be deleted depending on value of flag bio_db_del_zip, which is: true
+% map_hgnc_hgnc_symb/2 has 43549 records.
+% prolog DB:table strg:edge_strg_hs/3 is not installed, but the zipped prolog db exists. Flag bio_db_pl_from_zip says: true
+% Zip file will be deleted depending on value of flag bio_db_del_zip, which is: true
+% edge_strg_hs/3 has 11759454 records.
+% prolog DB:table hgnc:map_hgnc_syno_symb/2 is not installed, but the zipped prolog db exists. Flag bio_db_pl_from_zip says: true
+% Zip file will be deleted depending on value of flag bio_db_del_zip, which is: true
+% map_hgnc_syno_symb/2 has 42412 records.
+% prolog DB:table unip:map_unip_trem_seqn/2 is not installed, but the zipped prolog db exists. Flag bio_db_pl_from_zip says: true
+% Zip file will be deleted depending on value of flag bio_db_del_zip, which is: true
+% map_unip_trem_seqn/2 has 167992 records.
+% prolog DB:table hgnc:map_hgnc_entz_symb/2 is not installed, but the zipped prolog db exists. Flag bio_db_pl_from_zip says: true
+% Zip file will be deleted depending on value of flag bio_db_del_zip, which is: true
+% map_hgnc_entz_symb/2 has 41742 records.
+% prolog DB:table ense:map_ense_ensg_hgnc/2 is not installed, but the zipped prolog db exists. Flag bio_db_pl_from_zip says: true
+% Zip file will be deleted depending on value of flag bio_db_del_zip, which is: true
+% map_ense_ensg_hgnc/2 has 38536 records.
+% prolog DB:table ense:map_ense_ensg_symb/2 is not installed, but the zipped prolog db exists. Flag bio_db_pl_from_zip says: true
+% Zip file will be deleted depending on value of flag bio_db_del_zip, which is: true
+% map_ense_ensg_symb/2 has 38536 records.
+% prolog DB:table pros:map_pros_pros_prsn/2 is not installed, but the zipped prolog db exists. Flag bio_db_pl_from_zip says: true
+% Zip file will be deleted depending on value of flag bio_db_del_zip, which is: true
+% map_pros_pros_prsn/2 has 1807 records.
+% prolog DB:table mgim:map_mgim_mouse_mgim_chrl/5 is not installed, but the zipped prolog db exists. Flag bio_db_pl_from_zip says: true
+% Zip file will be deleted depending on value of flag bio_db_del_zip, which is: true
+% map_mgim_mouse_mgim_chrl/5 has 302908 records.
+% prolog DB:table strg:edge_strg_hs_symb/3 is not installed, but the zipped prolog db exists. Flag bio_db_pl_from_zip says: true
+% Zip file will be deleted depending on value of flag bio_db_del_zip, which is: true
+% edge_strg_hs_symb/3 has 5083796 records.
+% prolog DB:table hgnc:map_hgnc_ccds_hgnc/2 is not installed, but the zipped prolog db exists. Flag bio_db_pl_from_zip says: true
+% Zip file will be deleted depending on value of flag bio_db_del_zip, which is: true
+% map_hgnc_ccds_hgnc/2 has 19009 records.
+% prolog DB:table ense:map_ense_enst_ensg/2 is not installed, but the zipped prolog db exists. Flag bio_db_pl_from_zip says: true
+% Zip file will be deleted depending on value of flag bio_db_del_zip, which is: true
+% map_ense_enst_ensg/2 has 227714 records.
+% prolog DB:table strg:edge_strg_mouse_symb/3 is not installed, but the zipped prolog db exists. Flag bio_db_pl_from_zip says: true
+% Zip file will be deleted depending on value of flag bio_db_del_zip, which is: true
+% edge_strg_mouse_symb/3 has 3457884 records.
+% prolog DB:table ense:map_ense_enst_chrl/5 is not installed, but the zipped prolog db exists. Flag bio_db_pl_from_zip says: true
+% Zip file will be deleted depending on value of flag bio_db_del_zip, which is: true
+% map_ense_enst_chrl/5 has 227714 records.
+% prolog DB:table ncbi:map_ncbi_ensg_entz/2 is not installed, but the zipped prolog db exists. Flag bio_db_pl_from_zip says: true
+% Zip file will be deleted depending on value of flag bio_db_del_zip, which is: true
+% map_ncbi_ensg_entz/2 has 26254 records.
+% prolog DB:table ense:map_ense_ensg_chrl/5 is not installed, but the zipped prolog db exists. Flag bio_db_pl_from_zip says: true
+% Zip file will be deleted depending on value of flag bio_db_del_zip, which is: true
+% map_ense_ensg_chrl/5 has 60676 records.
+% prolog DB:table ncbi:map_ncbi_ensp_entz/2 is not installed, but the zipped prolog db exists. Flag bio_db_pl_from_zip says: true
+% Zip file will be deleted depending on value of flag bio_db_del_zip, which is: true
+% map_ncbi_ensp_entz/2 has 43453 records.
+% prolog DB:table mgim:map_mgim_mouse_mgim_unip/2 is not installed, but the zipped prolog db exists. Flag bio_db_pl_from_zip says: true
+% Zip file will be deleted depending on value of flag bio_db_del_zip, which is: true
+% map_mgim_mouse_mgim_unip/2 has 16832 records.
+% prolog DB:table ncbi:map_ncbi_entz_ensg/2 is not installed, but the zipped prolog db exists. Flag bio_db_pl_from_zip says: true
+% Zip file will be deleted depending on value of flag bio_db_del_zip, which is: true
+% map_ncbi_entz_ensg/2 has 26254 records.
+% prolog DB:table ncbi:map_ncbi_entz_ensp/2 is not installed, but the zipped prolog db exists. Flag bio_db_pl_from_zip says: true
+% Zip file will be deleted depending on value of flag bio_db_del_zip, which is: true
+% map_ncbi_entz_ensp/2 has 43453 records.
+% prolog DB:table mgim:map_mgim_mouse_mgim_genb/2 is not installed, but the zipped prolog db exists. Flag bio_db_pl_from_zip says: true
+% Zip file will be deleted depending on value of flag bio_db_del_zip, which is: true
+% map_mgim_mouse_mgim_genb/2 has 276798 records.
+% prolog DB:table mgim:map_mgim_mouse_mgim_entz/2 is not installed, but the zipped prolog db exists. Flag bio_db_pl_from_zip says: true
+% Zip file will be deleted depending on value of flag bio_db_del_zip, which is: true
+% map_mgim_mouse_mgim_entz/2 has 343989 records.
+% prolog DB:table mgim:map_mgim_mouse_syno_mgim/2 is not installed, but the zipped prolog db exists. Flag bio_db_pl_from_zip says: true
+% Zip file will be deleted depending on value of flag bio_db_del_zip, which is: true
+% map_mgim_mouse_syno_mgim/2 has 252097 records.
+% prolog DB:table ncbi:map_ncbi_rnuc_symb/2 is not installed, but the zipped prolog db exists. Flag bio_db_pl_from_zip says: true
+% Zip file will be deleted depending on value of flag bio_db_del_zip, which is: true
+% map_ncbi_rnuc_symb/2 has 370712 records.
+% prolog DB:table ncbi:map_ncbi_dnuc_symb/2 is not installed, but the zipped prolog db exists. Flag bio_db_pl_from_zip says: true
+% Zip file will be deleted depending on value of flag bio_db_del_zip, which is: true
+% map_ncbi_dnuc_symb/2 has 303890 records.
+% prolog DB:table mgim:map_mgim_mouse_symb_wdra/2 is not installed, but the zipped prolog db exists. Flag bio_db_pl_from_zip says: true
+% Zip file will be deleted depending on value of flag bio_db_del_zip, which is: true
+% map_mgim_mouse_symb_wdra/2 has 56499 records.
+% prolog DB:table pros:map_pros_pros_sprt/7 is not installed, but the zipped prolog db exists. Flag bio_db_pl_from_zip says: true
+% Zip file will be deleted depending on value of flag bio_db_del_zip, which is: true
+% map_pros_pros_sprt/7 has 54176 records.
+% prolog DB:table ncbi:map_ncbi_mouse_syno_symb/2 is not installed, but the zipped prolog db exists. Flag bio_db_pl_from_zip says: true
+% Zip file will be deleted depending on value of flag bio_db_del_zip, which is: true
+% map_ncbi_mouse_syno_symb/2 has 76727 records.
+% prolog DB:table gont:edge_gont_includes/2 is not installed, but the zipped prolog db exists. Flag bio_db_pl_from_zip says: true
+% Zip file will be deleted depending on value of flag bio_db_del_zip, which is: true
+% edge_gont_includes/2 has 74728 records.
+% prolog DB:table unip:map_unip_mouse_ensp_unip/2 is not installed, but the zipped prolog db exists. Flag bio_db_pl_from_zip says: true
+% Zip file will be deleted depending on value of flag bio_db_del_zip, which is: true
+% map_unip_mouse_ensp_unip/2 has 67401 records.
+% prolog DB:table gont:edge_gont_is_a/2 is not installed, but the zipped prolog db exists. Flag bio_db_pl_from_zip says: true
+% Zip file will be deleted depending on value of flag bio_db_del_zip, which is: true
+% edge_gont_is_a/2 has 74728 records.
+% prolog DB:table gont:edge_gont_regulates/2 is not installed, but the zipped prolog db exists. Flag bio_db_pl_from_zip says: true
+% Zip file will be deleted depending on value of flag bio_db_del_zip, which is: true
+% edge_gont_regulates/2 has 3602 records.
+% prolog DB:table unip:map_unip_mouse_trem_nucs/2 is not installed, but the zipped prolog db exists. Flag bio_db_pl_from_zip says: true
+% Zip file will be deleted depending on value of flag bio_db_del_zip, which is: true
+% map_unip_mouse_trem_nucs/2 has 188394 records.
+% prolog DB:table gont:edge_gont_positively_regulates/2 is not installed, but the zipped prolog db exists. Flag bio_db_pl_from_zip says: true
+% Zip file will be deleted depending on value of flag bio_db_del_zip, which is: true
+% edge_gont_positively_regulates/2 has 3125 records.
+% prolog DB:table gont:edge_gont_negatively_regulates/2 is not installed, but the zipped prolog db exists. Flag bio_db_pl_from_zip says: true
+% Zip file will be deleted depending on value of flag bio_db_del_zip, which is: true
+% edge_gont_negatively_regulates/2 has 3147 records.
+% prolog DB:table unip:map_unip_mouse_mgim_unip/2 is not installed, but the zipped prolog db exists. Flag bio_db_pl_from_zip says: true
+% Zip file will be deleted depending on value of flag bio_db_del_zip, which is: true
+% map_unip_mouse_mgim_unip/2 has 80503 records.
+% prolog DB:table unip:map_unip_mouse_unip_symb/2 is not installed, but the zipped prolog db exists. Flag bio_db_pl_from_zip says: true
+% Zip file will be deleted depending on value of flag bio_db_del_zip, which is: true
+% map_unip_mouse_unip_symb/2 has 83122 records.
+% prolog DB:table gont:edge_gont_consists_of/2 is not installed, but the zipped prolog db exists. Flag bio_db_pl_from_zip says: true
+% Zip file will be deleted depending on value of flag bio_db_del_zip, which is: true
+% edge_gont_consists_of/2 has 8595 records.
+% prolog DB:table gont:edge_gont_part_of/2 is not installed, but the zipped prolog db exists. Flag bio_db_pl_from_zip says: true
+% Zip file will be deleted depending on value of flag bio_db_del_zip, which is: true
+% edge_gont_part_of/2 has 8595 records.
+% prolog DB:table unip:map_unip_mouse_unip_entz/2 is not installed, but the zipped prolog db exists. Flag bio_db_pl_from_zip says: true
+% Zip file will be deleted depending on value of flag bio_db_del_zip, which is: true
+% map_unip_mouse_unip_entz/2 has 32846 records.
+
+% Total number of predicates: 64, and records: 39394452
+
+% ...halting as all predicates have been retracted.
+

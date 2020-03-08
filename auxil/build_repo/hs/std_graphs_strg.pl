@@ -7,7 +7,7 @@
 
 % external code, lib knowns how to deal with these (will install if missing)
 :- lib(mtx).
-:- lib(bio_db).
+% :- lib(bio_db).
 :- lib(os_lib).
 :- lib(by_unix).
 :- lib(options).

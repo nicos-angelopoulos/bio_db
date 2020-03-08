@@ -1,12 +1,14 @@
 
-:- lib(bio_db).
+% :- lib(bio_db).
 :- lib(os_lib).
 :- lib(options).
 :- lib(stoics_lib:get_date_time/1).
 :- lib(stoics_lib:en_list/2).
 
-:- ensure_loaded( add_data_type ).  % add_data_type_get_types/7.
-:- ensure_loaded( bio_add_info_kvs_lengths_rel ).
+:- ensure_loaded(add_data_type).                        % add_data_type_get_types/7.
+:- ensure_loaded(bio_add_info_kvs_lengths_rel).
+% 20.03.07 ???
+:- ensure_loaded(bio_db_pl_info).
 
 /** bio_db_add_infos( OsS ).
 
@@ -43,7 +45,8 @@ bio_db_add_infos_to( Etc, _Os ) :-
 
 bio_db_add_infos_file( Os, InOpts ) :-
 	% bio_db_pl_info( Os, Pname, Arity, Infos, NexTerm, DbStream1 ),
-	bio_db:bio_db_pl_info( Os, Pname, Arity, Infos, NexTerm, DbStream1 ),
+	% bio_db:bio_db_pl_info( Os, Pname, Arity, Infos, NexTerm, DbStream1 ),
+	bio_db_pl_info( Os, Pname, Arity, Infos, NexTerm, DbStream1 ),
 	findall( Info, (member(Info,Infos),debug(bio_db_add_info,'Info term will be removed: ~w', [Info])), _ ),
 	findall( IOpt, (member(Info,Infos),arg(1,Info,IKey),arg(2,Info,IVal),IOpt=..[IKey,IVal]), InfoOpts ),
 	append( InOpts, InfoOpts, Opts ),
@@ -86,7 +89,8 @@ bio_db_add_infos_file( Os, InOpts ) :-
 	HeaderInfo =.. [Iname,header,Hdr],			%  header DONE
 
 
-	bio_db:bio_db_pl_info( Os, _Pname2, _Arity2, _Infos2, NexTerm2, DbStream2 ),
+	% bio_db:bio_db_pl_info( Os, _Pname2, _Arity2, _Infos2, NexTerm2, DbStream2 ),
+	bio_db_pl_info( Os, _Pname2, _Arity2, _Infos2, NexTerm2, DbStream2 ),
 	bio_db_relation_stream_pairs( NexTerm2, Pname, Arity, DbStream2, KVs, Ks, Vs ),
 	close( DbStream2 ),
 	bio_add_info_kvs_lengths_rel( KVs, Ks, Vs, Iname, UnqLensInfo, RelTypeInfo ),
@@ -98,7 +102,8 @@ bio_db_add_infos_file( Os, InOpts ) :-
 
 bio_db_file_add_infos( Os, NewInfos ) :-
 	os_ext( tmp, Os, TmpOs ),
-	bio_db:bio_db_pl_info( Os, _Pname, _Arity, _Infos, NexTerm, DbS ),
+	% bio_db:bio_db_pl_info( Os, _Pname, _Arity, _Infos, NexTerm, DbS ),
+	bio_db_pl_info( Os, _Pname, _Arity, _Infos, NexTerm, DbS ),
 	open( TmpOs, write, Onto ),
 	maplist( portray_clause(Onto), NewInfos ),
 	nl( Onto ),

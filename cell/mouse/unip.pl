@@ -6,7 +6,7 @@
                 map_unip_mouse_trem_nucs/2,
                 map_unip_mouse_unip_entz/2,
                 map_unip_mouse_unip_symb/2,
-                map_unip_mouse_unip_unig/2,
+                % map_unip_mouse_unip_unig/2,  % unigene was discontinued
                 map_unip_mouse_gyno_unip/2
                 ] ).
 

@@ -38,7 +38,7 @@ url_file_local_date_mirror_defaults( [  date(postfix),file(_),
 %    if free variable, returns the local file name (basename only). if ground it is taken as the local output file.
 %  
 %  * interface(Iface=prolog)  
-%    alternatively you can use wget (works for anonymous ftps
+%    alternatively you can use wget (works for anonymous ftps)
 %    
 %  * link_stem(Link=true)  
 %    or false if LocF is to be linked to Basename.

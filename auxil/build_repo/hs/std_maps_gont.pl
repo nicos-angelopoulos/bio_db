@@ -22,6 +22,7 @@
 :- lib(bio_db_dnt_times/3).
 :- lib(url_file_local_date_mirror/3).
 :- lib(bio_db_add_infos/1).  % bio_db_add_infos_to/2
+:- lib(go_id/2).
 
 :- debug(std_maps_go).
 
@@ -103,7 +104,7 @@ std_maps_gont( Args ) :-
 	mtx_prolog( OrdSGRows, 'maps/map_gont_symb_gont.pl', SGopts ),
 	bio_db_add_infos_to( [header(row('HGNC Symbol','Evidence','GO Term'))|AddOpts], 'maps/map_gont_symb_gont.pl' ),
 	
-	debug( std_maps_go, 'Building term to name map', true ),
+	debug_call( std_maps_go, 'Building term to name map', true ),
 	gont_term_db_url( TermUrl ),
 	% url_file( TermUrl, TermGz ),
 	url_file_local_date_mirror( TermUrl, DnDir, true ),
@@ -123,7 +124,7 @@ std_maps_gont( Args ) :-
 	GTopts = [predicate_name(map_gont_gont_gonm)],
 	sort( GTNRows, OrdGTNRows ),
 	mtx_prolog( OrdGTNRows, 'maps/map_gont_gont_gonm.pl', GTopts ),
-	debug( std_maps_go, 'Fixme: add GOterm -> go Section', true ),
+	debug_call( std_maps_go, 'Fixme: add GOterm -> go Section', true ),
 	delete_file( 'maps/map_gont_gont_symb.csv' ),
 	% here
 	bio_db_dnt_times( 'go_daily-termdb-tables.tar.gz', TermUrlDntSt, _TermDntEnd ),

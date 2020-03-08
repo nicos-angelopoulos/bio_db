@@ -75,7 +75,7 @@ std_upsh( Org, Db, Type, Succ ) :-
 std(hs, maps, hgnc).
 std(hs, maps, ense).
 std(hs, maps, unip).
-std(hs, maps, unip_seqs).  % this takes a loooong time
+std(hs, maps, unip_seqs).
 std(hs, maps, ncbi).
 % needs "unip_seqs" above to have ran
 std(hs, maps, pros).

@@ -6,8 +6,8 @@
                 map_ncbi_entz_ensg/2,
                 map_ncbi_entz_ensp/2,
                 map_ncbi_rnuc_symb/2,
-                map_ncbi_dnuc_symb/2,
-                map_ncbi_unig_entz/2
+                map_ncbi_dnuc_symb/2
+                % map_ncbi_unig_entz/2 % withdrawn 2019.02
                 ] ).
                 
 :- use_module(library(lib)).
@@ -92,7 +92,10 @@ Symb = 'TUBB8P11'.
 map_ncbi_dnuc_symb( Dnuc, Symb ) :-
     bio_db:bio_db_serve( map_ncbi_dnuc_symb(Dnuc,Symb) ).
 
-/** map_ncbi_unig_entz( UniG, Entz ).
+
+/* map_ncbi_unig_entz( UniG, Entz ).
+
+UNIGENE WAS WITHDRAWN ON FEB 2019.
 
 Map predicate from unigene to entrez id as per ncbi.
 
@@ -100,9 +103,9 @@ Map predicate from unigene to entrez id as per ncbi.
 ?- map_ncbi_unig_entz( 'Hs.80828', Entz ).
 Entz = 3848.
 ==
-*/
 map_ncbi_unig_entz( UniG, Entz ) :-
     bio_db:bio_db_serve( map_ncbi_unig_entz(UniG,Entz) ).
+*/
 
 
 /**  map_ncbi_entz_ensg( ?Entz, ?EnsG ).

@@ -64,14 +64,15 @@ std_maps_ense( Args ) :-
     ensure_loaded(hgnc:bio_db_build_downloads('hgnc/maps/map_hgnc_hgnc_symb')),
     ensure_loaded(hgnc:bio_db_build_downloads('hgnc/maps/map_hgnc_symb_hgnc')),
 
-	debug( Self, 'Starting...', true ),
+	debug_call( Self, 'Starting...', true ),
 	absolute_file_name( bio_db_build_downloads(ense), DnDir ),
 	os_make_path( DnDir ),
 	debug( Self, 'Downloads dir for ense: ~p', DnDir ),
 	% Url = 'ftp://ftp.ensembl.org/pub/release-85/gtf/homo_sapiens/Homo_sapiens.GRCh38.85.gtf.gz',
-	Url = 'ftp://ftp.ensembl.org/pub/release-89/gtf/homo_sapiens/Homo_sapiens.GRCh38.89.gtf.gz',
+	% Url = 'ftp://ftp.ensembl.org/pub/release-89/gtf/homo_sapiens/Homo_sapiens.GRCh38.89.gtf.gz',
+	Url = 'ftp://ftp.ensembl.org/pub/release-99/gtf/homo_sapiens/Homo_sapiens.GRCh38.99.gtf.gz',
 
-	url_file_local_date_mirror( Url, DnDir, file(File) ),
+	url_file_local_date_mirror( Url, DnDir, [file(File),interface(wget)] ),
 	debug( Self, 'Dnload done, file is: ~p', File ),
 	working_directory( Old, DnDir ),
 	bio_db_dnt_times( File, DnDt, _DnEn ),
@@ -86,7 +87,7 @@ std_maps_ense( Args ) :-
 	atomic_list_concat( [grep,'-v','"^#"',Stem,'>',TabF], ' ', Shell ),
 	write( shelling(Shell) ), nl,
 	shell( Shell ),
-	debug( Self, '...done...', true ),
+	debug_call( Self, '...done...', true ),
 	% @ grep( -v, '"^#"', Stem, '>', TabF ),
 	@ ls(),
 	mtx( TabF, Rows, sep(tab) ),
@@ -140,7 +141,7 @@ std_maps_ense( Args ) :-
 	maplist( link_to_map_sub(ense), Pls ),
 
 	working_directory( _, Old ),
-	debug( Self, '...Done', true ).
+	debug_call( Self, '...Done', true ).
 
 mv_to_sub( Sub, File ) :-
 	os_path( Sub, File, Rel ),

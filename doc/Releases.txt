@@ -9,17 +9,22 @@ TBD:
          Would be nice to have the "correct" types when opening an existing database with no options.
          Rocks: Enumerate connections ? rocks_current(X).
 
+2.8
+      20.03.07    CHANGE:  many debug(,,true) to debug_call(,,true) as SWI 8 has changed this to an error 
+                  REMOVE:  map_unip_unip_unig/2 info don't seem to be in the source file any longer... HUMAN_9606_idmapping
+                  UPDATE:  auxil URLs. using more iface(wget) 'cause of a couple of ftp-ing problems with SWI's URL getter
+
 2.7               @ 19.05.12
-      19.05.09    CHANGED:  edge_strg_symb/4 -> org_edge_strg_symb/4
+      19.05.09    CHANGE:  edge_strg_symb/4 -> org_edge_strg_symb/4
 
 2.6               @ 19.05.08
-      19.05.07    FIXED:    move to /3 version throughout (map_gont_mouse_gont_symb/3)
-      19.05.06    FIXED:    correct go id and remove all traces of go_term_symbols
-                  CHANGED:  entrez ids are now read as integers ....
-      19.05.04    DATA:     added evidence to map_gont_symb_gont/2 and gont_symb/2
-                  IFACE:    map_gont_gont_symb/2 -> 3, and symb_gont/2->3
-      19.05.03    DATA:     map_gont_gont_gomn/2, both new Gont id (as integer) and changes in go source files
-      19.05.02    IFACE:    bio_db_organism_alias/2 and changed bio_db_organism/2 
+      19.05.07    FIX:     move to /3 version throughout (map_gont_mouse_gont_symb/3)
+      19.05.06    FIXED:   correct go id and remove all traces of go_term_symbols
+                  CHANGE:  entrez ids are now read as integers ....
+      19.05.04    DATA:    added evidence to map_gont_symb_gont/2 and gont_symb/2
+                  IFACE:   map_gont_gont_symb/2 -> 3, and symb_gont/2->3
+      19.05.03    DATA:    map_gont_gont_gomn/2, both new Gont id (as integer) and changes in go source files
+      19.05.02    IFACE:   bio_db_organism_alias/2 and changed bio_db_organism/2 
 
 2.5          @    19.04.22
       19.04.08    IFACE:    edge_strg_symb/4

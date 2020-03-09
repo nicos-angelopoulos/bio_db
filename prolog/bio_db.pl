@@ -476,6 +476,7 @@ Thanks to Jan Wielemaker for a retractall fix and for code for fast loading of p
 @version  2.6 2019/5/8     changed to organism alias interface; evidence in gont maps
 @version  2.7 2019/5/12    edge_strg_symb/4 -> org_edge_strg_symb/4
 @version  3.0 2019/5/15    paper submission
+@version  3.1 2020/3/9     fixed lib; no unigene
 @see doc/Realeases.txt     for version details.
 
 */
@@ -663,7 +664,7 @@ Version Mj:Mn:Fx, and release date date(Y,M,D).
 
 ==
 ?- bio_db_version( V, D ).
-V = 3:0:0,
+V = 3:1:0,
 D = date(2019, 5, 15).
 ==
 
@@ -671,7 +672,7 @@ D = date(2019, 5, 15).
 @see doc/Releases.txt for more detail on change log
 
 */
-bio_db_version( 3:0:0, date(2019,5,15) ).   
+bio_db_version( 3:1:0, date(2020,3,9) ).   
 
 %% bio_db_citation( -Atom, -Bibterm ).
 %

@@ -9,10 +9,14 @@ TBD:
          Would be nice to have the "correct" types when opening an existing database with no options.
          Rocks: Enumerate connections ? rocks_current(X).
 
-2.8
+3.1               @ 20.03.08
       20.03.07    CHANGE:  many debug(,,true) to debug_call(,,true) as SWI 8 has changed this to an error 
                   REMOVE:  map_unip_unip_unig/2 info don't seem to be in the source file any longer... HUMAN_9606_idmapping
                   UPDATE:  auxil URLs. using more iface(wget) 'cause of a couple of ftp-ing problems with SWI's URL getter
+
+3.0               @ 19.05.15
+                  UPDATE:  many changes to 
+                  IFACE:   cell loading support
 
 2.7               @ 19.05.12
       19.05.09    CHANGE:  edge_strg_symb/4 -> org_edge_strg_symb/4

@@ -1,7 +1,8 @@
 
-% fimxe: following is here becuase this file is included in lib(bio_db).
-:- use_module( library(os_lib) ).
-:- lib( stoics_lib:message_report/3 ).
+:- use_module(library(filesex)).    % link_file/3.
+:- use_module(library(os_lib)).
+
+:- lib(stoics_lib:message_report/3).
 
 %% link_to_bio_sub( +Sub, +File ).
 %

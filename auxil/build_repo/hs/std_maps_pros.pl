@@ -1,4 +1,7 @@
 
+:- use_module(library(lists)).      % member/2, nth1/3.
+:- use_module(library(apply)).      % include/3, maplist/2,3.
+
 % if library(lib) is missing, install via pack_install(lib).
 %
 :- use_module( library(lib) ).

@@ -1,4 +1,5 @@
 
+:- use_module(library(filesex)).
 % if library(lib) is missing, install via pack_install(lib).
 %
 :- use_module( library(lib) ).

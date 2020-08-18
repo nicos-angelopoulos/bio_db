@@ -1,5 +1,9 @@
 
+:- use_module( library(apply) ). % maplist/3,...
+:- use_module( library(lists) ). % append/3,...
+
 :- use_module( library(lib) ).
+
 :- lib(real).
 :- lib(mtx).
 :- lib(options).

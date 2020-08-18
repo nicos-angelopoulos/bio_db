@@ -1,6 +1,10 @@
 
 :- set_prolog_flag(stack_limit, 10 000 000 000).
 
+:- use_module(library(csv)).        % csv_read_file/2.
+:- use_module(library(process)).    % process_create/3.
+:- use_module(library(readutil)).   % read_line_to_codes/2.
+
 % if library(lib) is missing, install via pack_install(lib).
 %
 :- use_module(library(lib)).

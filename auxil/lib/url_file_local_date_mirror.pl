@@ -1,4 +1,5 @@
 
+:- use_module( library(listing) ). % portray_clause/2.
 :- use_module( library(lib) ).
 
 :- lib(os_lib).

@@ -1,6 +1,7 @@
 
 :- set_prolog_flag(stack_limit, 10 000 000 000).
 
+:- use_module( library(apply) ).        % maplist/2.
 % if library(lib) is missing, install via pack_install(lib).
 %
 :- use_module( library(lib) ).

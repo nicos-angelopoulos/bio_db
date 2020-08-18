@@ -1,4 +1,7 @@
 
+:- use_module(library(lists)).      % member/2.
+:- use_module(library(sgml)).       % load_html/3.
+
 :- lib(stoics_lib:message_report/3).
 
 /**  std_graphs_strg_auto_version( Vers )

@@ -1,6 +1,11 @@
 
 :- set_prolog_flag(stack_limit, 80_000_000_000).
 
+:- use_module(library(filesex)).    % directory_file_path/3, make_directory_path/1.
+:- use_module(library(lists)).      % append/3, memberch/2.
+:- use_module(library(apply)).      % maplist/2, partition/4.
+:- ensure_loaded(library(debug)).   % /1,3.
+
 % if library(lib) is missing, install via pack_install(lib).
 %
 :- ensure_loaded(library(lib)).
@@ -160,7 +165,7 @@ unip_hs_seqs_file( Url, DnDir, Hdr ) :-
 	            source(Url), header(Hdr), datetime(DnSt)
 	          ],
 	csv_ids_map( SeqF, 'Protein', 'Sequence', _, MapF, IdsOpts ), 
-	pwd,
+	@ pwd(),
 	directory_file_path( maps, MapF, RelMapF ),
 	debug( Self, 'Map file: ~p', RelMapF ),
     make_directory_path( maps ),
@@ -168,7 +173,6 @@ unip_hs_seqs_file( Url, DnDir, Hdr ) :-
 	working_directory( Old, maps ),
 	link_to_map_sub(unip, MapF ),
 	working_directory( _, Old ),
-
 	@ rm( -f, HumF ).
 
 unip_seqs_stem_token( sprot, 'Protein', sprt ) :- !.

@@ -1,13 +1,22 @@
 
 :- set_prolog_flag(stack_limit, 80 000 000 000).
 
+:- use_module(library(csv)).        % csv_read_file/3.
+:- use_module(library(filesex)).    % directory_file_path/3, copy_file/2.
+:- use_module(library(apply)).      % maplist/2.
+:- use_module(library(lists)).      % member/2.
+:- use_module(library(listing)).    % portray_clause/2.
+:- use_module(library(readutil)).   % read_line_to_codes/2.
+
 % if library(lib) is missing, install via pack_install(lib).
 %
 :- use_module( library(lib) ).
 
 % external code, lib knowns how to deal with these (will install if missing)
+:- lib(by_unix).   % @/1.
 :- lib(os_lib). 
 :- lib(options). 
+:- lib(debug_call).% /3. 
 
 % also sets lib alias to that dir
 :- ensure_loaded('../../lib/bio_db_build_aliases').  %/1.
@@ -77,7 +86,7 @@ std_maps_unip( Args ) :-
 
 	Ifc = interface(prolog),
 	map_uniprot( 'GeneID', Csv, [EtzF], Ifc ),
-	% map_uniprot( 'UniGene', Csv, [UniGF], Ifc ),
+	% map_uniprot( 'UniGene', Csv, :- use_module(library(filesex)).[UniGF], Ifc ),
 	% Files = [HgncF,FromHgncF,EtzF,UniGF,EnspF],
 	Files = [HgncF,FromHgncF,EtzF,EnspF],
 	% working_directory( _, maps ),
@@ -102,7 +111,7 @@ std_maps_unip( Args ) :-
 	os_make_path( maps, afresh(false) ),
 	os_make_path( trembl, afresh(true) ),
 	directory_file_path( _, TremFile, TremUrl ),
-	pwd,
+	@ pwd(),
 	directory_file_path( trembl, TremFile, TremTrg ),
 	copy_file( TremFile, TremTrg ),
 	working_directory( _, trembl ), 

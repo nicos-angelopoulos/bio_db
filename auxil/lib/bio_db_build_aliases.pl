@@ -1,4 +1,6 @@
 
+:- use_module(library(debug)).  % debug/1,3.
+
 :- use_module(library(lib)).
 
 :- lib(ansi_term).
@@ -9,7 +11,7 @@
 :- prolog_load_context(directory, Lib ),
    lib(Lib).
 
-:- debug( bio_db_build_aliases ).
+:- debug(bio_db_build_aliases).
 
 bio_db_build_aliases_defaults( date_stem(Dotted) ) :-
 	date_two_digit_dotted( Dotted ).

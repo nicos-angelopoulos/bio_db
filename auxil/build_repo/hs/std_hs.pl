@@ -1,6 +1,7 @@
 
 % if library(lib) is missing, install via pack_install(lib).
 %
+:- use_module(library(debug) ).
 :- use_module(library(lib) ).
 
 
@@ -61,7 +62,7 @@ std_upsh( Org, Db, Type, Succ ) :-
     debug_consec( Org, Dlrs, 'Starting ~w\'s type: ~w, db: ~w ... ', [Org,Type,Db] ),
     at_con( [Org,Type,Db], :, Task ),
     debug_call( Org, task(start), Task ),
-    catch( @ pupsh(f,Upsh), Err, true ),
+    catch( @ upsh(p,f,Upsh), Err, true ),
     ( \+ var(Err) ->
         debug_consec( Org, [red,red], 'Caught while running: ~w:~w:~w, error: ~w', [Org,Type,Db,Err] ),
         Succ = error,

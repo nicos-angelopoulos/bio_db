@@ -1,4 +1,7 @@
 
+:- use_module(library(apply)).     % maplist/2.
+:- use_module(library(listing)).   % portray_clause/2.
+
 % :- lib(bio_db).
 :- lib(os_lib).
 :- lib(options).

@@ -3,7 +3,10 @@
 
 % if library(lib) is missing, install via pack_install(lib).
 %
-:- use_module( library(lib) ).
+:- use_module(library(lists)).  % member/2,...
+:- use_module(library(apply)).  % maplist/2.
+
+:- use_module(library(lib)).
 
 % external code, lib knowns how to deal with these (will install if missing)
 :- lib(mtx).

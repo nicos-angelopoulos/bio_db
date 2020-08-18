@@ -1,3 +1,6 @@
+
+:- use_module(library(filesex)).  % link_file/3.
+
 %% repoint_link( Link, Target ).
 %
 % Repoint an existing Link to a new Target.

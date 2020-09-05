@@ -1,7 +1,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %    Authors:       Nicos Angelopoulos
 %    E-mail:        Nicos Angelopoulos http://stoics.org.uk/~nicos/sware/contact.html
-%    Copyright (C): Nicos Angelopoulos, 2015-2019
+%    Copyright (C): Nicos Angelopoulos, 2015-2020
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 /*
    This program is free software; you can redistribute it and/or
@@ -49,7 +49,11 @@
 :- dynamic( '$bio_db_handle'/2 ). % this is needed for the asserted server preds 
 
 
-:- ensure_loaded(library(lib)).
+% auto-load libraries
+:- use_module(library(lists)).
+:- use_module(library(apply)).
+
+:- use_module(library(lib)).
 
 :- ensure_loaded('../src/bio_db_data_predicate').
 

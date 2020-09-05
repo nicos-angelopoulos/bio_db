@@ -10,7 +10,7 @@ TBD:
          Rocks: Enumerate connections ? rocks_current(X).
 
 3.2
-      20.07.18    DEPS:     explicit loading of autoload SWI libs
+      20.07.18    DEPS:     explicit loading of autoloaded SWI libs
 
 3.1               @ 20.03.08
       20.03.07    CHANGE:   many debug(,,true) to debug_call(,,true) as SWI 8 has changed this to an error 

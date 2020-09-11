@@ -1,7 +1,9 @@
 
 % if library(lib) is missing, install via pack_install(lib).
 %
-:- ensure_loaded( library(lib) ).
+:- ensure_loaded(library(lists)).
+:- ensure_loaded(library(apply)).
+:- ensure_loaded(library(lib)).
 
 % external code, lib knowns how to deal with these (will install if missing)
 :- lib(os_lib).
@@ -36,8 +38,15 @@ on a directory with a previous time stamp. Opts are passed through to the childr
 
 This scripts have been build and (currently only) tested on Linux OS.
 
+==
+% date
+Thu 10 Sep 19:34:38 BST 2020
+% upsh std_repo pass=assembly=38 pass=release=101
+==
+
 @author nicos angelopoulos
 @version  0.2 2018/11/12
+@version  0.2 2018/11/12, added pass() option
 @tbd replace csv_ids_rows/3, with Prolog code, that is currently going through R ?
 @tbd on rerunning fails runs, the check for subdirs should be 
      leaning more to re-generating... ?
@@ -77,7 +86,8 @@ std_repo_subs( [H|T], Dirs, Opts ) :-
     std_repo_subs_reply( Reply, StdSubs, Dirs, Alt, Opts ).
 
 std_repo_subs_reply( true, Subs, Dirs, _Alt, Opts ) :-
-    map_list_options( std_sub, Subs, Opts ),
+    findall( pass(Pass), member(pass(Pass),Opts), Passes ),
+    map_list_options( std_sub, Subs, [call_options(Passes)|Opts] ),
     std_repo_create( Dirs, Opts ).
 std_repo_subs_reply( false, _Subs, _Dirs, Alt, _Opts ) :-
     % ??? debug-write something here ?
@@ -88,8 +98,9 @@ std_sub( Sub, Opts ) :-
     working_directory( Old, Sub ),
     atomic_list_concat( [std,Sub], '_', StdSub ),
     maplist( opt_pl_cline, Opts, Crgs ),
-    Upsh =.. [upsh,StdSub,Crgs],
+    Upsh =.. [upsh,StdSub,' - '|Crgs],
     % @ upsh( StdSub ),
+    debuc( std_repo, 'Top level is shelling: ~w', Upsh ),
     @ Upsh,
     working_directory( _, Old ).
 
@@ -236,8 +247,13 @@ my_hostname( krotos, 'κρότος' ).
 my_hostname( lykos, 'λύκος' ).
 
 opt_pl_cline( Opt, Crg ) :-
-    Opt =.. [Tn|Ta],
-    atomic_list_concat( [Tn,Ta], '=', Crg ).
+    Opt =.. [Tn,Ta],
+    ( Tn == pass ->
+        Ta =.. [Nm,Arg],
+        atomic_list_concat( [Tn,Nm,Arg], '=', Crg )
+        ;
+        atomic_list_concat( [Tn,Ta], '=', Crg )
+    ).
 
 zip_pl_files_in( Dir ) :-
     os_files( Files, [dir(Dir),stem(abs)] ),

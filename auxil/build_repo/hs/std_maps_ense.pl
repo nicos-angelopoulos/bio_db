@@ -13,6 +13,8 @@
 :- lib(os_lib).
 :- lib(by_unix).
 :- lib(debug_call).
+
+:- lib(stoics_lib:at_con/3).
 :- lib(stoics_lib:kv_decompose/3).
 
 % also sets lib alias to that dir
@@ -30,33 +32,41 @@
 :- lib(url_file_local_date_mirror/3).
 :- lib(bio_db_add_infos/1).   % bio_db_add_infos_to/2
 
-:- debug(std_maps_ense).
+:- debuc(std_maps_ense).
 
 std_maps_ense_defaults(debug(true)).
 
-/** std_maps_ense.
+/** std_maps_ense( +Opts ).
 
 Maps based on ensembl .gtf file. Including transcripts to genes, genes
 to hgncs and locations of transcipt and genes to chromosomome locations.
 
+Opts
+  * assembly(Assembly)
+    assembly number (just the number)
+  * release(Release)
+    release number
+
 Nonmeclature:
-    * ense: the database abbv.
-    * enst: ensembl transcript
-    * ensg: ensembl gene
-    * chrl: chromosomal location
+  * ense: the database abbv.
+  * enst: ensembl transcript
+  * ensg: ensembl gene
+  * chrl: chromosomal location
 
 Produces:
-	map_ense_enst_ensg
-	map_ense_ensg_hgnc
-	map_ense_ensg_symb
-	map_ense_ensg_chrl
-	map_ense_enst_chrl
+  * map_ense_enst_ensg
+  * map_ense_ensg_hgnc
+  * map_ense_ensg_symb
+  * map_ense_ensg_chrl
+  * map_ense_enst_chrl
 
 @author  nicos angelopoulos
 @version 0.1, 2016/6/17
+@version 0.2, 2016/6/17, added assembly and release options
 @see ftp://ftp.ensembl.org/pub/release-84/gtf/homo_sapiens/Homo_sapiens.GRCh38.84.gtf.gz
 @see http://ftp.ensembl.org/pub/current_gtf/homo_sapiens/
 @tbd automate selection of latest version
+
 */
 std_maps_ense( Args ) :-
     Self = std_maps_ense,
@@ -67,19 +77,39 @@ std_maps_ense( Args ) :-
     ensure_loaded(hgnc:bio_db_build_downloads('hgnc/maps/map_hgnc_hgnc_symb')),
     ensure_loaded(hgnc:bio_db_build_downloads('hgnc/maps/map_hgnc_symb_hgnc')),
 
-	debug_call( Self, 'Starting...', true ),
+	debuc( Self, 'Starting...', true ),
 	absolute_file_name( bio_db_build_downloads(ense), DnDir ),
 	os_make_path( DnDir ),
-	debug( Self, 'Downloads dir for ense: ~p', DnDir ),
+	debuc( Self, 'Downloads dir for ense: ~p', DnDir ),
 	% Url = 'ftp://ftp.ensembl.org/pub/release-85/gtf/homo_sapiens/Homo_sapiens.GRCh38.85.gtf.gz',
 	% Url = 'ftp://ftp.ensembl.org/pub/release-89/gtf/homo_sapiens/Homo_sapiens.GRCh38.89.gtf.gz',
-	Url = 'ftp://ftp.ensembl.org/pub/release-99/gtf/homo_sapiens/Homo_sapiens.GRCh38.99.gtf.gz',
-
+    % options( [assembly(Amb),release(Rel)], Opts ),
+	% Pfx = 'ftp://ftp.ensembl.org/pub/release-',
+    % Mfx = '/gtf/homo_sapiens/Homo_sapiens.GRCh',
+    % at_con( [Pfx,Rel,Mfx,Amb,'.',Rel,'.gtf.gz'], Url ),
+	% Url = 'ftp://ftp.ensembl.org/pub/release-101/gtf/homo_sapiens/Homo_sapiens.GRCh38.101.gtf.gz',
+	% Url = 'ftp://ftp.ensembl.org/pub/release-99/gtf/homo_sapiens/Homo_sapiens.GRCh38.99.gtf.gz',
+    /* 20.09.10 - starting auto recognition of latest version
+    */
+    FtpDir = 'ftp://ftp.ensembl.org/pub/current_gtf/homo_sapiens/',
+    Found @@ curl( -l, '--no-progress-meter', FtpDir ),
+    % Homo_sapiens.GRCh38.101.gtf.gz
+    findall( HsGtf-Amb-Rel, (member(HsGtf,Found),at_con(['Homo_sapiens',GRChTkn,RelAtm,gtf,gz],'.',HsGtf),
+                         atom_concat('GRCh',AmbAtm,GRChTkn),
+                         atom_number(AmbAtm,Amb), atom_number(RelAtm,Rel)
+                        ),
+                            HsGtfs ),
+    ( HsGtfs = [HsGtfF-_Amb-_Rel] ->
+        true
+        ;
+        throw( non_unique_auto_ided_ense_gtf_file(HsGtfF) )
+    ),
+    atom_concat( FtpDir, HsGtfF, Url ),
 	url_file_local_date_mirror( Url, DnDir, [file(File),interface(wget)] ),
-	debug( Self, 'Dnload done, file is: ~p', File ),
+	debuc( Self, 'Dnload done, file is: ~p', File ),
 	working_directory( Old, DnDir ),
 	bio_db_dnt_times( File, DnDt, _DnEn ),
-	debug( by_unix ),
+	debuc( by_unix ),
 	os_un_zip( File, _, [keep(true),on_exists(skip),debug(true)] ),
 	% @ gunzip( -k, -f, File ),
 	os_ext( gz, Stem, File ),
@@ -87,14 +117,19 @@ std_maps_ense( Args ) :-
 	% fixme: ???:
 	% Stem = 'Homo_sapiens.GRCh38.84.gtf-16.06.20', 
 	% TabF = 'Homo_sapiens.GRCh38.84.gtf-16.06.20.tab', 
-	atomic_list_concat( [grep,'-v','"^#"',Stem,'>',TabF], ' ', Shell ),
-	write( shelling(Shell) ), nl,
-	shell( Shell ),
-	debug_call( Self, '...done...', true ),
+    % fixme: swi has skipping of initial comment lines...
+	% atomic_list_concat( [grep,'-v','"^#"',Stem,'>',TabF], ' ', Shell ),
+    % debuc( Self, '~w, shelling/1 : ~w', [Self,Shell] ),
+	% shell( Shell ),
+	% debuc( Self, '...done...', true ),
 	% @ grep( -v, '"^#"', Stem, '>', TabF ),
 	@ ls(),
-	mtx( TabF, Rows, sep(tab) ),
-	debug_call( Self, length, rows/Rows ),
+    % debuc( Self, 'Reading from: ~p', [TabF] ),
+	% mtx( TabF, Rows, sep(tab) ),
+    %
+    debuc( Self, 'Reading from: ~p', [Stem] ),
+    mtx( Stem, Rows, [sep(tab),skip_header('#')] ),
+	debuc( Self, length, rows/Rows ),
 	ense_transcripts( Rows, EnsTGRows, EnsTLRows ),
 	mtx( 'map_ense_enst_ensg.csv', EnsTGRows ),
 	mtx( 'map_ense_enst_chrl.csv', EnsTLRows ),
@@ -108,7 +143,7 @@ std_maps_ense( Args ) :-
 		    'map_ense_ensg_hgnc.csv', 'map_ense_ensg_symb.csv',
               'map_ense_ensg_chrl.csv'
 	       ],
-	debug( Self, 'mapping: ~w', [Csvs] ),
+	debuc( Self, 'mapping: ~w', [Csvs] ),
 	maplist( csv_to_pl, Csvs ),
 
 	/*
@@ -132,8 +167,8 @@ std_maps_ense( Args ) :-
 		row('Ensembl Gene','Chromosome', 'Start', 'End', 'Direction')
 			],
 	findall( PlF, (	nth1(N,Pls,PlF),	nth1(N,Headers,Header),
-					debug( Self, 'ingoing prolog file: ~p', PlF ),
-					debug( Self, '...with header: ~w and options: ~w', [Header,AddOpts] ),
+					debuc( Self, 'ingoing prolog file: ~p', PlF ),
+					debuc( Self, '...with header: ~w and options: ~w', [Header,AddOpts] ),
 					bio_db_add_infos_to([header(Header)|AddOpts], PlF)
 					),
 					_PlFs ),
@@ -144,7 +179,7 @@ std_maps_ense( Args ) :-
 	maplist( link_to_map_sub(ense), Pls ),
 
 	working_directory( _, Old ),
-	debug_call( Self, '...Done', true ).
+	debuc( Self, '...Done', true ).
 
 mv_to_sub( Sub, File ) :-
 	os_path( Sub, File, Rel ),

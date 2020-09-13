@@ -4,11 +4,12 @@
 :- use_module( library(lib) ).
 
 :- lib(os_lib).
+:- lib(debug_call).
 :- lib(stoics_lib:en_list/2).
 
 :- lib(stoics_lib:holds/2).
 
-:- debug( add_data_type ).
+:- debuc( add_data_type ).
 
 /** add_data_type( FileSorDirS ).
 
@@ -25,7 +26,7 @@ add_data_type_to( Os ) :-
 	add_data_type_to_file( Os ).
 add_data_type_to( Os ) :-
 	os_dir( Os ),
-	debug( add_data_type, 'Descending to dir: ~p', Os ),
+	debuc( add_data_type, 'Descending to dir: ~p', Os ),
 	working_directory( Old, Os ),
 	directory_contents( '.', Oses ),
 	maplist( add_data_type_to, Oses ),
@@ -42,7 +43,7 @@ add_data_type_to_file_infos( Infos, Os, Pname, _Arity, _NexTerm, DbStream ) :-
 	memberchk( ITerm, Infos ),
 	close( DbStream ),
 	!,
-	debug( add_data_type, 'Data types info term already present in file: ~p', Os ).
+	debuc( add_data_type, 'Data types info term already present in file: ~p', Os ).
 add_data_type_to_file_infos( _Infos, Os, Pname, Arity, NexTerm, DbS ) :-
 	findall( integer, between(1,Arity,_), DefTypes ),
 	findall( atom, between(1,Arity,_), TrmTypes ),
@@ -58,7 +59,7 @@ add_data_type_to_file_infos( _Infos, Os, Pname, Arity, NexTerm, DbS ) :-
 	copy_stream_data( InSt, OutSt ),
 	close( OutSt ),
 	close( InSt ),
-	debug( add_data_type, 'Tmp file: ~p', TmpOs ),
+	debuc( add_data_type, 'Tmp file: ~p', TmpOs ),
 	delete_file( Os ),
 	rename_file( TmpOs, Os ).
 

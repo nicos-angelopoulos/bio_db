@@ -21,7 +21,7 @@ map_uniprot_defaults( [   uniprot('HUMAN_9606_idmapping.dat'),
 % see above,... :- lib( map_predicate_name_stem/3 ).
 :- lib( csv_ids_map/6 ). % :- lib( csv_ids_interface_map/9 ).
 
-:- debug( uniprot ).
+:- debuc(uniprot).
 
 %% map_uniprot( +Foreign ).
 %% map_uniprot( +Foreign, +Opts ).
@@ -62,7 +62,7 @@ map_uniprot( Foreign, Uniprot, Fouts, Args ) :-
 							call( Fcall, FAccPrv, FAcc )
 						 ),
 									PFRows ),
-	debug_call( uniprot, length, '', pf_rows/PFRows ),
+	debuc( uniprot, length, '', pf_rows/PFRows ),
 	memberchk( interface(FcePrv), Opts ),
 	en_list( FcePrv, Fces ),
 	memberchk( destination(Dst), Opts ),
@@ -109,7 +109,7 @@ uniprot_load_file( File, Rows ) :-
 	uniprot_load_file( Stem, Rows ),
 	delete_file( Stem ).
 uniprot_load_file( File, Rows ) :-
-	debug( uniprot, 'Reading UniProt source at:~p', File ),
+	debuc( uniprot, 'Reading UniProt source at:~p', File ),
 	csv_read_file( File, Rows, [separator(0'\t)] ).
 
 map_uniprot_save( sqlite, Ext, Foreign, Pname, Stem, Dst, PFRows, Rev, File ) :-
@@ -119,17 +119,17 @@ map_uniprot_save( sqlite, Ext, Foreign, Pname, Stem, Dst, PFRows, Rev, File ) :-
 	use_module( library(db_facts) ),
 	os_dir_stem_ext( Dst, Stem, Ext, File ),
 	sqlite_connect( File, uniprot, exists(false) ),
-	debug( uniprot, 'Opened sqlite connection to: ~p', File ),
+	debuc( uniprot, 'Opened sqlite connection to: ~p', File ),
 	Create =.. [Pname,uniprot+text,Foreign+text],
 	db_create( uniprot, Create ),
-	debug_call( uniprot, time(start), 'write on file' ),
+	debuc( uniprot, time(start), 'write on file' ),
 	findall( _, (member(row(UniP,Fid),PFRows),Assert=..[Pname,UniP,Fid],db_assert(Assert)), _ ),
-	debug_call( uniprot, time(finish), 'write on file' ),
+	debuc( uniprot, time(finish), 'write on file' ),
 	sqlite_disconnect( uniprot ).
 map_uniprot_save( prolog, Ext, Foreign, Pname, Stem, Dst, PFRows, Rev, File ) :-
 	os_dir_stem_ext( Dst, Stem, Ext, File ),
 	os_dir_stem_ext( Dst, Stem, '', DstStem ),
-	debug( uniprot, 'Opened prolog output to: ~p', File ),
+	debuc( uniprot, 'Opened prolog output to: ~p', File ),
 	% ComClause =.. [Pname,uniprot_accession,Foreign],
 	% write( Out, '% ' ), portray_clause( Out, ComClause ),
 	findall( U, member(row(U,_),PFRows), Us ),
@@ -141,12 +141,12 @@ map_uniprot_save( prolog, Ext, Foreign, Pname, Stem, Dst, PFRows, Rev, File ) :-
 	/* why is this :  here? csv_ids_interface_map already writes the damn file???
 	length( PFRows, PFLen ),
 	Itv is floor( PFLen // 10 ),
-	debug_call( uniprot, time(start), 'write on file' ),
+	debuc( uniprot, time(start), 'write on file' ),
 	open( File, write, Out ),
 	findall( _, (   nth1(N,PFRows,row(UniP,Fid)),
 				 uniprot_report_progress(N,Itv),
 	                Clause=..[Pname,UniP,Fid],portray_clause(Out,Clause)), _ ),
-	debug_call( uniprot, time(finish), 'write on file' ),
+	debuc( uniprot, time(finish), 'write on file' ),
 	close( Out ).
 	*/
 	true.
@@ -182,7 +182,7 @@ interface_extension( prolog, pl ).
 interface_extension( pl, pl ).
 
 uniprot_cname( A, B ) :-
-	debug( uniprot, 'trying ~w', uniprot_cname_known(A, B) ),
+	debuc( uniprot, 'trying ~w', uniprot_cname_known(A, B) ),
 	uniprot_cname_known( A, B ),
 	!.
 uniprot_cname( A, A ).

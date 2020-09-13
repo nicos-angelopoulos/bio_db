@@ -1,17 +1,16 @@
 
-:- use_module(library(debug)).  % debug/1,3.
-
 :- use_module(library(lib)).
 
-:- lib(ansi_term).
 :- lib(os_lib).
 :- lib(options).
+:- lib(ansi_term).
+:- lib(debug_call).
 :- lib( stoics_lib:date_two_digit_dotted/1 ).
 
 :- prolog_load_context(directory, Lib ),
    lib(Lib).
 
-:- debug(bio_db_build_aliases).
+:- debuc(bio_db_build_aliases).
 
 bio_db_build_aliases_defaults( date_stem(Dotted) ) :-
 	date_two_digit_dotted( Dotted ).
@@ -55,7 +54,7 @@ bio_db_build_aliases( Args ) :-
 	user:bio_db_repo_build_root( Stem ),
 	options( date_stem(Dotted), Opts ),
 	atomic_list_concat( [Stem,Dotted], '-', Dir ),
-	debug( bio_db_build_aliases, 'Building at: ~p', Dir ),
+	debuc( bio_db_build_aliases, 'Building at: ~p', Dir ),
 	os_make_path( Dir ),
 	( file_search_path(bio_db_build,_) ->
 		% write warning

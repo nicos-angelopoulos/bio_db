@@ -49,7 +49,7 @@ std_mouse_maps_ncbi( Args ) :-
 	ncbi_dnload( DnDir ),
 	ncbi_mouse_gene_info_url( Url ),
 
-    UrlOpts = [debug(url_local),interface(wget),file(GzF),dnt_stamp(DntStamp)],
+    UrlOpts = [debug(true),interface(wget),file(GzF),dnt_stamp(DntStamp)],
     url_file_local_date_mirror( Url, DnDir, UrlOpts ),
 
 	working_directory( Old, DnDir ),

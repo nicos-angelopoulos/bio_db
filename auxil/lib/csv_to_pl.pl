@@ -5,18 +5,29 @@
 
 :- lib(stoics_lib:get_date_time/1).
 
-%% csv_to_pl( Stem ).
+%% csv_to_pl( +Self, +Stem ).
+%  csv_to_pl( +Stem ).
 % 
 %  Convert Stem.csv or Stem (with .csv extension) to a terms file RealStem.pl.
+% 
+%  Self, guides printing of debug message, regarding the output file.
+%
+%  csv_to_pl/1 is only provided for backward compatibility, entry point should
+%  only be via /2 version. Self is set to csv_to_pl, which means message is not
+%  printed.
 %
 % @author nicos angelopoulos
 % @version  0.2 2016/20
+% @version  0.3 2020/9/11, added Self
 %
 csv_to_pl( InStem ) :-
+    csv_to_pl( csv_to_pl, InStem ).
+
+csv_to_pl( Self, InStem ) :-
     file_name_extension( InStem, csv, CsvF ),
     file_name_extension( Stem, csv, CsvF ),
     file_name_extension( Stem, pl, PlF ),
-    write( output_on_file(PlF) ), nl,
+    debuc( Self, 'Output Prolog file: ~p', [PlF] ),
     % 16.06.20: changed default functor from row() to basename of stem
     file_base_name( Stem, Base ),
     csv_to_pl( CsvF, PlF, Base, [functor(Base)] ).

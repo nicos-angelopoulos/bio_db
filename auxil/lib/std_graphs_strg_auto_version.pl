@@ -34,7 +34,7 @@ std_graphs_strg_auto_version( VerAtm ) :-
     atom_concat(Left,_Right,Mdx), 
     atom_concat( VerAtm, '\'', Left ), 
     atom_number( VerAtm, _Vers ), 
-    debug( std_graphs_strg, 'Auto detected version: ~a', VerAtm ),
+    debuc( std_graphs_strg, 'Auto detected version: ~a', VerAtm ),
     !.
 std_graphs_strg_auto_version( unkonwn ) :-
 	Mess1 = 'Please check number of latest version at http://string-db.org',

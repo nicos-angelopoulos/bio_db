@@ -12,6 +12,7 @@
 % external code, lib knowns how to deal with these (will install if missing)
 :- lib(os_lib).
 :- lib(by_unix).
+:- lib(debug_call).
 :- lib(stoics_lib:prefix_atom/2).
 
 % also sets lib alias to that dir
@@ -28,7 +29,7 @@
 :- lib(url_file_local_date_mirror/3).
 :- lib(ens_fa_peptide_gene_rows/2).  % /2, fixme: should be more local
 
-:- debug(url_file).
+:- debuc(url_file).
 
 ncbi_repo( 'ftp://ftp.ncbi.nih.gov/gene/DATA/' ).
 ncbi_dnload( Loc ) :-
@@ -48,7 +49,7 @@ maps_ncbi_ensp_ensg :-
 	working_directory( Old, Dir ),
 	ens_fa_peptide_gene_rows( EnsF, EnsRows ),
 	csv_ids_map( _CsvF, ensp, ensg, EnsRows, OutF, [prefix(ncbi),header(row('Ensembl Protein','Ensembl Gene'))] ),
-	link_to_map_sub(ncbi, OutF ),
+	link_to_bio_sub(ncbi, OutF ),
 	working_directory( _, Old ).
 
 maps_ncbi_entz_gont :-
@@ -56,18 +57,18 @@ maps_ncbi_entz_gont :-
 	ncbi_dnload( Dir ),
 	ncbi_repo( Repo ),
 	os_path( Repo, 'gene2go.gz', Url ),
-	url_file_local_date_mirror( Url, Dir, debug(url_local) ),
+	url_file_local_date_mirror( Url, Dir, debug(true) ),
 	working_directory( Old, Dir ),
 	@ rm( -f, gene2go_hs ),
 	@ rm( -f, gene2go ),
 	@ gunzip( -f, -k, 'gene2go.gz' ),
-	debug( by_unix ),
+	% debuc( by_unix ),
 	grep(gene2go, '^9606', gene2go_hs),
 	% system( 'grep "^9606" gene2go | cat gene2go_hs' ),
 	working_directory( _, Old ).
 
 maps_ncbi_rnuc_symb :-
-	debug( by_unix ),
+	debuc( by_unix ),
 	ncbi_dnload( Dir ),
 	ncbi_repo( Repo ),
 	ncbi_humanise_data( gene2accession, Dir, Repo, Old, HsStem, HsUrl, HsDnDt ),
@@ -102,15 +103,15 @@ maps_ncbi_rnuc_symb :-
 	@ mv( -f, OutF, maps ),
 	@ mv( -f, DNAF, maps ),
 	working_directory( _, maps ),
-	link_to_map_sub(ncbi, OutF ),
-	link_to_map_sub(ncbi, DNAF ),
+	link_to_bio_sub(ncbi, OutF ),
+	link_to_bio_sub(ncbi, DNAF ),
 	working_directory( _, Old ).
 
 maps_ncbi_unig_entz :-
 	ncbi_dnload( Dir ),
 	ncbi_repo( Repo ),
 	os_path( Repo, 'gene2unigene', Url ),
-	url_file_local_date_mirror( Url, Dir, debug(url_local) ),
+	url_file_local_date_mirror( Url, Dir, debug(true) ),
 	working_directory( Old, Dir ),
 	bio_db_dnt_times( 'gene2unigene', UgDnDt, _DnEn ),
 
@@ -121,13 +122,13 @@ maps_ncbi_unig_entz :-
 	os_make_path( maps ),
 	@ mv( -f, OutF, maps ),
 	working_directory( _, maps ),
-	link_to_map_sub( ncbi, OutF ), 
+	link_to_bio_sub( ncbi, OutF ), 
 	working_directory( _, Old ).
 
 ncbi_humanise_data( Stem, Dir, Repo, Old, HsStem, Url, DnDt ) :-
 	file_name_extension( Stem, gz, GzF ),
 	os_path( Repo, GzF, Url ),
-	url_file_local_date_mirror( Url, Dir, debug(url_local) ),
+	url_file_local_date_mirror( Url, Dir, debug(true) ),
 	os_path( Dir, GzF, DnlF ),
 	bio_db_dnt_times( DnlF, DnDt, _DnEn ),
 
@@ -156,12 +157,12 @@ ncbi_gene2asseccion_cnms( 'Symbol', symb ).
 
 std_maps_ncbi_defaults(debug(true)).
 
-%% std_maps_ncbi.
+%% std_maps_ncbi(+Opts).
 %
 % Download latest NCBI gene to ensembl map file and convert it to 
 % a few standard maps.
 %==
-% std_maps_ncbi.
+% std_maps_ncbi([]).
 %==
 % @author nicos angelopoulos
 % @version  0.1 2014/7/23
@@ -186,13 +187,13 @@ std_maps_ncbi( Args ) :-
 	working_directory( _ParentD, MapsD ),
 	@ gunzip( RemB ),
 	file_name_extension( RemS, gz, RemB ),
-	std_maps_ncbi( RemS, Url, DnDt ),
+	std_maps_ncbi( Self, RemS, Url, DnDt ),
 	delete_file( RemS ),
 	maps_ncbi_rnuc_symb,
 	% maps_ncbi_unig_entz,  % unigene is no longer maintained as of Feb.2019
 	working_directory( _, Old ).
 
-std_maps_ncbi( File, Url, DnDt ) :-
+std_maps_ncbi( Self, File, Url, DnDt ) :-
 	TsvOpts = [match_arity(false),separator(0'\t)],
 	csv_read_file( File, Csv, TsvOpts ),
 	Csv = [_Comment|Rows],
@@ -200,8 +201,7 @@ std_maps_ncbi( File, Url, DnDt ) :-
 	% GEnsGF = entrez_gene_id_ensg.pl,
 	% csv_filter_by_column( New, tax_id, =(9606), HS ),
 	mtx_column_values_select( New, tax_id, 9606, HS, _, true ),
-	length( HS, HsLen ),
-	write( hs_len(HsLen) ), nl,
+    debuc( Self, length, hs_len/HS ),
 	Lens = [prefix(ncbi),to_value_1(pos_integer),to_value_2(pfx_by('ENS')),datetime(DnDt),source(Url)],
 	Rens = [prefix(ncbi),to_value_2(pos_integer),to_value_1(pfx_by('ENS')),datetime(DnDt),source(Url)],
 	csv_ids_map( File, entz, ensg, HS, GEnsGF, [header(row('Entrez ID','Ensembl Gene'))|Lens] ),
@@ -211,7 +211,7 @@ std_maps_ncbi( File, Url, DnDt ) :-
 	csv_ids_map( File, entz, ensp, HS, GEnsPF, [header(row('Entrez ID','Ensembl Protein'))|Lenp] ),
 	Renp = [prefix(ncbi),to_value_2(pos_integer),to_value_1(pfx_by_de_v('ENS')),datetime(DnDt),source(Url)],
 	csv_ids_map( File, ensp, entz, HS, EnsPGF, [header(row('Ensembl Protein','Entrez ID'))|Renp] ),
-	maplist( link_to_map_sub(ncbi), [GEnsGF,EnsGGF,GEnsPF,EnsPGF] ).
+	maplist( link_to_bio_sub(ncbi), [GEnsGF,EnsGGF,GEnsPF,EnsPGF] ).
 
 pos_integer( Numb, Numb ) :-
      integer( Numb ),

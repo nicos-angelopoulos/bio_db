@@ -1,6 +1,6 @@
 :- module( bio_db_mouse_ncbi, [
                 bio_db_mouse_ncbi/0,
-                %       (mouse) NCBI (entrez synonums only)
+                %       (mouse) NCBI (entrez synonyms only, for now)
                 map_ncbi_mouse_syno_symb/2
                 ] ).
 

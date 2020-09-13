@@ -121,7 +121,7 @@ unip_hs_seqs_file( Url, DnDir, Hdr ) :-
 	debug( maps_unip_seqs, 'Human file: ~w', HumF ),
 	*/
 
-	UrlOpts = [debug(url_local),interface(wget),file(SprotF)],
+	UrlOpts = [debug(true),interface(wget),file(SprotF)],
 	url_file_local_date_mirror( Url, DnDir, UrlOpts ),
 	debug( std_maps_unip_seqs, 'Uniprot local file: ~p', SprotF ),
 	file_base_name( Url, HumGzF ),
@@ -165,13 +165,13 @@ unip_hs_seqs_file( Url, DnDir, Hdr ) :-
 	            source(Url), header(Hdr), datetime(DnSt)
 	          ],
 	csv_ids_map( SeqF, 'Protein', 'Sequence', _, MapF, IdsOpts ), 
-	@ pwd(),
+    debuc( Self, pwd, false ),
 	directory_file_path( maps, MapF, RelMapF ),
 	debug( Self, 'Map file: ~p', RelMapF ),
     make_directory_path( maps ),
 	rename_file( MapF, RelMapF ),
 	working_directory( Old, maps ),
-	link_to_map_sub(unip, MapF ),
+	link_to_bio_sub(unip, MapF ),
 	working_directory( _, Old ),
 	@ rm( -f, HumF ).
 

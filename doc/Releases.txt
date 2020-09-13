@@ -10,6 +10,10 @@ TBD:
          Rocks: Enumerate connections ? rocks_current(X).
 
 3.2
+      20.09.11    BUILD:    added debug argument to csv_to_pl/1
+                  FIXED:    finalised support for mouse ense
+                  CHANGE:   use library(csv) facilites for skipping comments in ense
+
       20.09.10    IFACE:    use pass=opt=val for cascading options
                   BUILD:    auto detection of ense latest gtf file
                   BUILD:    started on mouse ense maps (based on human scripts)

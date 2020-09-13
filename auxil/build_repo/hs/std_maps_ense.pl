@@ -26,7 +26,7 @@
 % :- ensure_loaded(hgnc:bio_db_build_downloads('hgnc/maps/map_hgnc_symb_hgnc')).
 
 % local libs & sources
-:- lib(csv_to_pl/1).
+:- lib(csv_to_pl/2).
 :- lib(link_to_bio_sub/2).
 :- lib(bio_db_dnt_times/3).
 :- lib(url_file_local_date_mirror/3).
@@ -123,18 +123,21 @@ std_maps_ense( Args ) :-
 	% shell( Shell ),
 	% debuc( Self, '...done...', true ),
 	% @ grep( -v, '"^#"', Stem, '>', TabF ),
-	@ ls(),
+	% @ ls(),
     % debuc( Self, 'Reading from: ~p', [TabF] ),
 	% mtx( TabF, Rows, sep(tab) ),
     %
     debuc( Self, 'Reading from: ~p', [Stem] ),
-    mtx( Stem, Rows, [sep(tab),skip_header('#')] ),
+    mtx( Stem, Rows, [sep(tab),csv_read(skip_header('#'))] ),
 	debuc( Self, length, rows/Rows ),
 	ense_transcripts( Rows, EnsTGRows, EnsTLRows ),
+    debuc( Self, length, [tr_to_names_map,tr_locations]/[EnsTGRows,EnsTLRows] ),
 	mtx( 'map_ense_enst_ensg.csv', EnsTGRows ),
 	mtx( 'map_ense_enst_chrl.csv', EnsTLRows ),
 
-	ense_genes( Rows, EnsGHRows, EnsGSRows, EnsGCRows ),
+	ense_genes( Rows, EnsGHRows, EnsGSRows, EnsGCRows, Disagreed, NotInHgnc ),
+    debuc( Self, length, ense_to_hgnc_symbol_disagreements/Disagreed ),
+    debuc( Self, length, ense_has_no_hgnc/NotInHgnc ),
 	mtx( 'map_ense_ensg_hgnc.csv', EnsGHRows ),
 	mtx( 'map_ense_ensg_symb.csv', EnsGSRows ),
 	mtx( 'map_ense_ensg_chrl.csv', EnsGCRows ),
@@ -144,7 +147,7 @@ std_maps_ense( Args ) :-
               'map_ense_ensg_chrl.csv'
 	       ],
 	debuc( Self, 'mapping: ~w', [Csvs] ),
-	maplist( csv_to_pl, Csvs ),
+	maplist( csv_to_pl(Self), Csvs ),
 
 	/*
 
@@ -176,7 +179,7 @@ std_maps_ense( Args ) :-
 	maplist( mv_to_sub(maps), Pls ),
     @ rm( -f, Stem, TabF ),
 	working_directory( _, maps ),
-	maplist( link_to_map_sub(ense), Pls ),
+	maplist( link_to_bio_sub(ense), Pls ),
 
 	working_directory( _, Old ),
 	debuc( Self, '...Done', true ).
@@ -188,43 +191,49 @@ mv_to_sub( Sub, File ) :-
 new_ext( New, File, NewFile ) :-
 	os_ext( _Old, New, File, NewFile ).
 	
-ense_genes( [], [], [], [] ).
-ense_genes( [RowG|Rows], GHRows, GSRows, [EnsGC|GCRows] ) :-
+ense_genes( [], [], [], [], [], [] ).
+ense_genes( [RowG|Rows], GHRows, GSRows, [EnsGC|GCRows], Dis, Nin ) :-
 	RowG = row(ChrG,_Db,gene,SrtG,EndG,_,DirG,_,InfoG),
 	EnsGC= row(EnsG,ChrG,SrtG,EndG,DirG),
 	ense_info( gene_id, InfoG, EnsG ),
 	ense_info( gene_name, InfoG, EnsN ),
-	ense_gene_hgnc( EnsG, EnsN, GHRows, GSRows, TGHRows, TGSRows ),
+	ense_gene_hgnc( EnsG, EnsN, GHRows, GSRows, Dis, Nin, TGHRows, TGSRows, Tis, Tin ),
 	!,
-	ense_genes( Rows, TGHRows, TGSRows, GCRows ).
-ense_genes( [RowG|Rows], _, _, _ ) :-
+	ense_genes( Rows, TGHRows, TGSRows, GCRows, Tis, Tin ).
+ense_genes( [RowG|Rows], _, _, _, _, _ ) :-
 	RowG = row(_ChrG,_Db,gene,_SrtG,_EndG,_,_DirG,_,_InfoG),
 	!,
 	length( Rows, Len ),
 	throw( tripped_on_gene_row(RowG,Len) ).
-ense_genes( [_RowG|Rows], GHRows, GSRows, GCRows ) :-
-	ense_genes( Rows, GHRows, GSRows, GCRows ).
+% here: nonGRow, is not a gen row, so it is skipped
+ense_genes( [_NonGRow|Rows], GHRows, GSRows, GCRows, Dis, Nin ) :-
+	ense_genes( Rows, GHRows, GSRows, GCRows, Dis, Nin ).
 
-ense_gene_hgnc( EnsG, EnsN, GHRows, GSRows, TGHRows, TGSRows ) :-
+ense_gene_hgnc( EnsG, EnsN, GHRows, GSRows, Dis, Nin, TGHRows, TGSRows, Tis, Tin ) :-
 	% map_hgnc_ensg_hgnc( EnsG, Hgnc ),
 	findall( AHgnc, hgnc:map_hgnc_ensg_hgnc(EnsG,AHgnc), [Hgnc] ),
         % there are 10 or so EnsGs, map to multi Hs
 	!,
 	hgnc:map_hgnc_hgnc_symb( Hgnc, Symb ),
-	ense_gene_hgnc_symbols( EnsN, Symb ),
+	ense_gene_hgnc_symbols( EnsN, Symb, Dis, Tis ),
 	GHRows = [row(EnsG,Hgnc)|TGHRows],
-	GSRows = [row(EnsG,Symb)|TGSRows].
-ense_gene_hgnc( EnsG, EnsN, GHRows, GSRows, TGHRows, TGSRows ) :-
+	GSRows = [row(EnsG,Symb)|TGSRows],
+    Nin = Tin.
+ense_gene_hgnc( EnsG, EnsN, GHRows, GSRows, Dis, Nin, TGHRows, TGSRows, Tis, Tin ) :-
 	% \+ map_hgnc_ensg_hgnc( EnsG, _ ),
 	hgnc:map_hgnc_symb_hgnc( EnsN, Hgnc ),
-	!,  								% fixme: count how many of those we have ...
+	!,
 	GHRows = [row(EnsG,Hgnc)|TGHRows],
-	GSRows = [row(EnsG,EnsN)|TGSRows].
-ense_gene_hgnc( _EnsG, _EnsN, GHRows, GSRows, GHRows, GSRows ).
+	GSRows = [row(EnsG,EnsN)|TGSRows],
+    Dis = Tis,
+    Nin = Tin.
+ense_gene_hgnc( EnsG, EnsN, GHRows, GSRows, Dis, [EnsG-EnsN|Tin], GHRows, GSRows, Dis, Tin ).
 
-ense_gene_hgnc_symbols( Symb, Symb ) :- !.
-ense_gene_hgnc_symbols( EnsN, Symb ) :-
-	write( ense_gene_symbol_disagreement(EnsN,Symb) ), nl.
+ense_gene_hgnc_symbols( Symb, Symb, Dis, Tis ) :- !, Dis = Tis.
+ense_gene_hgnc_symbols( EnsN, Symb, Dis, Tis ) :-
+    Mess = 'Ensembl gene name (~w), different than HGNC symbol: (Symb)',
+    debuc( std_maps_ense(details), Mess, [EnsN,Symb] ),
+    Dis = [EnsN-Symb|Tis].
 
 ense_transcripts( [], [], [] ).
 ense_transcripts( [RowT|Rows], [EnsTG|TGRows], [EnsTL|TLRows] ) :-

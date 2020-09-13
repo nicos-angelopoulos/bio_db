@@ -1,9 +1,10 @@
 
 % if library(lib) is missing, install via pack_install(lib).
 %
-:- ensure_loaded(library(lists)).
-:- ensure_loaded(library(apply)).
-:- ensure_loaded(library(lib)).
+:- use_module(library(lists)).
+:- use_module(library(apply)).
+:- use_module( library(listing) ).  % portray_clause/2.
+:- use_module(library(lib)).
 
 % external code, lib knowns how to deal with these (will install if missing)
 :- lib(os_lib).
@@ -19,8 +20,8 @@
 % local libs & sources
 :- ensure_loaded( '../lib/bio_db_repo_info.pl' ).
 
-:- debug(std_repo).
-:- debug(by_unix).
+:- debuc(std_repo).
+% :- debuc(by_unix).
 
 :- set_prolog_flag(allow_dot_in_atom, false).   % for portaying correctly
 
@@ -58,26 +59,25 @@ std_repo( Args ) :-
     options_append( std_repo, Args, Opts ),
     bio_db_build_aliases( Opts ),
     absolute_file_name( bio_db_build_downloads('.'), DnDir ),
-    debug_call( Self, start, true ),
+    debuc( Self, start, true ),
     os_path( BioDb, dnloads, DnDir ),
-    write( bio_db(BioDb) ), nl,
     os_path( Work, BioDbDir, BioDb ),
-    debug( Self, 'Work dir: ~p', Work ),
-    debug( Self, 'Bio db work dir: ~p', BioDbDir ),
+    debuc( Self, 'Work dir: ~p', Work ),
+    debuc( Self, 'Bio db work dir: ~p', BioDbDir ),
     os_dirs( DnSubs, dir(DnDir) ),
-    debug( Self, 'Subs in download dir: ~p', [DnSubs] ),
+    debuc( Self, 'Subs in download dir: ~p', [DnSubs] ),
     std_repo_subs( DnSubs, Work+BioDbDir+BioDb, Opts ).
 
 std_repo_subs( [], Dirs, Opts ) :-
     !,
-    debug( std_repo, 'Downloads dir has no sub dirs.', [] ),
+    debuc( std_repo, 'Downloads dir has no sub dirs.', [] ),
     ensure_loaded( pack('bio_db/src/lib/ui_yes_no') ),
     findall( StdSub, (os_dir(StdSub),StdSub\==lib), StdSubs ),
     Mess = 'Do you want me to run standards in subs: ~w',
     ui_yes_no( true, Mess, [StdSubs], y, Reply ),
     std_repo_subs_reply( Reply, StdSubs, Dirs, true, Opts ).
 std_repo_subs( [H|T], Dirs, Opts ) :-
-    debug( std_repo, 'Some sub-dirs exist: ~w', [[H|T]] ),
+    debuc( std_repo, 'Some sub-dirs exist: ~w', [[H|T]] ),
     ensure_loaded( pack('bio_db/src/lib/ui_yes_no') ),
     findall( StdSub, (os_dir(StdSub),StdSub\==lib), StdSubs ),
     Mess = 'Do you want me to run standards in subs: ~w',
@@ -98,7 +98,7 @@ std_sub( Sub, Opts ) :-
     working_directory( Old, Sub ),
     atomic_list_concat( [std,Sub], '_', StdSub ),
     maplist( opt_pl_cline, Opts, Crgs ),
-    Upsh =.. [upsh,StdSub,' - '|Crgs],
+    Upsh =.. [upsh,StdSub,p,' - '|Crgs],
     % @ upsh( StdSub ),
     debuc( std_repo, 'Top level is shelling: ~w', Upsh ),
     @ Upsh,
@@ -120,18 +120,22 @@ std_repo_create( Work+BioDbDir+BioDb, _Opts ) :-
     os_make_path( PubDir, [debug(true),afresh(true)] ),
 
     atomic_list_concat( [bio_db_repo,Date], '-', BioDbDir ),
-    debug( std_repo, 'Date: ~w', Date ),
+    debuc( std_repo, 'Date: ~w', Date ),
     os_path( PubDir, BioDbDir, Repo ),
     % atomic_list_concat( [bio_db_repo,Date], '-', RepoDir ),
     % os_path( Work, RepoDir, Repo ),
     @ mkdir( Repo ),
     os_path( BioDb, data, BioDbData ),
-    @ cp( -r, '--dereference', BioDbData, Repo ),
+    ( current_prolog_flag(apple,true) ->
+        @ cp( '-R', BioDbData, Repo )
+        ;
+        @ cp( '-r', '--dereference', BioDbData, Repo )
+    ),
     os_path( Repo, data, Rata ),
     % findall( RepoSub, os_dir(RepoSub,dir(Rata)), RepoSubs ),
     os_dir( RepoSubs, [dir(Rata),solutions(findall)] ),
     % os_dir_dirs( Rata, RepoSubs ),
-    debug( std_repo, 'Subs: ~w', [RepoSubs] ),
+    debuc( std_repo, 'Subs: ~w', [RepoSubs] ),
     % maplist( std_repo_zip_cat(Rata), RepoSubs ),
     zip_pl_files_in( Rata ),
     expand_file_name( '~/pl/packs/src/bio_db_repo', [PackRoot] ),
@@ -157,7 +161,7 @@ std_repo_create( Work+BioDbDir+BioDb, _Opts ) :-
     @ mv( TarGzF, TgzF ),
     std_repo_to_web_page( TgzF, BioDbDir, Date ),
     working_directory( _, Old ),
-    debug_call( std_repo, end, true ).
+    debuc( std_repo, end, true ).
 
 bio_db_repo_file_version( Repo, Date ) :-
     os_path( Repo, 'prolog/bio_db_repo_version.pl', VersF ),
@@ -204,15 +208,15 @@ std_repo_to_web_page( TgzF, BioDbDir, Date ) :-
     @ cp( -r, RepoDataDir, WebRepoDataD ),
     working_directory( _WorkA, WebD ),
     % @ ln( -s, RepoDir, data ),
-    debug( std_repo, 'When publishing link:~p to data/ in the same directory', [RepoDir] ),
+    debuc( std_repo, 'When publishing link:~p to data/ in the same directory', [RepoDir] ),
     % @ ln( -s, WebRepoDataD, data ),
     % @ mkvis( WebRepoDataD ),
-    @ pupsh( os_mk_vis, WebRepoDataD ),
+    @ upsh( os_mk_vis, p, WebRepoDataD ),
     atomic_list_concat( [stoicos,Hname], '.', Unison ),
     @unison( Unison ).
 std_repo_to_web_page( Tgz, _BioDbDir, _Date ) :-
-    debug_call( std_repo, 'Skipping this bit as it is only relevant for Nicos\' own set-up.', true ),
-    debug( std_repo, 'You can publish the pack from tgz file: ~p', [Tgz] ).
+    debuc( std_repo, 'Skipping this bit as it is only relevant for Nicos\' own set-up.', true ),
+    debuc( std_repo, 'You can publish the pack from tgz file: ~p', [Tgz] ).
 
 /** fixme: delete, no longer used....*/
 std_repo_zip_cat( Rata, Sub ) :-
@@ -234,13 +238,13 @@ bio_db_data_zip_file( File ) :-
     file_name_extension( _Stem, pl, File ),
     !,
     % os_path( Dir, File, Path ),
-    debug( bio_db_data_zip, 'Doing: ~w', [File] ),
+    debuc( bio_db_data_zip, 'Doing: ~w', [File] ),
     file_name_extension( File, zip, ZipF ),
     @ zip( ZipF, File ),
     @ chmod( 'go+r', ZipF ),
     @ rm( -f, File ).
 bio_db_data_zip_file( File ) :-
-    debug( bio_db_data_zip, 'Skipping: ~w', [File] ).
+    debuc( bio_db_data_zip, 'Skipping: ~w', [File] ).
 
 my_hostname( 'nicos-HP-EliteDesk-800-G4-TWR', 'άμπελος' ).
 my_hostname( krotos, 'κρότος' ).
@@ -256,21 +260,25 @@ opt_pl_cline( Opt, Crg ) :-
     ).
 
 zip_pl_files_in( Dir ) :-
-    os_files( Files, [dir(Dir),stem(abs)] ),
-    maplist( zip_file_if_pl, Files ),
+    os_sel( os_files, ext(pl), Plies, [dir(Dir),stem(abs)] ),
+    % os_files( Files, [dir(Dir),stem(abs)] ),
+    % include( 
+    length( Plies, NoFiles ),
+    % maplist( zip_file_if_pl, Files ),
+    zip_pl_files( Plies, 1, NoFiles ),
     os_dirs( Dirs, [dir(Dir),stem(abs)] ),
     maplist( zip_pl_files_in, Dirs ).
 
-zip_file_if_pl( AbsFile ) :-
+zip_pl_files( [], _I, _Tot ).
+zip_pl_files( [AbsFile|Plies], I, Tot ) :-
     % fixme:  just sticking tape for now
-    ( os_ext(pl,_Stem,AbsFile) -> 
-            os_path( Path, File, AbsFile ),
-            working_directory( Old, Path ),
-            os_ext( zip, File, ZipF ),
-            @ zip( ZipF, File ),
-            @ chmod( 'go+r', ZipF ),
-            @ rm( -f, File ),
-            working_directory( _, Old )
-            ;
-            true 
-    ).
+    os_path( Path, File, AbsFile ),
+    debuc( std_repo, 'Zipping (~d/~d): ~w', [I,Tot,File] ),
+    working_directory( Old, Path ),
+    os_ext( pl, File, ZipF ),
+    @ zip( '--quiet', ZipF, File ),
+    @ chmod( 'go+r', ZipF ),
+    @ rm( -f, File ),
+    working_directory( _, Old ),
+    J is I + 1,
+    zip_pl_files( Plies, J, Tot ).

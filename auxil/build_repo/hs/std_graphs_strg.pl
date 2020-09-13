@@ -28,8 +28,8 @@
 :- lib(bio_db_add_infos/1).  % bio_db_add_infos_to/2, fixme:
 :- lib(std_graphs_strg_auto_version/1).
 
-:- debug(by_unix).
-:- debug(std_graphs_strg).  % fixme: you probably don't need this. 
+:- debuc(by_unix).
+:- debuc(std_graphs_strg).  % fixme: you probably don't need this. 
 % now there is an option...
 
 std_graphs_strg_defaults( [debug(true)|T] ) :-
@@ -69,10 +69,10 @@ std_graphs_strg( Args ) :-
     % std_graphs_strg( VersionPrv ) :-
     options( string_version(VersionPrv), Opts ),
     ( number(VersionPrv) -> atom_number(Version,VersionPrv); Version = VersionPrv ),
-	debug( std_graphs_strg, 'Version: ~w', Version ),
+	debuc( Self, 'Version: ~w', Version ),
 	std_graphs_string_version_base_name( Version, Bname, From ),
 	Self = std_graphs_strg,
-	debug( Self, 'Base name: ~w', Bname ),
+	debuc( Self, 'Base name: ~w', Bname ),
 	absolute_file_name( bio_db_build_downloads(strg), Parent ),
 	% absolute_file_name( baio_db_downloads(string/Bname), LocalFile ),
 	% directory_file_path( Parent, _BnameAgain, LocalFile ),
@@ -91,10 +91,10 @@ std_graphs_strg( Args ) :-
 	Mess1 = 'Converting string file: ~p, to Prolog',
 	% file_name_extension( Stem, txt, TxtF ),
 	% file_name_extension( Stem, pl, PlF ),
-	debug( Self, 'Directory: ~p', [Parent] ),
-	debug( Self, Mess1, [TxtF] ),
+	debuc( Self, 'Directory: ~p', [Parent] ),
+	debuc( Self, Mess1, [TxtF] ),
 	mtx_prolog( TxtF, File, Opt ),
-	debug( _, 'Edges output: ~w', File ),
+	debuc( _, 'Edges output: ~w', File ),
 	delete_file( TxtF ),
 	% @ rm( -rf, graphs ), % don't do this. there are now other organisms 
     % puting stuff in graphs/ (eg mouse...)
@@ -104,7 +104,7 @@ std_graphs_strg( Args ) :-
 	@ mv( File, Trg ),
 
 	consult( edge_strg_hs:Trg ),
-	debug( _, 'Consulted hs: ~w', [edge_strg_hs:Trg] ),
+	debuc( _, 'Consulted hs: ~w', [edge_strg_hs:Trg] ),
 
 	findall( edge_strg_hs_symb(SymbA,SymbB,W),
 	                     ( edge_strg_hs:edge_strg_hs(EnsP1,EnsP2,W),
@@ -116,7 +116,7 @@ std_graphs_strg( Args ) :-
 		  ),
 	sort( UnoSymbEdges, SymbEdges ),
     length( SymbEdges, SymbEdgesLen ),
-	debug( _, 'Unique symbol edges hs: ~w', [SymbEdgesLen] ),
+	debuc( _, 'Unique symbol edges hs: ~w', [SymbEdgesLen] ),
 	EdgeSymbsF = 'graphs/edge_strg_hs_symb.pl',
 	portray_clauses( SymbEdges, file(EdgeSymbsF) ),
 	bio_db_dnt_times( Bname, DnDt, _EndDt ),
@@ -143,12 +143,12 @@ sort( A, B, A, B ).
 
 std_graph_string_download_string( LocalFile, _From, Self ) :-
 	exists_file( LocalFile ),
-	debug( Self, 'Using existing local string file: ~p', LocalFile ),
+	debuc( Self, 'Using existing local string file: ~p', LocalFile ),
 	!.
 std_graph_string_download_string( Local, Remote, Self ) :-
-	debug( Self, 'Downloading from: ~p', Remote ),
+	debuc( Self, 'Downloading from: ~p', Remote ),
 	url_file( Remote, Local, dnt(true) ),
-	debug( Self, '... to local file: ~p', Local ).
+	debuc( Self, '... to local file: ~p', Local ).
 
 std_graphs_string_version_base_name( VersionPrv, Bname, Remote ) :-
 	( atom_concat(v,Version,VersionPrv)->true;Version=VersionPrv ),
@@ -165,7 +165,7 @@ bio_db_std_string :-
 	        rows_transform(maplist(user:de_hs))
 		 ],
 	mtx_prolog( bio_dn(strg/'protein.links.hs.txt'), File, Opt ),
-	debug( _, 'Edges output: ~w', File ),
+	debuc( _, 'Edges output: ~w', File ),
 	bio_db_std_string_link( File ).
 
 de_hs( row(HsEnsP1,HsEnsP2,WAtm), row(EnsP1,EnsP2,W) ) :-
@@ -174,7 +174,7 @@ de_hs( row(HsEnsP1,HsEnsP2,WAtm), row(EnsP1,EnsP2,W) ) :-
     ( number(WAtm) -> W = WAtm; atom_number(WAtm,W) ),
 	!.
 de_hs( Row, _ ) :-
-	debug( _, 'Failed to translate row: ~w', Row ),
+	debuc( _, 'Failed to translate row: ~w', Row ),
 	abort.
 
 bio_db_std_string_link( File ) :-

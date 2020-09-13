@@ -23,15 +23,15 @@
 
 % local libs & sources
 :- lib(csv_ids_map/6).
-:- lib(link_to_bio_sub/2).   % link_to_map_sub/2
+:- lib(link_to_bio_sub/2).
 :- lib(bio_db_dnt_times/3).
 :- lib(url_file_local_date_mirror/3).
 :- lib(bio_db_add_infos/1).  % bio_db_add_infos_to/2
 
 :- ensure_loaded('src/map_uniprot').  % /4.
 
-:- debug(uniprot).
-:- debug(link_to_map_sub).
+% :- debuc(uniprot).
+% :- debuc(link_to_map_sub).
 
 unip_hs( 'ftp://ftp.ebi.ac.uk/pub/databases/uniprot/current_release/knowledgebase/idmapping/by_organism/HUMAN_9606_idmapping.dat.gz' ).
 trem_hs( 'ftp://ftp.ebi.ac.uk/pub/databases/uniprot/current_release/knowledgebase/idmapping/by_organism/HUMAN_9606_idmapping_selected.tab.gz' ).
@@ -41,15 +41,18 @@ trem_hs( 'ftp://ftp.ebi.ac.uk/pub/databases/uniprot/current_release/knowledgebas
 
 unip_dnload( Loc ) :-
 	absolute_file_name( bio_db_build_downloads(unip), Loc ),
-    debug( uniprot, 'Loc: ~p', Loc ),
+    debuc( uniprot, 'Loc: ~p', Loc ),
 	os_make_path( Loc, debug(true) ).
 
 std_maps_unip_defaults( debug(true) ).
 
-%% maps_std_uniprot.
+%% maps_std_unip(Opts).
 %
-% Create some uniprot maps.
+% Create uniprot maps.
 %
+%Opts
+%  * debug(Dbg=true)
+%    informational messages
 %==
 % ?- maps_std_uniprot.
 % ?- shell( 'wc -l uniprot_*' ).
@@ -61,20 +64,21 @@ std_maps_unip_defaults( debug(true) ).
 % @tbd ftp://ftp.uniprot.org/pub/databases/uniprot/current_release/knowledgebase/idmapping/by_organism/
 %
 std_maps_unip( Args ) :-
-    options_append( std_maps_unip, Args, Opts ),
+    Self = std_maps_unip,
+    options_append( Self, Args, Opts ),
     bio_db_build_aliases( Opts ),
     unip_dnload( DnDir ),  %
 	/* double check unip part works with the nucl part // 15.05.15 */
 	working_directory( Old, DnDir ),
 	unip_hs( Url ),
 	% url_file( Url, 
-	UrlOpts = [debug(url_local),interface(wget),file(File)],
+	UrlOpts = [debug(true),interface(wget),file(File)],
 	url_file_local_date_mirror( Url, DnDir, UrlOpts ),
 	% cd( bio_dn_root(uniprot) ),
 	% os_rm_rf( maps ), % don't do that, mouse puts stuff there too
 	os_make_path( maps, debug(true) ),
 
-	debug( uniprot, 'Dir location: ~p', DnDir ),
+	debuc( Self, 'Dir location: ~p', DnDir ),
 	Rev = [interface(prolog),reverse(true)],
 	map_uniprot( 'Ensembl_PRO', Csv, [EnspF], Rev ),
 
@@ -90,7 +94,7 @@ std_maps_unip( Args ) :-
 	% Files = [HgncF,FromHgncF,EtzF,UniGF,EnspF],
 	Files = [HgncF,FromHgncF,EtzF,EnspF],
 	% working_directory( _, maps ),
- 	maplist( link_to_map_sub(unip), Files ),
+ 	maplist( link_to_bio_sub(unip), Files ),
 
 	bio_db_dnt_times( File, SwDnDt, _SwDnEn ),
 	SwOpts = [source(Url),datetime(SwDnDt)],
@@ -104,24 +108,23 @@ std_maps_unip( Args ) :-
 
 	trem_hs( TremUrl ),
 	% 15.05.14 adding support for treMBL, at least that 's what i think the selected file is all about
-	TrUrlOpts = [debug(url_local),interface(wget),file(TrFile)],
+	TrUrlOpts = [debug(true),interface(wget),file(TrFile)],
 	url_file_local_date_mirror( TremUrl, DnDir, TrUrlOpts ),
 	bio_db_dnt_times( TrFile, TrDnDt, _TrDnEn ),
 
 	os_make_path( maps, afresh(false) ),
 	os_make_path( trembl, afresh(true) ),
 	directory_file_path( _, TremFile, TremUrl ),
-	@ pwd(),
+    debuc( Self, pwd, false ),
 	directory_file_path( trembl, TremFile, TremTrg ),
 	copy_file( TremFile, TremTrg ),
 	working_directory( _, trembl ), 
 	file_name_extension( TremDatF, gz, TremFile ),
 	atom_concat( 'gunzip ', TremFile, Gunzip ),
-	debug( _, 'Gunzipping: ~p', TremFile ),
+	debuc( Self, 'Gunzipping: ~p', TremFile ),
 	shell( Gunzip ),
 	csv_read_file( TremDatF, TremRows, [separator(0'\t)] ),
-	length( TremRows, TremLen ), 
-	write( trem_length(TremLen) ), nl,
+    debuc( Self, length, trem/TremRows ),
 	% 17/22
 	findall( map_unip_trem_nucs(TremId,Nucs), (
 	                  member(TremRow,TremRows), arg(1,TremRow,TremId), \+ empty(TremId), 
@@ -130,15 +133,14 @@ std_maps_unip( Args ) :-
 				   member(Nucs,NucsList)
 				            ), 
 						        TNRows ),
-	length(TNRows, TNLen), 
-	write( tn_len(TNLen) ), nl,
+    debuc( Self, length, tn/TNRows ),
 	sort( TNRows, TNOrdRows ),
 	open( '../maps/map_unip_trem_nucs.pl', write, TNOut ),
 	maplist( portray_clause(TNOut), TNOrdRows ),
 	close( TNOut ),
     @ rm( -rf, '../trembl' ),   % fixme: untested in real run.....
 	working_directory( _, '../maps' ),
- 	link_to_map_sub(unip, 'map_unip_trem_nucs.pl' ),
+ 	link_to_bio_sub(unip, 'map_unip_trem_nucs.pl' ),
 
 	TrOpts = [source(TremUrl),datetime(TrDnDt),header(row('treMBLE Protein','Nucleotide Sequence'))],
 	bio_db_add_infos_to( TrOpts, map_unip_trem_nucs.pl ),
@@ -156,7 +158,7 @@ std_map_usyn_unip :-
 	open( '/media/nicos/lmtk3/downloads/uniprot_sprot.dat', read, In ),
 	read_line_to_codes( In, Line ),
 	sprot_synonym_rows( Line, In, SynRs ),
-	debug_call( uniprot, length, syn_rows/SynRs ),
+	debuc( uniprot, length, syn_rows/SynRs ),
 	close( In ),
 	sort( SynRs, OrdRs ),
 	unip_dnload( DnDir ),
@@ -164,7 +166,7 @@ std_map_usyn_unip :-
 	Opts = [prefix(unip),dir(MapsD)],
 	csv_ids_map( _, usyn, unip, [row(usyn,unip)|OrdRs], MapF, Opts ),
 	os_path( MapsD, MapF, AbsMapF ),
- 	link_to_map_sub( unip, AbsMapF ).
+ 	link_to_bio_sub( unip, AbsMapF ).
 
 
 sprot_synonym_rows( end_of_file, _In, [] ) :- !.

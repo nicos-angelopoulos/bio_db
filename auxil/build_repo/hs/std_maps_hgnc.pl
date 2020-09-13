@@ -1,5 +1,6 @@
 
 :- use_module(library(filesex)).
+
 % if library(lib) is missing, install via pack_install(lib).
 %
 :- use_module( library(lib) ).
@@ -19,13 +20,10 @@
 :- lib(de_semi/3).
 :- lib(sep_split/3).
 :- lib(csv_ids_map/6).
-:- lib(link_to_bio_sub/2).  % link_to_map_sub/2
+:- lib(link_to_bio_sub/2).
 :- lib(bio_db_dnt_times/3).
 :- lib(url_file_local_date_mirror/3).
 :- lib(bio_db_add_infos/1).   % bio_db_add_infos_to/2
-
-:- debug(std_maps_hgnc). % fixme:
-:- debug(hgnc).
 
 true(_,_).
 
@@ -117,15 +115,15 @@ std_maps_hgnc( Args ) :-
     hgnc_std_map( Hgnc, Ccds, CsvF, Csv, StdO, SrcUrl/DnDt, CcdsF ),          % 
     hgnc_std_map( Ccds, Hgnc, CsvF, Csv, StdO, SrcUrl/DnDt, HcdsF ),          % 
 
-    debug( std_maps_hgnc, 'doing links...', [] ),
-    debug( link_to_map_sub ),
+    debuc( Self, 'doing links...', [] ),
     % Files = [HSf,HNf,SHf,EcHf,EcSf,ESf,SEf,EnSf,HEf,HEnf,HEcf,HNcf,NcHf, SynoF,PrevF,ChrmF, CcdsF,HcdsF ],
     Files = [HgncF,SynoF,PrevF,HgncNameF,SymbF,EntzF,SymbEntzF,HgncEntzF,EntzHgncF,EnsgF,HgncEnsgF,ChrmF,CcdsF,HcdsF],
-    maplist( link_to_map_sub(hgnc), Files ),
+    maplist( link_to_bio_sub(hgnc), Files ),
     % file_name_extension( TxtF, gz, GzF ),
     % delete_file( TxtF ),
     working_directory( _, Old ).
 
+/*
 hgnc_extra_symbols_column( Csv, Cnm, Stem, SrcUrl/DnDt, ExtrF ) :-
     % memberchk( 'Synonyms'=Synonyms, Csv ),
     % Cnm2 = 'Approved Symbol',
@@ -144,17 +142,18 @@ hgnc_extra_symbols_column( Csv, Cnm, Stem, SrcUrl/DnDt, ExtrF ) :-
     % SynoF = 'maps/syno_symb.pl',  % fixme, for links this might have to be sybo_symb.csv
     % csv_write_file( SynoF, [row('Synonym','HGNC Symbol')|SynoRows] ),
     portray_clauses( SynoClauses, file(ExtrF) ),
-    debug( std_maps_hgnc, 'Wrote file: ~p', ExtrF ),
+    debuc( std_maps_hgnc, 'Wrote file: ~p', ExtrF ),
     TermOpts = [header(Cnm,Cnm2),source(SrcUrl),datetime(DnDt)],
     bio_db_add_infos_to( TermOpts, ExtrF ).
+    */
 
 hgnc_std_map( Cid1, Cid2, CsvF, Csv, StdO, SrcUrl/DnDt, OutF ) :-
     hgnc_std_column_to_value_call( Cid1, Call1 ),
     hgnc_std_column_to_value_call( Cid2, Call2 ),
     Opts = [to_value_1(Call1),to_value_2(Call2),prefix(hgnc)|StdO],
-    debug( std_maps_hgnc, 'doing file for columns: ~w, ~w', [Cid1, Cid2] ),
+    % debuc( std_maps_hgnc, 'doing file for columns: ~w, ~w', [Cid1, Cid2] ),
     csv_ids_map( CsvF, Cid1, Cid2, Csv, OutF, [source(SrcUrl),datetime(DnDt)|Opts] ),
-    debug( std_maps_hgnc, 'deposited on: ~w', OutF ).
+    debuc( std_maps_hgnc, 'deposited on: ~w (columns: ~w, ~w)', [OutF,Cid1,Cid2] ).
 
 hgnc_std_column_to_value_call( 'HGNC ID', de_semi('HGNC') ).  % old
 hgnc_std_column_to_value_call( 'hgnc_id', de_semi('HGNC') ).
@@ -234,15 +233,14 @@ hgnc_cname_known( 'ccds_id', ccds ).  %
 
 hgnc_download_file( Ftp, Opts ) :-
     options( download(DnloadB), Opts ),
-    debug( std_maps_hgnc, 'Download boolean: ~w', DnloadB ),
+    debuc( std_maps_hgnc, 'Download boolean: ~w', [DnloadB] ),
     hgnc_boolean_download_file( DnloadB, Ftp, Opts ).
 
 hgnc_boolean_download_file( false, Ftp, _Opts ) :-
     % Ftp = 'ftp://ftp.ebi.ac.uk/pub/databases/genenames/hgnc_complete_set.txt.gz'.
     Ftp = 'ftp://ftp.ebi.ac.uk/pub/databases/genenames/new/tsv/hgnc_complete_set.txt'.
 hgnc_boolean_download_file( true, Ftp, Opts ) :-
-    debug( url_local ),
     memberchk( dir(Dir), Opts ),
     % Ftp = 'ftp://ftp.ebi.ac.uk/pub/databases/genenames/hgnc_complete_set.txt.gz',
     Ftp = 'ftp://ftp.ebi.ac.uk/pub/databases/genenames/new/tsv/hgnc_complete_set.txt',
-    url_file_local_date_mirror( Ftp, Dir, [date(prefix),interface(wget)] ).
+    url_file_local_date_mirror( Ftp, Dir, [debug(true),date(prefix),interface(wget)] ).

@@ -10,4 +10,4 @@ Provides 2 extra colours for start and end of db processing.
 @version  0.1 2018/11/7
 
 */
-debug_colours( [yellow,magents] ).
+debug_colours( [yellow,magenta] ).

@@ -39,7 +39,7 @@ bio_db_new_data :-
     del_rec( Repo ),
     % @ mkdir( Repo ),
 	bio_db_copy_data( Repo ),
-	@ pupsh( zip, 'remove=true', Repo ),
+	@ upsh( zip, 'remove=true', Repo ),
 	@ mkvis( Repo ),
 	true.
 

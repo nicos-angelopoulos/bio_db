@@ -16,9 +16,11 @@
 :- ensure_loaded('../../lib/bio_db_build_aliases').  % /1.
 
 % local
-:- lib(csv_to_pl/1).
+:- lib(csv_to_pl/2).
 :- lib(bio_db_dnt_times/3).
 :- lib(url_file_local_date_mirror/3).
+:- lib(bio_db_add_infos/1).   % bio_db_add_infos_to/2
+:- lib(link_to_bio_sub/3).
 
 :- debuc(std_mouse_maps_ense).
 
@@ -43,6 +45,8 @@ std_mouse_maps_ense( Args ) :-
     Self = std_maps_ense,
     options_append( Self, Args, Opts ),
     bio_db_build_aliases( Opts ),
+    ensure_loaded(mgim:bio_db_build_downloads('mgim/maps/map_mgim_mouse_mgim_symb')),
+    ensure_loaded(mgim:bio_db_build_downloads('mgim/maps/map_mgim_mouse_syno_mgim')),
 	absolute_file_name( bio_db_build_downloads(ense), DnDir ),
 	os_make_path( DnDir ),
 	debuc( Self, 'Downloads dir for ense: ~p', DnDir ),
@@ -68,40 +72,51 @@ std_mouse_maps_ense( Args ) :-
 	debuc( by_unix ),
 	os_un_zip( File, _, [keep(true),on_exists(skip),debug(true)] ),
 	os_ext( gz, Stem, File ),
-	os_ext( tab, Stem, TabF ),
-    % fixme: swi has skipping of initial comment lines...
-	atomic_list_concat( [grep,'-v','"^#"',Stem,'>',TabF], ' ', Shell ),
-    debuc( Self, '~w, shelling/1 : ~w', [Self,Shell] ),
-	shell( Shell ),
-    debuc( Self, 'Reading from: ~p', [TabF] ),
-	mtx( TabF, Rows, sep(tab) ),
+    debuc( Self, 'Reading from: ~p', [Stem] ),
+	mtx( Stem, Rows, [sep(tab),csv_read(skip_header('#'))] ),
 	debuc( Self, length, rows/Rows ),
-    trace,
 	% ense_genes( Rows, EnsGHRows, EnsGSRows, EnsGCRows ),
     ense_transcripts( Rows, EnsTGRows, EnsTLRows ),
-	mtx( 'map_mouse_ense_enst_ensg.csv', EnsTGRows ),
-	mtx( 'map_mouse_ense_enst_chrl.csv', EnsTLRows ),
+	mtx( 'map_ense_mouse_enst_ensg.csv', EnsTGRows ),
+	mtx( 'map_ense_mouse_enst_chrl.csv', EnsTLRows ),
 
-	ense_genes( Rows, EnsGSRows, EnsGCRows ),
+	ense_genes( Rows, Self, EnsGMRows, EnsGSRows, EnsGCRows ),
+    Lbls = [gtfRows,ensGM,ensGS,ensGC],
+    ERws = [Rows,EnsGMRows, EnsGSRows, EnsGCRows],
+    debuc( Self, length, Lbls/ERws ),
     %
-    % mtx( 'map_mouse_ense_ensg_msgi.csv', EnsGHRows ),
+    % mtx( 'map_ense_mouse_ensg_msgi.csv', EnsGHRows ),
+    % sort( EnsGCRows, EnsGCRowsSet ),
     sort( EnsGSRows, EnsGSRowsSet ),
-    sort( EnsGCRows, EnsGCRowsSet ),
-	mtx( 'map_mouse_ense_ensg_symb.csv', EnsGSRowsSet ),
-	mtx( 'map_mouse_ense_ensg_chrl.csv', EnsGCRowsSet ),
+    sort( EnsGMRows, EnsGMRowsSet ),
+
+    Sets = [EnsGMRowsSet,EnsGSRowsSet],
+    debuc( Self, length, [gmSet,gsSet,gcSet]/Sets ),
+    findall( Symb, ( mgim:map_mgim_mouse_mgim_symb(_,Symb),
+                     \+ memberchk( row(_,Symb), EnsGSRowsSet)
+                     % debuc(Self,'MGIM symbol, not in Ensembl: ~w', Symb )
+                   ), 
+                      NonMgimSymbs ),
+    findall( Symb, mgim:map_mgim_mouse_mgim_symb(_,Symb), AllSymbs ),
+    debuc( Self, length, [mgim_symb_not_in_ense,total]/[NonMgimSymbs,AllSymbs] ),
+	mtx( 'map_ense_mouse_ensg_mgim.csv', EnsGMRowsSet ),
+	mtx( 'map_ense_mouse_ensg_symb.csv', EnsGSRowsSet ),
+	mtx( 'map_ense_mouse_ensg_chrl.csv', EnsGCRows ),
     	Csvs = [ 
-                 'map_mouse_ense_enst_ensg.csv', 'map_mouse_ense_enst_chrl.csv',
-		         'map_mouse_ense_ensg_symb.csv', 'map_mouse_ense_ensg_chrl.csv'
+                 'map_ense_mouse_enst_ensg.csv', 'map_ense_mouse_enst_chrl.csv',
+                 'map_ense_mouse_ensg_mgim.csv', 'map_ense_mouse_ensg_symb.csv',
+                 'map_ense_mouse_ensg_chrl.csv'
 	       ],
 	debuc( Self, 'mapping: ~w', [Csvs] ),
-	maplist( csv_to_pl, Csvs ),
+	maplist( csv_to_pl(Self), Csvs ),
 	maplist( new_ext(pl), Csvs, Pls ),
 	AddOpts = [source(Url),datetime(DnDt)],
 	Headers = [	
 		row('Ensembl Transcript','Ensembl Gene'),
 		row('Ensembl Transcript','Chromosome', 'Start', 'End', 'Direction'),
-		row('Ensembl Gene','MGIM Symbol'),
-		row('Ensembl Gene','Chromosome', 'Start', 'End', 'Direction')
+		row('Ensembl ID','MGIM ID'),
+		row('Ensembl ID','Symbol'),
+		row('Ensembl ID','Chromosome', 'Start', 'End', 'Direction')
         ],
     findall( PlF, (	nth1(N,Pls,PlF),	nth1(N,Headers,Header),
 					debuc( Self, 'ingoing prolog file: ~p', PlF ),
@@ -111,30 +126,52 @@ std_mouse_maps_ense( Args ) :-
 					_PlFs ),
 	os_make_path( maps ),
 	maplist( mv_to_sub(maps), Pls ),
-    @ rm( -f, Stem, TabF ),
+    @ rm( -f, Stem ),
 	working_directory( _, maps ),
-	maplist( link_to_map_sub(ense), Pls ),
+	maplist( link_to_bio_sub(ense), Pls, org(mouse) ),
 	working_directory( _, Old ),
 	debuc( Self, '...Done', true ).
-                    
-ense_genes( [], [], [] ).
-ense_genes( [RowG|Rows], [GSRow|TGSRows], [EnsGC|GCRows] ) :-
+
+
+mv_to_sub( Sub, File ) :-
+	os_path( Sub, File, Rel ),
+	rename_file( File, Rel ).
+
+new_ext( New, File, NewFile ) :-
+	os_ext( _Old, New, File, NewFile ).
+
+ense_genes( [], _Self, [], [], [] ).
+ense_genes( [RowG|Rows], Self, GMRows, [GSRow|TGSRows], [EnsGC|GCRows] ) :-
 	RowG = row(ChrG,_Db,gene,SrtG,EndG,_,DirG,_,InfoG),
 	EnsGC= row(EnsG,ChrG,SrtG,EndG,DirG),
 	ense_info( gene_id, InfoG, EnsG ),
-	ense_info( gene_name, InfoG, Symb ),
+	ense_info( gene_name, InfoG, Syno ),
 	% ense_gene_hgnc( EnsG, EnsN, GHRows, GSRows, TGHRows, TGSRows ),
     % fixme: check Symb is an mgim symbol ?
+    ( mgim:map_mgim_mouse_mgim_symb(SynoGim,Syno) -> 
+        Syno = Symb,
+        GMRows = [row(EnsG,SynoGim)|TGMRows]
+        ;
+        ( ( mgim:map_mgim_mouse_syno_mgim(Syno,Mgim),
+            mgim:map_mgim_mouse_mgim_symb(Mgim,Symb)
+          ) -> 
+            GMRows = [row(EnsG,Mgim)|TGMRows]
+            ;
+            GMRows = TGMRows,
+            Syno = Symb,
+            debuc( std_maps_ense(details), 'Not an MGIM symbol: ~w', Syno )
+        )
+    ),
     GSRow = row(EnsG,Symb),
 	!,
-	ense_genes( Rows, TGSRows, GCRows ).
-ense_genes( [RowG|Rows], _, _ ) :-
+	ense_genes( Rows, Self, TGMRows, TGSRows, GCRows ).
+ense_genes( [RowG|Rows], _Self, _, _, _ ) :-
 	RowG = row(_ChrG,_Db,gene,_SrtG,_EndG,_,_DirG,_,_InfoG),
 	!,
 	length( Rows, Len ),
 	throw( tripped_on_gene_row(RowG,Len) ).
-ense_genes( [_RowG|Rows], GSRows, GCRows ) :-
-	ense_genes( Rows, GSRows, GCRows ).
+ense_genes( [_RowG|Rows], Self, GMRows, GSRows, GCRows ) :-
+	ense_genes( Rows, Self, GMRows, GSRows, GCRows ).
 
 ense_transcripts( [], [], [] ).
 ense_transcripts( [RowT|Rows], [EnsTG|TGRows], [EnsTL|TLRows] ) :-

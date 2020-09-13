@@ -5,6 +5,7 @@
 % :- lib(bio_db).
 :- lib(os_lib).
 :- lib(options).
+:- lib(debug_call).                     % debuc/3.
 :- lib(stoics_lib:get_date_time/1).
 :- lib(stoics_lib:en_list/2).
 
@@ -38,19 +39,19 @@ bio_db_add_infos_to( Opts, Os ) :-
 bio_db_add_infos_to( Opts, Os ) :-
 	os_dir( Os ),
 	!,
-	debug( bio_db_add_infos, 'Descending to: ~p', Os ),
+	debuc( bio_db_add_infos, 'Descending to: ~p', Os ),
 	directory_files( Os, Entries ),
 	working_directory( Old, Os ),
 	maplist( bio_db_add_infos_to(Opts), Entries ),
 	working_directory( _, Old ).
 bio_db_add_infos_to( Etc, _Os ) :-
-	debug( bio_db_add_infos, 'Skipping non-prolog, non-dir os entry: ~p', Etc ).
+	debuc( bio_db_add_infos, 'Skipping non-prolog, non-dir os entry: ~p', Etc ).
 
 bio_db_add_infos_file( Os, InOpts ) :-
 	% bio_db_pl_info( Os, Pname, Arity, Infos, NexTerm, DbStream1 ),
 	% bio_db:bio_db_pl_info( Os, Pname, Arity, Infos, NexTerm, DbStream1 ),
 	bio_db_pl_info( Os, Pname, Arity, Infos, NexTerm, DbStream1 ),
-	findall( Info, (member(Info,Infos),debug(bio_db_add_info,'Info term will be removed: ~w', [Info])), _ ),
+	findall( Info, (member(Info,Infos),debuc(bio_db_add_info,'Info term will be removed: ~w', [Info])), _ ),
 	findall( IOpt, (member(Info,Infos),arg(1,Info,IKey),arg(2,Info,IVal),IOpt=..[IKey,IVal]), InfoOpts ),
 	append( InOpts, InfoOpts, Opts ),
 
@@ -98,7 +99,7 @@ bio_db_add_infos_file( Os, InOpts ) :-
 	close( DbStream2 ),
 	bio_add_info_kvs_lengths_rel( KVs, Ks, Vs, Iname, UnqLensInfo, RelTypeInfo ),
 
-	debug( add_infos, '...done', [] ),
+	debuc( add_infos, '...done', [] ),
 
 	NewInfos = [SrcInfo,DateInfo,HeaderInfo,DataTypeInfo,UnqLensInfo,RelTypeInfo],
 	bio_db_file_add_infos( Os, NewInfos ).
@@ -114,7 +115,7 @@ bio_db_file_add_infos( Os, NewInfos ) :-
 	close( DbS ),
 	close( Onto ),
 	delete_file( Os ),
-	debug( add_infos, 'Replacing: ~p, with: ~p', [Os,TmpOs] ),
+	debuc( add_infos, 'Replacing: ~p, with: ~p', [Os,TmpOs] ),
 	rename_file( TmpOs, Os ).
 
 copy_term_data( end_of_file, _DbS, _Onto ) :- !.

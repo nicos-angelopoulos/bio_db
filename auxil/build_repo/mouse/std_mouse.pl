@@ -16,6 +16,8 @@ organism(mouse).
 % local libs & sources
 :- lib(debug_colours/1).
 
+:- organism(Org), debuc(Org).
+
 std_mouse_defaults(debug(true)).
 
 /** std_mouse.
@@ -26,6 +28,7 @@ Build all the standard datasets for bio_db.
 @version  0.1 2017/10/12
 @version  0.2 2018/03/30
 @version  0.3 2018/11/05, everything tested, and working
+@version  0.4 2020/09/11, added ense
 @tbd add timings (in file)
 
 */
@@ -56,8 +59,8 @@ std_upsh( Org, Db, Type, Succ ) :-
     ),
     debug_consec( Org, Dlrs, 'Starting ~w\'s type: ~w, db: ~w ... ', [Org,Type,Db] ),
     at_con( [Org,Type,Db], :, Task ),
-    debug_call( Org, task(start), Task ),
-    catch( @ pupsh(f,Upsh), Err, true ),
+    debuc( Org, task(start), Task ),
+    catch( @ upsh(Upsh,f,p), Err, true ),
     ( \+ var(Err) ->
         debug_consec( Org, [red,red], 'Caught while running: ~w:~w:~w, error: ~w', [Org,Type,Db,Err] ),
         Succ = error,
@@ -66,12 +69,13 @@ std_upsh( Org, Db, Type, Succ ) :-
         debug_consec( Org, Dlrs, '... finished organism: ~w, type: ~w Db: ~w.', [Org,Type,Db] ),
         Succ = ok
     ),
-    debug_call( Org, task(start), Task ).   % fixme: change colour.. time to optionise debug_call ?
+    debuc( Org, task(start), Task ).   % fixme: change colour.. time to optionise debug_call ?
 
-std( mouse, maps, mgim ).
-std( mouse, maps, ncbi ).
-std( mouse, maps, unip ).
-std( mouse, maps, gont ).
+std(mouse, maps, mgim).
+std(mouse, maps, ense).
+std(mouse, maps, ncbi).
+std(mouse, maps, unip).
+std(mouse, maps, gont).
 
 % std( mouse, graphs, gont ).
-std( mouse, graphs, strg ).
+std(mouse, graphs, strg).

@@ -1,5 +1,7 @@
 
 
+:- use_module( library(lists) ).    % member/2.
+
 % if library(lib) is missing, install via pack_install(lib).
 %
 :- use_module( library(lib) ).
@@ -15,7 +17,7 @@
 :- ensure_loaded( '../../lib/bio_db_build_aliases' ).  % /1.
 
 % local libs & sources
-:- lib(link_to_bio_sub/4).
+:- lib(link_to_bio_sub/3).
 :- lib(bio_db_dnt_times/3).
 :- lib(url_file_local_date_mirror/3).
 :- lib(bio_db_add_infos/1). % bio_db_add_infos_to/2.
@@ -44,14 +46,14 @@ std_mouse_maps_gont( Args ) :-
     gont_mouse_url( Url ),
     absolute_file_name( bio_db_build_downloads(gont), Loc ),
 	os_make_path( Loc ),  % fixme: ensure it complains not...
-	debug( Self, 'build directory: ~p', Loc ),
+	debuc( Self, 'build directory: ~p', Loc ),
 	working_directory( Old, Loc ),
-	UrlOpts = [debug(url_local),interface(wget),file(GzGontF)],
+	UrlOpts = [debug(true),interface(wget),file(GzGontF)],
     url_file_local_date_mirror( Url, Loc, UrlOpts ),
     @ gunzip( -k, GzGontF ),
     os_ext( gz, GontF, GzGontF ),
     mtx( GontF, GAs, [skip_heading('!'),sep(tab)] ),
-    debug_call( Self, dims, gas/GAs ),
+    debuc( Self, dims, gas/GAs ),
     findall( map_gont_mouse_mgim_gont(Mgim,Evid,Gont),
                     ( member(Row,GAs),
                       arg(2,Row,MgimPrv), at_con([_,MgimAtm],':',MgimPrv), atom_number(MgimAtm,Mgim),
@@ -81,7 +83,7 @@ std_mouse_maps_gont( Args ) :-
     GShdr = header(row('GO_Term','Evidence','MGI Marker Accession ID')),
 	bio_db_add_infos_to( [GShdr|GSopts], GsF ),
     % maplist( link_to_map_sub(gont), OutFs ),  % does this work ?
-    link_to_bio_sub( mouse, gont, maps, GsF  ),
-    link_to_bio_sub( mouse, gont, maps, MapF ),
+    link_to_bio_sub( gont, GsF, [org(mouse),type(maps)]  ),
+    link_to_bio_sub( gont, MapF, [org(mouse),type(maps)] ),
     @ rm( -f, GontF ),
     working_directory( _, Old ).

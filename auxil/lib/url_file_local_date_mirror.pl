@@ -15,7 +15,7 @@
 url_file_local_date_mirror_defaults( [  date(postfix),file(_), 
                                         make_path(true), link_stem(true),
                                         replace_todays(false), interface(prolog),
-                                        stamp(date),ext(_),record_time(true)
+                                        stamp(date),ext(_),record_time(true), debug(false)
                                      ] ).
 
 %% url_file_local_date_mirror( +Url, +LocalD ).
@@ -25,7 +25,7 @@ url_file_local_date_mirror_defaults( [  date(postfix),file(_),
 % The local version is placed in Stem-Date.Ext with a symbolic link (redirected)
 % from Stem.Ext to the downloaded version. The idea is that Stem.Ext always points to the latest version.
 %
-%  Predicate listens to debug( url_local ).
+%  Predicate listens to debug( url_file_local_date_mirror ).
 % 
 %  Opts, a term or list of the following
 %  * date(postfix)    
@@ -60,7 +60,7 @@ url_file_local_date_mirror_defaults( [  date(postfix),file(_),
 %    returns the download stamp recorded in .dnt (the existing if nothing was downloaded)
 %
 %==
-% ?- debug( url_local ).
+% ?- debug(url_file_local_date_mirror).
 % ?- assert( ncbi('$local/../work/db/ncbi') ).
 % ?- ncbi(Ncbi), url_file_local_date_mirror( 'ftp://ftp.ncbi.nih.gov/gene/DATA/gene2ensembl.gz', Ncbi ).
 % % Using local directory: '/usr/local/users/nicos/local/../work/2014/ncbi'
@@ -82,15 +82,15 @@ url_file_local_date_mirror( Url, LocalD ) :-
     url_file_local_date_mirror( Url, LocalD, [] ).
 
 url_file_local_date_mirror( Url, LocalD, Args ) :-
-    options:options_append( url_file_local_date_mirror, Args, Opts ),
+    Self = url_file_local_date_mirror,
+    options:options_append( Self, Args, Opts ),
     os_make_path( LocalD, Opts ),
-    Self = url_local,
     memberchk( file(LocB), Opts ),
     file_base_name( Url, RemB ),
     options( ext(Ext), Opts ),
     url_file_local_date_mirror_local_file_name( LocB, Opts, RemB, Self, Ext ),
     expand_file_name( LocalD, [LocD|_] ),
-    debug( url_local, 'Using local directory: ~p', LocD ), % pacify debug/3
+    debuc( Self, 'Using local directory: ~p', LocD ), % pacify debug/3
     directory_file_path( LocD, LocB, LocP ),
     os_ext( dnt, LocP, LocDt ),
     options( replace_todays(Repl), Opts ),
@@ -105,7 +105,7 @@ url_file_replace( false, Url, _LocD, LocP, LocDt, _Iface, _RemB, _Self, DtStamp 
     read( DtStream, DtStamp ),
     close( DtStream ),
     % fixme: non debug
-    debug( _, 'File with today\'s date exists: ~p, so skipping download of:~p.', [LocP,Url] ).
+    debuc( _, 'File with today\'s date exists: ~p, so skipping download of:~p.', [LocP,Url] ).
 url_file_replace( _, Url, LocD, LocP, LocDt, Iface, RemB, Self, BefStamp ) :-
     debug_chain( Self, url_file, UfPrior ),
   
@@ -113,7 +113,7 @@ url_file_replace( _, Url, LocD, LocP, LocDt, Iface, RemB, Self, BefStamp ) :-
     url_interface_file( Iface, Url, LocP ),
     get_datetime( AftStamp ),
     debug_set( UfPrior, url_file ),
-    debug( Self, 'Downloaded url: ~p, to local: ~p', [Url,LocP] ),
+    debuc( Self, 'Downloaded url: ~p, to local: ~p', [Url,LocP] ),
     open( LocDt, write, DtOut ),
     portray_clause( DtOut, BefStamp ),
     portray_clause( DtOut, AftStamp ),
@@ -134,13 +134,13 @@ url_interface_file( wget, Url, LocP ) :-
 url_file_local_date_mirror_local_file_name( LocB, Opts, RemB, Self, Ext ) :-
     var( LocB ),
     !, 
-    debug( Self, 'Creating dated local basename.', [] ),
+    debuc( Self, 'Creating dated local basename.', [] ),
     url_file_date_stamp( Date, Opts ),
     memberchk( date(DatePos), Opts ),
     url_file_local_date_mirror_local_file_name_date( DatePos, RemB, Date, Ext, LocB ).
 url_file_local_date_mirror_local_file_name( LocB, _Opts, _RemB, Self, _Ext ) :-
     atom( LocB ),
-    debug( Self, 'Using given local basename.', LocB ).
+    debuc( Self, 'Using given local basename.', LocB ).
 
 url_file_local_date_mirror_local_file_name_date( prefix, RemB, Date, _Ext, LocB ) :-
     atomic_list_concat( [Date,RemB], '-', LocB ).

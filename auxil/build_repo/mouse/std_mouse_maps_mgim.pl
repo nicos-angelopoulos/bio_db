@@ -1,5 +1,8 @@
 
 
+:- use_module(library(apply)).  % maplist/2.
+:- use_module(library(lists)).  % member/2.
+
 % if library(lib) is missing, install via pack_install(lib).
 %
 :- use_module(library(lib)).
@@ -21,8 +24,6 @@
 :- lib(csv_ids_map/6).
 :- lib(link_to_bio_sub/4).
 :- lib(bio_db_add_infos/1).  % bio_db_add_infos_file/2.
-
-:- debug(std_mouse_maps_mgim).  % fixme:
 
 mgim_url( 'http://www.informatics.jax.org/downloads/reports' ).
 
@@ -83,10 +84,10 @@ std_mouse_maps_mgim( Args ) :-
     % here( DnDir, SymbInF, ChrlF ),
     mgim_get_report( seq, Self, SeqUrl, DnDir, _SeqRelF, SeqMtx, SeqDnt ),
     mtx_column_values_select( SeqMtx, 'Marker Type', 'Gene', GenMtx, _, [] ),
-    debug_call( Self, dims, gene/GenMtx ),
+    debuc( Self, dims, gene/GenMtx ),
     GenMtx = [_|GenRows],
     findall( Unip-Tremb, (member(GenRow,GenRows),arg(14,GenRow,Unip),arg(15,GenRow,Tremb),Unip\=='',Tremb\==''), UTs ),
-    debug_call( Self, length, uTs/UTs ),
+    debuc( Self, length, uTs/UTs ),
 	% absolute_file_name( bio_db_downloads(mgim), MgimD ),
     Cims = [cnm_transform(mouse_cnm),to_value_1(pfx_by_num(true,'MGI:')),prefix(mgim_mouse),to_value_2(sep_by('|')),
             source(SeqUrl), datetime(SeqDnt)
@@ -131,7 +132,7 @@ std_mouse_maps_mgim( Args ) :-
 
     working_directory( _, Old ),
     % here( here(GenBMapF,DnDir,SeqRelF) ).
-    debug_call( Self, end, true ).
+    debuc( Self, end, true ).
 
 mgi_entrez_idx_header( 1, mgim ).
 mgi_entrez_idx_header( 9, entz ).
@@ -151,11 +152,11 @@ mgim_get_report( Which, Self, Url, DnDir, RelF, Mtx, DntStamp ) :-
     % atomic_list_concat( [Base,'/MRK_',Stem,'.rpt'], Url ),
     atomic_list_concat( [Base,'/',Stem,'.rpt'], Url ),
     mgim_dnload_dir( DnDir ),
-	UrlOpts = [debug(url_local),interface(wget),file(RelF),dnt_stamp(DntStamp)],
+	UrlOpts = [debug(true),interface(wget),file(RelF),dnt_stamp(DntStamp)],
     url_file_local_date_mirror( Url, DnDir, UrlOpts ),
     os_path( DnDir, RelF, AbsF ),
     mtx( AbsF, Mtx, sep(tab) ),
-    debug_call( Self, dims, Which/Mtx ).
+    debuc( Self, dims, Which/Mtx ).
 
 mouse_cnm( 'MGI Accession ID', mgim ).
 mouse_cnm( 'MGI Marker Accession ID', mgim ).
@@ -166,7 +167,7 @@ mouse_cnm( 'Marker Synonyms (pipe-separated)', syno ).
 
 mgim_dnload_dir( Loc ) :-
     absolute_file_name( bio_db_build_downloads(mgim), Loc ),
-    debug( mouse, 'Loc: ~p', Loc ),
+    debuc( mouse, 'Loc: ~p', Loc ),
 	os_make_path( Loc, debug(true) ).
 
 sep_by( _, '', _ ) :- !, fail. % do not include empties

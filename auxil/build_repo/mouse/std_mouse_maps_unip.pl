@@ -2,6 +2,13 @@
 :- set_prolog_flag(allow_dot_in_atom,false).
 :- set_prolog_flag(stack_limit, 8 000 000 000).
 
+:- use_module(library(csv)).      % csv_read_file/2.
+:- use_module(library(lists)).    % member/2.
+:- use_module(library(apply)).    % maplist/4.
+% :- use_module(library(debug)).    % /1,3. -> debug_call
+:- use_module(library(listing)).  % portray_clause/2.
+:- use_module(library(readutil)). % read_line_to_codes/2.
+
 % if library(lib) is missing, install via pack_install(lib).
 %
 :- use_module( library(lib) ).
@@ -9,6 +16,7 @@
 % external code, lib knowns how to deal with these (will install if missing)
 :- lib(os_lib). 
 :- lib(options).
+:- lib(debug_call).                     % debuc/1,3.
 
 % also sets lib alias to that dir
 :- ensure_loaded('../../lib/bio_db_build_aliases').  % /1.
@@ -17,12 +25,10 @@
 :- ensure_loaded('../hs/src/map_uniprot').  % /4.
 :- lib(bio_db_add_infos/1). % bio_db_add_infos_to/2.
 :- lib(csv_ids_map/6).
-:- lib(link_to_bio_sub/2).
+:- lib(link_to_bio_sub/3).
 :- lib(bio_db_dnt_times/3).
 :- lib(url_file_local_date_mirror/3).
-
-:- debug(std_mouse_maps_unip). % fixme:
-:- debug(link_to_map_sub).
+:- lib(stoics_lib:map_list_options/3).
 
 unip_mouse( 'ftp://ftp.ebi.ac.uk/pub/databases/uniprot/current_release/knowledgebase/idmapping/by_organism/MOUSE_10090_idmapping.dat.gz' ).
 trem_mouse( 'ftp://ftp.ebi.ac.uk/pub/databases/uniprot/current_release/knowledgebase/idmapping/by_organism/MOUSE_10090_idmapping_selected.tab.gz' ).
@@ -32,7 +38,7 @@ trem_mouse( 'ftp://ftp.ebi.ac.uk/pub/databases/uniprot/current_release/knowledge
 
 unip_dnload( Self, Loc ) :-
 	absolute_file_name( bio_db_build_downloads(unip), Loc ),
-    debug( Self, 'Loc: ~p', Loc ),
+    debuc( Self, 'Loc: ~p', Loc ),
 	os_make_path( Loc, debug(true) ).
 
 std_mouse_maps_unip_defaults(debug(true)).
@@ -60,13 +66,13 @@ std_mouse_maps_unip( Args ) :-
 	working_directory( Old, DnDir ),
 	unip_mouse( Url ),
 	% url_file( Url, 
-	UrlOpts = [debug(url_local),interface(wget),file(File)],
+	UrlOpts = [debug(true),interface(wget),file(File)],
 	url_file_local_date_mirror( Url, DnDir, UrlOpts ),
 	% cd( bio_dn_root(uniprot) ),
 	% os_rm_rf( maps ), % don't do that human puts stuff there tooo ! 
 	os_make_path( maps, debug(true) ),
 
-	debug( Self, 'Dir location: ~p', DnDir ),
+	debuc( Self, 'Dir location: ~p', DnDir ),
 	Rev = [uniprot('MOUSE_10090_idmapping.dat'),org(mouse),interface(prolog),reverse(true)],
 	map_uniprot( 'Ensembl_PRO', Csv, [EnspF], Rev ),
 
@@ -88,7 +94,8 @@ std_mouse_maps_unip( Args ) :-
 	Files = [MgiF,EtzF,EnspF,SymbF,GynoF],
 	% working_directory( _, maps ),
  	% maplist( link_to_map_sub(unip), Files ),
-    maplist( link_to_bio_sub(mouse,unip,maps), Files ),
+    Cpts = [org(mouse),type(maps)],
+    map_list_options( link_to_bio_sub(mouse,unip,maps), Files, call_options(Cpts) ),
 
 	bio_db_dnt_times( File, SwDnDt, _SwDnEn ),
 	SwOpts = [source(Url),datetime(SwDnDt)],
@@ -106,24 +113,25 @@ std_mouse_maps_unip( Args ) :-
 	% trem_hs( TremUrl ),
     trem_mouse( TremUrl ),
 	% 15.05.14 adding support for treMBL, at least that 's what i think the selected file is all about
-	TrUrlOpts = [debug(url_local),interface(wget),file(TrFile)],
+	TrUrlOpts = [debug(true),interface(wget),file(TrFile)],
 	url_file_local_date_mirror( TremUrl, DnDir, TrUrlOpts ),
 	bio_db_dnt_times( TrFile, TrDnDt, _TrDnEn ),
 
 	os_make_path( maps, afresh(false) ),
 	os_make_path( trembl, afresh(true) ),
 	directory_file_path( _, TremFile, TremUrl ),
-	pwd,
+	% @ pwd(),
 	directory_file_path( trembl, TremFile, TremTrg ),
 	copy_file( TremFile, TremTrg ),
 	working_directory( _, trembl ), 
 	file_name_extension( TremDatF, gz, TremFile ),
 	atom_concat( 'gunzip ', TremFile, Gunzip ),
-	debug( Self, 'Gunzipping: ~p', TremFile ),
+	debuc( Self, 'Gunzipping: ~p', TremFile ),
 	shell( Gunzip ),
 	csv_read_file( TremDatF, TremRows, [separator(0'\t)] ),
-	length( TremRows, TremLen ), 
-	write( trem_length(TremLen) ), nl,
+	% length( TremRows, TremLen ), 
+	% write( trem_length(TremLen) ), nl,
+    debuc( Self, length, trem_rows/TermRows ),
 	% 17/22
 	findall( map_unip_mouse_trem_nucs(TremId,Nucs), (
 	                  member(TremRow,TremRows), arg(1,TremRow,TremId), \+ empty(TremId), 
@@ -132,8 +140,9 @@ std_mouse_maps_unip( Args ) :-
 				   member(Nucs,NucsList)
 				            ), 
 						        TNRows ),
-	length(TNRows, TNLen), 
-	write( tn_len(TNLen) ), nl,
+	% length(TNRows, TNLen), 
+	% write( tn_len(TNLen) ), nl,
+    debuc( Self, length, tn_len/TNRows ),
 	sort( TNRows, TNOrdRows ),
 	open( '../maps/map_unip_mouse_trem_nucs.pl', write, TNOut ),
 	maplist( portray_clause(TNOut), TNOrdRows ),

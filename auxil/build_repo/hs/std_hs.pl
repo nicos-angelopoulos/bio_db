@@ -78,7 +78,7 @@ std_upsh( Org, Db, Type, Opts, Succ ) :-
     debuc( Org, task(start), Task ),
     findall( Urg, (member(pass(Trg),Opts),Trg=..Parts,at_con(Parts,'=',Urg)), Urgs ),
     % at_con( [Upsh|Urgs], ' ', Upshable ),
-    Upsh =.. [upsh,p,f,Ucmd|Urgs],
+    Upsh =.. [upsh,Ucmd,f,p|Urgs],
     debuc( Org, 'std_hs is shelling ~w,', [Upsh] ),
     % catch( @ upsh(p,f,Upshable), Err, true ),
     catch( @ Upsh, Err, true ),

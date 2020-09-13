@@ -3,13 +3,15 @@
 
 % if library(lib) is missing, install via pack_install(lib).
 %
-:- use_module( library(lib) ).
+:- use_module(library(lib)).
+:- lib(debug_call).  % debuc/1,3
 
 % external code, lib knowns how to deal with these (will install if missing)
 :- lib(mtx).
 % :- lib(bio_db).
 :- lib(os_lib).
 :- lib(by_unix).
+:- lib(options).
 :- lib(stoics_lib:message_report/3).
 :- lib(stoics_lib:portray_clauses/2).
 :- lib(stoics_lib:url_file/3).
@@ -29,8 +31,8 @@
 :- lib(bio_db_add_infos/1).     % bio_db_add_infos_to/2.
 :- lib(std_graphs_strg_auto_version/1).
 
-:- debug(by_unix).
-:- debug(std_graphs_strg). % fixme:
+:- debuc(by_unix).
+:- debuc(std_graphs_strg). % fixme:
 
 std_mouse_graphs_strg_defaults( [debug(true)|T] ) :-
     ( std_graphs_strg_auto_version(Vers) -> % let options/2 do the erroring
@@ -54,9 +56,9 @@ std_mouse_graphs_strg( Args ) :-
     ensure_loaded(mgim:bio_db_build_downloads('mgim/maps/map_mgim_mouse_mgim_symb')),
     ( number(VersionPrv) -> atom_number(Version,VersionPrv); Version = VersionPrv ),
     % ensure_loaded( bio_db_build_aliases ),
-    debug( Self, 'Version: ~w', Version ),
+    debuc( Self, 'Version: ~w', Version ),
     std_graphs_string_version_base_name( Version, Bname, From ),
-    debug( Self, 'Base name: ~w', Bname ),
+    debuc( Self, 'Base name: ~w', Bname ),
     absolute_file_name( bio_db_build_downloads(strg), Parent ),
     % absolute_file_name( baio_db_downloads(string/Bname), LocalFile ),
     % directory_file_path( Parent, _BnameAgain, LocalFile ),
@@ -68,13 +70,13 @@ std_mouse_graphs_strg( Args ) :-
     % @ gunzip( '9606.protein.links.v10.txt.gz' ),
     Edge = edge_strg_mouse,
     file_name_extension( TxtF, gz, Bname ),
-    debug( Self, 'Directory: ~p', [Parent] ),
+    debuc( Self, 'Directory: ~p', [Parent] ),
     Mess1 = 'Converting string file: ~p, to Prolog',
-    debug( Self, Mess1, [TxtF] ),
+    debuc( Self, Mess1, [TxtF] ),
     Opt = [ csv_read(separator(0' )),predicate_name(Edge),
             rows_transform(maplist(user:de_mouse)),header_remove(true) ],
     mtx_prolog( TxtF, File, Opt ),
-    debug( _, 'Edges output: ~w', File ),
+    debuc( _, 'Edges output: ~w', File ),
     delete_file( TxtF ),
     % @ rm( -rf, graphs ), don't do that ! there are now multiple downloads from string..
     os_make_path( graphs, debug(true) ),
@@ -83,7 +85,7 @@ std_mouse_graphs_strg( Args ) :-
     @ mv( File, Trg ),
 
     consult( edge_strg_mouse:Trg ),
-    debug( _, 'consulted eges from: ~w', [edge_strg_mouse:Trg] ),
+    debuc( _, 'consulted eges from: ~w', [edge_strg_mouse:Trg] ),
 
     findall( edge_strg_mouse_symb(SymbA,SymbB,W),
                          ( edge_strg_mouse:edge_strg_mouse(EnsP1,EnsP2,W),
@@ -95,7 +97,7 @@ std_mouse_graphs_strg( Args ) :-
           ),
     sort( UnoSymbEdges, SymbEdges ),
     length( SymbEdges, SymbEdgesLen ),
-    debug( _, 'unique symbol edges (mouse): ~w', [SymbEdgesLen] ),
+    debuc( _, 'unique symbol edges (mouse): ~w', [SymbEdgesLen] ),
     EdgeSymbsF = 'graphs/edge_strg_mouse_symb.pl',
     portray_clauses( SymbEdges, file(EdgeSymbsF) ),
     bio_db_dnt_times( Bname, DnDt, _EndDt ),
@@ -128,12 +130,12 @@ sort( A, B, A, B ).
 
 std_graph_string_download_string( LocalFile, _From, Self ) :-
     exists_file( LocalFile ),
-    debug( Self, 'Using existing local string file: ~p', LocalFile ),
+    debuc( Self, 'Using existing local string file: ~p', LocalFile ),
     !.
 std_graph_string_download_string( Local, Remote, Self ) :-
-    debug( Self, 'Downloading from: ~p', Remote ),
+    debuc( Self, 'Downloading from: ~p', Remote ),
     url_file( Remote, Local, dnt(true) ),
-    debug( Self, '... to local file: ~p', Local ).
+    debuc( Self, '... to local file: ~p', Local ).
 
 std_graphs_string_version_base_name( VersionPrv, Bname, Remote ) :-
     ( atom_concat(v,Version,VersionPrv)->true;Version=VersionPrv ),
@@ -151,7 +153,7 @@ de_mouse( row(MousEnsP1,MousEnsP2,WAtm), row(EnsP1,EnsP2,W) ) :-
     ( number(WAtm) -> W = WAtm; atom_number(WAtm,W) ),
     !.
 de_mouse( Row, _ ) :-
-    debug( _, 'Failed to translate row: ~w', Row ),
+    debuc( _, 'Failed to translate row: ~w', Row ),
     abort.
 
 /*
@@ -160,7 +162,7 @@ bio_db_std_string :-
             rows_transform(maplist(user:de_mouse))
          ],
     mtx_prolog( bio_dn(strg/'protein.links.mouse.txt'), File, Opt ),
-    debug( _, 'Edges output: ~w', File ),
+    debuc( _, 'Edges output: ~w', File ),
     bio_db_std_string_link( File ).
 
 bio_db_std_string_link( File ) :-

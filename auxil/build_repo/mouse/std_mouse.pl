@@ -69,7 +69,7 @@ std_upsh( Org, Db, Type, Succ ) :-
         debug_consec( Org, Dlrs, '... finished organism: ~w, type: ~w Db: ~w.', [Org,Type,Db] ),
         Succ = ok
     ),
-    debuc( Org, task(start), Task ).   % fixme: change colour.. time to optionise debug_call ?
+    debuc( Org, task(stop), Task ).   % fixme: change colour.. time to optionise debug_call ?
 
 std(mouse, maps, mgim).
 std(mouse, maps, ense).

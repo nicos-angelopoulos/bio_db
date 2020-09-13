@@ -131,7 +131,7 @@ std_mouse_maps_unip( Args ) :-
 	csv_read_file( TremDatF, TremRows, [separator(0'\t)] ),
 	% length( TremRows, TremLen ), 
 	% write( trem_length(TremLen) ), nl,
-    debuc( Self, length, trem_rows/TermRows ),
+    debuc( Self, length, trem_rows/TremRows ),
 	% 17/22
 	findall( map_unip_mouse_trem_nucs(TremId,Nucs), (
 	                  member(TremRow,TremRows), arg(1,TremRow,TremId), \+ empty(TremId), 

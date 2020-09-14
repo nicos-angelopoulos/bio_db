@@ -10,6 +10,7 @@ TBD:
          Rocks: Enumerate connections ? rocks_current(X).
 
 3.2
+      20.09.14    BUILD:    link_to_maps_sub/2->4, link_to_bio_sub/3 optionised
       20.09.13    BUILD:    fixed typo on reporting task: start -> stop
       20.09.11    BUILD:    added debug argument to csv_to_pl/1
                   FIXED:    finalised support for mouse ense

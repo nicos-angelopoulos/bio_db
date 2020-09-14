@@ -215,6 +215,7 @@ std_repo_to_web_page( TgzF, BioDbDir, Date ) :-
     atomic_list_concat( [stoicos,Hname], '.', Unison ),
     @unison( Unison ).
 std_repo_to_web_page( Tgz, _BioDbDir, _Date ) :-
+    debuc( std_repo, pwd, end_dir ),
     debuc( std_repo, 'Skipping this bit as it is only relevant for Nicos\' own set-up.', true ),
     debuc( std_repo, 'You can publish the pack from tgz file: ~p', [Tgz] ).
 
@@ -279,9 +280,9 @@ zip_pl_files( [AbsFile|Plies], I, Tot ) :-
     os_ext( zip, AbsFile, ZipF ),
     % debuc( std_repo, pwd, zip_pl_files(changed_dir) ),
     debuc( std_repo, 'Zipping (~d/~d): ~w into: ~w ', [I,Tot,AbsFile,ZipF] ),
-    @ zip( '--quiet', ZipF, File ),
+    @ zip( '--quiet', ZipF, AbsFile ),
     @ chmod( 'go+r', ZipF ),
-    @ rm( -f, File ),
+    @ rm( -f, AbsFile ),
     % working_directory( _, Old ),
     J is I + 1,
     zip_pl_files( Plies, J, Tot ).

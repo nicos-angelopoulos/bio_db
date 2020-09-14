@@ -92,6 +92,7 @@ std_mouse_maps_ense( Args ) :-
 
     Sets = [EnsGMRowsSet,EnsGSRowsSet],
     debuc( Self, length, [gmSet,gsSet,gcSet]/Sets ),
+    /* fixme: create a fast version, this is only for printing ...
     findall( Symb, ( mgim:map_mgim_mouse_mgim_symb(_,Symb),
                      \+ memberchk( row(_,Symb), EnsGSRowsSet)
                      % debuc(Self,'MGIM symbol, not in Ensembl: ~w', Symb )
@@ -99,6 +100,7 @@ std_mouse_maps_ense( Args ) :-
                       NonMgimSymbs ),
     findall( Symb, mgim:map_mgim_mouse_mgim_symb(_,Symb), AllSymbs ),
     debuc( Self, length, [mgim_symb_not_in_ense,total]/[NonMgimSymbs,AllSymbs] ),
+    */
 	mtx( 'map_ense_mouse_ensg_mgim.csv', EnsGMRowsSet ),
 	mtx( 'map_ense_mouse_ensg_symb.csv', EnsGSRowsSet ),
 	mtx( 'map_ense_mouse_ensg_chrl.csv', EnsGCRows ),
@@ -128,7 +130,8 @@ std_mouse_maps_ense( Args ) :-
 	maplist( mv_to_sub(maps), Pls ),
     @ rm( -f, Stem ),
 	working_directory( _, maps ),
-	maplist( link_to_bio_sub(ense), Pls, org(mouse) ),
+    Cpts = call_options([org(mouse)]),
+	map_list_options( link_to_bio_sub(ense), Pls, Cpts ),
 	working_directory( _, Old ),
 	debuc( Self, '...Done', true ).
 

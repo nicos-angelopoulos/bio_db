@@ -3,7 +3,7 @@
 %
 :- use_module(library(lists)).
 :- use_module(library(apply)).
-:- use_module( library(listing) ).  % portray_clause/2.
+:- use_module(library(listing)).  % portray_clause/2.
 :- use_module(library(lib)).
 
 % external code, lib knowns how to deal with these (will install if missing)
@@ -21,7 +21,7 @@
 :- ensure_loaded( '../lib/bio_db_repo_info.pl' ).
 
 :- debuc(std_repo).
-% :- debuc(by_unix).
+:- debuc(by_unix).  % fixme: temporary ?
 
 :- set_prolog_flag(allow_dot_in_atom, false).   % for portaying correctly
 
@@ -272,13 +272,16 @@ zip_pl_files_in( Dir ) :-
 zip_pl_files( [], _I, _Tot ).
 zip_pl_files( [AbsFile|Plies], I, Tot ) :-
     % fixme:  just sticking tape for now
-    os_path( Path, File, AbsFile ),
-    debuc( std_repo, 'Zipping (~d/~d): ~w', [I,Tot,File] ),
-    working_directory( Old, Path ),
-    os_ext( zip, File, ZipF ),
+    debuc( std_repo, pwd, zip_pl_files(entry_at) ),
+    debuc( std_repo, 'Absolute file, in zip_pl_files: ~w', AbsFile ),
+    % os_path( Path, File, AbsFile ),
+    % working_directory( Old, Path ),
+    os_ext( zip, AbsFile, ZipF ),
+    % debuc( std_repo, pwd, zip_pl_files(changed_dir) ),
+    debuc( std_repo, 'Zipping (~d/~d): ~w into: ~w ', [I,Tot,AbsFile,ZipF] ),
     @ zip( '--quiet', ZipF, File ),
     @ chmod( 'go+r', ZipF ),
     @ rm( -f, File ),
-    working_directory( _, Old ),
+    % working_directory( _, Old ),
     J is I + 1,
     zip_pl_files( Plies, J, Tot ).

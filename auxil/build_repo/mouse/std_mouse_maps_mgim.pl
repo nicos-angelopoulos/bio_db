@@ -65,7 +65,8 @@ std_mouse_maps_mgim( Args ) :-
                 prefix(mgim_mouse), datetime(SymbDnt) ],
     csv_ids_map( _, 'MGI Accession ID', 'Marker Symbol', SymbMtx, SymbMapF, Sims ),
     SymbMapFs = [SymbMapF],
-    maplist( link_to_bio_sub(mouse,mgim,maps), SymbMapFs ),
+    Cpts = call_options([org(mouse),type(maps)]),
+    map_list_options( link_to_bio_sub(mgim), SymbMapFs, Cpts ),
     SymbMtx = [SymbHdr|SymbRows],
     findall( map_mgim_mouse_mgim_chrl(RMgi,RChr,RStart,REnd,RSign), (  member(SymbRow,SymbRows),
                                                 arg(1,SymbRow,RMgiMFull),
@@ -128,7 +129,8 @@ std_mouse_maps_mgim( Args ) :-
            ],
     csv_ids_map( _, 'Marker Symbol', 'Marker Name', SymbMtx, MapWdraF, WdraOpts ),
     MapFs = [GenBMapF,ChrlF,UnipMapF,MapSynoF,MapWdraF,MapEntzF],
-    maplist( link_to_bio_sub(mouse,mgim,maps), MapFs ),
+    Cpts = call_options([org(mouse),type(maps)]),
+    map_list_options( link_to_bio_sub(mgim), MapFs, Cpts ),
 
     working_directory( _, Old ),
     % here( here(GenBMapF,DnDir,SeqRelF) ).

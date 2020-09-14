@@ -68,7 +68,7 @@ std_mouse_maps_ncbi( Args ) :-
     os_make_path( maps ),
     working_directory( _, maps ),
 	csv_ids_map( _, 'Synonyms', 'Symbol', Mtx, EntzSynoF, MapOpts ),
-    link_to_bio_sub( mouse, ncbi, maps, EntzSynoF ),
+    link_to_bio_sub( ncbi, EntzSynoF, [org(mouse),type(maps)] ),
 	working_directory( _, Old ).
 
 ncbi_cnm( 'Synonyms', syno ).

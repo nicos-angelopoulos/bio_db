@@ -95,7 +95,7 @@ std_mouse_maps_unip( Args ) :-
 	% working_directory( _, maps ),
  	% maplist( link_to_map_sub(unip), Files ),
     Cpts = [org(mouse),type(maps)],
-    map_list_options( link_to_bio_sub(mouse,unip,maps), Files, call_options(Cpts) ),
+    map_list_options( link_to_bio_sub(unip), Files, call_options(Cpts) ),
 
 	bio_db_dnt_times( File, SwDnDt, _SwDnEn ),
 	SwOpts = [source(Url),datetime(SwDnDt)],
@@ -148,7 +148,7 @@ std_mouse_maps_unip( Args ) :-
 	maplist( portray_clause(TNOut), TNOrdRows ),
 	close( TNOut ),
 	working_directory( _, '../maps' ),
- 	link_to_bio_sub( mouse, unip, maps, 'map_unip_mouse_trem_nucs.pl' ),
+ 	link_to_bio_sub( unip, 'map_unip_mouse_trem_nucs.pl', [org(mouse),type(maps)] ),
 
 	TrOpts = [source(TremUrl),datetime(TrDnDt),header(row('treMBLE_Protein','Nucleotide_Sequence'))],
 	bio_db_add_infos_to( TrOpts, map_unip_mouse_trem_nucs.pl ),
@@ -174,7 +174,7 @@ std_map_usyn_unip :-
 	csv_ids_map( _, usyn, unip, [row(usyn,unip)|OrdRs], MapF, Opts ),
 	os_path( MapsD, MapF, AbsMapF ),
  	% link_to_map_sub( unip, AbsMapF ).
-    link_to_bio_sub( mouse, unip, maps, AbsMapF ).
+    link_to_bio_sub( unip, AbsMapF, [org(mouse),type(maps)] ).
 
 sprot_synonym_rows( end_of_file, _In, [] ) :- !.
 sprot_synonym_rows( Line, In, SynRs ) :-

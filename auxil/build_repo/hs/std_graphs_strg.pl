@@ -23,7 +23,7 @@
 % :- ensure_loaded(hgnc:bio_db_build_downloads('hgnc/maps/map_hgnc_entz_symb')).
 
 % local libs & sources
-:- lib(link_to_bio_sub/4).
+:- lib(link_to_bio_sub/3).
 :- lib(bio_db_dnt_times/3).
 :- lib(bio_db_add_infos/1).  % bio_db_add_infos_to/2, fixme:
 :- lib(std_graphs_strg_auto_version/1).
@@ -126,8 +126,8 @@ std_graphs_strg( Args ) :-
 	SymbOpts = [source(From),datetime(DnDt),header(row('HGNC Symbol','HGNC Symbol',weight))],
 	bio_db_add_infos_to( SymbOpts, EdgeSymbsF ),
 
-	link_to_bio_sub( hs, strg, graphs, Trg ),
-	link_to_bio_sub( hs, strg, graphs, EdgeSymbsF ),
+	link_to_bio_sub( strg, Trg, [org(hs),type(graphs)] ),
+	link_to_bio_sub( strg, EdgeSymbsF, [org(hs),type(graphs)]  ),
 	working_directory( _, Here ).
 
 ensp_symb( EnsP, Symb ) :-

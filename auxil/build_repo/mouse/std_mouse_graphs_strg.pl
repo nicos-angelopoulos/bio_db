@@ -26,7 +26,7 @@
 % :- ensure_loaded(mgim:bio_db_build_downloads('mgim/maps/map_mgim_mouse_mgim_symb')).
 
 % local libs & sources
-:- lib(link_to_bio_sub/4).
+:- lib(link_to_bio_sub/3).
 :- lib(bio_db_dnt_times/3).
 :- lib(bio_db_add_infos/1).     % bio_db_add_infos_to/2.
 :- lib(std_graphs_strg_auto_version/1).
@@ -109,8 +109,8 @@ std_mouse_graphs_strg( Args ) :-
     SymbOpts = [source(From),datetime(DnDt),header(row('MGI_Symbol','MGI_Symbol',weight))],
     bio_db_add_infos_to( SymbOpts, EdgeSymbsF ),
 
-    link_to_bio_sub( mouse, strg, graphs, Trg ),
-    link_to_bio_sub( mouse, strg, graphs, EdgeSymbsF ),
+    link_to_bio_sub( strg, Trg, [org(mouse),type(graphs)] ),
+    link_to_bio_sub( strg, EdgeSymbsF, [org(mouse),type(graphs)] ),
     working_directory( _, Here ).
 
 ensp_mouse_symb( EnsP, Symb ) :-   % fixme: make sure the cut is green ! 

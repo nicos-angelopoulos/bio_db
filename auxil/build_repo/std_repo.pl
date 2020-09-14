@@ -275,7 +275,7 @@ zip_pl_files( [AbsFile|Plies], I, Tot ) :-
     os_path( Path, File, AbsFile ),
     debuc( std_repo, 'Zipping (~d/~d): ~w', [I,Tot,File] ),
     working_directory( Old, Path ),
-    os_ext( pl, File, ZipF ),
+    os_ext( zip, File, ZipF ),
     @ zip( '--quiet', ZipF, File ),
     @ chmod( 'go+r', ZipF ),
     @ rm( -f, File ),

@@ -230,8 +230,8 @@ std_repo_zip_dir( Rata, Sub ) :-
     os_path( Rata, Sub, Path ),
     os_dir( Files, [dir(Path),solutions(findall)] ),
     % os_dir_files( Path, Files ),
-    % debug( std_repo, 'Dir: ~p Files: ~w', [Path,Files] ),
     working_directory( Old, Path ),
+    debuc( std_repo, pwd, zipping ),
     maplist( bio_db_data_zip_file, Files ),
     working_directory( _, Old ).
 
@@ -261,24 +261,23 @@ opt_pl_cline( Opt, Crg ) :-
     ).
 
 zip_pl_files_in( Dir ) :-
-    os_sel( os_files, ext(pl), Plies, [dir(Dir),stem(abs)] ),
+    os_sel( os_files, ext(pl), Plies, [dir(Dir),stem(rel)] ),
     % os_files( Files, [dir(Dir),stem(abs)] ),
     % include( 
     length( Plies, NoFiles ),
     % maplist( zip_file_if_pl, Files ),
+    working_directory( Old, Dir ),
+    debuc( std_repo, pwd, zip_pl_files(changed_dir) ),
     zip_pl_files( Plies, 1, NoFiles ),
+    working_directory( _, Old ),
     os_dirs( Dirs, [dir(Dir),stem(abs)] ),
     maplist( zip_pl_files_in, Dirs ).
 
 zip_pl_files( [], _I, _Tot ).
 zip_pl_files( [AbsFile|Plies], I, Tot ) :-
-    % fixme:  just sticking tape for now
     debuc( std_repo, pwd, zip_pl_files(entry_at) ),
     debuc( std_repo, 'Absolute file, in zip_pl_files: ~w', AbsFile ),
-    % os_path( Path, File, AbsFile ),
-    % working_directory( Old, Path ),
     os_ext( zip, AbsFile, ZipF ),
-    % debuc( std_repo, pwd, zip_pl_files(changed_dir) ),
     debuc( std_repo, 'Zipping (~d/~d): ~w into: ~w ', [I,Tot,AbsFile,ZipF] ),
     @ zip( '--quiet', ZipF, AbsFile ),
     @ chmod( 'go+r', ZipF ),

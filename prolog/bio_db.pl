@@ -483,7 +483,8 @@ Thanks to Jan Wielemaker for a retractall fix and for code for fast loading of p
 @version  2.7 2019/5/12    edge_strg_symb/4 -> org_edge_strg_symb/4
 @version  3.0 2019/5/15    paper submission
 @version  3.1 2020/3/9     fixed lib; no unigene
-@see doc/Realeases.txt     for version details.
+@version  3.2 2020/9/18    include mouse ense + fixes/updates on building scripts
+@see doc/Releases.txt     for version details.
 
 */
 
@@ -664,16 +665,19 @@ upcase_first( Atom, Upped ) :-
     sub_atom( atom, 1, Ken, 0, Tail ),
     atom_concat( Fup, Tail, Upped ).
 
-/** bio_db_version( ?Vers, -Date ).
+/** bio_db_version( -Vers, -Date ).
 
 Version Mj:Mn:Fx, and release date date(Y,M,D).
 
 ==
 ?- bio_db_version( V, D ).
-V = 3:1:0,
-D = date(2019, 5, 15).
+V = 3:2:0,
+D = date(2020, 9, 18).
 ==
 
+@author Nicos Angelopoulos
+@version  3:1 2020/3/9
+@version  3:2 2020/9/18
 @see bio_db_data_predicate/4  (which should be generated for each new version)
 @see doc/Releases.txt for more detail on change log
 

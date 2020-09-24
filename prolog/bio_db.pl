@@ -49,10 +49,11 @@
 :- dynamic( '$bio_db_handle'/2 ). % this is needed for the asserted server preds 
 
 
-% auto-load libraries
+% auto-load (& other system) libraries
 :- use_module(library(lists)).
 :- use_module(library(apply)).
 :- use_module(library(debug)).     % /1,3.
+:- use_module(library(archive)).   % archive_extract/3.
 :- use_module(library(filesex)).
 
 :- use_module(library(lib)).

@@ -196,7 +196,7 @@ ense_genes( [RowG|Rows], GHRows, GSRows, [EnsGC|GCRows], Dis, Nin ) :-
 	RowG = row(ChrG,_Db,gene,SrtG,EndG,_,DirG,_,InfoG),
 	EnsGC= row(EnsG,ChrG,SrtG,EndG,DirG),
 	ense_info( gene_id, InfoG, EnsG ),
-	ense_info( gene_name, InfoG, EnsN ),
+	ense_info( gene_name, InfoG, def(EnsG), EnsN ),
 	ense_gene_hgnc( EnsG, EnsN, GHRows, GSRows, Dis, Nin, TGHRows, TGSRows, Tis, Tin ),
 	!,
 	ense_genes( Rows, TGHRows, TGSRows, GCRows, Tis, Tin ).
@@ -264,12 +264,14 @@ ense_info( Key, Lookup, _Strict, Value ) :-
 	member( Part, Parts ),
 	atom_concat( Left, Value, Part ),
 	!.
-ense_info( Key, Lookup, Strict, false ) :-
-	ense_info_failure( Strict, Key, Lookup ).
+ense_info( Key, Lookup, Strict, Value ) :-
+	ense_info_failure( Strict, Key, Lookup, Value ).
 
-ense_info_failure( true, Key, Lookup ) :-
+ense_info_failure( true, Key, Lookup, _ ) :-
 	throw( lookup_failure(Key,Lookup) ).
-ense_info_failure( false, _Key, _Lookup ).
+ense_info_failure( def(Def), _Key, _Lookup, Def ).
+% this is never called, currently:
+ense_info_failure( false, _Key, _Lookup, false ).
 
 ense_chromosome( 'X' ) :- !.
 ense_chromosome( 'Y' ) :- !.

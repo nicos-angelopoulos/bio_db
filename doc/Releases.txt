@@ -10,6 +10,9 @@ TBD:
          Rocks: Enumerate connections ? rocks_current(X).
 
 3.3 
+      21.05.07    CHANGE:   deep changes to std_graphs_gont, re-write of std_maps_gont with no dependency to 
+                  FIXED:    explicit removal of obsolete entries in std_{maps,graphs}_gont
+                  CHANGE:   ense_info/4 has a def/1 option in arg(3), which gene_name uses to fall back on gene_id
       20.09.24    DEPS:     explicit loading of library(archive)
 
 3.2               @ 20.09.18

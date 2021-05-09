@@ -62,21 +62,6 @@ go_obo_pl_relation( GoObo, OboRlt, Pfx, PlRlt, Url ) :-
     InfoOpts = [header(row('GO Term','GO Term')),source(Url),datetime(DnDt)],
     bio_db_add_infos_to( InfoOpts, PlF ).
 
-go_obo_non_obs( GoObo, GoOboCurr ) :-
-    GoObo = obo(Info, OboTerms),
-    go_obo_non_obs_terms( OboTerms, OboCurrTerms ),
-    GoOboCurr = obo(Info, OboCurrTerms ).
-
-go_obo_non_obs_terms( [], [] ).
-go_obo_non_obs_terms( [O|Os], Ps ) :-
-    O = obo_term(Id,Name,Nspc,Obs,Props),
-    ( Obs == true ->
-        Ps = TPs
-        ;
-        Ps = [obo_term(Id,Name,Nspc,Obs,Props)|TPs]
-    ),
-    go_obo_non_obs_terms( Os, TPs ).
-
 /*
 go_obo_terms_pl_relation( map_gont_gont_gonm, OboTerms, OboRlt, PlTerms ) :-
     !,

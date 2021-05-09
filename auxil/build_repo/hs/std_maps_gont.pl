@@ -15,6 +15,8 @@
 :- lib(by_unix).
 :- lib(stoics_lib:map_succ_list/3).
 
+:- ensure_loaded('src/go_obo').
+
 % also sets lib alias to that dir
 :- ensure_loaded('../../lib/bio_db_build_aliases').  % /1.
 
@@ -104,6 +106,8 @@ std_maps_gont( Args ) :-
     bio_db_add_infos_to( [header(row('HGNC Symbol','Evidence','GO Term'))|AddOpts], 'maps/map_gont_symb_gont.pl' ),
     
     debuc( Self, 'Building term to name map', true ),
+
+    /*
     gont_term_db_url( TermUrl ),
     % url_file( TermUrl, TermGz ),
     url_file_local_date_mirror( TermUrl, DnDir, true ),
@@ -123,20 +127,36 @@ std_maps_gont( Args ) :-
     GTopts = [predicate_name(map_gont_gont_gonm)],
     sort( GTNRows, OrdGTNRows ),
     mtx_prolog( OrdGTNRows, 'maps/map_gont_gont_gonm.pl', GTopts ),
-    debuc( Self, 'Fixme: add GOterm -> go Section', true ),
     delete_file( 'maps/map_gont_gont_symb.csv' ),
+    debuc( Self, 'Fixme: add GOterm -> go Section', true ),
     % here
     bio_db_dnt_times( 'go_daily-termdb-tables.tar.gz', TermUrlDntSt, _TermDntEnd ),
     TermOpts = [header('GO Term','GO Name'),source(TermUrl),datetime(TermUrlDntSt)],
     bio_db_add_infos_to( TermOpts, 'maps/map_gont_gont_gonm.pl' ),
+    */
 
+    OboUrl = 'http://purl.obolibrary.org/obo/go/go.obo',
+    absolute_file_name( bio_db_build_downloads(gont), DnDir ),
+    url_file_local_date_mirror( OboUrl, DnDir, debug(true) ),
+    debuc( Self, 'Dnload done: ~w', [DnDir] ),
+    OboF = 'go.obo',
+    go_obo( OboF, GoObo),
+    go_obo_non_obs( GoObo, GoOboCurr ),
+    GoOboCurr = obo(_,OboTerms),
+    findall( map_gont_gont_gonm(Gont,Gonm), member(obo_term(Gont,Gonm,_Nspc,_Obs,_Props),OboTerms), GontGonms ),
+    sort( GontGonms, OrdGontGonms ),
+    bio_db_dnt_times( 'go.obo', DnDt, _DnEnd ),
+    portray_clauses( OrdGontGonms, file('maps/map_gont_gont_gonm.pl') ),
+    InfoOpts = [header(row('GO Term','GO Name')),source(OboUrl),datetime(DnDt)],
+    bio_db_add_infos_to( InfoOpts, 'maps/map_gont_gont_gonm.pl' ),
+    
     working_directory( First, maps ),
     OutFs = ['map_gont_gont_symb.pl','map_gont_symb_gont.pl','map_gont_gont_gonm.pl'],
     maplist( link_to_bio_sub(gont), OutFs ),
 
     working_directory( _, First ),
     delete_file( GoaHs ),
-    delete_file( TermTar ),
+    % delete_file( TermTar ),
     working_directory( _, Here ).
 
 % fixme: parse Go through grammar
@@ -179,11 +199,12 @@ go_bared_symbol_single( [], Bared, Symb, _Self, NonSymbs, MultSymbs, TNonSymbs, 
     NonSymbs = [Bared|TNonSymbs],
     TMultSymbs = MultSymbs.
 go_bared_symbol_single( [Symb], _Bared, Symb, _Self, NonSymbs, MultSymbs, TNonSymbs, TMultSymbs ) :-
+    !,
     NonSymbs = TNonSymbs,
     MultSymbs = TMultSymbs.
 go_bared_symbol_single( [S1,S2|Sail], Bared, Symb, _Self, NonSymbs, MultSymbs, TNonSymbs, TMultSymbs ) :-
     debuc( std_maps_gont(details), 'GO bared:~w did led to multiple symbols...,~w', [Bared,[S1,S2|Sail]] ),
-    member( Symb, [S1,S2|Sail] ),
+    memberchk( Symb, [S1,S2|Sail] ),
     NonSymbs = TNonSymbs,
     MultSymbs = [Bared-[S1,S2|Sail]|TMultSymbs].
 

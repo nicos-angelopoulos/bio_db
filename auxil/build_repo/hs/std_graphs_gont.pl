@@ -9,7 +9,9 @@
 % external code, lib knowns how to deal with these (will install if missing)
 :- lib(debug_call).
 :- lib(stoics_lib:portray_clauses/2).
+:- lib(stoics_lib:io_sections/3).
 
+:- ensure_loaded('src/go_obo').
 % also sets lib alias to that dir
 :- ensure_loaded('../../lib/bio_db_build_aliases' ).  % /1.
 
@@ -32,7 +34,76 @@ std_graphs_gont( Args ) :-
     absolute_file_name( bio_db_build_downloads(gont), DnDir ),
     url_file_local_date_mirror( Url, DnDir, debug(true) ),
     debuc( Self, 'Dnload done: ~w', [DnDir] ),
-    working_directory( Old, DnDir ), 
+    working_directory( Old, DnDir ),
+    OboF = 'go.obo',
+    /* here new code */
+    go_obo( OboF, GoObo),
+    go_obo_non_obs( GoObo, GoOboCurr ),
+    os_make_path( graphs ),
+    go_obo_pl_relation( GoOboCurr, is_a, '', edge_gont_is_a, Url ),
+    go_obo_pl_relation( GoOboCurr, relationship, regulates, edge_gont_regulates, Url ),
+    go_obo_pl_relation( GoOboCurr, relationship, part_of, edge_gont_part_of, Url ),
+    go_obo_pl_relation( GoOboCurr, relationship, positively_regulates, edge_gont_positively_regulates, Url ),
+    go_obo_pl_relation( GoOboCurr, relationship, negatively_regulates, edge_gont_negatively_regulates, Url ),
+    working_directory( _, Old ).
+
+% assumes SubD = graphs
+% 
+go_obo_pl_relation( GoObo, OboRlt, Pfx, PlRlt, Url ) :-
+    SubD = graphs,
+    GoObo = obo(_,OboTerms),
+    go_obo_terms_pl_relation( OboTerms, OboRlt, Pfx, PlRlt, PlTerms ),
+    directory_file_path( SubD, PlRlt, Stem ),
+    file_name_extension( Stem, pl, PlF ),
+    sort( PlTerms, OrdPlTerms ),
+    bio_db_dnt_times( 'go.obo', DnDt, _DnEnd ),
+    portray_clauses( OrdPlTerms, file(PlF) ),
+    link_to_bio_sub( gont, PlF, [org(hs),type(graphs)] ),
+    InfoOpts = [header(row('GO Term','GO Term')),source(Url),datetime(DnDt)],
+    bio_db_add_infos_to( InfoOpts, PlF ).
+
+go_obo_non_obs( GoObo, GoOboCurr ) :-
+    GoObo = obo(Info, OboTerms),
+    go_obo_non_obs_terms( OboTerms, OboCurrTerms ),
+    GoOboCurr = obo(Info, OboCurrTerms ).
+
+go_obo_non_obs_terms( [], [] ).
+go_obo_non_obs_terms( [O|Os], Ps ) :-
+    O = obo_term(Id,Name,Nspc,Obs,Props),
+    ( Obs == true ->
+        Ps = TPs
+        ;
+        Ps = [obo_term(Id,Name,Nspc,Obs,Props)|TPs]
+    ),
+    go_obo_non_obs_terms( Os, TPs ).
+
+/*
+go_obo_terms_pl_relation( map_gont_gont_gonm, OboTerms, OboRlt, PlTerms ) :-
+    !,
+    go_obo_terms_arg_pl_relation( 
+go_obo_terms_pl_relation( namespace, OboTerms, OboRlt, PlTerms ) :-
+    !,
+    */
+
+go_obo_terms_pl_relation( [], _OboRlt, _Pfx, _PlRlt, [] ).
+go_obo_terms_pl_relation( [obo_term(Id,_Name,_Nspc,_Obs,Props)|OboTerms], OboRlt, Pfx, PlRlt, PlTerms ) :-
+    Term =.. [PlRlt,Id,ObjId],
+    findall( Term, (member(OboRlt-Val,Props),go_obo_value_id(Val,Pfx,ObjId)), IdPlTerms ),
+    append( IdPlTerms, TPlTerms, PlTerms ),
+    go_obo_terms_pl_relation( OboTerms, OboRlt, Pfx, PlRlt, TPlTerms ).
+    
+
+go_obo_value_id( Val, Pfx, Id ) :-
+    atomic_list_concat( Parts, ' ', Val ),
+    ( Pfx == '' ->
+        Parts = [GoId|_]
+        ;
+        Parts = [Pfx,GoId|_]
+    ),
+    go_id( GoId, Id ).
+
+/*
+    /* here old code */
     File = 'go.obo',
     Pfx = 'is_a: '/edge_gont_is_a,
     go_obo_collect( File, Pfx, Edges ),
@@ -104,7 +175,9 @@ std_graphs_gont( Args ) :-
     bio_db_add_infos_to( InfoOpts, NegRF),
 
     working_directory( _, Old ).
+*/
 
+/*
 % display all the type of relationships defined by a prefix of "^relationship"
 % 
 go_obo_relationships :-
@@ -128,7 +201,10 @@ go_obo_relationships( Codes, Seen, In, Rels ) :-
     ),
     read_line_to_codes( In, Next ),
     go_obo_relationships( Next, Acc, In, Rels ).
+*/
 
+
+/*
 go_obo_collect( File, Pfx, Edges ) :-
     open( File, read, In ),
     os_make_path( graphs ),
@@ -151,13 +227,23 @@ go_obo_is_a( `[Term]`, Pfx, In, Edges ) :-
 go_obo_is_a( `[Typedef]`, _Pfx, _In, [] ).
 
 go_obo_is_a_term( ``, _GoT, _Pfx, _In, Edges, Edges ) :- !.
+% untested -> obsolete
+go_obo_is_a_term( Codes, _GoT, _PfxTname, _In, Edges, Tdges ) :-
+    atom_string( Line, Codes ),
+    atom_concat( 'name: obsolete', _Psfx, Line ),
+    % skip obsolete entries for everything 
+    % formally you can ask for "^is_obsolete: true"
+    % but name comes right after id: so it is easier to do this way
+    !,
+    Edges = Tdges.
+
 go_obo_is_a_term( Codes, GoT, Pfx/Tname, In, Edges, Tdges ) :-
     atom_string( Line, Codes ),
     % atom_concat( 'is_a: ', Psfx, Line ),
     atom_concat( Pfx, Psfx, Line ),
     !,
     atomic_list_concat( [Par|_], ' ', Psfx ),
-    maplist( go_id_strip, [GoT,Par], [GoTint,Parint] ),
+    maplist( go_id, [GoT,Par], [GoTint,Parint] ),
     Edge =.. [Tname,GoTint,Parint],
     Edges = [Edge|Mdges],
     % Edges = [edge_gont_isa(GoT,Par)|Mdges],
@@ -167,12 +253,10 @@ go_obo_is_a_term( _Codes, GoT, Pfx, In, Edges, Tdges ) :-
     read_line_to_codes( In, Next ), 
     go_obo_is_a_term( Next, GoT, Pfx, In, Edges, Tdges ).
 
-go_id_strip( GoT, InT ) :-
-    atomic_list_concat( ['GO',IntAtm], ':', GoT ),
-    atom_number( IntAtm, InT ).
-
 go_obo_skip_to_first_term( `[Term]`, _In ) :-
     !.
 go_obo_skip_to_first_term( _, In ) :-
     read_line_to_codes( In, Codes ), 
     go_obo_skip_to_first_term( Codes, In ).
+*/
+

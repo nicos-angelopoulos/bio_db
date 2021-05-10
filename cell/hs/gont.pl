@@ -2,12 +2,14 @@
                 bio_db_hs_gont/0,
                 %       + Gene Ontology.
                 % A) edges
-                edge_gont_includes/2,                 % reciprocal of is_a
+                % edge_gont_includes/2,                 % reciprocal of is_a
+                % commenting out on version: 3:3:0
                 edge_gont_is_a/2,
                 edge_gont_regulates/2,                % A regulates B
                 edge_gont_positively_regulates/2,
                 edge_gont_negatively_regulates/2,
-                edge_gont_consists_of/2,              % reciprocal of part_of/2
+                % edge_gont_consists_of/2,              % reciprocal of part_of/2
+                % commenting out on version: 3:3:0
                 edge_gont_part_of/2,
                 % B) maps
                 map_gont_gont_symb/3,

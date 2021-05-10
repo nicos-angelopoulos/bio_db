@@ -679,7 +679,7 @@ D = date(2021, 5, 10).
 @author Nicos Angelopoulos
 @version  3:1 2020/3/9
 @version  3:2 2020/9/18
-@version  3:4 2020/9/10,  3.3 was a incomplete attempt on the same day
+@version  3:4 2020/9/10
 @see bio_db_data_predicate/4  (which should be generated for each new version)
 @see doc/Releases.txt for more detail on change log
 

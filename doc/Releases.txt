@@ -11,6 +11,8 @@ TBD:
 
 3.4               @ 21.05.10
                   UPDATE:   bio_db_version/2
+                  IFACE:    commented out: edge_gont_includes/2 (reciprocal of is_a),
+                                           and edge_gont_consists_of/2 (reciprocal of part_of/2)
 
 3.3               @ 21.05.10
       21.05.10    DOC:      minor typos

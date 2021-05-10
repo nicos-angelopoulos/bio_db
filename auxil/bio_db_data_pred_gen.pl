@@ -1,5 +1,9 @@
 
+:- use_module(library(apply)).  % maplist/3.
+:- use_module(library(lists)).  % member/2.
+
 :- use_module(library(lib)).
+
 :- lib(os_lib).
 :- lib(stoics_lib:portray_clauses/2).
 :- lib(stoics_lib:date_two_digit_dotted/1).

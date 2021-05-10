@@ -4,7 +4,7 @@
 :- lib(bio_db).
 :- lib(debug_call).
 
-:- debug(test_repo).
+:- debuc(test_repo).
 
 /** test_repo.
 

@@ -148,7 +148,7 @@ ense_genes( [RowG|Rows], Self, GMRows, [GSRow|TGSRows], [EnsGC|GCRows] ) :-
 	RowG = row(ChrG,_Db,gene,SrtG,EndG,_,DirG,_,InfoG),
 	EnsGC= row(EnsG,ChrG,SrtG,EndG,DirG),
 	ense_info( gene_id, InfoG, EnsG ),
-	ense_info( gene_name, InfoG, Syno ),
+	ense_info( gene_name, InfoG, def(EnsG), Syno ),
 	% ense_gene_hgnc( EnsG, EnsN, GHRows, GSRows, TGHRows, TGSRows ),
     % fixme: check Symb is an mgim symbol ?
     ( mgim:map_mgim_mouse_mgim_symb(SynoGim,Syno) -> 
@@ -205,12 +205,13 @@ ense_info( Key, Lookup, _Strict, Value ) :-
 	member( Part, Parts ),
 	atom_concat( Left, Value, Part ),
 	!.
-ense_info( Key, Lookup, Strict, false ) :-
-	ense_info_failure( Strict, Key, Lookup ).
+ense_info( Key, Lookup, Strict, Value ) :-
+	ense_info_failure( Strict, Key, Lookup, Value ).
 
-ense_info_failure( true, Key, Lookup ) :-
+ense_info_failure( true, Key, Lookup, _ ) :-
 	throw( lookup_failure(Key,Lookup) ).
-ense_info_failure( false, _Key, _Lookup ).
+ense_info_failure( def(Def), _Key, _Lookup, Def ).
+ense_info_failure( false, _Key, _Lookup, false ).
 
 ense_chromosome( 'X' ) :- !.
 ense_chromosome( 'Y' ) :- !.

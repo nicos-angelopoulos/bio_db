@@ -103,7 +103,7 @@ std_maps_unip( Args ) :-
 	bio_db_add_infos_to( [header(row('Uni Protein','HGNC ID'))|SwOpts], 'maps/map_unip_unip_hgnc.pl' ),
 	% bio_db_add_infos_to( [header(row('Uni Protein','Uni Gene'))|SwOpts], 'maps/map_unip_unip_unig.pl' ),
 
-	working_directory( _, DnDir ),
+	% working_directory( _, DnDir ),
 
 
 	trem_hs( TremUrl ),
@@ -138,8 +138,9 @@ std_maps_unip( Args ) :-
 	open( '../maps/map_unip_trem_nucs.pl', write, TNOut ),
 	maplist( portray_clause(TNOut), TNOrdRows ),
 	close( TNOut ),
-    @ rm( -rf, '../trembl' ),   % fixme: untested in real run.....
+    % working_directory( _, '..' ),
 	working_directory( _, '../maps' ),
+    @ rm( -rf, '../trembl' ),   % fixme: untested in real run.....
  	link_to_bio_sub(unip, 'map_unip_trem_nucs.pl' ),
 
 	TrOpts = [source(TremUrl),datetime(TrDnDt),header(row('treMBLE Protein','Nucleotide Sequence'))],

@@ -9,6 +9,9 @@ TBD:
          Would be nice to have the "correct" types when opening an existing database with no options.
          Rocks: Enumerate connections ? rocks_current(X).
 
+3.4               @ 21.05.10
+                  UPDATE:   bio_db_version/2
+
 3.3               @ 21.05.10
       21.05.10    DOC:      minor typos
                   CHANGE:   generated new src/bio_db_data_predicate.pl

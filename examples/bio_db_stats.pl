@@ -8,7 +8,7 @@
 
 :- lib(debug).
 :- debug(bio_db_stats).
-:- debug(bio_db).
+% :- debug(bio_db).
 
 /**  bio_db_stats.
      bio_db_stats(Opts).
@@ -51,7 +51,7 @@ Opts
 % map_ense_mouse_ensg_chrl/5 has 55416 records.
 % map_ense_mouse_ensg_mgim/2 has 52377 records.
 % map_ense_mouse_ensg_symb/2 has 55416 records.
-% map_ense_mouse_enst_chrl/5 has 0 records.
+% map_ense_mouse_enst_chrl/5 has 142338 records.
 % map_ense_mouse_enst_ensg/2 has 142338 records.
 % map_gont_gont_gonm/2 has 43791 records.
 % map_gont_gont_symb/3 has 328427 records.
@@ -101,7 +101,7 @@ Opts
 % map_unip_trem_seqn/2 has 183336 records.
 % map_unip_unip_entz/2 has 33249 records.
 % map_unip_unip_hgnc/2 has 78237 records.
-% Total number of predicates: 67, and records: 43196490
+% Total number of predicates: 67, and records: 43338828
 
 % You should better halt this session as bio_db predicates were retracted.
 true.

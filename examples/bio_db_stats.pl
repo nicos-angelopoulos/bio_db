@@ -8,6 +8,7 @@
 
 :- lib(debug).
 :- debug(bio_db_stats).
+:- debug(bio_db).
 
 /**  bio_db_stats.
      bio_db_stats(Opts).

@@ -68,7 +68,7 @@ Dir =  (+).
 
 */
 map_ense_mouse_enst_chrl( EnsT, Chr, Start, End, Dir ) :-
-    bio_db:bio_db_serve( map_ense_enst_chrl(EnsT,Chr,Start,End,Dir) ).
+    bio_db:bio_db_serve( map_ense_mouse_enst_chrl(EnsT,Chr,Start,End,Dir) ).
 
 
 /*  map_ense_mouse_ensg_chrl( +EnsG, -Chr, -Start, -End, -Dir ).

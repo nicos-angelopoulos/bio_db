@@ -8,10 +8,14 @@ TBD:
          Rocks doesn't have mode (and does not open as read only so no 2 processes can open the db?)
          Would be nice to have the "correct" types when opening an existing database with no options.
          Rocks: Enumerate connections ? rocks_current(X).
+         ---
+         21.12.03 make sure existing handles are checked before opening another handle to same predicate 
+                  (map_ense_mouse_enst_chrl/5 was opening map_ense_enst_chrl/5).
 
 3.5   
       21.12.03    SCRIPT:  bio_db_stats.pl @version  0.2 2021/12/03,  options, sort predicates
                   FIXED:   pack_errors in prolog/bio_db.pl now use the, modern, options version of throw/2 
+                  FIXED:   fixed map_ense_mouse_enst_chrl/5 (was opening map_ense_nest_chrl/5)
       21.07.19    CHANGE:  update test_repo.pl
 
 3.4               @ 21.05.10

@@ -1209,7 +1209,8 @@ This is called by bio_db at halt.
 
 */
 bio_db_close_connections:-
-    bio_db:bio_db_handle( Pid, _B, _C, _D, _Mod ),
+    findall( Pid, bio_db:bio_db_handle(Pid,_B,_C,_D,_Mod), Pids ),
+    member( Pid, Pids ),
     bio_db_close( Pid ),
     fail.
 bio_db_close_connections.
@@ -1293,7 +1294,6 @@ bio_db_interface_set( Iface ) :-
     set_prolog_flag( bio_db_interface, Iface ).
 bio_db_interface_set( Iface ) :-
     findall( Aface, bio_db_interface_atom(Aface), AllFaces ),
-    Err = pack_error(bio_db,bio_db_interface/2,arg_enumerate(1,AllFaces,Iface) ),
     throw( arg_enumerate(1,AllFaces,Iface), [pack(bio_db),pred(bio_db_interface/2)] ).
     
 bio_db_interface_extensions( prolog, [pl,''] ).
@@ -1548,7 +1548,6 @@ bio_db_ensure_loaded( Iface, Pid, Load, Handle, From ) :-
     !.
 bio_db_ensure_loaded( Iface, Pid, Load, _Handle, _From ) :-
     % fixme: Goal in error can be supplied ?
-    Err = pack_error(bio_db,bio_db_ensure_loaded/4,),
     throw( failed_to_load(Iface,Pid,Load), [pack(bio_db),pred(bio_db_ensure_loaded/4)] ).
 
 bio_db_ensure_loaded_1( prolog, Pid, Load, [], From ) :-

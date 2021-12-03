@@ -979,8 +979,7 @@ bio_db_porp_call_ground( Pname, Cid, Call ) :-
     ( memberchk(Pname/Arity,Pids) ->
         true
         ;
-        Err = pack_error(not_a_db_pred(Pname),bio_db:Cid),
-        throw( Err )
+        throw( not_a_db_pred(Pname), [pack(bio_db),pred(Cid)] )
     ),
     functor( Call, Pname, Arity ).
 
@@ -1097,8 +1096,7 @@ bio_db_info( Pid, Key, Value ) :-
     !,
     bio_db_info_pred( Pid, Key, Value ).
 bio_db_info( Pid, _Key, _Value ) :-
-    Err = pack_error(bio_db,bio_db_info/3,not_a_db_pred(Pid)),
-    throw( Err ).
+    throw( not_a_db_pred(Pid), [pack(bio_db),pred(bio_db_info/3)] ).
 
 bio_db_info_pred( Pid, Key, Value ) :-
     bio_db_handle( Pid, Iface, File, Handle, _Mod ),
@@ -1106,8 +1104,7 @@ bio_db_info_pred( Pid, Key, Value ) :-
     bio_db_info_interface( Iface, Pid, File, Handle, Key, Value ).
 
 bio_db_info_pred( Pid, _Key, _Value ) :-
-    Err = pack_error(bio_db,bio_db_info/3,close_to_info(Pid)),
-    throw( Err ).
+    throw( close_to_info(Pid), [pack(bio_db),pred(bio_db_info/3)] ).
 
 bio_db_info_interface_kvs( Iface, Pid, File, Handle, KVs ) :-
     bio_db_info_interface_infos( Iface, Pid, File, Handle, Pairs ),
@@ -1178,8 +1175,7 @@ bio_db_close( Pid ) :-
     !,
     bio_db_close_pred( Pid ).
 bio_db_close( Pid ) :-
-    Err = pack_error(not_a_db_pred(Pid),bio_db:bio_db_close/1),
-    throw( Err ).
+    throw( not_a_db_pred(Pid), [pack(bio_db),pred(bio_db_close/1)] ).
 
 bio_db_close_pred( Pid ) :-
     bio_db_handle( Pid, Iface, File, Handle, Mod ),
@@ -1194,9 +1190,7 @@ bio_db_close_pred( Pid ) :-
     retractall( bio_db_handle(Pid,Iface,File,Handle,Mod) ),
     assert( (Head :- bio_db_serve(Head)) ).
 bio_db_close_pred( Pid ) :-
-    % debug( bio_db, 'No server for predicate: ~w, found', Pid ),
-    Err = pack_error(bio_db,bio_db_close/1,not_served(Pid)),
-    throw( Err ),
+    throw( not_served(Pid), [pack(bio_db),pred(db_close/1)] ),
     fail.
 
 bio_db_close_connection( prosqlite, Handle ) :-
@@ -1300,15 +1294,7 @@ bio_db_interface_set( Iface ) :-
 bio_db_interface_set( Iface ) :-
     findall( Aface, bio_db_interface_atom(Aface), AllFaces ),
     Err = pack_error(bio_db,bio_db_interface/2,arg_enumerate(1,AllFaces,Iface) ),
-    throw( Err ).
-    /*
-    M = 'Could not set bio_db_interface prolog_flag, to: ~w, which in not one of: ~w',
-    findall( Face, bio_db_interface_atom(Face), Faces ),
-    debug( true ),
-    debug( true, M, [Iface,Faces] ), % fixme: this is warning rather than debug
-    debug( true ),
-    fail.
-    */
+    throw( arg_enumerate(1,AllFaces,Iface), [pack(bio_db),pred(bio_db_interface/2)] ).
     
 bio_db_interface_extensions( prolog, [pl,''] ).
 bio_db_interface_extensions( prosqlite, [sqlite,''] ).
@@ -1562,8 +1548,8 @@ bio_db_ensure_loaded( Iface, Pid, Load, Handle, From ) :-
     !.
 bio_db_ensure_loaded( Iface, Pid, Load, _Handle, _From ) :-
     % fixme: Goal in error can be supplied ?
-    Err = pack_error(bio_db,bio_db_ensure_loaded/4,failed_to_load(Iface,Pid,Load) ),
-    throw( Err ).
+    Err = pack_error(bio_db,bio_db_ensure_loaded/4,),
+    throw( failed_to_load(Iface,Pid,Load), [pack(bio_db),pred(bio_db_ensure_loaded/4)] ).
 
 bio_db_ensure_loaded_1( prolog, Pid, Load, [], From ) :-
     Pid = Pname/_Arity,

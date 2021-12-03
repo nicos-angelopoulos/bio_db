@@ -10,8 +10,9 @@ TBD:
          Rocks: Enumerate connections ? rocks_current(X).
 
 3.5   
-      21.07.19    CHANGE:  update test_repo.pl
       21.12.03    SCRIPT:  bio_db_stats.pl @version  0.2 2021/12/03,  options, sort predicates
+                  FIXED:   pack_errors in prolog/bio_db.pl now use the, modern, options version of throw/2 
+      21.07.19    CHANGE:  update test_repo.pl
 
 3.4               @ 21.05.10
                   UPDATE:  bio_db_version/2

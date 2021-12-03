@@ -129,7 +129,7 @@ bio_db_stats :-
     bio_db_stats( [] ).
 
 bio_db_stats( Args ) :-
-    Defs = [csv(true),abolish(true)],
+    Defs = [csv(false),abolish(true)],
     ( is_list(Args) -> append(Args,Defs,Opts)
                      ; append([Args],Defs,Opts) ),
     bio_db_version( Vers, Date ),

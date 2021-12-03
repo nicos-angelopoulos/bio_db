@@ -9,182 +9,185 @@ TBD:
          Would be nice to have the "correct" types when opening an existing database with no options.
          Rocks: Enumerate connections ? rocks_current(X).
 
-3.5   21.07.19    CHANGE:   update test_repo.pl
+3.5   
+      21.07.19    CHANGE:  update test_repo.pl
+      21.12.03    SCRIPT:  bio_db_stats.pl @version  0.2 2021/12/03,  options, sort predicates
+
 3.4               @ 21.05.10
-                  UPDATE:   bio_db_version/2
-                  IFACE:    commented out: edge_gont_includes/2 (reciprocal of is_a),
+                  UPDATE:  bio_db_version/2
+                  IFACE:   commented out: edge_gont_includes/2 (reciprocal of is_a),
                                            and edge_gont_consists_of/2 (reciprocal of part_of/2)
 
 3.3               @ 21.05.10
-      21.05.10    DOC:      minor typos
-                  CHANGE:   generated new src/bio_db_data_predicate.pl
-      21.05.07    CHANGE:   deep changes to std_graphs_gont, re-write of std_maps_gont with no dependency to 
-                  FIXED:    explicit removal of obsolete entries in std_{maps,graphs}_gont
-                  CHANGE:   ense_info/4 has a def/1 option in arg(3), which gene_name uses to fall back on gene_id
-      20.09.24    DEPS:     explicit loading of library(archive)
+      21.05.10    DOC:     minor typos
+                  CHANGE:  generated new src/bio_db_data_predicate.pl
+      21.05.07    CHANGE:  deep changes to std_graphs_gont, re-write of std_maps_gont with no dependency to 
+                  FIXED:   explicit removal of obsolete entries in std_{maps,graphs}_gont
+                  CHANGE:  ense_info/4 has a def/1 option in arg(3), which gene_name uses to fall back on gene_id
+      20.09.24    DEPS:    explicit loading of library(archive)
 
 3.2               @ 20.09.18
-      20.09.14    BUILD:    link_to_maps_sub/2->4, link_to_bio_sub/3 optionised
-      20.09.13    BUILD:    fixed typo on reporting task: start -> stop
-      20.09.11    BUILD:    added debug argument to csv_to_pl/1
-                  FIXED:    finalised support for mouse ense
-                  CHANGE:   use library(csv) facilites for skipping comments in ense
+      20.09.14    BUILD:   link_to_maps_sub/2->4, link_to_bio_sub/3 optionised
+      20.09.13    BUILD:   fixed typo on reporting task: start -> stop
+      20.09.11    BUILD:   added debug argument to csv_to_pl/1
+                  FIXED:   finalised support for mouse ense
+                  CHANGE:  use library(csv) facilites for skipping comments in ense
 
-      20.09.10    IFACE:    use pass=opt=val for cascading options
-                  BUILD:    auto detection of ense latest gtf file
-                  BUILD:    started on mouse ense maps (based on human scripts)
-      20.09.08    DEPS:     explicit loading of library(debug)
-      20.07.18    DEPS:     explicit loading of autoloaded SWI libs
+      20.09.10    IFACE:   use pass=opt=val for cascading options
+                  BUILD:   auto detection of ense latest gtf file
+                  BUILD:   started on mouse ense maps (based on human scripts)
+      20.09.08    DEPS:    explicit loading of library(debug)
+      20.07.18    DEPS:    explicit loading of autoloaded SWI libs
 
 3.1               @ 20.03.08
-      20.03.07    CHANGE:   many debug(,,true) to debug_call(,,true) as SWI 8 has changed this to an error 
-                  REMOVE:   map_unip_unip_unig/2 info don't seem to be in the source file any longer... HUMAN_9606_idmapping
-                  UPDATE:   auxil URLs. using more iface(wget) 'cause of a couple of ftp-ing problems with SWI's URL getter
+      20.03.07    CHANGE:  many debug(,,true) to debug_call(,,true) as SWI 8 has changed this to an error 
+                  REMOVE:  map_unip_unip_unig/2 info don't seem to be in the source file any longer... HUMAN_9606_idmapping
+                  UPDATE:  auxil URLs. using more iface(wget) 'cause of a couple of ftp-ing problems with SWI's URL getter
 
 3.0               @ 19.05.15
-                  UPDATE:   many changes to 
-                  IFACE:    cell loading support
+                  UPDATE:  many changes to 
+                  IFACE:   cell loading support
 
 2.7               @ 19.05.12
-      19.05.09    CHANGE:   edge_strg_symb/4 -> org_edge_strg_symb/4
+      19.05.09    CHANGE:  edge_strg_symb/4 -> org_edge_strg_symb/4
 
 2.6               @ 19.05.08
-      19.05.07    FIX:      move to /3 version throughout (map_gont_mouse_gont_symb/3)
-      19.05.06    FIXED:    correct go id and remove all traces of go_term_symbols
-                  CHANGE:   entrez ids are now read as integers ....
-      19.05.04    DATA:     added evidence to map_gont_symb_gont/2 and gont_symb/2
-                  IFACE:    map_gont_gont_symb/2 -> 3, and symb_gont/2->3
-      19.05.03    DATA:     map_gont_gont_gomn/2, both new Gont id (as integer) and changes in go source files
-      19.05.02    IFACE:    bio_db_organism_alias/2 and changed bio_db_organism/2 
+      19.05.07    FIX:     move to /3 version throughout (map_gont_mouse_gont_symb/3)
+      19.05.06    FIXED:   correct go id and remove all traces of go_term_symbols
+                  CHANGE:  entrez ids are now read as integers ....
+      19.05.04    DATA:    added evidence to map_gont_symb_gont/2 and gont_symb/2
+                  IFACE:   map_gont_gont_symb/2 -> 3, and symb_gont/2->3
+      19.05.03    DATA:    map_gont_gont_gomn/2, both new Gont id (as integer) and changes in go source files
+      19.05.02    IFACE:   bio_db_organism_alias/2 and changed bio_db_organism/2 
 
 2.5          @    19.04.22
-      19.04.08    IFACE:    edge_strg_symb/4
-                  IFACE:    bio_db_organism/1,2
-      19.04.07    FIXED:    logic for partial builds
-                  IFACE:    go_id/2,3
-                  MOVED:    go_term_symbols/3 to pack(bio_analytics)
-                  FIXED:    argument switch copy paste in edge_gont_includes/2
-                  IFACE:    is_symbol/2 + entz_symb/3
-      19.04.06    FIXED:    make sure weights in string graphs are arithmetic
-                  BUILD:    map_gont_mouse_gont_symb/2
-                  IFACE:    map_gont_mouse_gont_symb/2
-                  DATA:     GO terms in human are now without GO:
+      19.04.08    IFACE:   edge_strg_symb/4
+                  IFACE:   bio_db_organism/1,2
+      19.04.07    FIXED:   logic for partial builds
+                  IFACE:   go_id/2,3
+                  MOVED:   go_term_symbols/3 to pack(bio_analytics)
+                  FIXED:   argument switch copy paste in edge_gont_includes/2
+                  IFACE:   is_symbol/2 + entz_symb/3
+      19.04.06    FIXED:   make sure weights in string graphs are arithmetic
+                  BUILD:   map_gont_mouse_gont_symb/2
+                  IFACE:   map_gont_mouse_gont_symb/2
+                  DATA:    GO terms in human are now without GO:
 
 2.4               @ 19.04.02
-      19.04.01    FIXED:    setting up bio_db_repo_version/1,2 correctly from date repo was created
-                  UPDATE:   auto generate bio_db_data_predicate/4
-      19.02.13    DOC:      fixed copy paste mistakes from human onto mouse
-      19.02.12    BUILD:    scripts for map_ncbi_mouse_syno_symb/2
-                  IFACE:    map_ncbi_mouse_syno_symb/2
-      19.02.11    DOC:      arity of bio_db predicate in example query and typos
-                  ADDED:    build script map_mgim_mouse_mgim_entz/2
-                  IFACE:    map_mgim_mouse_mgim_entz/2
-                  DOC:      1 example per mgi_mouse predicate
+      19.04.01    FIXED:   setting up bio_db_repo_version/1,2 correctly from date repo was created
+                  UPDATE:  auto generate bio_db_data_predicate/4
+      19.02.13    DOC:     fixed copy paste mistakes from human onto mouse
+      19.02.12    BUILD:   scripts for map_ncbi_mouse_syno_symb/2
+                  IFACE:   map_ncbi_mouse_syno_symb/2
+      19.02.11    DOC:     arity of bio_db predicate in example query and typos
+                  ADDED:   build script map_mgim_mouse_mgim_entz/2
+                  IFACE:   map_mgim_mouse_mgim_entz/2
+                  DOC:     1 example per mgi_mouse predicate
 
 2.3          @    19.02.11
-      19.02.11    UPDATE:   example bio_db_stats with output 
-                  ADDED:    version query and stats output
-      19.02.08    DELETE:   message_report.pl/3 (now in stoics_lib)
-                  UPDATE:   comprehensive overhaul, as location of source file its contents and header names, had changed
-                  UPDATE:   gene_association.mgi.gz is now mgi.gaf.gz
-                  IFACE:    removed dead interace predicates
-                  UPDATE:   use normal calls for prev and synonyms via | sep call
-      19.01.30    UPDATE:   new way of locating STRING version (valid from STRING 11.0)
-                  ADDED:    convert(false) in csv_read_file/3 call
+      19.02.11    UPDATE:  example bio_db_stats with output 
+                  ADDED:   version query and stats output
+      19.02.08    DELETE:  message_report.pl/3 (now in stoics_lib)
+                  UPDATE:  comprehensive overhaul, as location of source file its contents and header names, had changed
+                  UPDATE:  gene_association.mgi.gz is now mgi.gaf.gz
+                  IFACE:   removed dead interace predicates
+                  UPDATE:  use normal calls for prev and synonyms via | sep call
+      19.01.30    UPDATE:  new way of locating STRING version (valid from STRING 11.0)
+                  ADDED:   convert(false) in csv_read_file/3 call
 
 2.2          @    18.12.06
-      18.12.06    FIXED:    cpu deterioration of celled predicates
-      18.12.03    IFACE:    map_unip_mouse_gyno_unip/2.
-                  IFACE:    map_mgim_mouse_syno_mgim/2 
+      18.12.06    FIXED:   cpu deterioration of celled predicates
+      18.12.03    IFACE:   map_unip_mouse_gyno_unip/2.
+                  IFACE:   map_mgim_mouse_syno_mgim/2 
 
 2.1          @    18.11.27
-      18.11.27    FIXED:    new dependency to write_message/3 was pointing to wrong directory...
+      18.11.27    FIXED:   new dependency to write_message/3 was pointing to wrong directory...
 
 2.0          @    18.11.17
-      18.11.27    FLAGS:    bio_db_pl_from_zip and bio_db_del_zip
-                  REPO:     make sure mouse_maps_unip.pl writes out with no flag allow_dot_in_atoms as false 
-      18.11.26    IFACE:    bio_db_data_predicate/4
-      18.11.26    DOC:      document latest repo and cells.
-      18.11.25    LOAD:     load full cell version when loading main file
-      18.03.30    FIXED:    load pack(lib) in auxil/build_repo/std.pl
-                  CHANGED:  std_repo to look into new dir structure (bio_db_repo... rather than bio_db)
-                  ADDED:    auto detection of latest string version
-                  ADDED:    use of new tables in building std tables that depend on existing bio_db relations
-      18.03.13    DEL:      moved url_url/3 to pack(stoics_lib)
-      17.10.14    FIXED:    mislocated map_uniprot.pl
-                  FIXED:    bio_db stem in aliases to bio_db_repo
-                  CHANGED:  std_maps_psit.pl to new structure
-                  RENAME:   std_maps_psit.pl std_maps_pros.pl
-1.1   17.10.13    VER:      1.1
-                  CHANGED:  Huge restructuring of auxil/
-1.0   17.10.09    VER:      1.0
-      17.09.27    FIXED:    man_ense_esg_hgncvcsv -> man_ense_esg_hgnc.csv  typo
-                  CHANGE:   parts of the URL for string
-                  CHANGE:   bio_db_pl_info now from bio_db
-                  FIXED:    std_maps_psit.pl untested yet
-      17.08.15    VER:      1.0 (candidate)
-      17.08.11    CHANGED:  implementation of pl_prosqlite now .sqlite file is removed if op fails/excepts
-                  CHANGED:  examples/cpu/cpu.pl
-      17.08.10    REMOVED:  spurious loading of break_list_on/4 from has_extension/3
-                  FIXED:    en_list/2 loads from stoics_lib now not options (various auxil sources)
-      17.06.27    ADDED:    examples/gene_map_compare.pl
-                  UPDTE:    load via stoics_lib:message_report/3  in auxil/lib/link_to_bio_sub.pl
-                  FIXED:    dependency of std_maps_ense is now to std_maps_hgnc and not to absolute file locations
+      18.11.27    FLAGS:   bio_db_pl_from_zip and bio_db_del_zip
+                  REPO:    make sure mouse_maps_unip.pl writes out with no flag allow_dot_in_atoms as false 
+      18.11.26    IFACE:   bio_db_data_predicate/4
+      18.11.26    DOC:     document latest repo and cells.
+      18.11.25    LOAD:    load full cell version when loading main file
+      18.03.30    FIXED:   load pack(lib) in auxil/build_repo/std.pl
+                  CHANGED: std_repo to look into new dir structure (bio_db_repo... rather than bio_db)
+                  ADDED:   auto detection of latest string version
+                  ADDED:   use of new tables in building std tables that depend on existing bio_db relations
+      18.03.13    DEL:     moved url_url/3 to pack(stoics_lib)
+      17.10.14    FIXED:   mislocated map_uniprot.pl
+                  FIXED:   bio_db stem in aliases to bio_db_repo
+                  CHANGED: std_maps_psit.pl to new structure
+                  RENAME:  std_maps_psit.pl std_maps_pros.pl
+1.1   17.10.13    VER:     1.1
+                  CHANGED: Huge restructuring of auxil/
+1.0   17.10.09    VER:     1.0
+      17.09.27    FIXED:   man_ense_esg_hgncvcsv -> man_ense_esg_hgnc.csv  typo
+                  CHANGE:  parts of the URL for string
+                  CHANGE:  bio_db_pl_info now from bio_db
+                  FIXED:   std_maps_psit.pl untested yet
+      17.08.15    VER:     1.0 (candidate)
+      17.08.11    CHANGED: implementation of pl_prosqlite now .sqlite file is removed if op fails/excepts
+                  CHANGED: examples/cpu/cpu.pl
+      17.08.10    REMOVED: spurious loading of break_list_on/4 from has_extension/3
+                  FIXED:   en_list/2 loads from stoics_lib now not options (various auxil sources)
+      17.06.27    ADDED:   examples/gene_map_compare.pl
+                  UPDTE:   load via stoics_lib:message_report/3  in auxil/lib/link_to_bio_sub.pl
+                  FIXED:   dependency of std_maps_ense is now to std_maps_hgnc and not to absolute file locations
 
-0.9   17.03.10    VERSION:  works with pack(lib) v1.1
-      16.11.28    ADDED:    rule in asserting alias, that does not complain if New==Old
-0.8   16.11.22    DISTRO:   back to stoics.org.uk (github gives no adequate statistics) 
-0.7   16.11.21    EXAMPLES: cpu/
-      16.11.20    DOC:      added rocks in bio_db_interface/1 blur and corrected typo.
-                  DOC:      fixed prediate -> predicate x2
-                  ADDED:    bio_interface/2
-                  FIXED:    bio_db_rocks_multi_key_args -> bio_db_rocks_multi_key_value
-                  FIXED:    failure on call mode bio_db_info_gen( -, -, -, - ). And doc format.
-                  ADDED:    examples/cpu/ with all code neccessary to reproduce cpu comparison graphs
-                  ADDED:    bio_db_install/2,3
-                  ADDED:    bio_db_info/2
-                  ADDED:    full support for .qlf
-      16.11.14    REPO:     Started a GitHub repository
-                            Jan Wielemaker found bug for obsolete call to map_gont_include/2 (and assoc. preds)
-                            added flag bio_db_qcomplie (def: true) to control the following addition:
-                            a retractall/1 fix and qcompile(large) options in lad_files/2 by Jan Wielemaker
-      16.10.28              added  map_ncbi_dnuc_symb/2
-      16.10.27    ADDED:    map_hgnc_hgnc_ccds/2 & map_hgnc_ccds_hgnc/2
-      16.10.13    DOC:      minor doc fix about what repo contains
+0.9   17.03.10    VERSION: works with pack(lib) v1.1
+      16.11.28    ADDED:   rule in asserting alias, that does not complain if New==Old
+0.8   16.11.22    DISTRO:  back to stoics.org.uk (github gives no adequate statistics) 
+0.7   16.11.21    EXAMPLES cpu/
+      16.11.20    DOC:     added rocks in bio_db_interface/1 blur and corrected typo.
+                  DOC:     fixed prediate -> predicate x2
+                  ADDED:   bio_interface/2
+                  FIXED:   bio_db_rocks_multi_key_args -> bio_db_rocks_multi_key_value
+                  FIXED:   failure on call mode bio_db_info_gen( -, -, -, - ). And doc format.
+                  ADDED:   examples/cpu/ with all code neccessary to reproduce cpu comparison graphs
+                  ADDED:   bio_db_install/2,3
+                  ADDED:   bio_db_info/2
+                  ADDED:   full support for .qlf
+      16.11.14    REPO:    Started a GitHub repository
+                           Jan Wielemaker found bug for obsolete call to map_gont_include/2 (and assoc. preds)
+                           added flag bio_db_qcomplie (def: true) to control the following addition:
+                           a retractall/1 fix and qcompile(large) options in lad_files/2 by Jan Wielemaker
+      16.10.28             added  map_ncbi_dnuc_symb/2
+      16.10.27    ADDED:   map_hgnc_hgnc_ccds/2 & map_hgnc_ccds_hgnc/2
+      16.10.13    DOC:     minor doc fix about what repo contains
 
 0.6               @ 16.10.13
-      16.10.13    DOC:      fixed doc to more interface predicates.
-                  DATA:     added prosite zip files to web-server (were missing)
-                  IFACE:    added map_unip_hgnc_unip/2
-      16.09.19    DOC:      added bio_db_info/4 to the documentation
-      16.09.17    FIXED:    pl_bdb correction to open call and now more aware that it can be called from within bio_db
-                  DOC:      a couple of small typos in bio_db.pl
+      16.10.13    DOC:     fixed doc to more interface predicates.
+                  DATA:    added prosite zip files to web-server (were missing)
+                  IFACE:   added map_unip_hgnc_unip/2
+      16.09.19    DOC:     added bio_db_info/4 to the documentation
+      16.09.17    FIXED:   pl_bdb correction to open call and now more aware that it can be called from within bio_db
+                  DOC:     a couple of small typos in bio_db.pl
 
 0.5               @16.09.11
 
-      16.09.11    IFACE:    bio_db_citation/2 (2 clauses added)
-                  IFACE:    bio_db_close_connections/0 and register it with at_halt/1
-                  IFACE:    Handle N-ary tables in berkeley and 
-                  IFACE:    bio_db_info( [Inteface,] +Pid, ?Key, -Value ).
-                  IFACE:    Can now close current connections with pack_error if not open
-                  IFACE:    bio_db_interface/1 prints a proper error message now
-                  LIBS:     Started using lib(pack_errors)  (arg_enumerating/3 was the first one)
-      16.09.08 -  SCRIPTS:  Updates to almost all std_ scripts in auxil
-                  LIBS:     new helper independent preds in auxil/lib
-                  DATA:     Full successful download of data and creation of prolog dbs.
-                  LIBS:     Check script auxil/bio_db_check.pl
-                  IFACE:    Shortened bio_db_load_prolog_map/2 -> bio_db_serve/1 (load as 2nd arg)
+      16.09.11    IFACE:   bio_db_citation/2 (2 clauses added)
+                  IFACE:   bio_db_close_connections/0 and register it with at_halt/1
+                  IFACE:   Handle N-ary tables in berkeley and 
+                  IFACE:   bio_db_info( [Inteface,] +Pid, ?Key, -Value ).
+                  IFACE:   Can now close current connections with pack_error if not open
+                  IFACE:   bio_db_interface/1 prints a proper error message now
+                  LIBS:    Started using lib(pack_errors)  (arg_enumerating/3 was the first one)
+      16.09.08 -  SCRIPT:  Updates to almost all std_ scripts in auxil
+                  LIBS:    new helper independent preds in auxil/lib
+                  DATA:    Full successful download of data and creation of prolog dbs.
+                  LIBS:    Check script auxil/bio_db_check.pl
+                  IFACE:   Shortened bio_db_load_prolog_map/2 -> bio_db_serve/1 (load as 2nd arg)
 
-      16.09.06    IFACE:    Added auto-reply via prolog_flag(bio_db_ok,true).
-                  DATA:     Canonical downloads are now from .zip files.
-                  LIBS:     Many improvements to the downloads logic.
-                  DATA:     pl-> berkeley and pl-> sqlite are now user.
-                  DATA:     pl-> sqlite are done in batches of 500, so there is no need for sqlite exec now
+      16.09.06    IFACE:   Added auto-reply via prolog_flag(bio_db_ok,true).
+                  DATA:    Canonical downloads are now from .zip files.
+                  LIBS:    Many improvements to the downloads logic.
+                  DATA:    pl-> berkeley and pl-> sqlite are now user.
+                  DATA:    pl-> sqlite are done in batches of 500, so there is no need for sqlite exec now
 
 0.4                @ 15.09.16
-      15.09.13    DATA:     Added Berkeley DB interface (via SWI's own library(bdb)).
-      15.07.25 -  DATA:     Added edges for is-a (and reverses inc(cludes)) from GO.
-      15.07.25 -  IFACE:    Added bio_db_version.
+      15.09.13    DATA:    Added Berkeley DB interface (via SWI's own library(bdb)).
+      15.07.25 -  DATA:    Added edges for is-a (and reverses inc(cludes)) from GO.
+      15.07.25 -  IFACE:   Added bio_db_version.
 
 0.3  Spring 2015
      First releases including maps from hgnc, ncbi and uniprot.

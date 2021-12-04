@@ -14,6 +14,7 @@ TBD:
 
 3.7               
       21.12.04    DEPS:    added library(lists) to examples/bio_db_stats.pl
+                  DOC:     moved version comments to module tags
 
 3.6               21.12.04
       21.12.04    VERS:    3.5 was spoiled by a 3.4 in bio_db_version/2

@@ -140,7 +140,7 @@ bio_db_stats( Args ) :-
     ( is_list(Args) -> append(Args,Defs,Opts)
                      ; append([Args],Defs,Opts) ),
     bio_db_version( Vers, Date ),
-    debug( bio_db_stats, '\nbio_db version: ~w, date: ~w', [Vers,Date] ),
+    debug( bio_db_stats, 'bio_db version: ~w, date: ~w', [Vers,Date] ),
     bio_db_repo_version( RpVers, RpDate ),
     debug( bio_db_stats, 'bio_db_repo version: ~w, date: ~w\n', [RpVers,RpDate] ),
     memberchk( abolish(Abl), Opts ),
@@ -171,13 +171,15 @@ bio_db_stats_csv( CsvF, Trips ) :-
     bio_db_version( Vers, Date ),
     Vers = Mj:Mn:Fx,
     Date = date(Yr,Mo,Da),
-    atomic_list_concat( [Mj,':',Mn,':',Fx,'@',Yr,'.',Mo,'.',Da], '', BioDbVersTkn ),
+    atomic_list_concat( [Mj,Mn,Fx], ':', BioDbVersTkn ),
+    atomic_list_concat( [Yr,Mo,Da], '.', BioDbDateTkn ),
     bio_db_repo_version( RVers, RDate ),
     RVers = RMj:RMn:RFx,
     RDate = date(RYr,RMo,RDa),
-    atomic_list_concat( [RMj,':',RMn,':',RFx,'@',RYr,'.',RMo,'.',RDa], '', BioDbRepoVersTkn ),
-    Hdr1 = row(bio_db_version,BioDbVersTkn),
-    Hdr2 = row(bio_db_repo_version,BioDbRepoVersTkn),
+    atomic_list_concat( [RMj,RMn,RFx], ':', RBioDbVersTkn ),
+    atomic_list_concat( [RYr,RMo,RDa], '.', RBioDbDateTkn ),
+    Hdr1 = row(bio_db_version,BioDbVersTkn,BioDbDateTkn ),
+    Hdr2 = row(bio_db_repo_version,RBioDbVersTkn,RBioDbDateTkn),
     mtx( CsvF, [Hdr1,Hdr2|Rows] ).
 
 bio_db_stats_trips( Abl, Trips ) :-

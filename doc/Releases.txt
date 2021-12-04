@@ -17,6 +17,10 @@ TBD:
                   DEPS:    added library(lists) to examples/bio_db_stats.pl
                   DOC:     moved version comments to module tags
                   DOC:     fixed 3:5:0 example in version predicate
+                  SCRIPT:  examples/bio_db_stats.pl sumlist/2 -> sum_list/2
+                  SCRIPT:  examples/bio_db_stats.pl added output directory bio_db_stats & comment on versions kept there
+                  SCRIPT:  moved examples/bio_db_stats.pl to scripts/ (spuds finds there for docs)
+                  SCRIPT:  bio_db_stats.pl option csv(version)
       21.12.03    SCRIPT:  bio_db_stats.pl @version  0.2 2021/12/03,  options, sort predicates
                   FIXED:   pack_errors in prolog/bio_db.pl now use the, modern, options version of throw/2 
                   FIXED:   fixed map_ense_mouse_enst_chrl/5 (was opening map_ense_nest_chrl/5)

@@ -12,6 +12,9 @@ TBD:
          21.12.03 make sure existing handles are checked before opening another handle to same predicate 
                   (map_ense_mouse_enst_chrl/5 was opening map_ense_enst_chrl/5).
 
+3.7               
+      21.12.04    DEPS:    added library(lists) to examples/bio_db_stats.pl
+
 3.6               21.12.04
       21.12.04    VERS:    3.5 was spoiled by a 3.4 in bio_db_version/2
       21.12.03    SCRIPT:  bio_db_stats.pl @version  0.2 2021/12/03,  options, sort predicates

@@ -1,4 +1,5 @@
 
+:- use_module(library(lists)).
 :- use_module(library(debug)).
 
 :- use_module(library(lib)).

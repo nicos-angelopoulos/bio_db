@@ -674,7 +674,7 @@ Version Mj:Mn:Fx, and release date date(Y,M,D).
 
 ==
 ?- bio_db_version( V, D ).
-V = 3:5:0,
+V = 3:6:0,
 D = date(2021, 12, 4).
 ==
 

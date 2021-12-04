@@ -486,7 +486,7 @@ Thanks to Jan Wielemaker for a retractall fix and for code for fast loading of p
 @version  3.1 2020/3/9     fixed lib; no unigene
 @version  3.2 2020/9/18    include mouse ense + fixes/updates on building scripts
 @version  3:4 2021/5/10    removed edge_gont_includes/2 (reciprocal of is_a), and edge_gont_consists_of/2 (reciprocal of part_of/2)
-@version  3:6 2021/12/4    fixed pack_errors and map_ense_mouse_enst_chrl/5; bio_db_stats.pl @version  0.2
+@version  3:6 2021/12/4    fixed pack_errors and map_ense_mouse_enst_chrl/5; bio_db_stats.pl version  0.2
 @see doc/Releases.txt      for version details.
 
 */

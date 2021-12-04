@@ -672,14 +672,15 @@ Version Mj:Mn:Fx, and release date date(Y,M,D).
 
 ==
 ?- bio_db_version( V, D ).
-V = 3:4:0,
-D = date(2021, 5, 10).
+V = 3:5:0,
+D = date(2021, 12, 4).
 ==
 
 @author Nicos Angelopoulos
 @version  3:1 2020/3/9
 @version  3:2 2020/9/18
-@version  3:4 2020/9/10
+@version  3:4 2021/5/10
+@version  3:5 2021/12/4,  fixed pack_errors and map_ense_mouse_enst_chrl/5; bio_db_stats.pl @version  0.2
 @see bio_db_data_predicate/4  (which should be generated for each new version)
 @see doc/Releases.txt for more detail on change log
 

@@ -680,12 +680,12 @@ D = date(2021, 12, 4).
 @version  3:1 2020/3/9
 @version  3:2 2020/9/18
 @version  3:4 2021/5/10
-@version  3:5 2021/12/4,  fixed pack_errors and map_ense_mouse_enst_chrl/5; bio_db_stats.pl @version  0.2
+@version  3:6 2021/12/4,  fixed pack_errors and map_ense_mouse_enst_chrl/5; bio_db_stats.pl @version  0.2
 @see bio_db_data_predicate/4  (which should be generated for each new version)
 @see doc/Releases.txt for more detail on change log
 
 */
-bio_db_version( 3:4:0, date(2021,5,10) ).   
+bio_db_version( 3:6:0, date(2021,12,4) ).   
 
 %% bio_db_citation( -Atom, -Bibterm ).
 %

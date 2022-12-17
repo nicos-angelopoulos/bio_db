@@ -147,7 +147,7 @@ std_graph_string_download_string( LocalFile, _From, Self ) :-
 	!.
 std_graph_string_download_string( Local, Remote, Self ) :-
 	debuc( Self, 'Downloading from: ~p', Remote ),
-	url_file( Remote, Local, dnt(true) ),
+	url_file( Remote, Local, [dnt(true),iface(wget)] ),
 	debuc( Self, '... to local file: ~p', Local ).
 
 std_graphs_string_version_base_name( VersionPrv, Bname, Remote ) :-

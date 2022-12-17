@@ -29,7 +29,7 @@
 
 true(_,_).
 
-std_maps_cgnc_defaults( Defs ) :-
+std_gallus_maps_cgnc_defaults( Defs ) :-
     Defs = [
                     debug(true),
                     db_dir(cgnc),  % is this used ?
@@ -39,7 +39,7 @@ std_maps_cgnc_defaults( Defs ) :-
                     sub(maps)
            ].
 
-/** std_maps_cgnc( +Opts ).
+/** std_gallus_maps_cgnc( +Opts ).
 
 Create ID maps from CGNC's main download data file.
 
@@ -82,7 +82,7 @@ Opts
     prefix to include, passed to csv_ids_map/6
 
 ==
-?- std_maps_cgnc.
+?- std_gallus_maps_cgnc.
 ?- cd( '$HOME/.local/share/swi-prolog/pack/Downloads/bio_db-22.12.17/maps/cgnc' ).
 ?- shell( 'wc -l *' ).
 ==
@@ -92,11 +92,11 @@ Opts
 @tbd convert to url_..._mirror.pl
 @see http://birdgenenames.org/cgnc/downloads.jsp?file=standard
 */
-std_maps_cgnc :-
-    std_maps_cgnc( [] ).
+std_gallus_maps_cgnc :-
+    std_gallus_maps_cgnc( [] ).
 
-std_maps_cgnc( Args ) :-
-    Self = std_maps_cgnc,
+std_gallus_maps_cgnc( Args ) :-
+    Self = std_gallus_maps_cgnc,
     CsvF = 'cgnc_complete_set.txt',
     options_append( Self, Args, Opts ),
     bio_db_build_aliases( Opts ),

@@ -1,5 +1,4 @@
 
-
 :- use_module( library(lists) ).    % member/2.
 
 % if library(lib) is missing, install via pack_install(lib).
@@ -22,12 +21,12 @@
 :- lib(url_file_local_date_mirror/3).
 :- lib(bio_db_add_infos/1). % bio_db_add_infos_to/2.
 
-% gont_mouse_url('http://geneontology.org/gene-associations/gene_association.mgi.gz').
-gont_mouse_url('http://geneontology.org/gene-associations/mgi.gaf.gz').
+% gont_gallus_url('http://geneontology.org/gene-associations/mgi.gaf.gz').
+gont_gallus_url('http://current.geneontology.org/annotations/goa_chicken.gaf.gz').
 
-std_mouse_maps_gont_defaults([]).
+std_gallus_maps_gont_defaults(debug(true)).
 
-/**  std_mouse_maps_gont.
+/**  std_gallus_maps_gont.
 
 Build maps from gene ontology data.
 
@@ -39,11 +38,11 @@ Build maps from gene ontology data.
 @version  0.1 2018/11/12
 
 */
-std_mouse_maps_gont( Args ) :-
-    Self = std_mouse_maps_gont,
+std_gallus_maps_gont( Args ) :-
+    Self = std_gallus_maps_gont,
     options_append( Self, Args, Opts ),
     bio_db_build_aliases( Opts ),
-    gont_mouse_url( Url ),
+    gont_gallus_url( Url ),
     absolute_file_name( bio_db_build_downloads(gont), Loc ),
 	os_make_path( Loc ),  % fixme: ensure it complains not...
 	debuc( Self, 'build directory: ~p', Loc ),
@@ -53,22 +52,25 @@ std_mouse_maps_gont( Args ) :-
     @ gunzip( -k, GzGontF ),
     os_ext( gz, GontF, GzGontF ),
     mtx( GontF, GAs, [skip_heading('!'),sep(tab)] ),
-    debuc( Self, dims, gas/GAs ),
-    findall( map_gont_mouse_mgim_gont(Mgim,Evid,Gont),
+    debuc( Self, dims, gaf/GAs ),
+    trace,
+    findall( map_gont_gallus_symb_gont(Mgim,Rel,Evid,Gont),
                     ( member(Row,GAs),
-                      arg(2,Row,MgimPrv), at_con([_,MgimAtm],':',MgimPrv), atom_number(MgimAtm,Mgim),
+                      arg(3,Row,Symb), 
+                      arg(4,Row,Rel),
                       arg(5,Row,GontPrv), at_con([_,GontAtm],':',GontPrv), atom_number(GontAtm,Gont),
                       arg(7,Row,Evid)
                     ),
                         FactsAll ),
     sort( FactsAll, Facts ),
     os_make_path( maps ),
-    os_dir_stem_ext( maps, map_gont_mouse_mgim_gont, pl, MapF ),
+    os_dir_stem_ext( maps, map_gont_gallus_symb_gont, pl, MapF ),
     portray_clauses( Facts, file(MapF) ),
 
 	bio_db_dnt_times( GzGontF, DnDt, _SwDnEn ),
-	InfoOpts = [header(row('MGI Marker Accession ID','Evidence','GO_Term')),source(Url),datetime(DnDt)],
-	bio_db_add_infos_to( InfoOpts, 'maps/map_gont_mouse_mgim_gont.pl' ),
+	InfoOpts = [header(row('Symbol','Relation','Evidence','GO_Term')),source(Url),datetime(DnDt)],
+	% bio_db_add_infos_to( InfoOpts, 'maps/map_gont_mouse_mgim_gont.pl' ),
+	bio_db_add_infos_to( InfoOpts, MapF ),
 
     ensure_loaded( mgim_tmp:bio_db_build_downloads('mgim/maps/map_mgim_mouse_mgim_symb') ),
     

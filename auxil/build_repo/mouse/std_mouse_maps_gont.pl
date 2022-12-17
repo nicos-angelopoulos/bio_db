@@ -54,9 +54,10 @@ std_mouse_maps_gont( Args ) :-
     os_ext( gz, GontF, GzGontF ),
     mtx( GontF, GAs, [skip_heading('!'),sep(tab)] ),
     debuc( Self, dims, gas/GAs ),
-    findall( map_gont_mouse_mgim_gont(Mgim,Evid,Gont),
+    findall( map_gont_mouse_mgim_gont(Mgim,Rel,Evid,Gont),
                     ( member(Row,GAs),
                       arg(2,Row,MgimPrv), at_con([_,MgimAtm],':',MgimPrv), atom_number(MgimAtm,Mgim),
+                      arg(2,Row,Rel),
                       arg(5,Row,GontPrv), at_con([_,GontAtm],':',GontPrv), atom_number(GontAtm,Gont),
                       arg(7,Row,Evid)
                     ),
@@ -67,7 +68,7 @@ std_mouse_maps_gont( Args ) :-
     portray_clauses( Facts, file(MapF) ),
 
 	bio_db_dnt_times( GzGontF, DnDt, _SwDnEn ),
-	InfoOpts = [header(row('MGI Marker Accession ID','Evidence','GO_Term')),source(Url),datetime(DnDt)],
+	InfoOpts = [header(row('MGI Marker Accession ID','Relation','Evidence','GO_Term')),source(Url),datetime(DnDt)],
 	bio_db_add_infos_to( InfoOpts, 'maps/map_gont_mouse_mgim_gont.pl' ),
 
     ensure_loaded( mgim_tmp:bio_db_build_downloads('mgim/maps/map_mgim_mouse_mgim_symb') ),

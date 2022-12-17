@@ -57,7 +57,7 @@ std_mouse_maps_gont( Args ) :-
     findall( map_gont_mouse_mgim_gont(Mgim,Rel,Evid,Gont),
                     ( member(Row,GAs),
                       arg(2,Row,MgimPrv), at_con([_,MgimAtm],':',MgimPrv), atom_number(MgimAtm,Mgim),
-                      arg(2,Row,Rel),
+                      arg(4,Row,Rel),
                       arg(5,Row,GontPrv), at_con([_,GontAtm],':',GontPrv), atom_number(GontAtm,Gont),
                       arg(7,Row,Evid)
                     ),
@@ -73,7 +73,7 @@ std_mouse_maps_gont( Args ) :-
 
     ensure_loaded( mgim_tmp:bio_db_build_downloads('mgim/maps/map_mgim_mouse_mgim_symb') ),
     
-    findall( row(Gont1,Evid,Symb1), ( member(map_gont_mouse_mgim_gont(Mgim1,Evid,Gont1),Facts),
+    findall( row(Gont1,Rel,Evid,Symb1), ( member(map_gont_mouse_mgim_gont(Mgim1,Rel,Evid,Gont1),Facts),
                                  mgim_tmp:map_mgim_mouse_mgim_symb(Mgim1,Symb1)
                                ), GSRowsAll ),
     sort( GSRowsAll, GSRows ),

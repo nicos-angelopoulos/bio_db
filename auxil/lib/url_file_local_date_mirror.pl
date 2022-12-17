@@ -90,7 +90,7 @@ url_file_local_date_mirror( Url, LocalD, Args ) :-
     options( ext(Ext), Opts ),
     url_file_local_date_mirror_local_file_name( LocB, Opts, RemB, Self, Ext ),
     expand_file_name( LocalD, [LocD|_] ),
-    debuc( Self, 'Using local directory: ~p', LocD ), % pacify debug/3
+    debuc( Self, 'Using local directory: ~p', [LocD] ), % pacify debug/3
     directory_file_path( LocD, LocB, LocP ),
     os_ext( dnt, LocP, LocDt ),
     options( replace_todays(Repl), Opts ),
@@ -140,7 +140,7 @@ url_file_local_date_mirror_local_file_name( LocB, Opts, RemB, Self, Ext ) :-
     url_file_local_date_mirror_local_file_name_date( DatePos, RemB, Date, Ext, LocB ).
 url_file_local_date_mirror_local_file_name( LocB, _Opts, _RemB, Self, _Ext ) :-
     atom( LocB ),
-    debuc( Self, 'Using given local basename.', LocB ).
+    debuc( Self, 'Using given local basename: ~p', [LocB] ).
 
 url_file_local_date_mirror_local_file_name_date( prefix, RemB, Date, _Ext, LocB ) :-
     atomic_list_concat( [Date,RemB], '-', LocB ).

@@ -5,7 +5,7 @@
 %
 :- use_module( library(lib) ).
 
-% external code, lib knowns how to deal with these (will install if missing)
+% external code, lib knows how to deal with these (will install if missing)
 :- lib(mtx).
 :- lib(os_lib).
 :- lib(by_unix).
@@ -31,11 +31,11 @@ std_gallus_maps_gont_defaults(debug(true)).
 Build maps from gene ontology data.
 
 ==
-?-
+?- std_gallus_maps_gont.
 ==
 
 @author nicos angelopoulos
-@version  0.1 2018/11/12
+@version  0.1 2022/12/17
 
 */
 std_gallus_maps_gont( Args ) :-
@@ -44,17 +44,16 @@ std_gallus_maps_gont( Args ) :-
     bio_db_build_aliases( Opts ),
     gont_gallus_url( Url ),
     absolute_file_name( bio_db_build_downloads(gont), Loc ),
-	os_make_path( Loc ),  % fixme: ensure it complains not...
-	debuc( Self, 'build directory: ~p', Loc ),
-	working_directory( Old, Loc ),
-	UrlOpts = [debug(true),interface(wget),file(GzGontF)],
+    os_make_path( Loc ),  % fixme: ensure it complains not...
+    debuc( Self, 'build directory: ~p', Loc ),
+    working_directory( Old, Loc ),
+    UrlOpts = [debug(true),interface(wget),file(GzGontF)],
     url_file_local_date_mirror( Url, Loc, UrlOpts ),
     @ gunzip( -k, GzGontF ),
     os_ext( gz, GontF, GzGontF ),
     mtx( GontF, GAs, [skip_heading('!'),sep(tab)] ),
     debuc( Self, dims, gaf/GAs ),
-    trace,
-    findall( map_gont_gallus_symb_gont(Mgim,Rel,Evid,Gont),
+    findall( map_gont_gallus_symb_gont(Symb,Rel,Evid,Gont),
                     ( member(Row,GAs),
                       arg(3,Row,Symb), 
                       arg(4,Row,Rel),
@@ -66,26 +65,10 @@ std_gallus_maps_gont( Args ) :-
     os_make_path( maps ),
     os_dir_stem_ext( maps, map_gont_gallus_symb_gont, pl, MapF ),
     portray_clauses( Facts, file(MapF) ),
-
-	bio_db_dnt_times( GzGontF, DnDt, _SwDnEn ),
-	InfoOpts = [header(row('Symbol','Relation','Evidence','GO_Term')),source(Url),datetime(DnDt)],
-	% bio_db_add_infos_to( InfoOpts, 'maps/map_gont_mouse_mgim_gont.pl' ),
-	bio_db_add_infos_to( InfoOpts, MapF ),
-
-    ensure_loaded( mgim_tmp:bio_db_build_downloads('mgim/maps/map_mgim_mouse_mgim_symb') ),
-    
-    findall( row(Gont1,Evid,Symb1), ( member(map_gont_mouse_mgim_gont(Mgim1,Evid,Gont1),Facts),
-                                 mgim_tmp:map_mgim_mouse_mgim_symb(Mgim1,Symb1)
-                               ), GSRowsAll ),
-    sort( GSRowsAll, GSRows ),
-
-    GSopts = [predicate_name(map_gont_mouse_gont_symb)],
-	mtx_prolog( GSRows, 'maps/map_gont_mouse_gont_symb.pl', GSopts ),
-    GsF = 'maps/map_gont_mouse_gont_symb.pl',
-    GShdr = header(row('GO_Term','Evidence','MGI Marker Accession ID')),
-	bio_db_add_infos_to( [GShdr|GSopts], GsF ),
-    % maplist( link_to_map_sub(gont), OutFs ),  % does this work ?
-    link_to_bio_sub( gont, GsF, [org(mouse),type(maps)]  ),
+    bio_db_dnt_times( GzGontF, DnDt, _SwDnEn ),
+    InfoOpts = [header(row('Symbol','Relation','Evidence','GO_Term')),source(Url),datetime(DnDt)],
+    % bio_db_add_infos_to( InfoOpts, 'maps/map_gont_mouse_mgim_gont.pl' ),
+    bio_db_add_infos_to( InfoOpts, MapF ),
     link_to_bio_sub( gont, MapF, [org(mouse),type(maps)] ),
     @ rm( -f, GontF ),
     working_directory( _, Old ).

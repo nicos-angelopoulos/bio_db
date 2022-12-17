@@ -14,6 +14,7 @@ TBD:
 
 3.7
       22.12.17    IFACE:   added Relation to gont for mouse predicates, and updated docs
+                  CELL:    chicken, gallus gallus (token gallus)
       22.12.16    CHANGED: iface for url_file in graph_strg (hs and mouse) was changed to wget
       21.12.04    SCRIPT:  examples/bio_db_stats.pl added output directory bio_db_stats & comment on versions kept there
                   SCRIPT:  moved examples/bio_db_stats.pl to scripts/ (spuds finds there for docs)

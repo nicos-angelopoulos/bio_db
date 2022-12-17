@@ -25,6 +25,7 @@
 :- lib(bio_db_dnt_times/3).
 :- lib(bio_db_add_infos/1).   % bio_db_add_infos_to/2
 :- lib(url_file_local_date_mirror/3).
+:- lib(map_list_options/3).
 
 true(_,_).
 
@@ -33,6 +34,8 @@ std_maps_cgnc_defaults( Defs ) :-
                     debug(true),
                     db_dir(cgnc),  % is this used ?
                     download(true),
+                    map_prefix(true),
+                    prefix(cgnc_gallus),
                     sub(maps)
            ].
 
@@ -73,8 +76,10 @@ Opts
     sub-directory for creating the maps
   * download(Dn=true)
     set to false to skip downloading a fresh copy of the CGNC file(s)
-  * map_prefix(Mfx)
-    if present is passed on csv_ids_map/6, else their default applies
+  * map_prefix(Mfx=true)
+    whether to include the prefix in the predicate name, passed to csv_ids_map/6
+  * prefix(Pfx=cgnc)
+    prefix to include, passed to csv_ids_map/6
 
 ==
 ?- std_maps_cgnc.
@@ -106,11 +111,10 @@ std_maps_cgnc( Args ) :-
     bio_db_dnt_times( DntF, DnDt, _DnEnd ),
     options( sub(SubDir), Opts ),
     make_directory_path( SubDir ),
-
-    options_propagate( map_prefix, Opts, StdOT, true ),
+    mtx( CsvF, Mtx, sep(tab) ),
+    options_propagate( [map_prefix,prefix], Opts, StdOT, true ),
     StdO= [dir(SubDir),cnm_transform(cgnc_cname)|StdOT],
     Cgnc = 'CGNC id',
-    mtx( CsvF, Mtx, sep(tab) ),
     Symb = 'gene symbol',
     Entz = 'Entrez Gene id',
     Ensg = 'Ensembl Gene id',
@@ -119,39 +123,17 @@ std_maps_cgnc( Args ) :-
     Curs = 'curation status',
     Edat = 'last edit date',
 
-    trace,
-    cgnc_std_map( Cgnc, Symb, CsvF, Mtx, Self, StdO, SrcUrl/DnDt, CgncF ),               % cgnc_symb
-
-    Prev = 'prev_symbol',
-    Syno = 'alias_symbol',
-    Chrm = 'location',
-    Ccds =  'ccds_id',
-
-    % csv_ids_rows( CsvF, '\t', Csv ),
-
-    % fixme allow hgnc_std_map's called predicate to deal with multiple entries from single row
-    % also it needs to be told not to sort some maps (but with ability to check uniqueness
-    % hgnc_extra_symbols_column( Csv, 'alias_symbol', map_hgnc_syno_symb, SrcUrl/DnDt, SynoF ),
-    % hgnc_extra_symbols_column( Csv, 'prev_symbol', map_hgnc_prev_symb, SrcUrl/DnDt, PrevF ),
-    hgnc_std_map( Syno, Symb, CsvF, Csv, StdO, SrcUrl/DnDt, SynoF ),               % hgnc_name
-    hgnc_std_map( Prev, Symb, CsvF, Csv, StdO, SrcUrl/DnDt, PrevF ),               % hgnc_name
-
-    hgnc_std_map( Hgnc, Name, CsvF, Csv, StdO, SrcUrl/DnDt, HgncNameF ),               % hgnc_name
-    hgnc_std_map( Symb, Hgnc, CsvF, Csv, StdO, SrcUrl/DnDt, SymbF ),               % symb_hgnc
-    hgnc_std_map( Entz, Symb, CsvF, Csv, StdO, SrcUrl/DnDt, EntzF ),               % entz_symb
-    hgnc_std_map( Symb, Entz, CsvF, Csv, StdO, SrcUrl/DnDt, SymbEntzF ),               % symb_entz
-    hgnc_std_map( Entz, Hgnc, CsvF, Csv, StdO, SrcUrl/DnDt, EntzHgncF ),               % entz_hgnc
-    hgnc_std_map( Hgnc, Entz, CsvF, Csv, StdO, SrcUrl/DnDt, HgncEntzF ),               % hgnc_entz
-    hgnc_std_map( Ensg, Hgnc, CsvF, Csv, StdO, SrcUrl/DnDt, EnsgF ),      % ensg_hgnc
-    hgnc_std_map( Hgnc, Ensg, CsvF, Csv, StdO, SrcUrl/DnDt, HgncEnsgF ),      % map_hgnc_hgnc_ensg
-    hgnc_std_map( Hgnc, Chrm, CsvF, Csv, StdO, SrcUrl/DnDt, ChrmF ),          % e
-    hgnc_std_map( Hgnc, Ccds, CsvF, Csv, StdO, SrcUrl/DnDt, CcdsF ),          % 
-    hgnc_std_map( Ccds, Hgnc, CsvF, Csv, StdO, SrcUrl/DnDt, HcdsF ),          % 
-
+    cgnc_std_map( Cgnc, Symb, CsvF, Mtx, Self, StdO, SrcUrl/DnDt, SymbF ),    % cgnc_symb
+    cgnc_std_map( Cgnc, Entz, CsvF, Mtx, Self, StdO, SrcUrl/DnDt, EntzF ),    % cgnc_entz
+    cgnc_std_map( Cgnc, Ensg, CsvF, Mtx, Self, StdO, SrcUrl/DnDt, EnsgF ),    % cgnc_ensg
+    cgnc_std_map( Cgnc, Name, CsvF, Mtx, Self, StdO, SrcUrl/DnDt, NameF ),    % cgnc_name
+    cgnc_std_map( Cgnc, Syno, CsvF, Mtx, Self, StdO, SrcUrl/DnDt, SynoF ),    % cgnc_syno
+    cgnc_std_map( Cgnc, Curs, CsvF, Mtx, Self, StdO, SrcUrl/DnDt, CursF ),    % cgnc_curs
+    cgnc_std_map( Cgnc, Edat, CsvF, Mtx, Self, StdO, SrcUrl/DnDt, EdatF ),    % cgnc_edat
     debuc( Self, 'doing links...', [] ),
-    % Files = [HSf,HNf,SHf,EcHf,EcSf,ESf,SEf,EnSf,HEf,HEnf,HEcf,HNcf,NcHf, SynoF,PrevF,ChrmF, CcdsF,HcdsF ],
-    Files = [CgncF,SynoF,PrevF,HgncNameF,SymbF,EntzF,SymbEntzF,HgncEntzF,EntzHgncF,EnsgF,HgncEnsgF,ChrmF,CcdsF,HcdsF],
-    maplist( link_to_bio_sub(hgnc), Files ),
+    Files = [SymbF,EntzF,EnsgF,NameF,SynoF,CursF,EdatF],
+    % maplist( link_to_bio_sub(RelDir), Files ),
+    map_list_options( link_to_bio_sub(RelDir), Files, call_options([org(gallus),type(maps)]) ),
     % file_name_extension( TxtF, gz, GzF ),
     % delete_file( TxtF ),
     working_directory( _, Old ).
@@ -159,7 +141,7 @@ std_maps_cgnc( Args ) :-
 cgnc_std_map( Cid1, Cid2, CsvF, Csv, Self, StdO, SrcUrl/DnDt, OutF ) :-
     cgnc_std_column_to_value_call( Cid1, Call1 ),
     cgnc_std_column_to_value_call( Cid2, Call2 ),
-    Opts = [to_value_1(Call1),to_value_2(Call2),prefix(hgnc)|StdO],
+    Opts = [to_value_1(Call1),to_value_2(Call2)|StdO],
     % debuc( std_maps_hgnc, 'doing file for columns: ~w, ~w', [Cid1, Cid2] ),
     csv_ids_map( CsvF, Cid1, Cid2, Csv, OutF, [source(SrcUrl),datetime(DnDt)|Opts] ),
     debuc( Self, 'deposited on: ~w (columns: ~w, ~w)', [OutF,Cid1,Cid2] ).
@@ -169,7 +151,7 @@ cgnc_std_column_to_value_call( 'Entrez Gene id', pos_integer ).
 cgnc_std_column_to_value_call( 'Ensembl Gene id', non_empty_atom ).   % fixme: prefixed
 cgnc_std_column_to_value_call( 'gene symbol', non_empty_atom ).
 cgnc_std_column_to_value_call( 'gene name', non_empty_atom ).
-cgnc_std_column_to_value_call( 'gene synonym', non_empty_atom ).      % fixme: check for multis
+cgnc_std_column_to_value_call( 'gene synonym', sep_split('|') ).      % fixme: check for multis
 cgnc_std_column_to_value_call( 'curation status', non_empty_atom ).  
 cgnc_std_column_to_value_call( 'last edit date', non_empty_atom ).    % fixme: a date
       % fixme: prefixed ENSG

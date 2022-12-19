@@ -69,6 +69,6 @@ std_gallus_maps_gont( Args ) :-
     InfoOpts = [header(row('Symbol','Relation','Evidence','GO_Term')),source(Url),datetime(DnDt)],
     % bio_db_add_infos_to( InfoOpts, 'maps/map_gont_mouse_mgim_gont.pl' ),
     bio_db_add_infos_to( InfoOpts, MapF ),
-    link_to_bio_sub( gont, MapF, [org(mouse),type(maps)] ),
+    link_to_bio_sub( gont, MapF, [org(gallus),type(maps)] ),
     @ rm( -f, GontF ),
     working_directory( _, Old ).

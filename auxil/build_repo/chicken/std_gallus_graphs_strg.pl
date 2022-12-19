@@ -44,13 +44,7 @@ std_gallus_graphs_strg( Args ) :-
     options_append( Self, Args, Opts ),
     bio_db_build_aliases( Opts ),
     options( string_version(VersionPrv), Opts ),
-    % load necessary data that has already been generated
-    % ensure_loaded(unip:bio_db_build_downloads('unip/maps/map_unip_mouse_ensp_unip')),
-    % ensure_loaded(unip:bio_db_build_downloads('unip/maps/map_unip_mouse_mgim_unip')),
-    % ensure_loaded(mgim:bio_db_build_downloads('mgim/maps/map_mgim_mouse_mgim_unip')),
-    % ensure_loaded(mgim:bio_db_build_downloads('mgim/maps/map_mgim_mouse_mgim_symb')),
     ( number(VersionPrv) -> atom_number(Version,VersionPrv); Version = VersionPrv ),
-    % ensure_loaded( bio_db_build_aliases ),
     debuc( Self, 'Version: ~w', Version ),
     std_graphs_string_version_base_name( Version, Bname, InfoBname, From, InfoFrom ),
     debuc( Self, 'Base name: ~w', Bname ),
@@ -86,7 +80,7 @@ std_gallus_graphs_strg( Args ) :-
     directory_file_path( Parent, InfoBname, LocalInfoFile ),
     std_graph_string_download_string( LocalInfoFile, InfoFrom, Self ),
     @ gunzip( -k, InfoBname ),  % keeps .gz file
-    Map = map_strg_gallus_ensp_sybm,
+    Map = map_strg_gallus_ensp_symb,
     file_name_extension( InfoTxtF, gz, InfoBname ),
     InfoMess1 = 'Converting map string file: ~p, to Prolog',
     debuc( Self, InfoMess1, [InfoTxtF] ),
@@ -104,8 +98,8 @@ std_gallus_graphs_strg( Args ) :-
     Map:consult(MapPlF),
     findall( edge_strg_gallus_symb(SymbA,SymbB,W),
                          ( edge_strg_gallus:edge_strg_gallus(EnsP1,EnsP2,W),
-                           Map:map_strg_gallus_ensp_sybm(EnsP1,Symb1),
-                           Map:map_strg_gallus_ensp_sybm(EnsP2,Symb2),
+                           Map:map_strg_gallus_ensp_symb(EnsP1,Symb1),
+                           Map:map_strg_gallus_ensp_symb(EnsP2,Symb2),
                            sort(Symb1,Symb2,SymbA,SymbB)
                      ),
             UnoSymbEdges
@@ -128,6 +122,7 @@ std_gallus_graphs_strg( Args ) :-
     bio_db_add_infos_to( BaseOpts, Trg ),
     link_to_bio_sub( strg, Trg, [org(gallus),type(graphs)] ),
     link_to_bio_sub( strg, EdgeSymbsF, [org(gallus),type(graphs)] ),
+    link_to_bio_sub( strg, MapPlF, [org(gallus),type(maps)] ),
     delete_file( InfoTxtF ),
     working_directory( _, Here ).
 

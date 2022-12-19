@@ -31,6 +31,9 @@ std_repo_defaults( [] ).
 
 This is a script that runs data-building scripts for both supported organisms and creates a publishable bio_db_repo.
 
+If you want to only the publish step, then reply `n` to the question. Useful when a small mistake can be 
+corrected outside this loop, in one of the species.
+
 It depends on having the upsh executable in your shell path (see pack(upsh)).
 
 Ran with empty list the script works fine and creates everything with today's date. 

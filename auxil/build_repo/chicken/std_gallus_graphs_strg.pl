@@ -1,5 +1,5 @@
 
-:- set_prolog_flag(stack_limit, 12 000 000 000).
+:- set_prolog_flag(stack_limit, 18 000 000 000).
 
 % if library(lib) is missing, install via pack_install(lib).
 %
@@ -19,17 +19,12 @@
 % also sets lib alias to that dir
 :- ensure_loaded( '../../lib/bio_db_build_aliases' ).  % /1.
 
-% load necessary data that has already been generated
-% :- ensure_loaded(unip:bio_db_build_downloads('unip/maps/map_unip_mouse_ensp_unip')).
-% :- ensure_loaded(unip:bio_db_build_downloads('unip/maps/map_unip_mouse_mgim_unip')).
-% :- ensure_loaded(mgim:bio_db_build_downloads('mgim/maps/map_mgim_mouse_mgim_unip')).
-% :- ensure_loaded(mgim:bio_db_build_downloads('mgim/maps/map_mgim_mouse_mgim_symb')).
-
 % local libs & sources
 :- lib(link_to_bio_sub/3).
 :- lib(bio_db_dnt_times/3).
 :- lib(bio_db_add_infos/1).     % bio_db_add_infos_to/2.
 :- lib(std_graphs_strg_auto_version/1).
+:- lib(portray_informed_clauses/4).
 
 :- debuc(by_unix).
 :- debuc(std_graphs_strg). % fixme:
@@ -50,14 +45,14 @@ std_gallus_graphs_strg( Args ) :-
     bio_db_build_aliases( Opts ),
     options( string_version(VersionPrv), Opts ),
     % load necessary data that has already been generated
-    ensure_loaded(unip:bio_db_build_downloads('unip/maps/map_unip_mouse_ensp_unip')),
-    ensure_loaded(unip:bio_db_build_downloads('unip/maps/map_unip_mouse_mgim_unip')),
-    ensure_loaded(mgim:bio_db_build_downloads('mgim/maps/map_mgim_mouse_mgim_unip')),
-    ensure_loaded(mgim:bio_db_build_downloads('mgim/maps/map_mgim_mouse_mgim_symb')),
+    % ensure_loaded(unip:bio_db_build_downloads('unip/maps/map_unip_mouse_ensp_unip')),
+    % ensure_loaded(unip:bio_db_build_downloads('unip/maps/map_unip_mouse_mgim_unip')),
+    % ensure_loaded(mgim:bio_db_build_downloads('mgim/maps/map_mgim_mouse_mgim_unip')),
+    % ensure_loaded(mgim:bio_db_build_downloads('mgim/maps/map_mgim_mouse_mgim_symb')),
     ( number(VersionPrv) -> atom_number(Version,VersionPrv); Version = VersionPrv ),
     % ensure_loaded( bio_db_build_aliases ),
     debuc( Self, 'Version: ~w', Version ),
-    std_graphs_string_version_base_name( Version, Bname, From ),
+    std_graphs_string_version_base_name( Version, Bname, InfoBname, From, InfoFrom ),
     debuc( Self, 'Base name: ~w', Bname ),
     absolute_file_name( bio_db_build_downloads(strg), Parent ),
     % absolute_file_name( baio_db_downloads(string/Bname), LocalFile ),
@@ -68,50 +63,79 @@ std_gallus_graphs_strg( Args ) :-
     working_directory( Here, Parent ),
     @ gunzip( -k, Bname ),  % keeps .gz file
     % @ gunzip( '9606.protein.links.v10.txt.gz' ),
-    Edge = edge_strg_mouse,
+    Edge = edge_strg_gallus,
     file_name_extension( TxtF, gz, Bname ),
     debuc( Self, 'Directory: ~p', [Parent] ),
     Mess1 = 'Converting string file: ~p, to Prolog',
     debuc( Self, Mess1, [TxtF] ),
-    Opt = [ csv_read(separator(0' )),predicate_name(Edge),
-            rows_transform(maplist(user:de_mouse)),header_remove(true) ],
-    mtx_prolog( TxtF, File, Opt ),
-    debuc( _, 'Edges output: ~w', File ),
+    MtxOpts = [ csv_read(separator(0' )),predicate_name(Edge),
+            rows_transform(maplist(user:de_gallus)),header_remove(true) ],
+    debuc( Self, 'mtx_prolog options: ~w', [MtxOpts] ),
+    mtx_prolog( TxtF, File, MtxOpts ),
+    debuc( Self, 'Edges output: ~w', File ),
     delete_file( TxtF ),
     % @ rm( -rf, graphs ), don't do that ! there are now multiple downloads from string..
     os_make_path( graphs, debug(true) ),
-    Trg = 'graphs/edge_strg_mouse.pl',
+    os_make_path( maps, debug(true) ),
+    Trg = 'graphs/edge_strg_gallus.pl',
     @ rm( -f, Trg ),
     @ mv( File, Trg ),
-
-    consult( edge_strg_mouse:Trg ),
-    debuc( _, 'consulted eges from: ~w', [edge_strg_mouse:Trg] ),
-
-    findall( edge_strg_mouse_symb(SymbA,SymbB,W),
-                         ( edge_strg_mouse:edge_strg_mouse(EnsP1,EnsP2,W),
-                           ensp_mouse_symb(EnsP1,Symb1),
-                           ensp_mouse_symb(EnsP2,Symb2),
+    consult( edge_strg_gallus:Trg ),
+     
+    % info file connect protein to SYmbol
+    directory_file_path( Parent, InfoBname, LocalInfoFile ),
+    std_graph_string_download_string( LocalInfoFile, InfoFrom, Self ),
+    @ gunzip( -k, InfoBname ),  % keeps .gz file
+    Map = map_strg_gallus_ensp_sybm,
+    file_name_extension( InfoTxtF, gz, InfoBname ),
+    InfoMess1 = 'Converting map string file: ~p, to Prolog',
+    debuc( Self, InfoMess1, [InfoTxtF] ),
+    mtx( InfoTxtF, InfoMtx, sep(tab) ),
+    InfoMtx = [_|InfoRows],
+    maplist( strg_map_row(Map), InfoRows, MapRows ),
+    os_dir_stem_ext( MapPlF, [odir(maps),ext(pl),stem(Map)] ),
+    bio_db_dnt_times( InfoBname, InfoDnDt, _InfoEndDt ),
+    MapInfos = [ source-InfoFrom,datetime-InfoDnDt,header-header('Ensembl Protein ID','Symbol'),
+                       data_types-data_types(atom,atom)
+               ],
+    portray_informed_clauses( MapRows, MapInfos, MapPlF, [] ),
+    % mtx( InfoBname, MapRows ),
+    debuc( Self, 'wrote, and consulting: ~p', [MapPlF] ),
+    Map:consult(MapPlF),
+    findall( edge_strg_gallus_symb(SymbA,SymbB,W),
+                         ( edge_strg_gallus:edge_strg_gallus(EnsP1,EnsP2,W),
+                           Map:map_strg_gallus_ensp_sybm(EnsP1,Symb1),
+                           Map:map_strg_gallus_ensp_sybm(EnsP2,Symb2),
                            sort(Symb1,Symb2,SymbA,SymbB)
                      ),
             UnoSymbEdges
           ),
     sort( UnoSymbEdges, SymbEdges ),
     length( SymbEdges, SymbEdgesLen ),
-    debuc( _, 'unique symbol edges (mouse): ~w', [SymbEdgesLen] ),
-    EdgeSymbsF = 'graphs/edge_strg_mouse_symb.pl',
-    portray_clauses( SymbEdges, file(EdgeSymbsF) ),
+    debuc( Self, 'unique symbol edges (gallus): ~w', [SymbEdgesLen] ),
+    EdgeSymbsF = 'graphs/edge_strg_gallus_symb.pl',
     bio_db_dnt_times( Bname, DnDt, _EndDt ),
-    MousOpts = [ source(From), datetime(DnDt),
+    EdgeSymbsInfos = [ source-From,datetime-DnDt,header-header('Symbol','Symbol',weight),
+                       data_types-data_types(atom,atom)
+                     ],
+    portray_informed_clauses( SymbEdges, EdgeSymbsInfos, EdgeSymbsF, [] ),
+    debuc( Self, 'Portrayed onto: ~p', [EdgeSymbsF] ),
+
+    BaseOpts = [ source(From), datetime(DnDt),
                   header(row('Ensembl_Protein','Ensembl_Protein',weight))
                 ],
-    bio_db_add_infos_to( MousOpts, Trg ),
-
-    SymbOpts = [source(From),datetime(DnDt),header(row('MGI_Symbol','MGI_Symbol',weight))],
-    bio_db_add_infos_to( SymbOpts, EdgeSymbsF ),
-
-    link_to_bio_sub( strg, Trg, [org(mouse),type(graphs)] ),
-    link_to_bio_sub( strg, EdgeSymbsF, [org(mouse),type(graphs)] ),
+    debuc( Self, 'doing infos for: ~p', [Trg] ),
+    bio_db_add_infos_to( BaseOpts, Trg ),
+    link_to_bio_sub( strg, Trg, [org(gallus),type(graphs)] ),
+    link_to_bio_sub( strg, EdgeSymbsF, [org(gallus),type(graphs)] ),
+    delete_file( InfoTxtF ),
     working_directory( _, Here ).
+
+strg_map_row( Pname, InfoRow, Term ) :-
+     arg( 1, InfoRow, PfxProt ),
+     arg( 2, InfoRow, Symb ),
+     atom_concat( '9031.', Prot, PfxProt ),
+     Term =.. [Pname,Prot,Symb].
 
 ensp_mouse_symb( EnsP, Symb ) :-   % fixme: make sure the cut is green ! 
     unip:map_unip_mouse_ensp_unip( EnsP, Unip ),
@@ -137,22 +161,27 @@ std_graph_string_download_string( Local, Remote, Self ) :-
     url_file( Remote, Local, [dnt(true),iface(wget)] ),
     debuc( Self, '... to local file: ~p', Local ).
 
-std_graphs_string_version_base_name( VersionPrv, Bname, Remote ) :-
+std_graphs_string_version_base_name( VersionPrv, Bname, InfoBname, Remote, InfoRemote ) :-
     ( atom_concat(v,Version,VersionPrv)->true;Version=VersionPrv ),
     atom_concat( v, Version, Vied ),
     % Pfx = 'http://string-db.org/newstring_download/protein.links.v',
     Pfx = 'https://string-db.org/download/protein.links.v',
     atom_concat( Pfx, Version, RemoteDir ),
     atomic_list_concat( [9031,protein,links,Vied,txt,gz], '.', Bname ),
-    directory_file_path( RemoteDir, Bname, Remote ).
+    directory_file_path( RemoteDir, Bname, Remote ),
     % 10/9606.protein.links.v10.txt.gz
+    % 9031.protein.info.v11.5.txt
+    InfoPfx = 'https://stringdb-static.org/download/protein.info.v',
+    atom_concat( InfoPfx, Version, InfoRemoteDir ),
+    atomic_list_concat( [9031,protein,info,Vied,txt,gz], '.', InfoBname ),
+    directory_file_path( InfoRemoteDir, InfoBname, InfoRemote ).
 
-de_mouse( row(MousEnsP1,MousEnsP2,WAtm), row(EnsP1,EnsP2,W) ) :-
+de_gallus( row(MousEnsP1,MousEnsP2,WAtm), row(EnsP1,EnsP2,W) ) :-
     atom_concat( '9031.', EnsP1, MousEnsP1 ),
     atom_concat( '9031.', EnsP2, MousEnsP2 ),
     ( number(WAtm) -> W = WAtm; atom_number(WAtm,W) ),
     !.
-de_mouse( Row, _ ) :-
+de_gallus( Row, _ ) :-
     debuc( _, 'Failed to translate row: ~w', Row ),
     abort.
 

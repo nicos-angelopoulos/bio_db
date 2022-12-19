@@ -112,7 +112,6 @@ std_gallus_maps_ense( Args ) :-
     debuc( Self, length, [mgim_symb_not_in_ense,total]/[NonMgimSymbs,AllSymbs] ),
     */
      % mtx( 'map_ense_mouse_ensg_mgim.csv', EnsGMRowsSet ),
-     trace,
      mtx( 'map_ense_gallus_ensg_symb.csv', EnsGSRowsSet ),
      mtx( 'map_ense_gallus_ensg_chrl.csv', EnsGCRows ),
 
@@ -163,27 +162,7 @@ ense_genes( [RowG|Rows], Self, GMRows, [GSRow|TGSRows], [EnsGC|GCRows] ) :-
      EnsGC= row(EnsG,ChrG,SrtG,EndG,DirG),
      ense_info( gene_id, InfoG, EnsG ),
      ense_info( gene_name, InfoG, def(EnsG), Symb ),
-     % ense_gene_hgnc( EnsG, EnsN, GHRows, GSRows, TGHRows, TGSRows ),
-    % fixme: check Symb is an mgim symbol ?
-    % GMRows = [row(EnsG,Symb)|TGMRows]
-    % GMRows = [row(EnsG,Mgim)|TGMRows]
-    /*
-    ( mgim:map_mgim_mouse_mgim_symb(SynoGim,Syno) -> 
-        Syno = Symb,
-        GMRows = [row(EnsG,SynoGim)|TGMRows]
-        ;
-        ( ( mgim:map_mgim_mouse_syno_mgim(Syno,Mgim),
-            mgim:map_mgim_mouse_mgim_symb(Mgim,Symb)
-          ) -> 
-            GMRows = [row(EnsG,Mgim)|TGMRows]
-            ;
-            GMRows = TGMRows,
-            Syno = Symb,
-            debuc( std_mouse_maps_ense(details), 'Not an MGIM symbol: ~w', Syno )
-        )
-    ),
-    */
-    GSRow = row(EnsG,Symb),
+     GSRow = row(EnsG,Symb),
      !,
      ense_genes( Rows, Self, GMRows, TGSRows, GCRows ).
 ense_genes( [RowG|Rows], _Self, _, _, _ ) :-

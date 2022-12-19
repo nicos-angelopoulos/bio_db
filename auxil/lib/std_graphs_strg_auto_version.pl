@@ -2,6 +2,7 @@
 :- use_module(library(lists)).      % member/2.
 :- use_module(library(sgml)).       % load_html/3.
 
+:- lib(by_unix).
 :- lib(stoics_lib:message_report/3).
 
 /**  std_graphs_strg_auto_version( Vers )
@@ -18,7 +19,11 @@ Vers = '10.5'.
 
 */
 std_graphs_strg_auto_version( VerAtm ) :-
-    load_html( 'https://string-db.org/', Idx, [] ),
+
+    % load_html( 'https://string-db.org/', Idx, [] ),
+    @ wget('-O','/tmp/index.html','https://string-db.org'),
+    % load_html( 'https://string-db.org/', Idx, [] ),
+    load_html( '/tmp/index.html', Idx, [] ),
     % findall( Li, xpath(Idx,//(li),Li), Lis ),
     % Lis = [_,element(li,_,[element(a,_,[VerAtm])])|_],
     % % element(li, [class=last], [element(a, _, ['10.5'])])

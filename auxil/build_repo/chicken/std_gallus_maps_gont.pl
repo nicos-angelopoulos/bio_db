@@ -56,6 +56,7 @@ std_gallus_maps_gont( Args ) :-
     findall( map_gont_gallus_symb_gont(Symb,Rel,Evid,Gont),
                     ( member(Row,GAs),
                       arg(3,Row,Symb), 
+                      Symb \== '',
                       arg(4,Row,Rel),
                       arg(5,Row,GontPrv), at_con([_,GontAtm],':',GontPrv), atom_number(GontAtm,Gont),
                       arg(7,Row,Evid)

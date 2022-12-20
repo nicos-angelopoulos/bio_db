@@ -204,3 +204,5 @@ uniprot_cname_known(  'UniGene', unig ).
 uniprot_cname_known(  'MGI', mgim ).
 uniprot_cname_known(  'Gene_Name', symb ).
 uniprot_cname_known(  'Gene_Synonym', gyno ).
+% chicken
+uniprot_cname_known(  'STRING', strp ).

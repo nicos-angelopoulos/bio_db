@@ -8,6 +8,7 @@
 :- lib( &(bio_db(gallus(ense))) ).
 :- lib( &(bio_db(gallus(gont))) ).
 :- lib( &(bio_db(gallus(strg))) ).
+:- lib( &(bio_db(gallus(unip))) ).
 
 /**  bio_db_gallus.
 
@@ -26,6 +27,8 @@ Databases
     gene ontology
   * strg
     String PPIs db
+  * unip
+    Uniprot (all proteins)
 
 ==
 ?- lib( & bio_db(gallus) ).

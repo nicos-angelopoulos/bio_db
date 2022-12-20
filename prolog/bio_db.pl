@@ -1867,6 +1867,7 @@ bio_db_type_arity_check( Type, Arity ) :-
 % fixme: this now a bit outdated... maybe add name for special cases ?
 bio_db_type_arity_known( map, 2 ).
 bio_db_type_arity_known( map, 3 ).
+bio_db_type_arity_known( map, 4 ).
 bio_db_type_arity_known( map, 5 ).
 bio_db_type_arity_known( map, 7 ).
 bio_db_type_arity_known( edge, 3 ).

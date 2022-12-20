@@ -44,6 +44,10 @@ Currently only gene symbols, but as per human it should be trivial to do sequenc
 */
 
 std_gallus_maps_ense( Args ) :-
+    % std_gallus_maps_ense( gallus, gallus_gallus, Args ),
+    std_gallus_maps_ense( gg6a, gallus_gallus_gca000002315v5, Args ).
+
+std_gallus_maps_ense( Tkn, EnsDir, Args ) :-
     Self = std_gallus_maps_ense,
     options_append( Self, Args, Opts ),
     bio_db_build_aliases( Opts ),
@@ -52,25 +56,13 @@ std_gallus_maps_ense( Args ) :-
     absolute_file_name( bio_db_build_downloads(ense), DnDir ),
     os_make_path( DnDir ),
     debuc( Self, 'Downloads dir for ense: ~p', DnDir ),
-    FtpDir = 'ftp://ftp.ensembl.org/pub/current_gtf/gallus_gallus/',
+    % FtpDir = 'ftp://ftp.ensembl.org/pub/current_gtf/gallus_gallus/',
+    at_con( ['ftp://ftp.ensembl.org/pub/current_gtf/',EnsDir,'/'], '', FtpDir ),
+    % FtpDir = 'https://ftp.ensembl.org/pub/current_gtf/gallus_gallus/',
     Found @@ curl( -l, '--no-progress-meter', FtpDir ),
     % Gallus_gallus.bGalGal1.mat.broiler.GRCg7b.108.gtf.gz
     % Mus_musculus.GRCm39.108.gtf.gz
-    findall( MsGtf-Amb-Rel, (
-                         member(MsGtf,Found),
-                         at_con(['Gallus_gallus','bGalGal1',mat,broiler,GRChTkn,RelAtm,gtf,gz],'.',MsGtf),
-                         % atom_concat('GRCg',AmbAtm,GRChTkn),
-                         atom_concat('GRCg',Amb,GRChTkn),
-                         % atom_number(AmbAtm,Amb),
-                         atom_number(RelAtm,Rel),
-                         write( mar(MsGtf,Amb,Rel) ), nl
-                        ),
-                            MsGtfs ),
-    ( MsGtfs = [MsGtfF-_Amb-_Rel] ->
-        true
-        ;
-        throw( non_unique_auto_ided_ense_gtf_file(MsGtfs) )
-    ),
+    std_gallus_ense_gtf_file( Tkn, Found, MsGtfF ),
     atom_concat( FtpDir, MsGtfF, Url ),
     url_file_local_date_mirror( Url, DnDir, [file(File),interface(wget)] ),
     debuc( Self, 'Dnload done, file is: ~p', File ),
@@ -86,8 +78,12 @@ std_gallus_maps_ense( Args ) :-
     ense_transcripts( Rows, EnsTGRows, EnsTLRows ),
     debuc( Self, length, tg_rows/EnsTGRows ),
     debuc( Self, length, tl_rows/EnsTLRows ),
-    mtx( 'map_ense_gallus_enst_ensg.csv', EnsTGRows ),
-    mtx( 'map_ense_gallus_enst_chrl.csv', EnsTLRows ),
+    at_con( [map,ense,Tkn,enst,'ensg.csv'], '_', EnsTGF ),
+    % mtx( 'map_ense_gallus_enst_ensg.csv', EnsTGRows ),
+    mtx( EnsTGF, EnsTGRows ),
+    at_con( [map,ense,Tkn,enst,'chrl.csv'], '_', EnsTLF ),
+    mtx( EnsTLF, EnsTLRows ),
+    % mtx( 'map_ense_gallus_enst_chrl.csv', EnsTLRows ),
 
     ense_genes( Rows, Self, _EnsGMRows, EnsGSRows, EnsGCRows ),
     Lbls = [gtfRows,ensGM,ensGS,ensGC],
@@ -112,15 +108,23 @@ std_gallus_maps_ense( Args ) :-
     debuc( Self, length, [mgim_symb_not_in_ense,total]/[NonMgimSymbs,AllSymbs] ),
     */
      % mtx( 'map_ense_mouse_ensg_mgim.csv', EnsGMRowsSet ),
-     mtx( 'map_ense_gallus_ensg_symb.csv', EnsGSRowsSet ),
-     mtx( 'map_ense_gallus_ensg_chrl.csv', EnsGCRows ),
+     at_con( [map,ense,Tkn,ensg,'symb.csv'], '_', EnsGSF ),
+     % mtx( 'map_ense_gallus_ensg_symb.csv', EnsGSRowsSet ),
+     mtx( EnsGSF, EnsGSRowsSet ),
+     at_con( [map,ense,Tkn,ensg,'chrl.csv'], '_', EnsGLF ),
+     mtx( EnsGLF, EnsGCRows  ),
+     % mtx( 'map_ense_gallus_ensg_chrl.csv', EnsGCRows ),
 
      Csvs = [ 
-                 'map_ense_gallus_enst_ensg.csv', 
-                 'map_ense_gallus_enst_chrl.csv',
-                 % 'map_ense_gallus_ensg_mgim.csv',
-                 'map_ense_gallus_ensg_symb.csv',
-                 'map_ense_gallus_ensg_chrl.csv'
+                 EnsTGF,
+                 % 'map_ense_gallus_enst_ensg.csv', 
+                 EnsTLF,
+                 % 'map_ense_gallus_enst_chrl.csv',
+                 % % 'map_ense_gallus_ensg_mgim.csv',
+                 EnsGSF,
+                 % 'map_ense_gallus_ensg_symb.csv',
+                 EnsGLF
+                 % 'map_ense_gallus_ensg_chrl.csv'
             ],
      debuc( Self, 'mapping: ~w', [Csvs] ),
      maplist( csv_to_pl(Self), Csvs ),
@@ -148,6 +152,40 @@ std_gallus_maps_ense( Args ) :-
      working_directory( _, Old ),
      debuc( Self, '...Done', true ).
 
+std_gallus_ense_gtf_file( gallus, Found, MsGtfF ) :-
+    findall( MsGtf-Amb-Rel, (
+                         member(MsGtf,Found),
+                         at_con(['Gallus_gallus','bGalGal1',mat,broiler,GRChTkn,RelAtm,gtf,gz],'.',MsGtf),
+                         % atom_concat('GRCg',AmbAtm,GRChTkn),
+                         atom_concat('GRCg',Amb,GRChTkn),
+                         % atom_number(AmbAtm,Amb),
+                         atom_number(RelAtm,Rel),
+                         write( mar(MsGtf,Amb,Rel) ), nl
+                        ),
+                            MsGtfs ),
+    ( MsGtfs = [MsGtfF-_Amb-_Rel] ->
+        true
+        ;
+        throw( non_unique_auto_ided_ense_gtf_file(MsGtfs) )
+    ).
+std_gallus_ense_gtf_file( gg6a, Found, MsGtfF ) :-
+    write( found(Found) ), nl,
+    % Gallus_gallus_gca000002315v5.GRCg6a.108.gtf.gz
+    findall( MsGtf-Amb-Rel, (
+                         member(MsGtf,Found),
+                         at_con(['Gallus_gallus_gca000002315v5',GRChTkn,RelAtm,gtf,gz],'.',MsGtf),
+                         % atom_concat('GRCg',AmbAtm,GRChTkn),
+                         atom_concat('GRCg',Amb,GRChTkn),
+                         % atom_number(AmbAtm,Amb),
+                         atom_number(RelAtm,Rel),
+                         write( mar(MsGtf,Amb,Rel) ), nl
+                        ),
+                            MsGtfs ),
+    ( MsGtfs = [MsGtfF-_Amb-_Rel] ->
+        true
+        ;
+        throw( non_unique_auto_ided_ense_gtf_file(MsGtfs) )
+    ).
 
 mv_to_sub( Sub, File ) :-
      os_path( Sub, File, Rel ),
@@ -157,12 +195,15 @@ new_ext( New, File, NewFile ) :-
      os_ext( _Old, New, File, NewFile ).
 
 ense_genes( [], _Self, [], [], [] ).
-ense_genes( [RowG|Rows], Self, GMRows, [GSRow|TGSRows], [EnsGC|GCRows] ) :-
+ense_genes( [RowG|Rows], Self, GMRows, GSRows, [EnsGC|GCRows] ) :-
      RowG = row(ChrG,_Db,gene,SrtG,EndG,_,DirG,_,InfoG),
      EnsGC= row(EnsG,ChrG,SrtG,EndG,DirG),
      ense_info( gene_id, InfoG, EnsG ),
-     ense_info( gene_name, InfoG, def(EnsG), Symb ),
-     GSRow = row(EnsG,Symb),
+     ( ense_info(gene_name,InfoG,fail,Symb) ->
+          GSRows = [row(EnsG,Symb)|TGSRows]
+          ;
+          GSRows = TGSRows
+     ),
      !,
      ense_genes( Rows, Self, GMRows, TGSRows, GCRows ).
 ense_genes( [RowG|Rows], _Self, _, _, _ ) :-
@@ -179,7 +220,7 @@ ense_transcripts( [RowT|Rows], [EnsTG|TGRows], [EnsTL|TLRows] ) :-
      % findall( row(EnsT,EnsG)-row(EnsT,ChrT,SrtT,EndT,DirT), ( )).
      ense_info( transcript_id, InfoT, EnsT ),
      ense_info( gene_id, InfoT, EnsG ),
-     ense_chromosome( ChrT ),
+     % ense_chromosome( ChrT ),
      !,
      EnsTG = row(EnsT,EnsG),
      EnsTL = row(EnsT,ChrT,SrtT,EndT,DirT),
@@ -208,6 +249,7 @@ ense_info( Key, Lookup, Strict, Value ) :-
 ense_info_failure( true, Key, Lookup, _ ) :-
      throw( lookup_failure(Key,Lookup) ).
 ense_info_failure( def(Def), _Key, _Lookup, Def ).
+% fail if false
 ense_info_failure( false, _Key, _Lookup, false ).
 
 ense_chromosome( 'X' ) :- !.

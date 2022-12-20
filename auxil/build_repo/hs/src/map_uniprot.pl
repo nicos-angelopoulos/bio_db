@@ -7,7 +7,7 @@
 :- lib( stoics_lib:en_list/2 ).
 
 map_uniprot_defaults( [   uniprot('HUMAN_9606_idmapping.dat'),
-                          interface(sqlite),
+                          interface(prolog),
 					 f_call(=),
 					 ext([]),
 					 destination(maps),
@@ -23,31 +23,39 @@ map_uniprot_defaults( [   uniprot('HUMAN_9606_idmapping.dat'),
 
 :- debuc(uniprot).
 
-%% map_uniprot( +Foreign ).
-%% map_uniprot( +Foreign, +Opts ).
-%% map_uniprot( +Foreign, ?UniprotCsv, -Written, +Opts ).
-%
-%  Create a map file from Uniprot identifiers to a Foreign table. UniprotCsv allows multiple
-%  calls to map_uniprot/3 to utilise the read Csv.
-%  Written is the list of all files written on.
-%
-% Options
-%    * uniprot('HUMAN_9606_idmapping.dat.gz')   file
-%    * f_call(=)          call to make on input Foreign accession to transorm to storable accessions
-%    * interface(sqlite)  which interfaces to save to give a list if more than one required (sqilte,prolog)
-%    * predicate(Predicate)    predicate name, default is uniprot_<low_case(Foreign)>
-%    * stem(Stem)         stem of the output file(s) (defaults to Predicate.
-%    * destination('.')   destination directory
-%    * ext([])            default depends on Interface (sqlite-> sqlite, prolog -> pl) (can be a list if Interface is one)
-%    * reverse(Rev=false) reverse the order of 'Protein' and 'Foreign'
-% 
-%==
-%  uniprot_sqlite_map( 'GeneID' ).
-%==
-%
-% @author nicos angelopoulos
-% @version  0.1 2014/7/2
-%
+/** map_uniprot( +Foreign ).
+    map_uniprot( +Foreign, +Opts ).
+    map_uniprot( +Foreign, ?UniprotCsv, -Written, +Opts ).
+
+Create a map file from Uniprot identifiers to a Foreign table. UniprotCsv allows multiple
+calls to map_uniprot/3 to utilise the read Csv.
+Written is the list of all files written on.
+
+Options
+  * uniprot('HUMAN_9606_idmapping.dat.gz')
+    file- only used if UniprotCsv is an unbound variable
+  * f_call(=)
+    call to transform input Foreign accession to storable accession
+  * interface(prolog)
+    which interfaces to save- a list if more than one required (sqlite,prolog)
+  * predicate(Predicate)
+    predicate name, default is uniprot_<low_case(Foreign)>
+  * stem(Stem)
+    stem of the output file(s) (defaults to Predicate
+  * destination('.')
+    destination directory
+  * ext([])
+    default depends on Interface (sqlite-> sqlite, prolog -> pl) (can be a list if Interface is one)
+  * reverse(Rev=false) 
+    reverse the order of 'Protein' and 'Foreign'
+
+==
+  ?- uniprot_sqlite_map( 'GeneID' ).
+==
+
+@author nicos angelopoulos
+@version  0.1 2014/7/2
+*/
 map_uniprot( Foreign ) :- 
 	map_uniprot( Foreign, _, _, [] ).
 map_uniprot( Foreign, Opts ) :- 

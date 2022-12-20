@@ -85,4 +85,4 @@ false.
 
 */
 map_strg_gallus_ensp_symb( X, Y ) :-
-    bio_db:bio_db_serve( edge_strg_gallus_ensp_symb(X,Y) ).
+    bio_db:bio_db_serve( map_strg_gallus_ensp_symb(X,Y) ).

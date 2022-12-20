@@ -90,7 +90,7 @@ when none is given explicitly (eg via a predicate's Options).
 */
 
 bio_db_organism(hs). % defaulty
-bio_db_organism(chicken).
+bio_db_organism(gallus).
 bio_db_organism(mouse).
 
 /* bio_db_organism( ?Known, ?Canon ).
@@ -143,11 +143,11 @@ Note this used to be bio_db_organism/2 which has now (19.05.02) changed.
 
 @author nicos angelopoulos
 @version  0:1 2019/5/2
-@version  0:2 2022/12/20, chicken also known as gallus and gallus_gallus
+@version  0:2 2022/12/20, gallus also known as chicken and gallus_gallus
 */
 bio_db_organism_alias( human, hs ).
-bio_db_organism_alias( gallus, chicken ).
-bio_db_organism_alias( gallus_gallus, chicken ).
+bio_db_organism_alias( chicken, gallus ).
+bio_db_organism_alias( gallus_gallus, gallus ).
 
 % this search path can be added to requires
 % bio_db_map/2,

@@ -27,7 +27,7 @@ Ensembl gene id to symbol with data drawn from Ensembl.
 ==
 */
 map_ense_gallus_ensg_symb( EnsG, Symb ) :-
-    bio_db:bio_db_serve( map_ense_gallus_ensg_Symb(EnsG,Symb) ).
+    bio_db:bio_db_serve( map_ense_gallus_ensg_symb(EnsG,Symb) ).
 
 /**  map_ense_gallus_enst_chrl( +EnsT, -Chr, -Start, -End, -Dir ).
 

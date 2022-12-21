@@ -148,6 +148,7 @@ Note this used to be bio_db_organism/2 which has now (19.05.02) changed.
 bio_db_organism_alias( human, hs ).
 bio_db_organism_alias( chicken, gallus ).
 bio_db_organism_alias( gallus_gallus, gallus ).
+bio_db_organism_alias( gg6a, gallus ).
 
 % this search path can be added to requires
 % bio_db_map/2,
@@ -1266,13 +1267,13 @@ bio_db_predicate_name(Pname) :-
 % 
 bio_db_serve( Call ) :-
     functor( Call, Pn, _ ),
-    ( ( atomic_list_concat([_,_,Org,_,_],'_',Pn),
-        bio_db_organism(Org)
+    ( ( atomic_list_concat([_,_,OrgTkn,_,_],'_',Pn),
+        bio_db_organism(OrgTkn,Org)
        ) ->
             true
             ; 
-            ( (atomic_list_concat([_,_,Org|_],'_',Pn),
-                 bio_db_organism(Org)
+            ( (atomic_list_concat([_,_,OrgTkn|_],'_',Pn),
+                 bio_db_organism(OrgTkn,Org)
               ) ->
                     true
                     ;

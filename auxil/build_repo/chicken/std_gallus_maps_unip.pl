@@ -71,7 +71,7 @@ std_gallus_maps_unip( Args ) :-
      os_make_path( maps, debug(true) ),
 
      debuc( Self, 'Dir location: ~p', DnDir ),
-     Rev = [uniprot('CHICK_9031_idmapping.dat'),org(gallus),interface(prolog),reverse(false)],
+     Rev = [uniprot('CHICK_9031_idmapping.dat'),f_call(de_pfx_dot),org(gallus),interface(prolog),reverse(false)],
      map_uniprot( 'Ensembl_PRO', Csv, [EnspF], Rev ),
 
      % Fgnc = [interface(prolog),f_call(de_semi('HGNC'))],
@@ -198,6 +198,13 @@ os_rm_rf( Dir ) :-
      delete_directory_and_contents(Dir),
      !.
 os_rm_rf( _Dir ).
+
+de_pfx_dot( In, Out ) :-
+     at_con( [Out|_], '.', In ),
+     !.
+de_pfx_dot( In, _Acc ) :-
+     write( de_pfx_dot_disaster(In) ), nl,
+     abort.
 
 de_semi_dot( Pfx, AccPrv, Acc ) :-
      atomic_list_concat( [Pfx,Acc], '.', AccPrv ), 

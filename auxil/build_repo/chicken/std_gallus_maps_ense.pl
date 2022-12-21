@@ -44,8 +44,9 @@ Currently only gene symbols, but as per human it should be trivial to do sequenc
 */
 
 std_gallus_maps_ense( Args ) :-
-    % std_gallus_maps_ense( gallus, gallus_gallus, Args ),
+    std_gallus_maps_ense( gallus, gallus_gallus, Args ),
     std_gallus_maps_ense( gg6a, gallus_gallus_gca000002315v5, Args ).
+    true.
 
 std_gallus_maps_ense( Tkn, EnsDir, Args ) :-
     Self = std_gallus_maps_ense,

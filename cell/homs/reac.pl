@@ -12,17 +12,17 @@
 :- use_module(library(lib)).
 :- lib(bio_db).
 
-/**  bio_db_homs_strg.
+/**  bio_db_homs_reac.
 
 Documentation predicate for Homo sapiens data from reactome database.
 
 ==
-?- lib( &bio_db(homs(strg)) ).
-?- [ pack('bio_db/cell/homs/strg') ].
+?- lib( &bio_db(homs(reac)) ).
+?- [ pack('bio_db/cell/homs/reac') ].
 ==
 
 @author nicos angelopoulos
-@version  0.1 2018/10/29
+@version  0.1 2022/12/24
 
 */
 bio_db_homs_reac.

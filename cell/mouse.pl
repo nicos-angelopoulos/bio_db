@@ -1,17 +1,17 @@
-:- module( bio_db_mouse, [
-                    bio_db_mouse/0
+:- module( bio_db_musm, [
+                    bio_db_musm/0
                 ] ).
 
 :- use_module(library(lib)).
 
-:- lib( &(bio_db(mouse(mgim))) ).
-:- lib( &(bio_db(mouse(ense))) ).
-:- lib( &(bio_db(mouse(ncbi))) ).
-:- lib( &(bio_db(mouse(unip))) ).
-:- lib( &(bio_db(mouse(gont))) ).
-:- lib( &(bio_db(mouse(strg))) ).
+:- lib( &(bio_db(musm(mgim))) ).
+:- lib( &(bio_db(musm(ense))) ).
+:- lib( &(bio_db(musm(ncbi))) ).
+:- lib( &(bio_db(musm(unip))) ).
+:- lib( &(bio_db(musm(gont))) ).
+:- lib( &(bio_db(musm(strg))) ).
 
-/**  bio_db_mouse.
+/**  bio_db_musm.
 
 Bio_db data sets for mouse.
 
@@ -28,15 +28,15 @@ Databases
     String PPIs db
 
 ==
-?- lib( & bio_db(mouse) ).
-?- lib( & bio_db(mouse(mgim)) ).
+?- lib( & bio_db(musm) ).
+?- lib( & bio_db(musm(mgim)) ).
 ==
 
 @author nicos angelopoulos
 @version  0.1 2018/10/31
 @version  0.2 2019/2/11
-@see 
+@version  0.3 2022/12/25
 
 */
 
-bio_db_mouse.
+bio_db_musm.

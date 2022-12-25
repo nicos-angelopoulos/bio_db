@@ -1,24 +1,24 @@
-:- module( bio_db_hs, [     bio_db_hs/0,
+:- module( bio_db_homs, [   bio_db_homs/0,
                             % symbols_string_graph/3,
                             hgnc_symbol/1
                         ] ).  
 
 :- use_module(library(lib)).
 
-:- lib( &(bio_db(hs(hgnc))) ).
-:- lib( &(bio_db(hs(ense))) ).
-:- lib( &(bio_db(hs(ncbi))) ).
-:- lib( &(bio_db(hs(gont))) ).
-:- lib( &(bio_db(hs(unip))) ).
-:- lib( &(bio_db(hs(pros))) ).
-:- lib( &(bio_db(hs(strg))) ).
+:- lib( &(bio_db(homs(hgnc))) ).
+:- lib( &(bio_db(homs(ense))) ).
+:- lib( &(bio_db(homs(ncbi))) ).
+:- lib( &(bio_db(homs(gont))) ).
+:- lib( &(bio_db(homs(unip))) ).
+:- lib( &(bio_db(homs(pros))) ).
+:- lib( &(bio_db(homs(strg))) ).
 
 %   4. derived
-:- lib( source(bio_db(hs)), homonyms(true) ).
+% :- lib( source(bio_db(homs)), homonyms(true) ).
 % :- lib(symbols_string_graph/3).
-:- lib( end(bio_db(hs)) ).
+% :- lib( end(bio_db(homs)) ).
 
-/**  bio_db_hs.
+/**  bio_db_homs.
 
 Bio_db data sets for Homo sapiens. This cell is further
 sub-divided according to the database the data come from.
@@ -31,14 +31,15 @@ Dbs
     ensemble genes: names and location
 
 ==
-?- lib( & bio_db(hs) ).
+?- lib( & bio_db(human) ).
 ==
 
 @author nicos angelopoulos
 @version  0.1 2018/10/29
+@version  0.2 2018/10/29
 
 */
-bio_db_hs.
+bio_db_homs.
 
 /** hgnc_symbol( ?Symbol ).
 
@@ -52,8 +53,8 @@ true.
 */
 hgnc_symbol( Symbol ) :-
     ground( Symbol ),
-    map_hgnc_symb_hgnc( Symbol, _ ),
+    hgnc_homs_symb_hgnc( Symbol, _ ),
     !.
 hgnc_symbol( Symbol ) :-
-    map_hgnc_symb_hgnc( Symbol, _ ).
+    hgnc_homs_symb_hgnc( Symbol, _ ).
 

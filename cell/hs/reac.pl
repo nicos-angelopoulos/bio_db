@@ -1,4 +1,4 @@
-:- module( bio_db_homs_strg, [
+:- module( bio_db_homs_reac, [
                     bio_db_homs_reac/0,
                     %       + Reactome
                     reac_homs_ncbi_reac/2,
@@ -38,10 +38,26 @@ Reac = 8956761 ;
 Reac = 8956899.
 ==
 
-
 */
-reac_homs_ncbi_reac( X, Y, Z ) :-
-    bio_db:bio_db_serve( reac_homs_ncbi_reac(X,Y,Z) ).
+reac_homs_ncbi_reac( X, Y ) :-
+    bio_db:bio_db_serve( reac_homs_ncbi_reac(X,Y) ).
+
+/**  reac_homs_reac_reap( ?Reac, -Evidence, ?Reap ).
+
+Map Reactome product identifiers to Reactome pathway ids.
+
+Evidence is the type of evidence supporting the pathway membership.
+
+==
+?- reac_homs_reac_reap(191429, Evi, Reac), write(Evi-Reac), nl, fail.
+IEA-525793
+IEA-1266738
+TAS-418990
+...
+==
+*/
+reac_homs_ncbi_reap( X, Y, Z ) :-
+    bio_db:bio_db_serve( reac_homs_reac_reap(X,Y,Z) ).
 
 /**  reac_homs_ncbi_reap( ?Ncbi, -Evidence, ?Reap ).
 
@@ -50,7 +66,7 @@ Map (human) NCBI identifiers to Reactome pathway ids.
 Evidence is the type of evidence supporting the pathway membership.
 
 ==
-?- reac_homs_ncbi_reap(1000, Evi, Reac), write(Evi-Reac), nl.
+?- reac_homs_ncbi_reap(1000, Evi, Reac), write(Evi-Reac), nl, fail.
 IEA-525793
 IEA-1266738
 TAS-381426
@@ -72,8 +88,8 @@ Map Reactome product identifiers to localisation tokens.
 Recl = 'plasma membrane'.
 ==
 */
-reac_homs_reac_recl( X, Y, Z ) :-
-    bio_db:bio_db_serve( reac_homs_reac_recl(X,Y,Z) ).
+reac_homs_reac_recl( X, Z ) :-
+    bio_db:bio_db_serve( reac_homs_reac_recl(X,Z) ).
 
 /**  reac_homs_reac_recn( ?Reac, ?Recn ).
 

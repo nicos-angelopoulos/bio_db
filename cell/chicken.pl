@@ -1,18 +1,18 @@
-:- module( bio_db_gallus, [
-                    bio_db_gallus/0
+:- module( bio_db_galg, [
+                    bio_db_galg/0
                 ] ).
 
 :- use_module(library(lib)).
 
-:- lib( &(bio_db(gallus(cgnc))) ).
-:- lib( &(bio_db(gallus(ense))) ).
-:- lib( &(bio_db(gallus(gont))) ).
-:- lib( &(bio_db(gallus(strg))) ).
-:- lib( &(bio_db(gallus(unip))) ).
+:- lib( &(bio_db(galg(cgnc))) ).
+:- lib( &(bio_db(galg(ense))) ).
+:- lib( &(bio_db(galg(gont))) ).
+:- lib( &(bio_db(galg(strg))) ).
+:- lib( &(bio_db(galg(unip))) ).
 
 /**  bio_db_gallus.
 
-Bio_db data sets for chicken (gallus gallus)- token gallus.
+Bio_db data sets for chicken (gallus gallus)- token galg.
 
 Please note that the identifiers in string are incompatible to the 
 other databases on ensembl ids. That is why a map from ensembl proteins 
@@ -31,8 +31,8 @@ Databases
     Uniprot (all proteins)
 
 ==
-?- lib( & bio_db(gallus) ).
-?- lib( & bio_db(gallus(cgnc)) ).
+?- lib( & bio_db(galg) ).
+?- lib( & bio_db(galg(cgnc)) ).
 ==
 
 @author nicos angelopoulos
@@ -40,4 +40,4 @@ Databases
 
 */
 
-bio_db_gallus.
+bio_db_galg.

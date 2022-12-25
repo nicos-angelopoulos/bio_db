@@ -1,5 +1,6 @@
 
 :- use_module(library(apply)).     % maplist/2.
+:- use_module(library(lists)).     % member/2, append/3.
 :- use_module(library(listing)).   % portray_clause/2.
 
 % :- lib(bio_db).

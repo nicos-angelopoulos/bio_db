@@ -13,6 +13,7 @@ TBD:
                   (map_ense_mouse_enst_chrl/5 was opening map_ense_enst_chrl/5).
 
 3.7
+      22.12.24    REPO:    build script for reactome maps (all organisms)
       22.12.20    IFACE:   organism(gallus) with aliases chicken and gallus_gallus
       22.12.17    IFACE:   added Relation to gont for mouse predicates, and updated docs
                   CELL:    gallus, full name: gallus gallus (token gallus)

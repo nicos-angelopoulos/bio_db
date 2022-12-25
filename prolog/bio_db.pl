@@ -1,7 +1,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %    Authors:       Nicos Angelopoulos
 %    E-mail:        Nicos Angelopoulos http://stoics.org.uk/~nicos/sware/contact.html
-%    Copyright (C): Nicos Angelopoulos, 2015-2020
+%    Copyright (C): Nicos Angelopoulos, 2015-2023
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 /*
    This program is free software; you can redistribute it and/or
@@ -26,7 +26,7 @@
                 bio_db_interface/1,
                 bio_db_interface/2,
                 bio_db_install/2, bio_db_install/3,
-                bio_db_organism/1, bio_db_organism/2,
+                bio_db_organism/1, bio_db_organism/2, bio_db_organism/3,
                 bio_db_organism_alias/2,
                 bio_db_paths/0,
                 bio_db_source/2,
@@ -89,14 +89,16 @@ when none is given explicitly (eg via a predicate's Options).
 
 */
 
-bio_db_organism(hs). % defaulty
-bio_db_organism(gallus).
+bio_db_organism(hs).      % defaulty
+bio_db_organism(gallus).  % 2022/12/21
 bio_db_organism(mouse).
 
 /* bio_db_organism( ?Known, ?Canon ).
+   bio_db_organism( ?Known, ?Token, ?Canon ).
 
 Canon is the canonical representation of Known which is either 
-a known bio_db organism/1 or  an alias (bio_db_organism/2) to one.
+a known bio_db organism/1 or an alias (bio_db_organism/2) to one.
+Token is the token used in predicate names for this organism.
 
 Please note this used to have the semantics of bio_db_organism_alias/2
 (until 19.05.02).
@@ -119,15 +121,25 @@ false.
 
 @author nicos angelopoulos
 @version  0.2 2019/5/2
+@version  0.3 2022/12/25, added /3 version
 
 */
 bio_db_organism( Alias, Org ) :-
+     bio_db_organism( Alias, _Token, Org ).
+
+bio_db_organism( Alias, Token, Org ) :-
     ( ground(Alias) -> Backtrack = false; Backtrack = true ),
     bio_db_organism_alias( Alias, Org ),
-    ( Backtrack == false -> !; true ).
-bio_db_organism( Org, Canon ) :-
+    ( Backtrack == false -> !; true ),
+    bio_db_organism_token( Org, Token ).
+bio_db_organism( Org, Token, Canon ) :-
     bio_db_organism( Org ),
+    bio_db_organism_token( Org, Token ),
     Canon = Org.
+
+bio_db_organism_token(gallus, galg).
+bio_db_organism_token(hs, homs).
+bio_db_organism_token(mouse, musm).
 
 /** bio_db_organism_alias( ?Alias, -Org ).
 
@@ -234,7 +246,7 @@ transparently to the user, where a data set is downloaded by simply calling the 
 
 For example
 ==
-?- map_hgnc_symb_hgnc( 'LMTK3', Hgnc ).
+?- hgnc_symb_hgnc( 'LMTK3', Hgnc ).
 % prolog DB:table hgnc:map_hgnc_symb_hgnc/2 is not installed, do you want to download (Y/n) ? 
 % Trying to get: url_file(http://www.stoics.org.uk/bio_db_repo/data/maps/hgnc/map_hgnc_symb_hgnc.pl,/usr/local/users/nicos/local/git/test_bio_db/data/maps/hgnc/map_hgnc_symb_hgnc.pl)
 % Loading prolog db: /usr/local/users/nicos/local/git/test_bio_db/data/maps/hgnc/map_hgnc_symb_hgnc.pl
@@ -685,12 +697,13 @@ D = date(2021, 12, 4).
 
 @author Nicos Angelopoulos
 @version  3:6 2021/12/4
+@version  4:0 2022/12/26, uniform pred names convention + reactome + chicken
 @see bio_db_data_predicate/4  (which should be generated for each new version)
 @see doc/Releases.txt for more detail on change log
 @see module documentation for brief comments on versioning history of this pack
 
 */
-bio_db_version( 3:6:0, date(2021,12,4) ).   
+bio_db_version( 4:0:0, date(2022,12,26) ).   
 
 %% bio_db_citation( -Atom, -Bibterm ).
 %

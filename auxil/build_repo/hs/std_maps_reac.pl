@@ -14,6 +14,7 @@
 
 % bio_db loads
 :- ensure_loaded('../../lib/bio_db_build_aliases').  % /1.
+:- ensure_loaded('../../lib/bio_db_build_organism'). % bio_db_organism/3.
 :- lib(link_to_bio_sub/3).
 :- lib(bio_db_dnt_times/3).
 :- lib(url_file_local_date_mirror/3).
@@ -24,7 +25,7 @@ std_maps_reac_defaults( Def ) :-
      Def = [ 
              db(reac),
              debug(true),
-             org(hs),
+             org(human),
              url(U)
      ].
 
@@ -96,7 +97,8 @@ std_maps_reac( Args ) :-
      % Forg = 'Homo sapiens', Org = hsp, 
      Stems= [ncbi_reac,ncbi_reap,reac_reap,reac_recn,reac_recl,reap_repn],
      options( org(OrgIn), Opts ),
-     std_maps_reac_org( OrgIn, Roid, Rorg, Otkn ),
+     bio_db_organism( OrgIn, Otkn, Org ),
+     std_maps_reac_org( Org, Roid, Rorg ),
      maplist( std_maps_reac_postfix_pname(Otkn), Stems, Pnames ),
      std_maps_reac_rows( Mtx, Self, Rorg, Roid, Pnames, 0, Cnt, Neac, Neap, Recp, Recn, Recl, Repn ),
      debuc( Self, '~d records belonged to: ~w', [Cnt,Rorg] ),
@@ -110,10 +112,10 @@ std_maps_reac( Args ) :-
      debuc( Self, end, true ).
 
 std_maps_reac_postfix_pname( Dorg, Psfx, Stem ) :-
-     at_con( [map,reac,Dorg,Psfx], '_', Stem ).
+     at_con( [reac,Dorg,Psfx], '_', Stem ).
 
 std_maps_reac_portray( Self, Dorg, Dir, Url, DnDt, Psfx, Map, File ) :-
-     at_con( [map,reac,Dorg,Psfx], '_', Stem ),
+     at_con( [reac,Dorg,Psfx], '_', Stem ),
      os_dir_stem_ext( File, [ext(pl),odir(Dir),stem(Stem)] ),
      debuc( Self, 'Output: ~p', [File] ),
      sort( Map, Ord ),
@@ -177,6 +179,6 @@ std_maps_reac_id( Feac, Roid, Reac ) :-
 std_maps_reac_id( Feac, Roid, _Reac ) :-
      thrown( could_not_convert_reactome_token_to_int_id(Feac,Roid) ).
      
-std_maps_reac_org( gallus, 'GGA', 'Gallus gallus', gallus ).
-std_maps_reac_org( hs, 'HSA', 'Homo sapiens', hs ).
-std_maps_reac_org( mouse, 'MMU', 'Mus musculus', mouse ).
+std_maps_reac_org( gallus, 'GGA', 'Gallus gallus' ).
+std_maps_reac_org( hs, 'HSA', 'Homo sapiens' ).
+std_maps_reac_org( mouse, 'MMU', 'Mus musculus' ).

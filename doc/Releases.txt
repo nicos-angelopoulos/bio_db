@@ -12,7 +12,8 @@ TBD:
          21.12.03 make sure existing handles are checked before opening another handle to same predicate 
                   (map_ense_mouse_enst_chrl/5 was opening map_ense_enst_chrl/5).
 
-3.7
+4.0
+      22.12.25    IFACE:   start work on 4.0, all predicates to be 4x4
       22.12.24    REPO:    build script for reactome maps (all organisms)
       22.12.20    IFACE:   organism(gallus) with aliases chicken and gallus_gallus
       22.12.17    IFACE:   added Relation to gont for mouse predicates, and updated docs

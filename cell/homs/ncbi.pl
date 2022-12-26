@@ -7,7 +7,7 @@
                 ncbi_homs_ncbi_ensp/2,
                 ncbi_homs_rnuc_symb/2,
                 ncbi_homs_dnuc_symb/2
-                % map_ncbi_unig_entz/2 % withdrawn 2019.02
+                % map_ncbi_unig_ncbi/2 % withdrawn 2019.02
                 ] ).
                 
 :- use_module(library(lib)).
@@ -29,42 +29,42 @@ Documentation predicate for Homo sapiens data from NCBI database.
 */
 bio_db_homs_ncbi.
 
-/**  ncbi_homs_ensp_entz( ?EnsP, ?Entz ).
+/**  ncbi_homs_ensp_ncbi( ?EnsP, ?Ncbi ).
 
 Map predicate from Ensembl proteins to NCBI/entrez gene ids.
 
 ==
-?- ncbi_homs_ensp_entz( 'ENSP00000270238', Entz ).
-Entz = 114783.
+?- ncbi_homs_ensp_ncbi( 'ENSP00000270238', Ncbi ).
+Ncbi = 114783.
 ==
 */
-ncbi_homs_ensp_entz( X, Y ) :-
-    bio_db:bio_db_serve( ncbi_homs_ensp_entz(X,Y) ).
+ncbi_homs_ensp_ncbi( X, Y ) :-
+    bio_db:bio_db_serve( ncbi_homs_ensp_ncbi(X,Y) ).
 
-/**  ncbi_homs_ensg_entz( ?EnsG, ?Entz ).
+/**  ncbi_homs_ensg_ncbi( ?EnsG, ?Ncbi ).
 
 Map predicate from Ensembl genes to NCBI/entrez gene ids.
 
 ==
-?- ncbi_homs_ensg_entz( 'ENSG00000142235', Entz ).
-Entz = 114783.
+?- ncbi_homs_ensg_ncbi( 'ENSG00000142235', Ncbi ).
+Ncbi = 114783.
 ==
 */
-ncbi_homs_ensg_entz( X, Y ) :-
-    bio_db:bio_db_serve( ncbi_homs_ensg_entz(X,Y) ).
+ncbi_homs_ensg_ncbi( X, Y ) :-
+    bio_db:bio_db_serve( ncbi_homs_ensg_ncbi(X,Y) ).
 
-/**  ncbi_homs_entz_ensp( ?Entz, ?EnsP ).
+/**  ncbi_homs_ncbi_ensp( ?Ncbi, ?EnsP ).
 
 Map predicate from NCBI/entrez gene ids to Ensembl proteins.
 
 ==
-?- ncbi_homs_entz_ensp( 114783, EnsP ).
+?- ncbi_homs_ncbi_ensp( 114783, EnsP ).
 EnsP = 'ENSP00000270238'.
 
 ==
 */
-ncbi_homs_entz_ensp( X, Y ) :-
-    bio_db:bio_db_serve( ncbi_homs_entz_ensp(X,Y) ).
+ncbi_homs_ncbi_ensp( X, Y ) :-
+    bio_db:bio_db_serve( ncbi_homs_ncbi_ensp(X,Y) ).
 
 /** ncbi_homs_rnuc_symb( RnaNucl, Symb ).
 
@@ -94,29 +94,29 @@ ncbi_homs_dnuc_symb( Dnuc, Symb ) :-
     bio_db:bio_db_serve( ncbi_homs_dnuc_symb(Dnuc,Symb) ).
 
 
-/* map_ncbi_unig_entz( UniG, Entz ).
+/* map_ncbi_unig_ncbi( UniG, Ncbi ).
 
 UNIGENE WAS WITHDRAWN ON FEB 2019.
 
 Map predicate from unigene to entrez id as per ncbi.
 
 ==
-?- map_ncbi_unig_entz( 'Hs.80828', Entz ).
-Entz = 3848.
+?- map_ncbi_unig_ncbi( 'Hs.80828', Ncbi ).
+Ncbi = 3848.
 ==
-map_ncbi_unig_entz( UniG, Entz ) :-
-    bio_db:bio_db_serve( map_ncbi_unig_entz(UniG,Entz) ).
+map_ncbi_unig_ncbi( UniG, Ncbi ) :-
+    bio_db:bio_db_serve( map_ncbi_unig_ncbi(UniG,Ncbi) ).
 */
 
-/** ncbi_homs_entz_ensg( ?Entz, ?EnsG ).
+/** ncbi_homs_ncbi_ensg( ?Ncbi, ?EnsG ).
 
 Map predicate from NCBI/entrez gene ids to Ensembl genes.
 
 ==
-?- ncbi_homs_entz_ensg( 114783, EnsP ).
+?- ncbi_homs_ncbi_ensg( 114783, EnsP ).
 EnsP = 'ENSG00000142235'.
 ==
 */
-ncbi_homs_entz_ensg( X, Y ) :-
-    bio_db:bio_db_serve( ncbi_homs_entz_ensg(X,Y) ).
+ncbi_homs_ncbi_ensg( X, Y ) :-
+    bio_db:bio_db_serve( ncbi_homs_ncbi_ensg(X,Y) ).
 

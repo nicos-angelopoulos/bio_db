@@ -13,6 +13,8 @@ TBD:
                   (map_ense_mouse_enst_chrl/5 was opening map_ense_enst_chrl/5).
 
 4.0
+      22.12.26    BUILD:   remove dependency to R in csv_ids_map.p
+                  CELL:    hgnc now produces ncbi rather than entz tokens
       22.12.25    IFACE:   start work on 4.0, all predicates to be 4x4
       22.12.24    REPO:    build script for reactome maps (all organisms)
       22.12.20    IFACE:   organism(gallus) with aliases chicken and gallus_gallus

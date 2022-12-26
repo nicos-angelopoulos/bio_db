@@ -19,8 +19,6 @@
 :- ensure_loaded( '../../lib/bio_db_build_aliases' ).  % /1.
 
 % load necessary data that has already been generated
-% :- ensure_loaded(ncbi:bio_db_build_downloads('ncbi/maps/map_ncbi_ensp_entz')).
-% :- ensure_loaded(hgnc:bio_db_build_downloads('hgnc/maps/map_hgnc_entz_symb')).
 
 % local libs & sources
 :- lib(link_to_bio_sub/3).
@@ -63,131 +61,138 @@ std_graphs_strg( Args ) :-
     options_append( Self, Args, Opts ),
     bio_db_build_aliases( Opts ),
     % load necessary data that has already been generated
-    ensure_loaded(ncbi:bio_db_build_downloads('ncbi/maps/map_ncbi_ensp_entz')),
-    ensure_loaded(hgnc:bio_db_build_downloads('hgnc/maps/map_hgnc_entz_symb')),
+    ensure_loaded(ncbi:bio_db_build_downloads('ncbi/maps/ncbi_homs_ensp_entz')),
+    ensure_loaded(hgnc:bio_db_build_downloads('hgnc/maps/hgnc_homs_entz_symb')),
 
     % std_graphs_strg( VersionPrv ) :-
     options( string_version(VersionPrv), Opts ),
     ( number(VersionPrv) -> atom_number(Version,VersionPrv); Version = VersionPrv ),
-	debuc( Self, 'Version: ~w', Version ),
-	std_graphs_string_version_base_name( Version, Bname, From ),
-	Self = std_graphs_strg,
-	debuc( Self, 'Base name: ~w', Bname ),
-	absolute_file_name( bio_db_build_downloads(strg), Parent ),
-	% absolute_file_name( baio_db_downloads(string/Bname), LocalFile ),
-	% directory_file_path( Parent, _BnameAgain, LocalFile ),
-	directory_file_path( Parent, Bname, LocalFile ),
-	os_make_path( Parent, debug(true) ),
-	std_graph_string_download_string( LocalFile, From, Self ),
-	working_directory( Here, Parent ),
-	@ gunzip( -k, Bname ),  % keeps .gz file
-	% @ gunzip( '9606.protein.links.v10.txt.gz' ),
-	Edge = edge_strg_hs,
-	Opt = [ csv_read(separator(0' )),predicate_name(Edge),
-	        rows_transform(maplist(user:de_hs)),header_remove(true),
+     debuc( Self, 'Version: ~w', Version ),
+     std_graphs_string_version_base_name( Version, Bname, From ),
+     Self = std_graphs_strg,
+     debuc( Self, 'Base name: ~w', Bname ),
+     absolute_file_name( bio_db_build_downloads(strg), Parent ),
+     % absolute_file_name( baio_db_downloads(string/Bname), LocalFile ),
+     % directory_file_path( Parent, _BnameAgain, LocalFile ),
+     directory_file_path( Parent, Bname, LocalFile ),
+     os_make_path( Parent, debug(true) ),
+     std_graph_string_download_string( LocalFile, From, Self ),
+     working_directory( Here, Parent ),
+     @ gunzip( -k, Bname ),  % keeps .gz file
+     % @ gunzip( '9606.protein.links.v10.txt.gz' ),
+     EnspPn = strg_homs_edge_ensp,
+     Opt = [ csv_read(separator(0' )),predicate_name(EnspPn),
+             rows_transform(maplist(user:de_hs)),header_remove(true),
             mtx_opt(convert(false))
-		 ],
-	file_name_extension( TxtF, gz, Bname ),
-	Mess1 = 'Converting string file: ~p, to Prolog',
-	% file_name_extension( Stem, txt, TxtF ),
-	% file_name_extension( Stem, pl, PlF ),
-	debuc( Self, 'Directory: ~p', [Parent] ),
-	debuc( Self, Mess1, [TxtF] ),
-	mtx_prolog( TxtF, File, Opt ),
-	debuc( _, 'Edges output: ~w', File ),
-	delete_file( TxtF ),
-	% @ rm( -rf, graphs ), % don't do this. there are now other organisms 
+           ],
+     file_name_extension( TxtF, gz, Bname ),
+     Mess1 = 'Converting string file: ~p, to Prolog',
+     % file_name_extension( Stem, txt, TxtF ),
+     % file_name_extension( Stem, pl, PlF ),
+     debuc( Self, 'Directory: ~p', [Parent] ),
+     debuc( Self, Mess1, [TxtF] ),
+     mtx_prolog( TxtF, File, Opt ),
+     debuc( _, 'Edges output: ~w', File ),
+     delete_file( TxtF ),
+     % @ rm( -rf, graphs ), % don't do this. there are now other organisms 
     % puting stuff in graphs/ (eg mouse...)
-	os_make_path( graphs, debug(true) ),
-	Trg = 'graphs/edge_strg_hs.pl',
-	@ rm( -f, Trg ),
-	@ mv( File, Trg ),
+     os_make_path( graphs, debug(true) ),
+     os_dir_stem_ext( graphs, EnspPn, pl, EnspRel ),
+     % Trg = 'graphs/edge_strg_hs.pl',
+     @ rm( -f, EnspRel ),
+     @ mv( File, EnspRel ),
 
-	consult( edge_strg_hs:Trg ),
-	debuc( _, 'Consulted hs: ~w', [edge_strg_hs:Trg] ),
+     consult( EnspPn:EnspRel ),
 
-	findall( edge_strg_hs_symb(SymbA,SymbB,W),
-	                     ( edge_strg_hs:edge_strg_hs(EnsP1,EnsP2,W),
-					       ensp_symb(EnsP1,Symb1),
-					       ensp_symb(EnsP2,Symb2),
-					       sort(Symb1,Symb2,SymbA,SymbB)
-					 ),
-		  	UnoSymbEdges
-		  ),
-	sort( UnoSymbEdges, SymbEdges ),
-    length( SymbEdges, SymbEdgesLen ),
-	debuc( _, 'Unique symbol edges hs: ~w', [SymbEdgesLen] ),
-	EdgeSymbsF = 'graphs/edge_strg_hs_symb.pl',
-	portray_clauses( SymbEdges, file(EdgeSymbsF) ),
-	bio_db_dnt_times( Bname, DnDt, _EndDt ),
-	HsOpts = [source(From),datetime(DnDt),header(row('Ensembl Protein','Ensembl Protein',weight))],
-	bio_db_add_infos_to( HsOpts, Trg ),
+     debuc( _, 'Consulted ensp: ~w', [NespPn:EnspRel] ),
 
-	SymbOpts = [source(From),datetime(DnDt),header(row('HGNC Symbol','HGNC Symbol',weight))],
-	bio_db_add_infos_to( SymbOpts, EdgeSymbsF ),
+     EnspGoal =.. [EnspPn,EnsP1,EnsP2,W],
+     findall( edge_strg_hs_symb(SymbA,SymbB,W),
+                          ( EnspPn:EnspGoal
+                                ensp_symb(EnsP1,Symb1),
+                                ensp_symb(EnsP2,Symb2),
+                                sort(Symb1,Symb2,SymbA,SymbB)
+                          ),
+               UnoSymbEdges
+            ),
+     sort( UnoSymbEdges, SymbEdges ),
+     length( SymbEdges, SymbEdgesLen ),
+     debuc( _, 'Unique symbol edges hs: ~w', [SymbEdgesLen] ),
 
-	link_to_bio_sub( strg, Trg, [org(hs),type(graphs)] ),
-	link_to_bio_sub( strg, EdgeSymbsF, [org(hs),type(graphs)]  ),
-	working_directory( _, Here ).
+     SymbsPn  = str_homs_edge_symb,
+     os_dir_stem_ext( grapsh, SymbsPn, pl, SymbsRel ),
+     portray_clauses( SymbEdges, file(SymbsRel) ),
+     bio_db_dnt_times( Bname, DnDt, _EndDt ),
+     HsOpts = [source(From),datetime(DnDt),header(row('Ensembl Protein','Ensembl Protein',weight))],
+     bio_db_add_infos_to( HsOpts, EnspRel ),
+
+     SymbOpts = [source(From),datetime(DnDt),header(row('HGNC Symbol','HGNC Symbol',weight))],
+     bio_db_add_infos_to( SymbOpts, SymbsRel ),
+
+     link_to_bio_sub( strg, EnspRel, [org(hs),type(graphs)] ),
+     link_to_bio_sub( strg, SymbsRel, [org(hs),type(graphs)]  ),
+     working_directory( _, Here ).
 
 ensp_symb( EnsP, Symb ) :-
-	ncbi:map_ncbi_ensp_entz( EnsP, Entz ),
-	hgnc:map_hgnc_entz_symb( Entz, Symb ),
-	!.
+     ncbi:ncbi_homs_ensp_entz( EnsP, Entz ),
+     hgnc:hgnc_homs_entz_symb( Entz, Symb ),
+     !.
 
 sort( X, Y, A, B ) :-
-	Y @< X,
-	!,
-	A = Y, B = X.
+     Y @< X,
+     !,
+     A = Y, B = X.
 sort( A, B, A, B ).
 
 std_graph_string_download_string( LocalFile, _From, Self ) :-
-	exists_file( LocalFile ),
-	debuc( Self, 'Using existing local string file: ~p', LocalFile ),
-	!.
+     exists_file( LocalFile ),
+     debuc( Self, 'Using existing local string file: ~p', LocalFile ),
+     !.
 std_graph_string_download_string( Local, Remote, Self ) :-
-	debuc( Self, 'Downloading from: ~p', Remote ),
-	url_file( Remote, Local, [dnt(true),iface(wget)] ),
-	debuc( Self, '... to local file: ~p', Local ).
+     debuc( Self, 'Downloading from: ~p', Remote ),
+     url_file( Remote, Local, [dnt(true),iface(wget)] ),
+     debuc( Self, '... to local file: ~p', Local ).
 
 std_graphs_string_version_base_name( VersionPrv, Bname, Remote ) :-
-	( atom_concat(v,Version,VersionPrv)->true;Version=VersionPrv ),
-	atom_concat( v, Version, Vied ),
-	% Pfx = 'http://string-db.org/newstring_download/protein.links.v',
-	Pfx = 'https://string-db.org/download/protein.links.v',
-	atom_concat( Pfx, Version, RemoteDir ),
-	atomic_list_concat( [9606,protein,links,Vied,txt,gz], '.', Bname ),
-	directory_file_path( RemoteDir, Bname, Remote ).
-	% 10/9606.protein.links.v10.txt.gz
+     ( atom_concat(v,Version,VersionPrv)->true;Version=VersionPrv ),
+     atom_concat( v, Version, Vied ),
+     % Pfx = 'http://string-db.org/newstring_download/protein.links.v',
+     Pfx = 'https://string-db.org/download/protein.links.v',
+     atom_concat( Pfx, Version, RemoteDir ),
+     atomic_list_concat( [9606,protein,links,Vied,txt,gz], '.', Bname ),
+     directory_file_path( RemoteDir, Bname, Remote ).
+     % 10/9606.protein.links.v10.txt.gz
 
+/*
 bio_db_std_string :-
-	Opt = [ csv_read(separator(0' )), predicate_name(hs_strg_edge),
-	        rows_transform(maplist(user:de_hs))
-		 ],
-	mtx_prolog( bio_dn(strg/'protein.links.hs.txt'), File, Opt ),
-	debuc( _, 'Edges output: ~w', File ),
-	bio_db_std_string_link( File ).
+     Opt = [ csv_read(separator(0' )), predicate_name(hs_strg_edge),
+             rows_transform(maplist(user:de_hs))
+           ],
+     mtx_prolog( bio_dn(strg/'protein.links.hs.txt'), File, Opt ),
+     debuc( _, 'Edges output: ~w', File ),
+     bio_db_std_string_link( File ).
+     */
 
 de_hs( row(HsEnsP1,HsEnsP2,WAtm), row(EnsP1,EnsP2,W) ) :-
-	atom_concat( '9606.', EnsP1, HsEnsP1 ),
-	atom_concat( '9606.', EnsP2, HsEnsP2 ),
+     atom_concat( '9606.', EnsP1, HsEnsP1 ),
+     atom_concat( '9606.', EnsP2, HsEnsP2 ),
     ( number(WAtm) -> W = WAtm; atom_number(WAtm,W) ),
-	!.
+     !.
 de_hs( Row, _ ) :-
-	debuc( _, 'Failed to translate row: ~w', Row ),
-	abort.
+     debuc( _, 'Failed to translate row: ~w', Row ),
+     abort.
 
 bio_db_std_string_link( File ) :-
-	HsBio = bio_db_build_data( 'graphs/strg/hs_strg_edge.pl' ),
-	absolute_file_name( HsBio, HsTarget ),
-	bio_db_std_string_link_target( HsTarget, File ).
+     HsBio = bio_db_build_data( 'graphs/strg/hs_strg_edge.pl' ),
+     absolute_file_name( HsBio, HsTarget ),
+     bio_db_std_string_link_target( HsTarget, File ).
 
 bio_db_std_string_link_target( HsTarget, File ) :-
-	read_link( HsTarget, _OldFile, _What ),
-	delete_file( HsTarget ),
-	!,
-	atomic_list_concat( ['ln -s',File,HsTarget], ' ', Shell ),
-	shell( Shell ).
+     read_link( HsTarget, _OldFile, _What ),
+     delete_file( HsTarget ),
+     !,
+     atomic_list_concat( ['ln -s',File,HsTarget], ' ', Shell ),
+     shell( Shell ).
 bio_db_std_string_link_target( HsTarget, File ) :-
-	atomic_list_concat( ['ln -s',File,HsTarget], ' ', Shell ),
-	shell( Shell ).
+     atomic_list_concat( ['ln -s',File,HsTarget], ' ', Shell ),
+     shell( Shell ).

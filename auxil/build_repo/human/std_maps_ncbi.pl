@@ -1,5 +1,5 @@
 
-:- set_prolog_flag(stack_limit, 10 000 000 000).
+:- set_prolog_flag(stack_limit, 20 000 000 000).
 
 :- use_module(library(csv)).        % csv_read_file/2.
 :- use_module(library(process)).    % process_create/3.
@@ -33,8 +33,8 @@
 
 ncbi_repo( 'ftp://ftp.ncbi.nih.gov/gene/DATA/' ).
 ncbi_dnload( Loc ) :-
-	absolute_file_name( bio_db_build_downloads(ncbi), Loc ),
-	os_make_path( Loc, debug(true) ).
+     absolute_file_name( bio_db_build_downloads(ncbi), Loc ),
+     os_make_path( Loc, debug(true) ).
 
 % maps_ncbi_ensp_ensg.
 %
@@ -42,114 +42,123 @@ ncbi_dnload( Loc ) :-
 % See ens_fa_peptide_gene_rows..pl
 %
 maps_ncbi_ensp_ensg :-
-	% Dir = '/usr/local/users/nicos/work/db/data/ncbi',
-	fixme,
-	ncbi_dnload( Dir ),
-	EnsF= 'Homo_sapiens.GRCh38.pep.all.fa',
-	working_directory( Old, Dir ),
-	ens_fa_peptide_gene_rows( EnsF, EnsRows ),
-	csv_ids_map( _CsvF, ensp, ensg, EnsRows, OutF, [prefix(ncbi),header(row('Ensembl Protein','Ensembl Gene'))] ),
-	link_to_bio_sub(ncbi, OutF ),
-	working_directory( _, Old ).
+     % Dir = '/usr/local/users/nicos/work/db/data/ncbi',
+     fixme,
+     ncbi_dnload( Dir ),
+     EnsF= 'Homo_sapiens.GRCh38.pep.all.fa',
+     working_directory( Old, Dir ),
+     ens_fa_peptide_gene_rows( EnsF, EnsRows ),
+     csv_ids_map( _CsvF, ensp, ensg, EnsRows, OutF, [prefix(ncbi),header(row('Ensembl Protein','Ensembl Gene'))] ),
+     link_to_bio_sub(ncbi, OutF ),
+     working_directory( _, Old ).
 
 maps_ncbi_entz_gont :-
-	% Dir = '/usr/local/users/nicos/work/db/data/ncbi',
-	ncbi_dnload( Dir ),
-	ncbi_repo( Repo ),
-	os_path( Repo, 'gene2go.gz', Url ),
-	url_file_local_date_mirror( Url, Dir, debug(true) ),
-	working_directory( Old, Dir ),
-	@ rm( -f, gene2go_hs ),
-	@ rm( -f, gene2go ),
-	@ gunzip( -f, -k, 'gene2go.gz' ),
-	% debuc( by_unix ),
-	grep(gene2go, '^9606', gene2go_hs),
-	% system( 'grep "^9606" gene2go | cat gene2go_hs' ),
-	working_directory( _, Old ).
+     % Dir = '/usr/local/users/nicos/work/db/data/ncbi',
+     ncbi_dnload( Dir ),
+     ncbi_repo( Repo ),
+     os_path( Repo, 'gene2go.gz', Url ),
+     url_file_local_date_mirror( Url, Dir, [debug(true),interface(wget)] ),
+     working_directory( Old, Dir ),
+     @ rm( -f, gene2go_hs ),
+     @ rm( -f, gene2go ),
+     @ gunzip( -f, -k, 'gene2go.gz' ),
+     % debuc( by_unix ),
+     grep(gene2go, '^9606', gene2go_hs),
+     % system( 'grep "^9606" gene2go | cat gene2go_hs' ),
+     working_directory( _, Old ).
 
-maps_ncbi_rnuc_symb :-
-	debuc( by_unix ),
-	ncbi_dnload( Dir ),
-	ncbi_repo( Repo ),
-	ncbi_humanise_data( gene2accession, Dir, Repo, Old, HsStem, HsUrl, HsDnDt ),
+maps_ncbi_rnuc_symb( Self ) :-
+     debuc( by_unix ),
+     ncbi_dnload( Dir ),
+     ncbi_repo( Repo ),
+     ncbi_humanise_data( gene2accession, Dir, Repo, Old, HsStem, HsUrl, HsDnDt ),
 
-	file_name_extension( HsStem, tmp, TmpF ),
-	@ mv( -f, HsStem, TmpF ),
-	open( HsStem, write, HsOut ),
-	write( HsOut, 'tax_id	GeneID	status	RNA_nucleotide_accession.version	RNA_nucleotide_gi	protein_accession.version	protein_gi	genomic_nucleotide_accession.version	genomic_nucleotide_gi	start_position_on_the_genomic_accession	end_position_on_the_genomic_accession	orientation	assembly	mature_peptide_accession.version	mature_peptide_gi	Symbol' ),
-	nl( HsOut ),
-	close( HsOut ),
-	atomic_list_concat( [cat,TmpF,'>>',HsStem], ' ', Cat ),
-	shell( Cat ),
-	% @ mv( -f, HsStem, HsStem ),
+     file_name_extension( HsStem, tmp, TmpF ),
+     @ mv( -f, HsStem, TmpF ),
+     open( HsStem, write, HsOut ),
 
-	CIMOpts = [ cnm_transform(ncbi_gene2asseccion_cnms), prefix(ncbi),
-	            to_value_1(de_versionise),
-			  to_value_2(is_a_symbol),
-			  datetime(HsDnDt), source(HsUrl), header(row('RNA Nucleotide','HGNC Symbol'))
-	],
-	csv_ids_map( HsStem, 'RNA_nucleotide_accession.version', 'Symbol', _Csv1, OutF, CIMOpts ),
+     Cnms = [ 'tax_id','GeneID','status','RNA_nucleotide_accession.version','RNA_nucleotide_gi','protein_accession.version','protein_gi',
+              'genomic_nucleotide_accession.version','genomic_nucleotide_gi','start_position_on_the_genomic_accession','end_position_on_the_genomic_accession',
+               'orientation','assembly','mature_peptide_accession.version','mature_peptide_gi','Symbol'],
+     at_con( Cnms, '\t', HdrLn ),
+     write( HsOut, HdrLn ),
+     nl( HsOut ),
+     close( HsOut ),
+     atomic_list_concat( [cat,TmpF,'>>',HsStem], ' ', Cat ),
+     debuc( Self, 'Shelling: ~w', [Cat] ),
+     shell( Cat ),
+     % @ mv( -f, HsStem, HsStem ),
+
+     CIMOpts = [ cnm_transform(ncbi_gene2asseccion_cnms), prefix(ncbi),
+                 to_value_1(de_versionise),
+                 to_value_2(is_a_symbol),
+                 datetime(HsDnDt), source(HsUrl), header(row('RNA Nucleotide','HGNC Symbol'))
+     ],
+     RNAnucl = 'RNA_nucleotide_accession.version',
+     debuc( Self, 'Csv Map for: ~w vs ~w', [RNAnucl,'Symbol'] ),
+     csv_ids_map( HsStem, RNAnucl, 'Symbol', _Csv1, OutF, CIMOpts ),
 
 
-	DNAOpts = [ cnm_transform(ncbi_gene2asseccion_cnms), prefix(ncbi),
-	            to_value_1(de_versionise),
-			  to_valuse_2(is_a_symbol),
-			  datetime(HsDnDt), source(HsUrl), header(row('DNA Nucleotide','HGNC Symbol'))
-	],
-	csv_ids_map( HsStem, 'genomic_nucleotide_accession.version', 'Symbol', _Csv2, DNAF, DNAOpts ),
-
-	delete_file( TmpF ),
-	os_make_path( maps ),
-	@ mv( -f, OutF, maps ),
-	@ mv( -f, DNAF, maps ),
-	working_directory( _, maps ),
-	link_to_bio_sub(ncbi, OutF ),
-	link_to_bio_sub(ncbi, DNAF ),
-	working_directory( _, Old ).
+     DNAOpts = [ cnm_transform(ncbi_gene2asseccion_cnms), prefix(ncbi),
+                 to_value_1(de_versionise),
+                 to_valuse_2(is_a_symbol),
+                 datetime(HsDnDt), source(HsUrl), header(row('DNA Nucleotide','HGNC Symbol'))
+     ],
+     GENnucl = 'genomic_nucleotide_accession.version', 
+     debuc( Self, 'Csv Map for: ~w vs ~w', [GENnucl,'Symbol'] ),
+     csv_ids_map( HsStem, GENnucl, 'Symbol', _Csv2, DNAF, DNAOpts ),
+     delete_file( TmpF ),
+     os_make_path( maps ),
+     @ mv( -f, OutF, maps ),
+     @ mv( -f, DNAF, maps ),
+     working_directory( _, maps ),
+     link_to_bio_sub(ncbi, OutF ),
+     link_to_bio_sub(ncbi, DNAF ),
+     working_directory( _, Old ).
 
 maps_ncbi_unig_entz :-
-	ncbi_dnload( Dir ),
-	ncbi_repo( Repo ),
-	os_path( Repo, 'gene2unigene', Url ),
-	url_file_local_date_mirror( Url, Dir, debug(true) ),
-	working_directory( Old, Dir ),
-	bio_db_dnt_times( 'gene2unigene', UgDnDt, _DnEn ),
+     ncbi_dnload( Dir ),
+     ncbi_repo( Repo ),
+     os_path( Repo, 'gene2unigene', Url ),
+     url_file_local_date_mirror( Url, Dir, [debug(true),interface(wget)] ),
+     working_directory( Old, Dir ),
+     bio_db_dnt_times( 'gene2unigene', UgDnDt, _DnEn ),
 
-	csv_read_file( gene2unigene, [_|Csv], [separator(0'\t),match_arity(false)] ),
-	Hdr = row(entz,unig),
-	MOpts = [prefix(ncbi),to_value_1(hs_unig),datetime(UgDnDt),source(Url),header(row('Uni Gene','Entrez ID'))], 
-	csv_ids_map( _, 'unig', 'entz', [Hdr|Csv], OutF, MOpts ),
-	os_make_path( maps ),
-	@ mv( -f, OutF, maps ),
-	working_directory( _, maps ),
-	link_to_bio_sub( ncbi, OutF ), 
-	working_directory( _, Old ).
+     csv_read_file( gene2unigene, [_|Csv], [separator(0'\t),match_arity(false)] ),
+     Hdr = row(entz,unig),
+     MOpts = [prefix(ncbi),to_value_1(hs_unig),datetime(UgDnDt),source(Url),header(row('Uni Gene','Entrez ID'))], 
+     csv_ids_map( _, 'unig', 'entz', [Hdr|Csv], OutF, MOpts ),
+     os_make_path( maps ),
+     @ mv( -f, OutF, maps ),
+     working_directory( _, maps ),
+     link_to_bio_sub( ncbi, OutF ), 
+     working_directory( _, Old ).
 
 ncbi_humanise_data( Stem, Dir, Repo, Old, HsStem, Url, DnDt ) :-
-	file_name_extension( Stem, gz, GzF ),
-	os_path( Repo, GzF, Url ),
-	url_file_local_date_mirror( Url, Dir, debug(true) ),
-	os_path( Dir, GzF, DnlF ),
-	bio_db_dnt_times( DnlF, DnDt, _DnEn ),
+     file_name_extension( Stem, gz, GzF ),
+     os_path( Repo, GzF, Url ),
+     url_file_local_date_mirror( Url, Dir, [debug(true),interface(wget)] ),
+     os_path( Dir, GzF, DnlF ),
+     bio_db_dnt_times( DnlF, DnDt, _DnEn ),
 
-	working_directory( Old, Dir ),
-	atomic_list_concat( [Stem,hs], '_', HsStem ),
-	@ rm( -f, HsStem ),
-	@ rm( -f, Stem ),
-	@ gunzip( -f, -k, GzF ),
-	grep( Stem, '^9606', HsStem ),
+     working_directory( Old, Dir ),
+     atomic_list_concat( [Stem,hs], '_', HsStem ),
+     @ rm( -f, HsStem ),
+     @ rm( -f, Stem ),
+     @ gunzip( -f, -k, GzF ),
+     grep( Stem, '^9606', HsStem ),
     @ rm( -f, Stem ). % fixme: untested
 
 hs_unig( In, In ) :-
-	atom_concat( 'Hs.', _, In ).
+     atom_concat( 'Hs.', _, In ).
 
 de_versionise( ProductVersion, Product ) :-
-	atomic_list_concat( [Product,_Version], '.', ProductVersion ),
-	!.
+     atomic_list_concat( [Product,_Version], '.', ProductVersion ),
+     !.
 
 is_a_symbol( Symb, Symb ) :-
-	hgnc:map_hgnc_symb_hgnc( Symb, _ ),
-	!.
+     hgnc:hgnc_homs_symb_hgnc( Symb, _ ),
+     !.
 
 ncbi_gene2asseccion_cnms( 'RNA_nucleotide_accession.version', rnuc ).
 ncbi_gene2asseccion_cnms( 'genomic_nucleotide_accession.version', dnuc ).
@@ -168,57 +177,56 @@ std_maps_ncbi_defaults(debug(true)).
 % @version  0.1 2014/7/23
 %
 std_maps_ncbi( Args ) :-
-    Self = std_maps_ncbi,
-    options_append( Self, Args, Opts ),
-    bio_db_build_aliases( Opts ),
-    % load necessary data that has already been generated
-    ensure_loaded(hgnc:bio_db_build_downloads('hgnc/maps/map_hgnc_symb_hgnc')),
-	% expand_file_name( '$local/../work/db/data/ncbi', [NcbiD] ),
-	ncbi_dnload( NcbiD ),
-	Url = 'ftp://ftp.ncbi.nih.gov/gene/DATA/gene2ensembl.gz',
-	url_file_local_date_mirror( Url, NcbiD ),
-	file_base_name( Url, RemB ),
-	working_directory( Old, NcbiD ),
-	MapsD = maps,
-	make_directory_path( MapsD ),
-	directory_file_path( MapsD, RemB, ToP ),
-	copy_file( RemB, ToP ),
-	bio_db_dnt_times( RemB, DnDt, _DnEn ),
-	working_directory( _ParentD, MapsD ),
-	@ gunzip( RemB ),
-	file_name_extension( RemS, gz, RemB ),
-	std_maps_ncbi( Self, RemS, Url, DnDt ),
-	delete_file( RemS ),
-	maps_ncbi_rnuc_symb,
-	% maps_ncbi_unig_entz,  % unigene is no longer maintained as of Feb.2019
-	working_directory( _, Old ).
+     Self = std_maps_ncbi,
+     options_append( Self, Args, Opts ),
+     bio_db_build_aliases( Opts ),
+     % load necessary data that has already been generated
+     ensure_loaded(hgnc:bio_db_build_downloads('hgnc/maps/hgnc_homs_symb_hgnc')),
+     ncbi_dnload( NcbiD ),
+     Url = 'ftp://ftp.ncbi.nih.gov/gene/DATA/gene2ensembl.gz',
+     url_file_local_date_mirror( Url, NcbiD, interface(wget) ),
+     file_base_name( Url, RemB ),
+     working_directory( Old, NcbiD ),
+     MapsD = maps,
+     make_directory_path( MapsD ),
+     directory_file_path( MapsD, RemB, ToP ),
+     copy_file( RemB, ToP ),
+     bio_db_dnt_times( RemB, DnDt, _DnEn ),
+     working_directory( _ParentD, MapsD ),
+     @ gunzip( RemB ),
+     file_name_extension( RemS, gz, RemB ),
+     std_maps_ncbi( Self, RemS, Url, DnDt ),
+     delete_file( RemS ),
+     maps_ncbi_rnuc_symb( Self ),
+     % maps_ncbi_unig_entz,  % unigene is no longer maintained as of Feb.2019
+     working_directory( _, Old ).
 
 std_maps_ncbi( Self, File, Url, DnDt ) :-
-	TsvOpts = [match_arity(false),separator(0'\t)],
-	csv_read_file( File, Csv, TsvOpts ),
-	Csv = [_Comment|Rows],
-	New = [row(tax_id,entz,ensg,nucl_acc,ensr,prot_acc,ensp)|Rows],
-	% GEnsGF = entrez_gene_id_ensg.pl,
-	% csv_filter_by_column( New, tax_id, =(9606), HS ),
-	mtx_column_values_select( New, tax_id, 9606, HS, _, true ),
+     TsvOpts = [match_arity(false),separator(0'\t)],
+     csv_read_file( File, Csv, TsvOpts ),
+     Csv = [_Comment|Rows],
+     New = [row(tax_id,entz,ensg,nucl_acc,ensr,prot_acc,ensp)|Rows],
+     % GEnsGF = entrez_gene_id_ensg.pl,
+     % csv_filter_by_column( New, tax_id, =(9606), HS ),
+     mtx_column_values_select( New, tax_id, 9606, HS, _, true ),
     debuc( Self, length, hs_len/HS ),
-	Lens = [prefix(ncbi),to_value_1(pos_integer),to_value_2(pfx_by('ENS')),datetime(DnDt),source(Url)],
-	Rens = [prefix(ncbi),to_value_2(pos_integer),to_value_1(pfx_by('ENS')),datetime(DnDt),source(Url)],
-	csv_ids_map( File, entz, ensg, HS, GEnsGF, [header(row('Entrez ID','Ensembl Gene'))|Lens] ),
-	csv_ids_map( File, ensg, entz, HS, EnsGGF, [header(row('Ensembl Gene','Entrez ID'))|Rens] ),
-	% need to ensure prots are of ENSP  there are - in some entries
-	Lenp = [prefix(ncbi),to_value_1(pos_integer),to_value_2(pfx_by_de_v('ENS')),datetime(DnDt),source(Url)],
-	csv_ids_map( File, entz, ensp, HS, GEnsPF, [header(row('Entrez ID','Ensembl Protein'))|Lenp] ),
-	Renp = [prefix(ncbi),to_value_2(pos_integer),to_value_1(pfx_by_de_v('ENS')),datetime(DnDt),source(Url)],
-	csv_ids_map( File, ensp, entz, HS, EnsPGF, [header(row('Ensembl Protein','Entrez ID'))|Renp] ),
-	maplist( link_to_bio_sub(ncbi), [GEnsGF,EnsGGF,GEnsPF,EnsPGF] ).
+     Lens = [prefix(ncbi),to_value_1(pos_integer),to_value_2(pfx_by('ENS')),datetime(DnDt),source(Url)],
+     Rens = [prefix(ncbi),to_value_2(pos_integer),to_value_1(pfx_by('ENS')),datetime(DnDt),source(Url)],
+     csv_ids_map( File, entz, ensg, HS, GEnsGF, [header(row('Entrez ID','Ensembl Gene'))|Lens] ),
+     csv_ids_map( File, ensg, entz, HS, EnsGGF, [header(row('Ensembl Gene','Entrez ID'))|Rens] ),
+     % need to ensure prots are of ENSP  there are - in some entries
+     Lenp = [prefix(ncbi),to_value_1(pos_integer),to_value_2(pfx_by_de_v('ENS')),datetime(DnDt),source(Url)],
+     csv_ids_map( File, entz, ensp, HS, GEnsPF, [header(row('Entrez ID','Ensembl Protein'))|Lenp] ),
+     Renp = [prefix(ncbi),to_value_2(pos_integer),to_value_1(pfx_by_de_v('ENS')),datetime(DnDt),source(Url)],
+     csv_ids_map( File, ensp, entz, HS, EnsPGF, [header(row('Ensembl Protein','Entrez ID'))|Renp] ),
+     maplist( link_to_bio_sub(ncbi), [GEnsGF,EnsGGF,GEnsPF,EnsPGF] ).
 
 pos_integer( Numb, Numb ) :-
      integer( Numb ),
      Numb > 0.
 
 pfx_by_de_v( Pfx, Full, UnV ) :-
-	prefix_atom( Pfx, Full ),
+     prefix_atom( Pfx, Full ),
     ( atomic_list_concat([UnV,_],'.',Full) ->
         true
         ;
@@ -226,25 +234,25 @@ pfx_by_de_v( Pfx, Full, UnV ) :-
     ).
 
 pfx_by( Pfx, Full, Full ) :-
-	prefix_atom( Pfx, Full ).
+     prefix_atom( Pfx, Full ).
 
 grep(File, Pattern, OutF) :-
         process_create(path(grep), [ Pattern, file(File) ],
                        [ stdout(pipe(Out))
                        ]),
         % read_lines(Out, Lines).
-	   open( OutF, write, Write ),
-	   write_lines_out(Out, Write),
-	   close( Write ).
+        open( OutF, write, Write ),
+        write_lines_out(Out, Write),
+        close( Write ).
 
 write_lines_out(Out, Write) :-
-	   read_line_to_codes( Out, Line1 ),
+        read_line_to_codes( Out, Line1 ),
         write_lines(Line1, Out, Write ).
 
 write_lines(end_of_file, _, _) :- !.
 write_lines(Codes, Out, Write) :-
         atom_codes(Line, Codes),
-	   write( Write, Line ), nl( Write ),
+        write( Write, Line ), nl( Write ),
         read_line_to_codes(Out, Line2),
         write_lines(Line2, Out, Write).
 

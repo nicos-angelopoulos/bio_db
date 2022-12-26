@@ -98,9 +98,9 @@ std_maps_unip( Args ) :-
 
 	bio_db_dnt_times( File, SwDnDt, _SwDnEn ),
 	SwOpts = [source(Url),datetime(SwDnDt)],
-	bio_db_add_infos_to( [header(row('Ensembl Protein','Uni Protein'))|SwOpts], 'maps/map_unip_ensp_unip.pl' ),
-	bio_db_add_infos_to( [header(row('Uni Protein','Entrez ID'))|SwOpts], 'maps/map_unip_unip_entz.pl' ),
-	bio_db_add_infos_to( [header(row('Uni Protein','HGNC ID'))|SwOpts], 'maps/map_unip_unip_hgnc.pl' ),
+	bio_db_add_infos_to( [header(row('Ensembl Protein','Uni Protein'))|SwOpts], 'maps/unip_homs_ensp_unip.pl' ),
+	bio_db_add_infos_to( [header(row('Uni Protein','Entrez ID'))|SwOpts], 'maps/unip_homs_unip_entz.pl' ),
+	bio_db_add_infos_to( [header(row('Uni Protein','HGNC ID'))|SwOpts], 'maps/unip_homs_unip_hgnc.pl' ),
 	% bio_db_add_infos_to( [header(row('Uni Protein','Uni Gene'))|SwOpts], 'maps/map_unip_unip_unig.pl' ),
 
 	% working_directory( _, DnDir ),
@@ -135,16 +135,16 @@ std_maps_unip( Args ) :-
 						        TNRows ),
     debuc( Self, length, tn/TNRows ),
 	sort( TNRows, TNOrdRows ),
-	open( '../maps/map_unip_trem_nucs.pl', write, TNOut ),
+	open( '../maps/unip_homs_trem_nucs.pl', write, TNOut ),
 	maplist( portray_clause(TNOut), TNOrdRows ),
 	close( TNOut ),
     % working_directory( _, '..' ),
 	working_directory( _, '../maps' ),
     @ rm( -rf, '../trembl' ),   % fixme: untested in real run.....
- 	link_to_bio_sub(unip, 'map_unip_trem_nucs.pl' ),
+ 	link_to_bio_sub(unip, 'unip_homs_trem_nucs.pl' ),
 
 	TrOpts = [source(TremUrl),datetime(TrDnDt),header(row('treMBLE Protein','Nucleotide Sequence'))],
-	bio_db_add_infos_to( TrOpts, map_unip_trem_nucs.pl ),
+	bio_db_add_infos_to( TrOpts, unip_homs_trem_nucs.pl ),
 
 	% run this manually, it is a biggie: 
 	% uniprot_sprot.dat is 2.9 G

@@ -4,7 +4,7 @@
 
 :- use_module( library(lib) ).
 
-:- lib(real).
+% :- lib(real).
 :- lib(mtx).
 :- lib(options).
 :- lib(stoics_lib:holds/2).
@@ -15,7 +15,7 @@
 
 csv_ids_map_defaults( [ cnm_transform(=),dir('.'),
                         delim('\t'), has_header(true),
-                        interface(prolog),map_prefix(true),
+                        interface(prolog),map_prefix(false),
                         prefix(''), sort_by(1), 
                         to_value_1(=),to_value_2(=),
                         source('not_known')
@@ -253,8 +253,10 @@ csv_ids_rows( _CsvF, _Dlm, Csv ) :-
     ground( Csv ),
     !.
 csv_ids_rows( CsvF, Dlm, Csv ) :-
-    tbl <- 'read.delim'( +CsvF, 'check.names'='FALSE', sep=+Dlm, 'as.is'='TRUE' ),
-    Csv <- tbl.
+    % 22.12.26, changing- make sure you double check all generated maps !
+    mtx( CsvF, Csv, [sep(Dlm),convert(false)] ).
+    % tbl <- 'read.delim'( +CsvF, 'check.names'='FALSE', sep=+Dlm, 'as.is'='TRUE' ),
+    % Csv <- tbl.
 
 % filter_columns( Opts, Csv, Clm1, Clm2, Filt1, Filt2 ) :-
 filter_columns( Opts, Tbl, Clm1, Clm2, Filt1, Filt2 ) :-

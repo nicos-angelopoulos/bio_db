@@ -28,7 +28,7 @@ map_predicate_name( Cnm1, Cnm2, Pname, Opts ) :-
 	% use at_con/3 as it ignores '' prefixes
 	options( prefix(Prefix), Opts ),
 	map_predicate_map_prefix( MapPfx, Opts ),
-    ( memberchk(org(Org),Opts) -> true; Org = '' ),
+    ( memberchk(org(Org),Opts) -> true; Org = 'homs' ),
 	at_con( [MapPfx,Prefix,Org,Comp1,Comp2], '_', Pname ).
 
 map_predicate_map_prefix( map, Opts ) :-

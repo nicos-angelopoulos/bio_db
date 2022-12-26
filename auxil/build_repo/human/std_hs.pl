@@ -36,6 +36,10 @@ Opts
   * pass(Term)
     Terms to pass to the upsh calls in lower level
 
+Dependencies
+  * on([])
+    maps_hgnc, 
+
 ==
 % date
 Thu 10 Sep 19:34:38 BST 2020

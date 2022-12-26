@@ -3,23 +3,23 @@
                     %       + HGNC
                 hgnc_homs_ccds_hgnc/2, % concesus protein coding regions
                 hgnc_homs_ensg_hgnc/2, %
-                hgnc_homs_entz_hgnc/2, %  
-                hgnc_homs_entz_symb/2, %
+                hgnc_homs_ncbi_hgnc/2, %  
+                hgnc_homs_ncbi_symb/2, %
                 hgnc_homs_hgnc_ccds/2, % concesus protein coding regions
                 hgnc_homs_hgnc_chrb/2,
                 hgnc_homs_hgnc_ensg/2, %
-                hgnc_homs_hgnc_entz/2,
+                hgnc_homs_hgnc_ncbi/2,
                 hgnc_homs_hgnc_name/2, %
                 hgnc_homs_hgnc_symb/2,
                 hgnc_homs_prev_symb/2, %
-                hgnc_homs_symb_entz/2, %
+                hgnc_homs_symb_ncbi/2, %
                 hgnc_homs_symb_hgnc/2, %
                 hgnc_homs_syno_symb/2  %
                 % removed from the source files, so removed from here 19.02.08
-                % 'map_hgnc_entz-appv_symb'/2,
-                % 'map_hgnc_entz-ncbi_symb'/2,
-                % 'map_hgnc_hgnc_entz-appv'/2,
-                % 'map_hgnc_hgnc_entz-ncbi'/2
+                % 'map_hgnc_ncbi-appv_symb'/2,
+                % 'map_hgnc_ncbi-ncbi_symb'/2,
+                % 'map_hgnc_hgnc_ncbi-appv'/2,
+                % 'map_hgnc_hgnc_ncbi-ncbi'/2
                 ] ).
 
 :- use_module(library(lib)).
@@ -141,41 +141,41 @@ Ensg = 'ENSG00000142235'.
 hgnc_homs_ensg_hgnc( X, Y ) :-
     bio_db:bio_db_serve( hgnc_homs_ensg_hgnc(X,Y) ).
 
-/**  hgnc_homs_symb_entz( ?Symb, ?Entz ).
+/**  hgnc_homs_symb_ncbi( ?Symb, ?ncbi ).
 
 Map predicate from HGNC symbols to (NCBI) entrez gene ids.
 
 ==
-?- hgnc_homs_symb_entz( 'LMTK3', Etnz ).
+?- hgnc_homs_symb_ncbi( 'LMTK3', Etnz ).
 Etnz = 114783.
 ==
 */
-hgnc_homs_symb_entz( X, Y ) :-
-    bio_db:bio_db_serve( hgnc_homs_symb_entz(X,Y) ).
+hgnc_homs_symb_ncbi( X, Y ) :-
+    bio_db:bio_db_serve( hgnc_homs_symb_ncbi(X,Y) ).
 
-/**  hgnc_homs_entz_hgnc( ?Entz, ?Symb ).
+/**  hgnc_homs_ncbi_hgnc( ?ncbi, ?Symb ).
 
 Map predicate from entrez ids to approved HGNC Symbol.
 
 ==
-?- hgnc_homs_entz_hgnc( 114783, Symb ).
+?- hgnc_homs_ncbi_hgnc( 114783, Symb ).
 Symb = 19295.
 ==
 */
-hgnc_homs_entz_hgnc( X, Y ) :-
-    bio_db:bio_db_serve( hgnc_homs_entz_hgnc(X,Y) ).
+hgnc_homs_ncbi_hgnc( X, Y ) :-
+    bio_db:bio_db_serve( hgnc_homs_ncbi_hgnc(X,Y) ).
 
-/**  hgnc_homs_entz_symb( ?Entz, ?Symb ).
+/**  hgnc_homs_ncbi_symb( ?ncbi, ?Symb ).
 
 Map predicate from entrez ids to approved HGNC Symbol.
 
 ==
-?- hgnc_homs_entz_symb( 114783, Symb ).
+?- hgnc_homs_ncbi_symb( 114783, Symb ).
 Symb = 'LMTK3'.
 ==
 */
-hgnc_homs_entz_symb( X, Y ) :-
-    bio_db:bio_db_serve( hgnc_homs_entz_symb(X,Y) ).
+hgnc_homs_ncbi_symb( X, Y ) :-
+    bio_db:bio_db_serve( hgnc_homs_ncbi_symb(X,Y) ).
 
 /**  hgnc_homs_hgnc_chrb( +Hgnc, -ChrB ).
 
@@ -199,14 +199,14 @@ Map predicate from HGNC ID to Ensembl Gene
 hgnc_homs_hgnc_ensg( X, Y ) :-
     bio_db:bio_db_serve( hgnc_homs_hgnc_ensg(X,Y) ).
 
-/**  hgnc_homs_hgnc_entz( +Hgnc, -Entz ).
+/**  hgnc_homs_hgnc_ncbi( +Hgnc, -ncbi ).
 
 Map predicate from HGNC ID to Ensembl Gene (by all means available)
 ==
 ==
 
 */
-hgnc_homs_hgnc_entz( X, Y ) :-
-    bio_db:bio_db_serve( hgnc_homs_hgnc_entz(X,Y) ).
+hgnc_homs_hgnc_ncbi( X, Y ) :-
+    bio_db:bio_db_serve( hgnc_homs_hgnc_ncbi(X,Y) ).
 
 

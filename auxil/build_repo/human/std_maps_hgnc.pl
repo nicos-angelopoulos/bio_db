@@ -37,27 +37,31 @@ std_maps_hgnc_defaults( Defs ) :-
     % absolute_file_name( Exp, Dir ),
     Defs = [ debug(true), download(true) ].
 
-% std_maps_hgnc( +Opts ).
-%
-% Create some maps from HGNC's "complete" data file.
-%
-% Opts
-% * dir(Dir=maps)      sub-directory for creating the maps
-% * download(Dn=true)  set to false to skip downloading a fresh copy of the HGNC file(s)
-% * map_prefix(Mfx)    if present is passed on csv_ids_map/6, else their default applies
-%
-%==
-%  ?- std_maps_hgnc.
-%  ?- cd( '$local/../work/db/maps/hgnc' ).
-%  ?- shell( 'wc -l hgnc_id*' ).
-%==
-%
-% @author nicos angelopoulos
-% @version  0.1 2014/7/2
-% @version  0.2 2015/3/18,   added db based prefix
-% @version  0.3 2019/2/8,    accommodate the changes to the location and format of the file at the source
-% @tbd convert to url_..._mirror.pl
-%
+/** std_maps_hgnc( +Opts ).
+
+Create some maps from HGNC's "complete" data file.
+
+Opts
+ * dir(Dir=maps)
+   sub-directory for creating the maps
+ * download(Dn=true)
+   set to false to skip downloading a fresh copy of the HGNC file(s)
+ * map_prefix(Mfx)
+   if present is passed on csv_ids_map/6, else their default applies
+
+==
+?- std_maps_hgnc.
+?- cd( '$local/../work/db/maps/hgnc' ).
+?- shell( 'wc -l hgnc_id*' ).
+==
+
+@author nicos angelopoulos
+@version  0.1 2014/7/2
+@version  0.2 2015/3/18,   added db based prefix
+@version  0.3 2019/2/8,    accommodate the changes to the location and format of the file at the source
+@tbd convert to url_..._mirror.pl
+
+*/
 std_maps_hgnc :-
     std_maps_hgnc( [] ).
 
@@ -199,7 +203,13 @@ cohese_gene_id( _Dom, _Subo, '' ).
     
 pos_integer( Numb, Numb ) :-
     integer( Numb ),
+    !,
     Numb > 0.
+pos_integer( Atom, Numb ) :-
+     atom_number( Atom, Numb ),
+     !,
+     integer( Numb ), 
+     Numb > 0.
 
 non_empty_atom( Other, NonEmpty ) :-
     Other \== '',
@@ -215,8 +225,8 @@ hgnc_cname( A, A ).
 hgnc_cname_known( 'HGNC ID', hgnc ).
 hgnc_cname_known( 'hgnc_id', hgnc ).
 % hgnc_cname_known( 'Entrez Gene ID (supplied by NCBI)', 'entz-ncbi' ).
-hgnc_cname_known( 'Entrez Gene ID', 'entz-appv' ).
-hgnc_cname_known( 'entrez_id', 'entz' ).
+hgnc_cname_known( 'Entrez Gene ID', 'ncbi-appv' ).
+hgnc_cname_known( 'entrez_id', 'ncbi' ).
 % hgnc_cname_known( 'Entrez Gene ID + supplied by NCBI', entz ).  % was entz_cmpl
 hgnc_cname_known( 'Ensembl ID + supplied by Ensembl', ensg ). % was ensg_cmpl
 hgnc_cname_known( 'ensembl_gene_id', ensg ). % was ensg_cmpl

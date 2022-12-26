@@ -175,6 +175,7 @@ std_maps_ncbi_defaults(debug(true)).
 %==
 % @author nicos angelopoulos
 % @version  0.1 2014/7/23
+% @version  0.1 2022/12/26, entz-> ncbi, url via wget, csv without R
 %
 std_maps_ncbi( Args ) :-
      Self = std_maps_ncbi,

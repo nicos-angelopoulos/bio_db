@@ -52,7 +52,7 @@ maps_ncbi_ensp_ensg :-
      link_to_bio_sub(ncbi, OutF ),
      working_directory( _, Old ).
 
-maps_ncbi_entz_gont :-
+maps_ncbi_ncbi_gont :-
      % Dir = '/usr/local/users/nicos/work/db/data/ncbi',
      ncbi_dnload( Dir ),
      ncbi_repo( Repo ),
@@ -116,7 +116,7 @@ maps_ncbi_rnuc_symb( Self ) :-
      link_to_bio_sub(ncbi, DNAF ),
      working_directory( _, Old ).
 
-maps_ncbi_unig_entz :-
+maps_ncbi_unig_ncbi :-
      ncbi_dnload( Dir ),
      ncbi_repo( Repo ),
      os_path( Repo, 'gene2unigene', Url ),
@@ -125,9 +125,9 @@ maps_ncbi_unig_entz :-
      bio_db_dnt_times( 'gene2unigene', UgDnDt, _DnEn ),
 
      csv_read_file( gene2unigene, [_|Csv], [separator(0'\t),match_arity(false)] ),
-     Hdr = row(entz,unig),
+     Hdr = row(ncbi,unig),
      MOpts = [prefix(ncbi),to_value_1(hs_unig),datetime(UgDnDt),source(Url),header(row('Uni Gene','Entrez ID'))], 
-     csv_ids_map( _, 'unig', 'entz', [Hdr|Csv], OutF, MOpts ),
+     csv_ids_map( _, 'unig', 'ncbi', [Hdr|Csv], OutF, MOpts ),
      os_make_path( maps ),
      @ mv( -f, OutF, maps ),
      working_directory( _, maps ),
@@ -198,31 +198,37 @@ std_maps_ncbi( Args ) :-
      std_maps_ncbi( Self, RemS, Url, DnDt ),
      delete_file( RemS ),
      maps_ncbi_rnuc_symb( Self ),
-     % maps_ncbi_unig_entz,  % unigene is no longer maintained as of Feb.2019
+     % maps_ncbi_unig_ncbi,  % unigene is no longer maintained as of Feb.2019
      working_directory( _, Old ).
 
 std_maps_ncbi( Self, File, Url, DnDt ) :-
      TsvOpts = [match_arity(false),separator(0'\t)],
      csv_read_file( File, Csv, TsvOpts ),
      Csv = [_Comment|Rows],
-     New = [row(tax_id,entz,ensg,nucl_acc,ensr,prot_acc,ensp)|Rows],
+     New = [row(tax_id,ncbi,ensg,nucl_acc,ensr,prot_acc,ensp)|Rows],
      % GEnsGF = entrez_gene_id_ensg.pl,
      % csv_filter_by_column( New, tax_id, =(9606), HS ),
      mtx_column_values_select( New, tax_id, 9606, HS, _, true ),
     debuc( Self, length, hs_len/HS ),
      Lens = [prefix(ncbi),to_value_1(pos_integer),to_value_2(pfx_by('ENS')),datetime(DnDt),source(Url)],
      Rens = [prefix(ncbi),to_value_2(pos_integer),to_value_1(pfx_by('ENS')),datetime(DnDt),source(Url)],
-     csv_ids_map( File, entz, ensg, HS, GEnsGF, [header(row('Entrez ID','Ensembl Gene'))|Lens] ),
-     csv_ids_map( File, ensg, entz, HS, EnsGGF, [header(row('Ensembl Gene','Entrez ID'))|Rens] ),
+     csv_ids_map( File, ncbi, ensg, HS, GEnsGF, [header(row('Entrez ID','Ensembl Gene'))|Lens] ),
+     csv_ids_map( File, ensg, ncbi, HS, EnsGGF, [header(row('Ensembl Gene','Entrez ID'))|Rens] ),
      % need to ensure prots are of ENSP  there are - in some entries
      Lenp = [prefix(ncbi),to_value_1(pos_integer),to_value_2(pfx_by_de_v('ENS')),datetime(DnDt),source(Url)],
-     csv_ids_map( File, entz, ensp, HS, GEnsPF, [header(row('Entrez ID','Ensembl Protein'))|Lenp] ),
+     csv_ids_map( File, ncbi, ensp, HS, GEnsPF, [header(row('Entrez ID','Ensembl Protein'))|Lenp] ),
      Renp = [prefix(ncbi),to_value_2(pos_integer),to_value_1(pfx_by_de_v('ENS')),datetime(DnDt),source(Url)],
-     csv_ids_map( File, ensp, entz, HS, EnsPGF, [header(row('Ensembl Protein','Entrez ID'))|Renp] ),
+     csv_ids_map( File, ensp, ncbi, HS, EnsPGF, [header(row('Ensembl Protein','Entrez ID'))|Renp] ),
      maplist( link_to_bio_sub(ncbi), [GEnsGF,EnsGGF,GEnsPF,EnsPGF] ).
 
 pos_integer( Numb, Numb ) :-
      integer( Numb ),
+     !,
+     Numb > 0.
+pos_integer( Atom, Numb ) :-
+     atom_number( Atom, Numb ),
+     !,
+     integer( Numb ), 
      Numb > 0.
 
 pfx_by_de_v( Pfx, Full, UnV ) :-
@@ -259,7 +265,7 @@ write_lines(Codes, Out, Write) :-
 ncbi_cname_known( 'HGNC Symbol', symb ).
 ncbi_cname_known( 'Ensembl Gene', ensg ).
 ncbi_cname_known( 'Ensembl Protein', ensp ).
-ncbi_cname_known( 'Entrez ID', entz ).
+ncbi_cname_known( 'Entrez ID', ncbi ).
 ncbi_cname_known( 'Uni Gene', unig ).
 ncbi_cname_known( 'RNA Nucleotide', rnuc ).
 ncbi_cname_known( 'DNA Nucleotide', dnuc ).

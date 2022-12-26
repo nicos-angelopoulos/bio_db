@@ -1,10 +1,10 @@
 :- module( bio_db_homs_ncbi, [
                 bio_db_homs_ncbi/0,
                 %       + NCBI
-                ncbi_homs_ensg_entz/2,
-                ncbi_homs_ensp_entz/2,
-                ncbi_homs_entz_ensg/2,
-                ncbi_homs_entz_ensp/2,
+                ncbi_homs_ensg_ncbi/2,
+                ncbi_homs_ensp_ncbi/2,
+                ncbi_homs_ncbi_ensg/2,
+                ncbi_homs_ncbi_ensp/2,
                 ncbi_homs_rnuc_symb/2,
                 ncbi_homs_dnuc_symb/2
                 % map_ncbi_unig_entz/2 % withdrawn 2019.02

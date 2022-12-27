@@ -44,16 +44,32 @@ std_mouse_graphs_strg_defaults( [debug(true)|T] ) :-
 
 % last good one: std_graphs_string( '10' ).  2016/09/08
 % last good one: std_graphs_string( '10.5' ).  2018/03/30
+
+/** std_mouse_graphs_strg( Opts ).
+
+Mouse graphs for STRING protein protein interactions.
+
+==
+?- std_mouse_graphs_strg([]).
+
+
+==
+@author nicos angelopoulos
+@version  0:2 2022/12/27,  
+@see https://string-db.org
+@tbd this is closely related to the human pred, we should factor the common things out
+
+*/
 std_mouse_graphs_strg( Args ) :-
     Self = std_mouse_graphs_strg,
     options_append( Self, Args, Opts ),
     bio_db_build_aliases( Opts ),
     options( string_version(VersionPrv), Opts ),
     % load necessary data that has already been generated
-    ensure_loaded(unip:bio_db_build_downloads('unip/maps/map_unip_mouse_ensp_unip')),
-    ensure_loaded(unip:bio_db_build_downloads('unip/maps/map_unip_mouse_mgim_unip')),
-    ensure_loaded(mgim:bio_db_build_downloads('mgim/maps/map_mgim_mouse_mgim_unip')),
-    ensure_loaded(mgim:bio_db_build_downloads('mgim/maps/map_mgim_mouse_mgim_symb')),
+    ensure_loaded(unip:bio_db_build_downloads('unip/maps/unip_musm_ensp_unip')),
+    ensure_loaded(unip:bio_db_build_downloads('unip/maps/unip_musm_mgim_unip')),
+    ensure_loaded(mgim:bio_db_build_downloads('mgim/maps/mgim_musm_mgim_unip')),
+    ensure_loaded(mgim:bio_db_build_downloads('mgim/maps/mgim_musm_mgim_symb')),
     ( number(VersionPrv) -> atom_number(Version,VersionPrv); Version = VersionPrv ),
     % ensure_loaded( bio_db_build_aliases ),
     debuc( Self, 'Version: ~w', Version ),
@@ -68,30 +84,34 @@ std_mouse_graphs_strg( Args ) :-
     working_directory( Here, Parent ),
     @ gunzip( -k, Bname ),  % keeps .gz file
     % @ gunzip( '9606.protein.links.v10.txt.gz' ),
-    Edge = edge_strg_mouse,
+    % Edge = edge_strg_mouse,
+    EnspPn = strg_musm_edge_ensp,
     file_name_extension( TxtF, gz, Bname ),
     debuc( Self, 'Directory: ~p', [Parent] ),
     Mess1 = 'Converting string file: ~p, to Prolog',
     debuc( Self, Mess1, [TxtF] ),
-    Opt = [ csv_read(separator(0' )),predicate_name(Edge),
+    Opt = [ csv_read(separator(0' )),predicate_name(EnspPn),
             rows_transform(maplist(user:de_mouse)),header_remove(true) ],
     mtx_prolog( TxtF, File, Opt ),
     debuc( _, 'Edges output: ~w', File ),
     delete_file( TxtF ),
     % @ rm( -rf, graphs ), don't do that ! there are now multiple downloads from string..
     os_make_path( graphs, debug(true) ),
-    Trg = 'graphs/edge_strg_mouse.pl',
-    @ rm( -f, Trg ),
-    @ mv( File, Trg ),
 
-    consult( edge_strg_mouse:Trg ),
-    debuc( _, 'consulted eges from: ~w', [edge_strg_mouse:Trg] ),
+    % Trg = 'graphs/edge_strg_mouse.pl',
+    os_dir_stem_ext( graphs, EnspPn, pl, EnspRel ),
+    @ rm( -f, EnspRel ),
+    @ mv( File, EnspRel ),
 
-    findall( edge_strg_mouse_symb(SymbA,SymbB,W),
-                         ( edge_strg_mouse:edge_strg_mouse(EnsP1,EnsP2,W),
+    consult( EnspPn:EnspRel ),
+    debuc( Self, 'consulted eges from: ~w', [EnspPn:EnspRel] ),
+
+    EnspGoal =.. [EnspPn,EnsP1,EnsP2,W],
+    findall( strg_musm_edge_symb(SymbA,SymbB,W),
+                         ( EnspPn:EnspGoal,
                            ensp_mouse_symb(EnsP1,Symb1),
                            ensp_mouse_symb(EnsP2,Symb2),
-                           sort(Symb1,Symb2,SymbA,SymbB)
+                           sort_four(Symb1,Symb2,SymbA,SymbB)
                      ),
             UnoSymbEdges
           ),
@@ -114,19 +134,19 @@ std_mouse_graphs_strg( Args ) :-
     working_directory( _, Here ).
 
 ensp_mouse_symb( EnsP, Symb ) :-   % fixme: make sure the cut is green ! 
-    unip:map_unip_mouse_ensp_unip( EnsP, Unip ),
-    (   unip:map_unip_mouse_mgim_unip(Mgim,Unip)
+    unip:unip_musm_ensp_unip( EnsP, Unip ),
+    (   unip:unip_musm_mgim_unip(Mgim,Unip)
         ; 
-        mgim:map_mgim_mouse_mgim_unip(Mgim,Unip)
+        mgim:mgim_musm_mgim_unip(Mgim,Unip)
     ),
-    mgim:map_mgim_mouse_mgim_symb( Mgim, Symb ),
+    mgim:mgim_musm_mgim_symb( Mgim, Symb ),
     !.
 
-sort( X, Y, A, B ) :-
+sort_four( X, Y, A, B ) :-
     Y @< X,
     !,
     A = Y, B = X.
-sort( A, B, A, B ).
+sort_four( A, B, A, B ).
 
 std_graph_string_download_string( LocalFile, _From, Self ) :-
     exists_file( LocalFile ),
@@ -140,7 +160,6 @@ std_graph_string_download_string( Local, Remote, Self ) :-
 std_graphs_string_version_base_name( VersionPrv, Bname, Remote ) :-
     ( atom_concat(v,Version,VersionPrv)->true;Version=VersionPrv ),
     atom_concat( v, Version, Vied ),
-    % Pfx = 'http://string-db.org/newstring_download/protein.links.v',
     Pfx = 'https://string-db.org/download/protein.links.v',
     atom_concat( Pfx, Version, RemoteDir ),
     atomic_list_concat( [10090,protein,links,Vied,txt,gz], '.', Bname ),
@@ -156,27 +175,3 @@ de_mouse( Row, _ ) :-
     debuc( _, 'Failed to translate row: ~w', Row ),
     abort.
 
-/*
-bio_db_std_string :-
-    Opt = [ csv_read(separator(0' )), predicate_name(hs_strg_edge),
-            rows_transform(maplist(user:de_mouse))
-         ],
-    mtx_prolog( bio_dn(strg/'protein.links.mouse.txt'), File, Opt ),
-    debuc( _, 'Edges output: ~w', File ),
-    bio_db_std_string_link( File ).
-
-bio_db_std_string_link( File ) :-
-    HsBio = bio_db_build_data( 'graphs/strg/mouse_strg_edge.pl' ),
-    absolute_file_name( HsBio, HsTarget ),
-    bio_db_std_string_link_target( HsTarget, File ).
-
-bio_db_std_string_link_target( HsTarget, File ) :-
-    read_link( HsTarget, _OldFile, _What ),
-    delete_file( HsTarget ),
-    !,
-    atomic_list_concat( ['ln -s',File,HsTarget], ' ', Shell ),
-    shell( Shell ).
-bio_db_std_string_link_target( HsTarget, File ) :-
-    atomic_list_concat( ['ln -s',File,HsTarget], ' ', Shell ),
-    shell( Shell ).
-    */

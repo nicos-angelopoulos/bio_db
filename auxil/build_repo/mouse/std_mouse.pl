@@ -29,6 +29,7 @@ Dependencies
    maps_mgim, maps,maps_ncbi, maps_unip
  * on(maps_mgim)
    maps_ense, maps_gont
+ * on([maps_mgim,maps_unip])
 
 @author nicos angelopoulos
 @version  0.1 2017/10/12

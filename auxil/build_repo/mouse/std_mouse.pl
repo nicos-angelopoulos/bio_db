@@ -26,7 +26,7 @@ Build all the standard datasets for bio_db.
 
 Dependencies
  * on([])
-   maps_mgim
+   maps_mgim, maps,maps_ncbi
  * on(maps_mgim)
    maps_ense
 

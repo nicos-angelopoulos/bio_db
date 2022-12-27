@@ -20,9 +20,6 @@
 :- lib(link_to_bio_sub/4).
 :- lib(url_file_local_date_mirror/3).
 
-% load necessary data that has already been generated
-% :- ensure_loaded(hgnc:bio_db_build_downloads('hgnc/maps/map_hgnc_symb_hgnc')).
-
 ncbi_mouse_gene_info_url( 'ftp://ftp.ncbi.nih.gov/gene/DATA/GENE_INFO/Mammalia/Mus_musculus.gene_info.gz' ).
 ncbi_dnload( Loc ) :-
 	absolute_file_name( bio_db_build_downloads(ncbi), Loc ),
@@ -36,8 +33,27 @@ std_mouse_maps_ncbi_defaults([]).
 
     map_ncbi_mouse_syno_symb( Syno, Symb ).
 
+==
+?- std_mouse_maps_ncbi([]).
+ορέστης;build_repo/mouse% date; pupsh std_mouse_maps_ncbi.pl ; date 
+Tue 27 Dec 15:21:20 GMT 2022
+% Building at: '/home/nicos/.local/share/swi-prolog/pack/Downloads/bio_db_repo-22.12.27'
+...
+% Symbolic linking, '/home/nicos/.local/share/swi-prolog/pack/Downloads/bio_db_repo-22.12.27/dnloads/ncbi/maps/ncbi_musm_syno_symb.pl', to '/home/nicos/.local/share/swi-prolog/pack/Downloads/bio_db_repo-22.12.27/data/musm/maps/ncbi/ncbi_musm_syno_symb.pl'
+Tue 27 Dec 15:21:30 GMT 2022
+
+ορέστης;ncbi/maps% date
+Tue 27 Dec 15:31:28 GMT 2022
+ορέστης;ncbi/maps% pwd
+/usr/local/users/nicos/local/share/swi-prolog/pack/Downloads/bio_db_repo-22.12.27/dnloads/ncbi/maps
+ορέστης;ncbi/maps% wc -l *_m*
+70025 ncbi_musm_syno_symb.pl
+
+==
+
 @author nicos angelopoulos
 @version  0.1 2019/02/12
+@version  0.2 2022/12/27,   v4.0 naming conventions
 @tbd double check symbols, are MGI known symbols....
 
 */
@@ -57,7 +73,8 @@ std_mouse_maps_ncbi( Args ) :-
 	@ gunzip( -f, -k, GzF ),
     os_ext( gz, GeneInfoF, GzF ),
     mtx( GeneInfoF, Mtx, sep(tab) ),
-    MapOpts = [     prefix(ncbi_mouse),
+    MapOpts = [     prefix(ncbi),
+                    org(mouse),
                     cnm_transform(ncbi_cnm),
                     to_value_2(=),
                     to_value_1(non_dash_sep_by('|')),

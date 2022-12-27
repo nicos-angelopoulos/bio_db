@@ -63,6 +63,14 @@ Tue 27 Dec 14:45:59 GMT 2022
 ορέστης;mgim/maps% pwd
 /usr/local/users/nicos/local/share/swi-prolog/pack/Downloads/bio_db_repo-22.12.27/dnloads/mgim/maps
 
+ορέστης;mgim/maps% wc -l *
+   675857 mgim_musm_mgim_chrl.pl
+   277235 mgim_musm_mgim_genb.pl
+   718464 mgim_musm_mgim_ncbi.pl
+   675857 mgim_musm_mgim_symb.pl
+    16966 mgim_musm_mgim_unip.pl
+    58676 mgim_musm_symb_wdra.pl
+   256471 mgim_musm_syno_mgim.pl
 ==
 
 @author nicos angelopoulos

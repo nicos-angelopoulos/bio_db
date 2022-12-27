@@ -32,7 +32,28 @@ std_mouse_maps_gont_defaults([]).
 Build maps from gene ontology data.
 
 ==
-?-
+?- std_mouse_maps_gont([]).
+
+ορέστης;build_repo/mouse% date; pupsh std_mouse_maps_gont.pl ; date 
+Tue 27 Dec 16:13:38 GMT 2022
+% Building at: '/home/nicos/.local/share/swi-prolog/pack/Downloads/bio_db_repo-22.12.27'
+% Creating dated local basename.
+% Using local directory: '/home/nicos/.local/share/swi-prolog/pack/Downloads/bio_db_repo-22.12.27/dnloads/gont'
+....
+% Symbolic linking, '/home/nicos/.local/share/swi-prolog/pack/Downloads/bio_db_repo-22.12.27/dnloads/gont/maps/gont_musm_gont_symb.pl', to '/home/nicos/.local/share/swi-prolog/pack/Downloads/bio_db_repo-22.12.27/data/musm/maps/gont/gont_musm_gont_symb.pl'
+% Symbolic linking, '/home/nicos/.local/share/swi-prolog/pack/Downloads/bio_db_repo-22.12.27/dnloads/gont/maps/gont_musm_mgim_gont.pl', to '/home/nicos/.local/share/swi-prolog/pack/Downloads/bio_db_repo-22.12.27/data/musm/maps/gont/gont_musm_mgim_gont.pl'
+Tue 27 Dec 16:15:14 GMT 2022
+
+ορέστης;gont/maps% date 
+Tue 27 Dec 16:17:19 GMT 2022
+ορέστης;gont/maps% pwd
+/usr/local/users/nicos/local/share/swi-prolog/pack/Downloads/bio_db_repo-22.12.27/dnloads/gont/maps
+
+ορέστης;gont/maps% wc -l *_m*
+  432093 gont_musm_gont_symb.pl
+  432149 gont_musm_mgim_gont.pl
+  864242 total
+
 ==
 
 @author nicos angelopoulos
@@ -54,7 +75,7 @@ std_mouse_maps_gont( Args ) :-
     os_ext( gz, GontF, GzGontF ),
     mtx( GontF, GAs, [skip_heading('!'),sep(tab)] ),
     debuc( Self, dims, gas/GAs ),
-    findall( map_gont_mouse_mgim_gont(Mgim,Rel,Evid,Gont),
+    findall( gont_musm_mgim_gont(Mgim,Rel,Evid,Gont),
                     ( member(Row,GAs),
                       arg(2,Row,MgimPrv), at_con([_,MgimAtm],':',MgimPrv), atom_number(MgimAtm,Mgim),
                       arg(4,Row,Rel),
@@ -64,23 +85,23 @@ std_mouse_maps_gont( Args ) :-
                         FactsAll ),
     sort( FactsAll, Facts ),
     os_make_path( maps ),
-    os_dir_stem_ext( maps, map_gont_mouse_mgim_gont, pl, MapF ),
+    os_dir_stem_ext( maps, gont_musm_mgim_gont, pl, MapF ),
     portray_clauses( Facts, file(MapF) ),
 
 	bio_db_dnt_times( GzGontF, DnDt, _SwDnEn ),
 	InfoOpts = [header(row('MGI Marker Accession ID','Relation','Evidence','GO_Term')),source(Url),datetime(DnDt)],
-	bio_db_add_infos_to( InfoOpts, 'maps/map_gont_mouse_mgim_gont.pl' ),
+	bio_db_add_infos_to( InfoOpts, 'maps/gont_musm_mgim_gont.pl' ),
 
-    ensure_loaded( mgim_tmp:bio_db_build_downloads('mgim/maps/map_mgim_mouse_mgim_symb') ),
+    ensure_loaded( mgim_tmp:bio_db_build_downloads('mgim/maps/mgim_musm_mgim_symb') ),
     
-    findall( row(Gont1,Rel,Evid,Symb1), ( member(map_gont_mouse_mgim_gont(Mgim1,Rel,Evid,Gont1),Facts),
-                                 mgim_tmp:map_mgim_mouse_mgim_symb(Mgim1,Symb1)
+    findall( row(Gont1,Rel,Evid,Symb1), ( member(gont_musm_mgim_gont(Mgim1,Rel,Evid,Gont1),Facts),
+                                 mgim_tmp:mgim_musm_mgim_symb(Mgim1,Symb1)
                                ), GSRowsAll ),
     sort( GSRowsAll, GSRows ),
 
-    GSopts = [predicate_name(map_gont_mouse_gont_symb)],
-	mtx_prolog( GSRows, 'maps/map_gont_mouse_gont_symb.pl', GSopts ),
-    GsF = 'maps/map_gont_mouse_gont_symb.pl',
+    GSopts = [predicate_name(gont_musm_gont_symb)],
+	mtx_prolog( GSRows, 'maps/gont_musm_gont_symb.pl', GSopts ),
+    GsF = 'maps/gont_musm_gont_symb.pl',
     GShdr = header(row('GO_Term','Evidence','MGI Marker Accession ID')),
 	bio_db_add_infos_to( [GShdr|GSopts], GsF ),
     % maplist( link_to_map_sub(gont), OutFs ),  % does this work ?

@@ -54,11 +54,11 @@ Nonmeclature:
   * chrl: chromosomal location
 
 Produces:
-  * map_ense_enst_ensg
-  * map_ense_ensg_hgnc
-  * map_ense_ensg_symb
-  * map_ense_ensg_chrl
-  * map_ense_enst_chrl
+  * ense_homs_enst_ensg
+  * ense_homs_ensg_hgnc
+  * ense_homs_ensg_symb
+  * ense_homs_ensg_chrl
+  * ense_homs_enst_chrl
 
 @author  nicos angelopoulos
 @version 0.1, 2016/6/17
@@ -73,9 +73,9 @@ std_maps_ense( Args ) :-
     options_append( Self, Args, Opts ),
     bio_db_build_aliases( Opts ),
     % load necessary data that has already been generated
-    ensure_loaded(hgnc:bio_db_build_downloads('hgnc/maps/map_hgnc_ensg_hgnc')),
-    ensure_loaded(hgnc:bio_db_build_downloads('hgnc/maps/map_hgnc_hgnc_symb')),
-    ensure_loaded(hgnc:bio_db_build_downloads('hgnc/maps/map_hgnc_symb_hgnc')),
+    ensure_loaded(hgnc:bio_db_build_downloads('hgnc/maps/hgnc_homs_ensg_hgnc')),
+    ensure_loaded(hgnc:bio_db_build_downloads('hgnc/maps/hgnc_homs_hgnc_symb')),
+    ensure_loaded(hgnc:bio_db_build_downloads('hgnc/maps/hgnc_homs_symb_hgnc')),
 
 	debuc( Self, 'Starting...', true ),
 	absolute_file_name( bio_db_build_downloads(ense), DnDir ),
@@ -132,19 +132,19 @@ std_maps_ense( Args ) :-
 	debuc( Self, length, rows/Rows ),
 	ense_transcripts( Rows, EnsTGRows, EnsTLRows ),
     debuc( Self, length, [tr_to_names_map,tr_locations]/[EnsTGRows,EnsTLRows] ),
-	mtx( 'map_ense_enst_ensg.csv', EnsTGRows ),
-	mtx( 'map_ense_enst_chrl.csv', EnsTLRows ),
+	mtx( 'ense_homs_enst_ensg.csv', EnsTGRows ),
+	mtx( 'ense_homs_enst_chrl.csv', EnsTLRows ),
 
 	ense_genes( Rows, EnsGHRows, EnsGSRows, EnsGCRows, Disagreed, NotInHgnc ),
     debuc( Self, length, ense_to_hgnc_symbol_disagreements/Disagreed ),
     debuc( Self, length, ense_has_no_hgnc/NotInHgnc ),
-	mtx( 'map_ense_ensg_hgnc.csv', EnsGHRows ),
-	mtx( 'map_ense_ensg_symb.csv', EnsGSRows ),
-	mtx( 'map_ense_ensg_chrl.csv', EnsGCRows ),
+	mtx( 'ense_homs_ensg_hgnc.csv', EnsGHRows ),
+	mtx( 'ense_homs_ensg_symb.csv', EnsGSRows ),
+	mtx( 'ense_homs_ensg_chrl.csv', EnsGCRows ),
 
-	Csvs = [ 'map_ense_enst_ensg.csv', 'map_ense_enst_chrl.csv',
-		    'map_ense_ensg_hgnc.csv', 'map_ense_ensg_symb.csv',
-              'map_ense_ensg_chrl.csv'
+	Csvs = [ 'ense_homs_enst_ensg.csv', 'ense_homs_enst_chrl.csv',
+		    'ense_homs_ensg_hgnc.csv', 'ense_homs_ensg_symb.csv',
+              'ense_homs_ensg_chrl.csv'
 	       ],
 	debuc( Self, 'mapping: ~w', [Csvs] ),
 	maplist( csv_to_pl(Self), Csvs ),
@@ -211,17 +211,17 @@ ense_genes( [_NonGRow|Rows], GHRows, GSRows, GCRows, Dis, Nin ) :-
 
 ense_gene_hgnc( EnsG, EnsN, GHRows, GSRows, Dis, Nin, TGHRows, TGSRows, Tis, Tin ) :-
 	% map_hgnc_ensg_hgnc( EnsG, Hgnc ),
-	findall( AHgnc, hgnc:map_hgnc_ensg_hgnc(EnsG,AHgnc), [Hgnc] ),
+	findall( AHgnc, hgnc:hgnc_homs_ensg_hgnc(EnsG,AHgnc), [Hgnc] ),
         % there are 10 or so EnsGs, map to multi Hs
 	!,
-	hgnc:map_hgnc_hgnc_symb( Hgnc, Symb ),
+	hgnc:hgnc_homs_hgnc_symb( Hgnc, Symb ),
 	ense_gene_hgnc_symbols( EnsN, Symb, Dis, Tis ),
 	GHRows = [row(EnsG,Hgnc)|TGHRows],
 	GSRows = [row(EnsG,Symb)|TGSRows],
     Nin = Tin.
 ense_gene_hgnc( EnsG, EnsN, GHRows, GSRows, Dis, Nin, TGHRows, TGSRows, Tis, Tin ) :-
 	% \+ map_hgnc_ensg_hgnc( EnsG, _ ),
-	hgnc:map_hgnc_symb_hgnc( EnsN, Hgnc ),
+	hgnc:hgnc_homs_symb_hgnc( EnsN, Hgnc ),
 	!,
 	GHRows = [row(EnsG,Hgnc)|TGHRows],
 	GSRows = [row(EnsG,EnsN)|TGSRows],

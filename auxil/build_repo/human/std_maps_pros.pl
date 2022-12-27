@@ -56,9 +56,9 @@ std_maps_pros( Args ) :-
 	options_append( Self, Args, Opts ),
 	bio_db_build_aliases( Opts ),
     % load necessary data that has already been generated
-    unip:ensure_loaded( bio_db_build_downloads('unip/maps/map_unip_sprt_seqn') ),
-    unip:ensure_loaded( bio_db_build_downloads('unip/maps/map_unip_unip_hgnc') ),
-    hgnc:ensure_loaded( bio_db_build_downloads('hgnc/maps/map_hgnc_hgnc_symb') ),
+    unip:ensure_loaded( bio_db_build_downloads('unip/maps/unip_homs_sprt_seqn') ),
+    unip:ensure_loaded( bio_db_build_downloads('unip/maps/unip_homs_unip_hgnc') ),
+    hgnc:ensure_loaded( bio_db_build_downloads('hgnc/maps/hgnc_homs_hgnc_symb') ),
 	debuc( std_maps_pros, 'Starting Prosite maps', true ),
 	pros_dnload_dir( Old, DnDir, Opts ),
 	pros_alignments_url( Url ),
@@ -78,11 +78,13 @@ std_maps_pros( Args ) :-
 	@ rm( -f, 'prosite_alignments.tar' ),
 	directory_files( prosite_alignments, PalignFs ),
 	include( os_ext(msa), PalignFs, MsaFs ),
+     debuc( Self, length, msa_fs/MsaFs ),
 	map_succ_list( msa_file_pros_prsn, MsaFs, ProsPrsnClauses ),
-	PrsnF = 'map_pros_pros_prsn.pl',
+     debuc( Self, length, pros_clauses/ProsPrsnClauses ),
+	PrsnF = 'pros_homs_pros_prsn.pl',
 	portray_clauses( ProsPrsnClauses, file(PrsnF) ),
-	debuc( std_map_pros, wrote, PrsnF ),
-	PrsnOpts = [header(),datime(DnSt),source(Url)],
+	debuc( Self, wrote, PrsnF ),
+	PrsnOpts = [header(row('Prosite id','Prosite name')),datime(DnSt),source(Url)],
 	bio_db_add_infos_to( PrsnOpts, PrsnF ),
 	os_make_path( maps ),
 	os_path( maps, PrsnF, RelPrsnF ),
@@ -90,10 +92,12 @@ std_maps_pros( Args ) :-
 
 	maplist( msa_file_pros_sprt, MsaFs, ProsSprtClausesNest ),
 	flatten( ProsSprtClausesNest, ProsSprtClauses ),
-	SprtF = 'map_pros_pros_sprt.pl',
+	SprtF = 'pros_homs_pros_sprt.pl',
 	portray_clauses( ProsSprtClauses, file(SprtF) ),
-	debuc( std_map_pros, wrote, SprtF ),
-	SprtOpts = [header(),datime(DnSt),source(Url)],
+	debuc( Self, wrote, SprtF ),
+
+     % fixme: the header below is wrong
+	SprtOpts = [header(row('Prosite id','Prosite protein')),datime(DnSt),source(Url)],
 	bio_db_add_infos_to( SprtOpts, SprtF ),
 	os_path( maps, SprtF, RelSprtF ),
 	rename_file( SprtF, RelSprtF ),
@@ -113,7 +117,7 @@ msa_file_pros_prsn( File, map_pros_pros_prsn(Base,Prsn) ) :-
 				  at_con([A,B,_C],'|',Ratm),
 				  at_con([_,'HUMAN'],'_',A),
 				  at_con([Prot,RightB],'/',B),
-				  unip:map_unip_sprt_seqn( Prot, _ ),
+				  unip:unip_homs_sprt_seqn( Prot, _ ),
 				  at_con([_,PrsnA],': ',RightB)
 				  % we can also match Pros to Left C (sep /)
 				  )
@@ -139,9 +143,9 @@ msa_file_pros_sprt( File, Maps ) :-
 				  at_con([A,B,_C],'|',Ratm),
 				  at_con([_,'HUMAN'],'_',A),
 				  at_con([Prot,RightB],'/',B),
-				  unip:map_unip_sprt_seqn( Prot, _ ),
-				  ( (unip:map_unip_unip_hgnc(Prot,Hgnc),
-				     hgnc:map_hgnc_hgnc_symb(Hgnc,Symb))
+				  unip:unip_homs_sprt_seqn( Prot, _ ),
+				  ( (unip:unip_homs_unip_hgnc(Prot,Hgnc),
+				     hgnc:hgnc_homs_hgnc_symb(Hgnc,Symb))
 					-> 
 					true
 					;
@@ -152,7 +156,7 @@ msa_file_pros_sprt( File, Maps ) :-
 				  M is N + 1,
 				  nth1(M,Lines,Line2),
 				  atom_codes(AtmL2,Line2),
-			       Map = map_pros_pros_sprt(Base,PrsnA,Prot,Symb,From,To,AtmL2)
+			       Map = pros_homs_pros_sprt(Base,PrsnA,Prot,Symb,From,To,AtmL2)
 			    ),
 			    		Maps ).
 

@@ -63,7 +63,7 @@ std_maps_gont( Args ) :-
     bio_db_build_aliases( Opts ),
     % DnDir = '/usr/local/users/nicos/work/db/data/go',
     % load necessary data that has already been generated
-    ensure_loaded( hgnc:bio_db_build_downloads('hgnc/maps/map_hgnc_symb_hgnc') ),
+    ensure_loaded( hgnc:bio_db_build_downloads('hgnc/maps/hgnc_homs_symb_hgnc') ),
     absolute_file_name( bio_db_build_downloads(gont), DnDir ),
     os_make_path( DnDir, debug(true) ),
     working_directory( Here, DnDir ),
@@ -185,7 +185,7 @@ go_bared_symbol( Bared, Symb, Self, NonSymbs, MultSymbs, TNonSymbs, TMultSymbs )
     go_bared_symbol_single( Symbs, Bared, Symb, Self, NonSymbs, MultSymbs, TNonSymbs, TMultSymbs ).
 
 hgnc_symb( Symb, Symb ) :-
-    hgnc:map_hgnc_symb_hgnc( Symb, _ ),
+    hgnc:hgnc_homs_symb_hgnc( Symb, _ ),
     !.
 hgnc_symb( Part, Symbs ) :-
     atomic_list_concat( Subs, ':', Part ),

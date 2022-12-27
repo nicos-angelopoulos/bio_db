@@ -3,6 +3,7 @@
 :- use_module(library(os_lib)).
 :- use_module(library(debug_call)).
 
+:- lib(bio_db_build_organism/3).
 :- lib(stoics_lib:message_report/3).
 
 link_to_bio_sub_defaults( Defs ) :-
@@ -23,7 +24,7 @@ link_to_bio_sub_defaults( Defs ) :-
 %  * debug(Dbg=true)
 %    Listens to debug( link_to_bio_sub ).
 %  * org(Org=hs)
-%    organism (first level of directory structure)
+%    organism (defines first level of directory structure)
 %  * type(Type=maps)
 %    type of db table, second level of directory structure
 %
@@ -48,7 +49,8 @@ link_to_bio_sub( Sub, File, Args ) :-
     options_append( Self, Args, Opts ),
 	absolute_file_name( File, AbsFile, [access(exist)] ),
     options( [org(Org),type(Type)], Opts ),
-    directory_file_path( Org, Type, Rel ),
+    bio_db_organism_token( Org, Tkn ),
+    directory_file_path( Tkn, Type, Rel ),
 	absolute_file_name( bio_db_build_data(Rel), Dir ),
 	directory_file_path( Dir, Sub, ToDir ),
 	file_base_name( AbsFile, Base ),

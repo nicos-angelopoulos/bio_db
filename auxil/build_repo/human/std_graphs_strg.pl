@@ -61,8 +61,8 @@ std_graphs_strg( Args ) :-
     options_append( Self, Args, Opts ),
     bio_db_build_aliases( Opts ),
     % load necessary data that has already been generated
-    ensure_loaded(ncbi:bio_db_build_downloads('ncbi/maps/ncbi_homs_ensp_entz')),
-    ensure_loaded(hgnc:bio_db_build_downloads('hgnc/maps/hgnc_homs_entz_symb')),
+    ensure_loaded(ncbi:bio_db_build_downloads('ncbi/maps/ncbi_homs_ensp_ncbi')),
+    ensure_loaded(hgnc:bio_db_build_downloads('hgnc/maps/hgnc_homs_ncbi_symb')),
 
     % std_graphs_strg( VersionPrv ) :-
     options( string_version(VersionPrv), Opts ),
@@ -104,11 +104,11 @@ std_graphs_strg( Args ) :-
 
      consult( EnspPn:EnspRel ),
 
-     debuc( _, 'Consulted ensp: ~w', [NespPn:EnspRel] ),
+     debuc( _, 'Consulted ensp: ~w', [EnspPn:EnspRel] ),
 
      EnspGoal =.. [EnspPn,EnsP1,EnsP2,W],
      findall( edge_strg_hs_symb(SymbA,SymbB,W),
-                          ( EnspPn:EnspGoal
+                          ( EnspPn:EnspGoal,
                                 ensp_symb(EnsP1,Symb1),
                                 ensp_symb(EnsP2,Symb2),
                                 sort(Symb1,Symb2,SymbA,SymbB)
@@ -119,8 +119,8 @@ std_graphs_strg( Args ) :-
      length( SymbEdges, SymbEdgesLen ),
      debuc( _, 'Unique symbol edges hs: ~w', [SymbEdgesLen] ),
 
-     SymbsPn  = str_homs_edge_symb,
-     os_dir_stem_ext( grapsh, SymbsPn, pl, SymbsRel ),
+     SymbsPn  = strg_homs_edge_symb,
+     os_dir_stem_ext( graphs, SymbsPn, pl, SymbsRel ),
      portray_clauses( SymbEdges, file(SymbsRel) ),
      bio_db_dnt_times( Bname, DnDt, _EndDt ),
      HsOpts = [source(From),datetime(DnDt),header(row('Ensembl Protein','Ensembl Protein',weight))],
@@ -134,8 +134,8 @@ std_graphs_strg( Args ) :-
      working_directory( _, Here ).
 
 ensp_symb( EnsP, Symb ) :-
-     ncbi:ncbi_homs_ensp_entz( EnsP, Entz ),
-     hgnc:hgnc_homs_entz_symb( Entz, Symb ),
+     ncbi:ncbi_homs_ensp_ncbi( EnsP, Ncbi ),
+     hgnc:hgnc_homs_ncbi_symb( Ncbi, Symb ),
      !.
 
 sort( X, Y, A, B ) :-

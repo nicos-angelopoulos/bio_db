@@ -80,34 +80,10 @@ std_maps_unip_seqs( Args ) :-
 	working_directory( _, Old ).
 
 std_bootstrap_tables :-
-    absolute_file_name( bio_db_build_downloads('unip/maps/map_unip_unip_hgnc.pl'), UnipHgncF ),
-    absolute_file_name( bio_db_build_downloads('hgnc/maps/map_hgnc_hgnc_symb.pl'), HgncSymbF ),
+    absolute_file_name( bio_db_build_downloads('unip/maps/unip_homs_unip_hgnc.pl'), UnipHgncF ),
+    absolute_file_name( bio_db_build_downloads('hgnc/maps/hgnc_homs_hgnc_symb.pl'), HgncSymbF ),
     tmp:ensure_loaded( UnipHgncF ),
     tmp:ensure_loaded( HgncSymbF ).
-
-/** you don't need to install these... simple load them from the downloads....
-std_bootstrap_tables :-
-    ( catch(pack_remove(bio_db_repo),_,fail) -> true; true ),
-    absolute_file_name( pack(bio_db), BioDB, [file_type(directory)] ),
-    os_path( PacksD, bio_db, BioDB ),
-    debug( std, 'Packs dir: ~p', PacksD ),
-    std_path( PacksD, bio_db_repo, PackRepoD ),
-    std_path( PackRepoD, data, PackRepoDataD ),
-    %
-    absolute_file_name( bio_db_build_downloads('unip/maps/map_unip_unip_hgnc.pl'), UnipHgncF ),
-    absolute_file_name( bio_db_build_downloads('hgnc/maps/map_hgnc_hgnc_symb.pl'), HgncSymbF ),
-    %
-    atomic_list_concat( [PackRepoDataD,hs,maps,unip], '/', UnipMaps ),
-    os_make_path( UnipMaps, debug(true) ),
-    os_path( UnipMaps, 'map_unip_unip_hgnc.pl', ToUnipHgncF ),
-    copy_file( UnipHgncF, ToUnipHgncF ),
-    %
-    atomic_list_concat( [PackRepoDataD,hs,maps,hgnc], '/', HgncMaps ),
-    os_make_path( HgncMaps, debug(true) ),
-    os_path( HgncMaps, 'map_hgnc_hgnc_symb.pl', ToHgncSymbF ),
-    write( copy_file( HgncSymbF, ToHgncSymbF ) ), nl,
-    copy_file( HgncSymbF, ToHgncSymbF ).
-    */
 
 std_path( Base, Dir, Path ) :-
     os_path( Base, Dir, Path ),
@@ -161,7 +137,8 @@ unip_hs_seqs_file( Url, DnDir, Hdr ) :-
 	% os_ext( csv, MapStem, MapF ),
 
 	bio_db_dnt_times( SprotF, DnSt, _DnEn ),
-	IdsOpts = [ delim(','), cnm_transform(unip_seqs_stem_token(SrcStem)), prefix(unip),
+	IdsOpts = [ % delim(','),
+                 delim(0',),cnm_transform(unip_seqs_stem_token(SrcStem)), prefix(unip),
 	            source(Url), header(Hdr), datetime(DnSt)
 	          ],
 	csv_ids_map( SeqF, 'Protein', 'Sequence', _, MapF, IdsOpts ), 
@@ -219,7 +196,7 @@ protein_report_mulitple_symbols( PrvSymbs, _AC, _PaSymbs, _AcSymbs, Symb ) :-
 	atomic_list_concat( Symbs, ';', Symb ).
 
 hgnc_symb( Symb ) :-
-	map_hgnc_symb_hgnc( Symb, _ ).
+	hgnc_homs_symb_hgnc( Symb, _ ).
 
 protein_dat_symbol( Parsed, Symb ) :-
 	member( 'DR'-[DRCs], Parsed ),
@@ -234,7 +211,7 @@ protein_primary_accession( [_,'AC'-[AllACCs]|_], AC, Symbs ) :-
 	!,
 	break_list_on( AllACCs, 0';, ACCs, _Right ),
 	atom_codes( AC, ACCs ),
-	findall( Symb, (tmp:map_unip_unip_hgnc(AC,Hgnc),tmp:map_hgnc_hgnc_symb(Hgnc,Symb)), Symbs ).
+	findall( Symb, (tmp:unip_homs_unip_hgnc(AC,Hgnc),tmp:hgnc_homs_hgnc_symb(Hgnc,Symb)), Symbs ).
 
 unip_prefixed_lines( Lines, RowPair, Args ) :-
     io_prefixed_lines( Lines, Kvs, Args ),

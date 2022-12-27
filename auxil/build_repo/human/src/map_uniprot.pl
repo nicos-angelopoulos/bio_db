@@ -79,7 +79,7 @@ map_uniprot( Foreign, Uniprot, Fouts, Args ) :-
 
 	% map_predicate_name( uniprot, Foreign, Pname, Opts ),
 	maplist( uniprot_cname, [Cnm1,Cnm2], [Tnm1,Tnm2] ),
-	map_predicate_name( Tnm1, Tnm2, Pname, [map_prefix(true),prefix(unip)|Opts] ),
+	map_predicate_name( Tnm1, Tnm2, Pname, [map_prefix(false),prefix(unip)|Opts] ),
 	map_predicate_name_stem( Pname, Stem, Opts ),
 	output_extensions( Opts, Fces, FExtsPrv ),
 	sort( FExtsPrv, FExts ),

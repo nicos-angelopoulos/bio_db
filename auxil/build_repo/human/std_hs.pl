@@ -38,7 +38,15 @@ Opts
 
 Dependencies
   * on([])
-    maps_hgnc, 
+    maps_hgnc, maps_unip, maps_reac, graphs_gont
+  * on(hgnc)
+    maps_ncbi, maps_ense, maps_gont
+  * on(hgnc,ncbi)
+    graphs_strg
+  * on([hgnc,unip])
+    maps_unip_seqs
+  * on([hgnc,unip,unip_seqs])
+    maps_pros
 
 ==
 % date
@@ -105,6 +113,7 @@ std(hs, maps, ncbi).
 std(hs, maps, pros).
 % requires, maps-hgnc
 std(hs, maps, gont).
+std(hs, maps, reac).
 
 std(hs, graphs, gont).
 std(hs, graphs, strg).   % needs hgnc and ncbi

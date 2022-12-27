@@ -122,7 +122,7 @@ std_maps_reac_portray( Self, Dorg, Dir, Url, DnDt, Psfx, Map, File ) :-
      portray_clauses( Ord, file(File) ),
      std_maps_react_header( Psfx, Hdr ),
      bio_db_add_infos_to( [header(Hdr),source(Url),datetime(DnDt)], File ),
-     link_to_bio_sub( reac, File, [org(Dorg),type(maps)] ).
+     link_to_bio_sub( reac, File, [org(hs),type(maps)] ).
 
 std_maps_react_header( ncbi_reac, hdr('NCBI gene id','Reactome product id') ).
 std_maps_react_header( ncbi_reap, hdr('NCBI gene id','Evidence','Reactome pathway id') ).

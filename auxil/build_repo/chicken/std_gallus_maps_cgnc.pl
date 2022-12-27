@@ -52,8 +52,8 @@ In the interest of completeness we create a map for each column based on CGNC ID
 Tokens
   * cgnc('CGNC id')
     chicken gene nomenclature consortium
-  * entz('Entrez')
-    Entrez gene ids 
+  * ncbi('Entrez')
+    Ncbi/Entrez gene ids 
   * ensg('Gene id')
     Ensembl gene ids
   * symb('gene symbol')
@@ -85,6 +85,20 @@ Opts
 ?- std_gallus_maps_cgnc.
 ?- cd( '$HOME/.local/share/swi-prolog/pack/Downloads/bio_db-22.12.17/maps/cgnc' ).
 ?- shell( 'wc -l *' ).
+
+ορέστης;dnloads/cgnc% pwd
+/usr/local/users/nicos/local/share/swi-prolog/pack/Downloads/bio_db_repo-22.12.27/dnloads/cgnc
+ορέστης;dnloads/cgnc% date
+Tue 27 Dec 11:46:41 GMT 2022
+ορέστης;dnloads/cgnc% wc -l maps/*
+  25923 maps/map_cgnc_gallus_homs_cgnc_curs.pl
+  25923 maps/map_cgnc_gallus_homs_cgnc_edat.pl
+  15245 maps/map_cgnc_gallus_homs_cgnc_ensg.pl
+  25923 maps/map_cgnc_gallus_homs_cgnc_name.pl
+  25923 maps/map_cgnc_gallus_homs_cgnc_ncbi.pl
+  25923 maps/map_cgnc_gallus_homs_cgnc_symb.pl
+   2967 maps/map_cgnc_gallus_homs_cgnc_syno.pl
+ 147827 total
 ==
 
 @author nicos angelopoulos
@@ -116,7 +130,7 @@ std_gallus_maps_cgnc( Args ) :-
     StdO= [dir(SubDir),cnm_transform(cgnc_cname)|StdOT],
     Cgnc = 'CGNC id',
     Symb = 'gene symbol',
-    Entz = 'Entrez Gene id',
+    Ncbi = 'Entrez Gene id',
     Ensg = 'Ensembl Gene id',
     Name = 'gene name',
     Syno = 'gene synonym',
@@ -124,14 +138,14 @@ std_gallus_maps_cgnc( Args ) :-
     Edat = 'last edit date',
 
     cgnc_std_map( Cgnc, Symb, CsvF, Mtx, Self, StdO, SrcUrl/DnDt, SymbF ),    % cgnc_symb
-    cgnc_std_map( Cgnc, Entz, CsvF, Mtx, Self, StdO, SrcUrl/DnDt, EntzF ),    % cgnc_entz
+    cgnc_std_map( Cgnc, Ncbi, CsvF, Mtx, Self, StdO, SrcUrl/DnDt, NcbiF ),    % cgnc_ncbi
     cgnc_std_map( Cgnc, Ensg, CsvF, Mtx, Self, StdO, SrcUrl/DnDt, EnsgF ),    % cgnc_ensg
     cgnc_std_map( Cgnc, Name, CsvF, Mtx, Self, StdO, SrcUrl/DnDt, NameF ),    % cgnc_name
     cgnc_std_map( Cgnc, Syno, CsvF, Mtx, Self, StdO, SrcUrl/DnDt, SynoF ),    % cgnc_syno
     cgnc_std_map( Cgnc, Curs, CsvF, Mtx, Self, StdO, SrcUrl/DnDt, CursF ),    % cgnc_curs
     cgnc_std_map( Cgnc, Edat, CsvF, Mtx, Self, StdO, SrcUrl/DnDt, EdatF ),    % cgnc_edat
     debuc( Self, 'doing links...', [] ),
-    Files = [SymbF,EntzF,EnsgF,NameF,SynoF,CursF,EdatF],
+    Files = [SymbF,NcbiF,EnsgF,NameF,SynoF,CursF,EdatF],
     % maplist( link_to_bio_sub(RelDir), Files ),
     map_list_options( link_to_bio_sub(RelDir), Files, call_options([org(gallus),type(maps)]) ),
     % file_name_extension( TxtF, gz, GzF ),
@@ -206,7 +220,7 @@ cgnc_cname( A, A ).
 % 
 % CGNC id	Entrez Gene id	 Ensembl Gene id gene symbol	gene name	gene synonym	curation status	last edit date
 cgnc_cname_known( 'CGNC id', cgnc ).
-cgnc_cname_known( 'Entrez Gene id', entz ).
+cgnc_cname_known( 'Entrez Gene id', ncbi ).
 cgnc_cname_known( 'Ensembl Gene id', ensg ).
 cgnc_cname_known( 'gene symbol', symb ).
 cgnc_cname_known( 'gene name', name ).
@@ -232,9 +246,9 @@ cgnc_download_file_fix( Self, Dst ) :-
      at_con( BParts, '\t', B ),
      % debuc( Self, enum, cgnc_2nd_line_parts/BParts ),
      BParts = ['CGNC id','Entrez Gene id','gene symbol','gene name','gene synonym','curation status','last edit date'],
-     BParts = [CGNC,Entz,Symb,Name,Syno,Curs,Edat],
+     BParts = [CGNC,Ncbi,Symb,Name,Syno,Curs,Edat],
      !,
-     NewBParts = [CGNC,Entz,'Ensembl Gene id',Symb,Name,Syno,Curs,Edat],
+     NewBParts = [CGNC,Ncbi,'Ensembl Gene id',Symb,Name,Syno,Curs,Edat],
      at_con( NewBParts, '\t', NewB ),
      atom_codes( NewB, NewBCs ),
      io_lines( Dst, [NewBCs|Tines] ).

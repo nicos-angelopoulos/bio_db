@@ -24,6 +24,8 @@ std_chicken_defaults(debug(true)).
 
 Build all the standard datasets for bio_db.
 
+There are no building dependencies between the datasets.
+
 @author nicos angelopoulos
 @version  0.1 2022/12/20
 

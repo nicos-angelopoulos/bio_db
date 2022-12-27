@@ -1,5 +1,6 @@
 % :- lib( replace_non_alphanums/3 ).
 :- lib( stoics_lib:at_con/3 ).
+:- ensure_loaded(bio_db_build_organism/3).
 
 %% map_predicate_name( +Cnm1, +Cnm2, -Pname, +Opts ).
 %
@@ -28,8 +29,9 @@ map_predicate_name( Cnm1, Cnm2, Pname, Opts ) :-
 	% use at_con/3 as it ignores '' prefixes
 	options( prefix(Prefix), Opts ),
 	map_predicate_map_prefix( MapPfx, Opts ),
-    ( memberchk(org(Org),Opts) -> true; Org = 'homs' ),
-	at_con( [MapPfx,Prefix,Org,Comp1,Comp2], '_', Pname ).
+    ( memberchk(org(OrgIn),Opts) -> true; OrgIn = 'homs' ),
+    ( bio_db_organism(OrgIn,Tkn,_Org) -> true; throw(cannot_id_organism_token(OrgIn)) ),
+	at_con( [MapPfx,Prefix,Tkn,Comp1,Comp2], '_', Pname ).
 
 map_predicate_map_prefix( map, Opts ) :-
 	options( map_prefix(true), Opts ),

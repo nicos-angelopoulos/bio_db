@@ -31,7 +31,7 @@ mgim_report(symb, 'MRK_List1').   % List2  only included non-widrawn ones.
 mgim_report(seq,  'MRK_Sequence').
 mgim_report(prot, 'MRK_SwissProt_TrEMBL').
 mgim_report(swiss_prot, 'MRK_SwissProt').
-mgim_report(entrez, 'MGI_EntrezGene').
+mgim_report(ncbi, 'MGI_EntrezGene').
 
 std_mouse_maps_mgim_defaults(debug(true)).
 
@@ -50,6 +50,7 @@ Opts
 @author nicos angelopoulos
 @version  0.1 2018/11/2
 @version  0.2 2018/2/11, added: map_mouse_mgim_mgim_entz/2.
+@version  0.3 2022/12/27, new naming of db predicates and entz -> ncbi
 
 */
 std_mouse_maps_mgim( Args ) :-
@@ -61,7 +62,7 @@ std_mouse_maps_mgim( Args ) :-
     os_make_path( maps ),   % fixme: make sure it doesn't trip if dir exists already
     working_directory( _, maps ),
     Sims = [    cnm_transform(mouse_cnm), to_value_1(pfx_by_num(true,'MGI:')),
-                prefix(mgim_mouse), datetime(SymbDnt) ],
+                prefix(mgim), org(mouse), datetime(SymbDnt) ],
     csv_ids_map( _, 'MGI Accession ID', 'Marker Symbol', SymbMtx, SymbMapF, Sims ),
     SymbMapFs = [SymbMapF],
     Cpts = call_options([org(mouse),type(maps)]),
@@ -96,13 +97,13 @@ std_mouse_maps_mgim( Args ) :-
     csv_ids_map( _, 'MGI Marker Accession ID', 'UniProt IDs', GenMtx, UnipMapF, Cims ),
 
     % entezid ( no header !)
-    mgim_get_report( entrez, Self, EntzUrl, DnDir, _EntzRelF, EntzMtx, EntzDnt ),
-    EntzHdr = hdr('MGI Marker Accession ID','Entrez ID'),
+    mgim_get_report( ncbi, Self, NcbiUrl, DnDir, _NcbiRelF, NcbiMtx, NcbiDnt ),
+    NcbiHdr = hdr('MGI Marker Accession ID','NCBI ID'),
     % EntzOpts = [cnm_transform(mgi_entrez_idx_header),to_value_1(pfx_by_num(true,'MGI:')),prefix(mgim_mouse),to_value_2(atom_number),
-    EntzOpts = [cnm_transform(mgi_entrez_idx_header),to_value_1(pfx_by_num(true,'MGI:')),prefix(mgim_mouse),to_value_2(=),
-            source(EntzUrl), datetime(EntzDnt), has_header(false),header(EntzHdr)
+    NcbiOpts = [cnm_transform(mgi_ncbi_idx_header),to_value_1(pfx_by_num(true,'MGI:')),prefix(mgim_mouse),to_value_2(=),
+            source(NcbiUrl), datetime(NcbiDnt), has_header(false),header(NcbiHdr)
            ],
-    csv_ids_map( _, 1, 9, EntzMtx, MapEntzF, EntzOpts ),
+    csv_ids_map( _, 1, 9, NcbiMtx, MapNcbiF, NcbiOpts ),
 
 
     % symbol & synonyms:
@@ -127,7 +128,7 @@ std_mouse_maps_mgim( Args ) :-
             source(SymbUrl), datetime(SymbDnt)
            ],
     csv_ids_map( _, 'Marker Symbol', 'Marker Name', SymbMtx, MapWdraF, WdraOpts ),
-    MapFs = [GenBMapF,ChrlF,UnipMapF,MapSynoF,MapWdraF,MapEntzF],
+    MapFs = [GenBMapF,ChrlF,UnipMapF,MapSynoF,MapWdraF,MapNcbiF],
     Cpts = call_options([org(mouse),type(maps)]),
     map_list_options( link_to_bio_sub(mgim), MapFs, Cpts ),
 
@@ -135,8 +136,8 @@ std_mouse_maps_mgim( Args ) :-
     % here( here(GenBMapF,DnDir,SeqRelF) ).
     debuc( Self, end, true ).
 
-mgi_entrez_idx_header( 1, mgim ).
-mgi_entrez_idx_header( 9, entz ).
+mgi_ncbi_idx_header( 1, mgim ).
+mgi_ncbi_idx_header( 9, ncbi ).
 
 /* atom_number/2 does the same, except for exception...
 mgi_entrez_id( '', _ ) :- !, fail.

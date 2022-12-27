@@ -76,6 +76,7 @@ std(mouse, maps, ense).
 std(mouse, maps, ncbi).
 std(mouse, maps, unip).
 std(mouse, maps, gont).
+std(mouse, maps, reac).
 
 % std( mouse, graphs, gont ).
 std(mouse, graphs, strg).

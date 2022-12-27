@@ -24,6 +24,12 @@ std_mouse_defaults(debug(true)).
 
 Build all the standard datasets for bio_db.
 
+Dependencies
+ * on([])
+   maps_mgim
+ * on(maps_mgim)
+   maps_ense
+
 @author nicos angelopoulos
 @version  0.1 2017/10/12
 @version  0.2 2018/03/30

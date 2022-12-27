@@ -35,6 +35,29 @@ sequences.
 
   * ense: the database abbv.
 
+==
+
+date ; pupsh std_mouse_maps_ense.pl ; date
+Tue 27 Dec 14:58:14 GMT 2022
+% Building at: '/home/nicos/.local/share/swi-prolog/pack/Downloads/bio_db_repo-22.12.27'
+...
+% Symbolic linking, '/home/nicos/.local/share/swi-prolog/pack/Downloads/bio_db_repo-22.12.27/dnloads/ense/maps/ense_musm_ensg_symb.pl', to '/home/nicos/.local/share/swi-prolog/pack/Downloads/bio_db_repo-22.12.27/data/musm/maps/ense/ense_musm_ensg_symb.pl'
+% ...Done
+Tue 27 Dec 15:02:55 GMT 2022
+
+ορέστης;ense/maps% date
+Tue 27 Dec 15:05:38 GMT 2022
+ορέστης;ense/maps% pwd
+/usr/local/users/nicos/local/share/swi-prolog/pack/Downloads/bio_db_repo-22.12.27/dnloads/ense/maps
+ορέστης;ense/maps% wc -l *_m*
+   56987 ense_musm_ensg_chrl.pl
+   55441 ense_musm_ensg_mgim.pl
+   56987 ense_musm_ensg_symb.pl
+  149393 ense_musm_enst_chrl.pl
+  149393 ense_musm_enst_ensg.pl
+  468201 total
+==
+
 @author nicos angelopoulos
 @version  0:1 2020/9/10
 @tbd transcripts (see std_maps_ense.pl).
@@ -45,8 +68,8 @@ std_mouse_maps_ense( Args ) :-
     Self = std_maps_ense,
     options_append( Self, Args, Opts ),
     bio_db_build_aliases( Opts ),
-    ensure_loaded(mgim:bio_db_build_downloads('mgim/maps/map_mgim_mouse_mgim_symb')),
-    ensure_loaded(mgim:bio_db_build_downloads('mgim/maps/map_mgim_mouse_syno_mgim')),
+    ensure_loaded(mgim:bio_db_build_downloads('mgim/maps/mgim_musm_mgim_symb')),
+    ensure_loaded(mgim:bio_db_build_downloads('mgim/maps/mgim_musm_syno_mgim')),
 	absolute_file_name( bio_db_build_downloads(ense), DnDir ),
 	os_make_path( DnDir ),
 	debuc( Self, 'Downloads dir for ense: ~p', DnDir ),
@@ -77,8 +100,8 @@ std_mouse_maps_ense( Args ) :-
 	debuc( Self, length, rows/Rows ),
 	% ense_genes( Rows, EnsGHRows, EnsGSRows, EnsGCRows ),
     ense_transcripts( Rows, EnsTGRows, EnsTLRows ),
-	mtx( 'map_ense_mouse_enst_ensg.csv', EnsTGRows ),
-	mtx( 'map_ense_mouse_enst_chrl.csv', EnsTLRows ),
+	mtx( 'ense_musm_enst_ensg.csv', EnsTGRows ),
+	mtx( 'ense_musm_enst_chrl.csv', EnsTLRows ),
 
 	ense_genes( Rows, Self, EnsGMRows, EnsGSRows, EnsGCRows ),
     Lbls = [gtfRows,ensGM,ensGS,ensGC],
@@ -101,13 +124,13 @@ std_mouse_maps_ense( Args ) :-
     findall( Symb, mgim:map_mgim_mouse_mgim_symb(_,Symb), AllSymbs ),
     debuc( Self, length, [mgim_symb_not_in_ense,total]/[NonMgimSymbs,AllSymbs] ),
     */
-	mtx( 'map_ense_mouse_ensg_mgim.csv', EnsGMRowsSet ),
-	mtx( 'map_ense_mouse_ensg_symb.csv', EnsGSRowsSet ),
-	mtx( 'map_ense_mouse_ensg_chrl.csv', EnsGCRows ),
+	mtx( 'ense_musm_ensg_mgim.csv', EnsGMRowsSet ),
+	mtx( 'ense_musm_ensg_symb.csv', EnsGSRowsSet ),
+	mtx( 'ense_musm_ensg_chrl.csv', EnsGCRows ),
     	Csvs = [ 
-                 'map_ense_mouse_enst_ensg.csv', 'map_ense_mouse_enst_chrl.csv',
-                 'map_ense_mouse_ensg_mgim.csv', 'map_ense_mouse_ensg_symb.csv',
-                 'map_ense_mouse_ensg_chrl.csv'
+                 'ense_musm_enst_ensg.csv', 'ense_musm_enst_chrl.csv',
+                 'ense_musm_ensg_mgim.csv', 'ense_musm_ensg_symb.csv',
+                 'ense_musm_ensg_chrl.csv'
 	       ],
 	debuc( Self, 'mapping: ~w', [Csvs] ),
 	maplist( csv_to_pl(Self), Csvs ),
@@ -151,12 +174,12 @@ ense_genes( [RowG|Rows], Self, GMRows, [GSRow|TGSRows], [EnsGC|GCRows] ) :-
 	ense_info( gene_name, InfoG, def(EnsG), Syno ),
 	% ense_gene_hgnc( EnsG, EnsN, GHRows, GSRows, TGHRows, TGSRows ),
     % fixme: check Symb is an mgim symbol ?
-    ( mgim:map_mgim_mouse_mgim_symb(SynoGim,Syno) -> 
+    ( mgim:mgim_musm_mgim_symb(SynoGim,Syno) -> 
         Syno = Symb,
         GMRows = [row(EnsG,SynoGim)|TGMRows]
         ;
-        ( ( mgim:map_mgim_mouse_syno_mgim(Syno,Mgim),
-            mgim:map_mgim_mouse_mgim_symb(Mgim,Symb)
+        ( ( mgim:mgim_musm_syno_mgim(Syno,Mgim),
+            mgim:mgim_musm_mgim_symb(Mgim,Symb)
           ) -> 
             GMRows = [row(EnsG,Mgim)|TGMRows]
             ;

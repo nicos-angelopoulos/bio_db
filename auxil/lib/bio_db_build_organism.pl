@@ -62,7 +62,10 @@ bio_db_organism( Alias, Token, Org ) :-
 bio_db_organism( Org, Token, Canon ) :-
     bio_db_organism( Org ),
     bio_db_organism_token( Org, Token ),
+    !,
     Canon = Org.
+bio_db_organism( Token, Token, Canon ) :-
+    bio_db_organism_token( Canon, Token ).
 
 bio_db_organism_token(gallus, galg).
 bio_db_organism_token(hs, homs).

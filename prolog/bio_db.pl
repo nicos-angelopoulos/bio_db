@@ -133,9 +133,18 @@ bio_db_organism( Alias, Token, Org ) :-
     ( Backtrack == false -> !; true ),
     bio_db_organism_token( Org, Token ).
 bio_db_organism( Org, Token, Canon ) :-
+    ( ground(Org) -> Backtrack = false; Backtrack = true ),
     bio_db_organism( Org ),
     bio_db_organism_token( Org, Token ),
+    ( Backtrack == false -> !; true ),
     Canon = Org.
+bio_db_organism( TokenIs, Token, Canon ) :-
+    ( ground(TokenIs) -> Backtrack = false; Backtrack = true ),
+    bio_db_organism_token( Canon, Token ),
+    ( Backtrack == false -> !; true ),
+    Token = TokenIs.
+
+
 
 bio_db_organism_token(gallus, galg).
 bio_db_organism_token(hs, homs).

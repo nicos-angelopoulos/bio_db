@@ -90,8 +90,8 @@ std_mouse_maps_mgim( Args ) :-
     findall( Unip-Tremb, (member(GenRow,GenRows),arg(14,GenRow,Unip),arg(15,GenRow,Tremb),Unip\=='',Tremb\==''), UTs ),
     debuc( Self, length, uTs/UTs ),
 	% absolute_file_name( bio_db_downloads(mgim), MgimD ),
-    Cims = [cnm_transform(mouse_cnm),to_value_1(pfx_by_num(true,'MGI:')),prefix(mgim_mouse),to_value_2(sep_by('|')),
-            source(SeqUrl), datetime(SeqDnt)
+    Cims = [cnm_transform(mouse_cnm),to_value_1(pfx_by_num(true,'MGI:')),prefix(mgim),to_value_2(sep_by('|')),
+            source(SeqUrl), datetime(SeqDnt), org(mouse)
            ],
     csv_ids_map( _, 'MGI Marker Accession ID', 'GenBank IDs', GenMtx, GenBMapF, Cims ),
     csv_ids_map( _, 'MGI Marker Accession ID', 'UniProt IDs', GenMtx, UnipMapF, Cims ),

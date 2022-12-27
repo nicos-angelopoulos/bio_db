@@ -22,11 +22,9 @@
 :- lib(bio_db_add_infos/1).   % bio_db_add_infos_to/2
 :- lib(link_to_bio_sub/3).
 
-:- debuc(std_mouse_maps_ense).
-
 std_gallus_maps_ense_defaults(debug(true)).
 
-/** std_mouse_maps_ense( +Opts ).
+/** std_gallus_maps_ense( +Opts ).
 
 Maps based on ensembl .gtf file.
 
@@ -37,9 +35,32 @@ Currently only gene symbols, but as per human it should be trivial to do sequenc
 
   * ense: the database abbv.
 
+==
+?- std_gallus_maps_ense([]).
+
+ορέστης;dnloads/ense% date
+Tue 27 Dec 11:58:17 GMT 2022
+ορέστης;dnloads/ense% pwd 
+/usr/local/users/nicos/local/share/swi-prolog/pack/Downloads/bio_db_repo-22.12.27/dnloads/ense
+ορέστης;dnloads/ense% wc -l maps/*
+   62710 maps/ense_homs_ensg_chrl.pl
+   41135 maps/ense_homs_ensg_hgnc.pl
+   41135 maps/ense_homs_ensg_symb.pl
+  252212 maps/ense_homs_enst_chrl.pl
+  252212 maps/ense_homs_enst_ensg.pl
+   30115 maps/map_ense_gallus_ensg_chrl.pl
+   13788 maps/map_ense_gallus_ensg_symb.pl
+   72696 maps/map_ense_gallus_enst_chrl.pl
+   72696 maps/map_ense_gallus_enst_ensg.pl
+   30869 maps/map_ense_gg6a_ensg_chrl.pl
+    6487 maps/map_ense_gg6a_ensg_symb.pl
+   74303 maps/map_ense_gg6a_enst_chrl.pl
+   74303 maps/map_ense_gg6a_enst_ensg.pl
+==
+
 @author nicos angelopoulos
 @version  0:1 2020/9/10
-@tbd transcripts (see std_maps_ense.pl).
+@tbd transcripts (see ../human/std_maps_ense.pl).
 
 */
 
@@ -51,8 +72,6 @@ std_gallus_maps_ense( Tkn, EnsDir, Args ) :-
     Self = std_gallus_maps_ense,
     options_append( Self, Args, Opts ),
     bio_db_build_aliases( Opts ),
-    % ensure_loaded(mgim:bio_db_build_downloads('mgim/maps/map_mgim_mouse_mgim_symb')),
-    % ensure_loaded(mgim:bio_db_build_downloads('mgim/maps/map_mgim_mouse_syno_mgim')),
     absolute_file_name( bio_db_build_downloads(ense), DnDir ),
     os_make_path( DnDir ),
     debuc( Self, 'Downloads dir for ense: ~p', DnDir ),
@@ -91,23 +110,8 @@ std_gallus_maps_ense( Tkn, EnsDir, Args ) :-
     ERws = [Rows, EnsGSRows, EnsGCRows],
     debuc( Self, length, Lbls/ERws ),
     %
-    % mtx( 'map_ense_mouse_ensg_msgi.csv', EnsGHRows ),
-    % sort( EnsGCRows, EnsGCRowsSet ),
     sort( EnsGSRows, EnsGSRowsSet ),
-    % sort( EnsGMRows, EnsGMRowsSet ),
 
-    % Sets = [EnsGMRowsSet,EnsGSRowsSet],
-    % debuc( Self, length, [gmSet,gsSet,gcSet]/Sets ),
-    /* fixme: create a fast version, this is only for printing ...
-    findall( Symb, ( mgim:map_mgim_mouse_mgim_symb(_,Symb),
-                     \+ memberchk( row(_,Symb), EnsGSRowsSet)
-                     % debuc(Self,'MGIM symbol, not in Ensembl: ~w', Symb )
-                   ), 
-                      NonMgimSymbs ),
-    findall( Symb, mgim:map_mgim_mouse_mgim_symb(_,Symb), AllSymbs ),
-    debuc( Self, length, [mgim_symb_not_in_ense,total]/[NonMgimSymbs,AllSymbs] ),
-    */
-     % mtx( 'map_ense_mouse_ensg_mgim.csv', EnsGMRowsSet ),
      at_con( [map,ense,Tkn,ensg,'symb.csv'], '_', EnsGSF ),
      % mtx( 'map_ense_gallus_ensg_symb.csv', EnsGSRowsSet ),
      mtx( EnsGSF, EnsGSRowsSet ),

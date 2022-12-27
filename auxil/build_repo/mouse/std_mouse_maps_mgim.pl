@@ -44,7 +44,25 @@ Opts
      is a...
 
 ==
-?- std_mouse__map_mgim.
+?- std_mouse__map_mgim([]).
+
+ορέστης;build_repo/mouse% date; pupsh std_mouse_maps_mgim.pl; date
+Tue 27 Dec 14:39:32 GMT 2022
+% Building at: '/home/nicos/.local/share/swi-prolog/pack/Downloads/bio_db_repo-22.12.27'
+% Creating dated local basename.
+% Using local directory: '/home/nicos/.local/share/swi-prolog/pack/Downloads/bio_db_repo-22.12.27/dnloads/mgim'
+% File with today's date exists: '/home/nicos/.local/share/swi-prolog/pack/Downloads/bio_db_repo-22.12.27/dnloads/mgim/MRK_List1-22.12.27.rpt', so skipping download of:'http://www.informatics.jax.org/downloads/reports/MRK_List1.rpt'.
+...
+Tue 27 Dec 14:42:47 GMT 2022
+
+ορέστης;dnloads/mgim% ls ../../data/
+galg/  homs/  musm/
+ορέστης;dnloads/mgim% cd maps
+ορέστης;mgim/maps% date
+Tue 27 Dec 14:45:59 GMT 2022
+ορέστης;mgim/maps% pwd
+/usr/local/users/nicos/local/share/swi-prolog/pack/Downloads/bio_db_repo-22.12.27/dnloads/mgim/maps
+
 ==
 
 @author nicos angelopoulos
@@ -68,7 +86,7 @@ std_mouse_maps_mgim( Args ) :-
     Cpts = call_options([org(mouse),type(maps)]),
     map_list_options( link_to_bio_sub(mgim), SymbMapFs, Cpts ),
     SymbMtx = [SymbHdr|SymbRows],
-    findall( map_mgim_mouse_mgim_chrl(RMgi,RChr,RStart,REnd,RSign), (  member(SymbRow,SymbRows),
+    findall( mgim_musm_mgim_chrl(RMgi,RChr,RStart,REnd,RSign), (  member(SymbRow,SymbRows),
                                                 arg(1,SymbRow,RMgiMFull),
                                                 atomic_list_concat(['MGI',RMgiAtm],':',RMgiMFull),
                                                 atom_number( RMgiAtm, RMgi ),
@@ -77,7 +95,7 @@ std_mouse_maps_mgim( Args ) :-
                                                 arg(5,SymbRow,REnd),
                                                 arg(6,SymbRow,RSign)
                                              ), MapChrlRows ),
-    ChrlF = 'map_mgim_mouse_mgim_chrl.pl',
+    ChrlF = 'mgim_musm_mgim_chrl.pl',
     portray_clauses( MapChrlRows, file(ChrlF) ),
     findall( ChrlHdrArg, (member(I,[1,2,4,5,6]),arg(I,SymbHdr,ChrlHdrArg)), ChrlHdrArgs ),
     ChrlHdr =.. [hdr|ChrlHdrArgs],
@@ -100,31 +118,31 @@ std_mouse_maps_mgim( Args ) :-
     mgim_get_report( ncbi, Self, NcbiUrl, DnDir, _NcbiRelF, NcbiMtx, NcbiDnt ),
     NcbiHdr = hdr('MGI Marker Accession ID','NCBI ID'),
     % EntzOpts = [cnm_transform(mgi_entrez_idx_header),to_value_1(pfx_by_num(true,'MGI:')),prefix(mgim_mouse),to_value_2(atom_number),
-    NcbiOpts = [cnm_transform(mgi_ncbi_idx_header),to_value_1(pfx_by_num(true,'MGI:')),prefix(mgim_mouse),to_value_2(=),
+    NcbiOpts = [cnm_transform(mgi_ncbi_idx_header),to_value_1(pfx_by_num(true,'MGI:')),prefix(mgim),org(mouse),to_value_2(=),
             source(NcbiUrl), datetime(NcbiDnt), has_header(false),header(NcbiHdr)
            ],
     csv_ids_map( _, 1, 9, NcbiMtx, MapNcbiF, NcbiOpts ),
 
 
     % symbol & synonyms:
-    findall( map_mgim_mouse_mgim_symb(RMgi,RSymb), ( member(SymbRow,SymbRows),
+    findall( mgim_musm_mgim_symb(RMgi,RSymb), ( member(SymbRow,SymbRows),
                                                     arg(1,SymbRow,RMgiFull),
                                                     atomic_list_concat(['MGI',RMgiAtm], ':', RMgiFull),
                                                     atom_number( RMgiAtm, RMgi ),
                                                     arg(7,SymbRow,RSymb)
                                                   ),
                                                     MapSymbRows ),
-    MapSymbF = 'map_mgim_mouse_mgim_symb.pl',
+    MapSymbF = 'mgim_musm_mgim_symb.pl',
     portray_clauses( MapSymbRows, file(MapSymbF) ),
     MapSymbHdr = hdr('MGI Marker Accession ID','Symbol'), % fixme: use arg ?
     bio_db_add_infos_file( MapSymbF, [source(SymbUrl),header(MapSymbHdr),datetime(SymbDnt)] ),
-    SynoOpts = [cnm_transform(mouse_cnm),to_value_2(pfx_by_num(true,'MGI:')),prefix(mgim_mouse),to_value_1(sep_by('|')),
+    SynoOpts = [cnm_transform(mouse_cnm),to_value_2(pfx_by_num(true,'MGI:')),prefix(mgim),org(mouse),to_value_1(sep_by('|')),
             source(SymbUrl), datetime(SymbDnt)
            ],
     csv_ids_map( _, 'Marker Synonyms (pipe-separated)', 'MGI Accession ID', SymbMtx, MapSynoF, SynoOpts ),
 
     % withdrawn
-    WdraOpts = [cnm_transform(mouse_cnm_withdrawn),to_value_2(withdrawn),prefix(mgim_mouse),% to_value_1(sep_by('|')),
+    WdraOpts = [cnm_transform(mouse_cnm_withdrawn),to_value_2(withdrawn),prefix(mgim),org(mouse),% to_value_1(sep_by('|')),
             source(SymbUrl), datetime(SymbDnt)
            ],
     csv_ids_map( _, 'Marker Symbol', 'Marker Name', SymbMtx, MapWdraF, WdraOpts ),

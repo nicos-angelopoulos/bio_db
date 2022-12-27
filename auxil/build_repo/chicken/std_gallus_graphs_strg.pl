@@ -39,6 +39,30 @@ std_gallus_graphs_strg_defaults( [debug(true)|T] ) :-
 
 % last good one: std_graphs_string( '10' ).  2016/09/08
 % last good one: std_graphs_string( '10.5' ).  2018/03/30
+
+/** std_gallus_graphs_strg(+Opts).
+
+String graphs and a map for chicken products.
+
+==
+?- std_gallus_graphs_str([]).
+
+ορέστης;dnloads/strg% pwd
+/usr/local/users/nicos/local/share/swi-prolog/pack/Downloads/bio_db_repo-22.12.27/dnloads/strg
+ορέστης;dnloads/strg% date
+Tue 27 Dec 14:01:05 GMT 2022
+ορέστης;dnloads/strg% wc -l graphs/strg_g*
+  7821425 graphs/strg_galg_edge_ensp.pl
+  3910716 graphs/strg_galg_edge_symb.pl
+ 11732141 total
+ορέστης;dnloads/strg% wc -l maps/strg_galg_ensp_symb.pl
+15515 maps/strg_galg_ensp_symb.pl
+
+==
+
+@author nicos angelopoulos
+@version  0:1 2022/12/19
+*/
 std_gallus_graphs_strg( Args ) :-
     Self = std_gallus_graphs_strg,
     options_append( Self, Args, Opts ),
@@ -57,30 +81,30 @@ std_gallus_graphs_strg( Args ) :-
     working_directory( Here, Parent ),
     @ gunzip( -k, Bname ),  % keeps .gz file
     % @ gunzip( '9606.protein.links.v10.txt.gz' ),
-    Edge = edge_strg_gallus,
+    EnspPn = strg_galg_edge_ensp,
     file_name_extension( TxtF, gz, Bname ),
     debuc( Self, 'Directory: ~p', [Parent] ),
     Mess1 = 'Converting string file: ~p, to Prolog',
     debuc( Self, Mess1, [TxtF] ),
-    MtxOpts = [ csv_read(separator(0' )),predicate_name(Edge),
+    MtxOpts = [ csv_read(separator(0' )),predicate_name(EnspPn),
             rows_transform(maplist(user:de_gallus)),header_remove(true) ],
     debuc( Self, 'mtx_prolog options: ~w', [MtxOpts] ),
     mtx_prolog( TxtF, File, MtxOpts ),
     debuc( Self, 'Edges output: ~w', File ),
     delete_file( TxtF ),
-    % @ rm( -rf, graphs ), don't do that ! there are now multiple downloads from string..
     os_make_path( graphs, debug(true) ),
     os_make_path( maps, debug(true) ),
-    Trg = 'graphs/edge_strg_gallus.pl',
-    @ rm( -f, Trg ),
-    @ mv( File, Trg ),
-    consult( edge_strg_gallus:Trg ),
+    os_dir_stem_ext( graphs, EnspPn, pl, EnspRel ),
+    @ rm( -f, EnspRel ),
+    @ mv( File, EnspRel ),
+    consult( EnspPn:EnspRel ),
      
     % info file connect protein to SYmbol
     directory_file_path( Parent, InfoBname, LocalInfoFile ),
     std_graph_string_download_string( LocalInfoFile, InfoFrom, Self ),
     @ gunzip( -k, InfoBname ),  % keeps .gz file
-    Map = map_strg_gallus_ensp_symb,
+    % Map = map_strg_gallus_ensp_symb,
+    Map = strg_galg_ensp_symb,
     file_name_extension( InfoTxtF, gz, InfoBname ),
     InfoMess1 = 'Converting map string file: ~p, to Prolog',
     debuc( Self, InfoMess1, [InfoTxtF] ),
@@ -96,10 +120,10 @@ std_gallus_graphs_strg( Args ) :-
     % mtx( InfoBname, MapRows ),
     debuc( Self, 'wrote, and consulting: ~p', [MapPlF] ),
     Map:consult(MapPlF),
-    findall( edge_strg_gallus_symb(SymbA,SymbB,W),
-                         ( edge_strg_gallus:edge_strg_gallus(EnsP1,EnsP2,W),
-                           Map:map_strg_gallus_ensp_symb(EnsP1,Symb1),
-                           Map:map_strg_gallus_ensp_symb(EnsP2,Symb2),
+    findall( strg_galg_edge_symb(SymbA,SymbB,W),
+                         ( EnspPn:strg_galg_edge_ensp(EnsP1,EnsP2,W),
+                           Map:strg_galg_ensp_symb(EnsP1,Symb1),
+                           Map:strg_galg_ensp_symb(EnsP2,Symb2),
                            sort(Symb1,Symb2,SymbA,SymbB)
                      ),
             UnoSymbEdges
@@ -107,10 +131,10 @@ std_gallus_graphs_strg( Args ) :-
     sort( UnoSymbEdges, SymbEdges ),
     length( SymbEdges, SymbEdgesLen ),
     debuc( Self, 'unique symbol edges (gallus): ~w', [SymbEdgesLen] ),
-    EdgeSymbsF = 'graphs/edge_strg_gallus_symb.pl',
+    EdgeSymbsF = 'graphs/strg_galg_edge_symb.pl',
     bio_db_dnt_times( Bname, DnDt, _EndDt ),
     EdgeSymbsInfos = [ source-From,datetime-DnDt,header-header('Symbol','Symbol',weight),
-                       data_types-data_types(atom,atom)
+                       data_types-data_types(atom,atom,integer)
                      ],
     portray_informed_clauses( SymbEdges, EdgeSymbsInfos, EdgeSymbsF, [] ),
     debuc( Self, 'Portrayed onto: ~p', [EdgeSymbsF] ),
@@ -118,9 +142,9 @@ std_gallus_graphs_strg( Args ) :-
     BaseOpts = [ source(From), datetime(DnDt),
                   header(row('Ensembl_Protein','Ensembl_Protein',weight))
                 ],
-    debuc( Self, 'doing infos for: ~p', [Trg] ),
-    bio_db_add_infos_to( BaseOpts, Trg ),
-    link_to_bio_sub( strg, Trg, [org(gallus),type(graphs)] ),
+    debuc( Self, 'doing infos for: ~p', [EnspRel] ),
+    bio_db_add_infos_to( BaseOpts, EnspRel ),
+    link_to_bio_sub( strg, EnspRel, [org(gallus),type(graphs)] ),
     link_to_bio_sub( strg, EdgeSymbsF, [org(gallus),type(graphs)] ),
     link_to_bio_sub( strg, MapPlF, [org(gallus),type(maps)] ),
     delete_file( InfoTxtF ),

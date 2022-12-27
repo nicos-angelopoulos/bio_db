@@ -74,4 +74,5 @@ std(gallus, graphs, strg).
 std(gallus, maps, cgnc).
 std(gallus, maps, ense).
 std(gallus, maps, gont).
+std(gallus, maps, reac).
 std(gallus, maps, unip).

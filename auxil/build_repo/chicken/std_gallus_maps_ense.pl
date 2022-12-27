@@ -38,24 +38,27 @@ Currently only gene symbols, but as per human it should be trivial to do sequenc
 ==
 ?- std_gallus_maps_ense([]).
 
-ορέστης;dnloads/ense% date
-Tue 27 Dec 11:58:17 GMT 2022
-ορέστης;dnloads/ense% pwd 
-/usr/local/users/nicos/local/share/swi-prolog/pack/Downloads/bio_db_repo-22.12.27/dnloads/ense
-ορέστης;dnloads/ense% wc -l maps/*
-   62710 maps/ense_homs_ensg_chrl.pl
-   41135 maps/ense_homs_ensg_hgnc.pl
-   41135 maps/ense_homs_ensg_symb.pl
-  252212 maps/ense_homs_enst_chrl.pl
-  252212 maps/ense_homs_enst_ensg.pl
-   30115 maps/map_ense_gallus_ensg_chrl.pl
-   13788 maps/map_ense_gallus_ensg_symb.pl
-   72696 maps/map_ense_gallus_enst_chrl.pl
-   72696 maps/map_ense_gallus_enst_ensg.pl
-   30869 maps/map_ense_gg6a_ensg_chrl.pl
-    6487 maps/map_ense_gg6a_ensg_symb.pl
-   74303 maps/map_ense_gg6a_enst_chrl.pl
-   74303 maps/map_ense_gg6a_enst_ensg.pl
+ορέστης;build_repo/chicken% date ; pupsh std_gallus_maps_ense.pl ; date
+Tue 27 Dec 13:04:38 GMT 2022
+% Building at: '/home/nicos/.local/share/swi-prolog/pack/Downloads/bio_db_repo-22.12.27'
+...
+% ...Done
+Tue 27 Dec 13:09:40 GMT 2022
+
+ορέστης;ense/maps% pwd
+/usr/local/users/nicos/local/share/swi-prolog/pack/Downloads/bio_db_repo-22.12.27/dnloads/ense/maps
+ορέστης;ense/maps% date
+Tue 27 Dec 13:12:27 GMT 2022
+ορέστης;ense/maps% wc -l *_g*
+   30115 map_ense_galg_ensg_chrl.pl
+   13788 map_ense_galg_ensg_symb.pl
+   72696 map_ense_galg_enst_chrl.pl
+   72696 map_ense_galg_enst_ensg.pl
+   30869 map_ense_gg6a_ensg_chrl.pl
+    6487 map_ense_gg6a_ensg_symb.pl
+   74303 map_ense_gg6a_enst_chrl.pl
+   74303 map_ense_gg6a_enst_ensg.pl
+  375257 total
 ==
 
 @author nicos angelopoulos
@@ -65,7 +68,7 @@ Tue 27 Dec 11:58:17 GMT 2022
 */
 
 std_gallus_maps_ense( Args ) :-
-    std_gallus_maps_ense( gallus, gallus_gallus, Args ),
+    std_gallus_maps_ense( galg, gallus_gallus, Args ),
     std_gallus_maps_ense( gg6a, gallus_gallus_gca000002315v5, Args ).
 
 std_gallus_maps_ense( Tkn, EnsDir, Args ) :-
@@ -156,7 +159,7 @@ std_gallus_maps_ense( Tkn, EnsDir, Args ) :-
      working_directory( _, Old ),
      debuc( Self, '...Done', true ).
 
-std_gallus_ense_gtf_file( gallus, Found, MsGtfF ) :-
+std_gallus_ense_gtf_file( galg, Found, MsGtfF ) :-
     findall( MsGtf-Amb-Rel, (
                          member(MsGtf,Found),
                          at_con(['Gallus_gallus','bGalGal1',mat,broiler,GRChTkn,RelAtm,gtf,gz],'.',MsGtf),

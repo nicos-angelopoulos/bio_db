@@ -1,6 +1,7 @@
 % :- lib( replace_non_alphanums/3 ).
 :- lib( stoics_lib:at_con/3 ).
-:- ensure_loaded(bio_db_build_organism/3).
+
+:- ensure_loaded(bio_db_build_organism).
 
 %% map_predicate_name( +Cnm1, +Cnm2, -Pname, +Opts ).
 %

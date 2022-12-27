@@ -22,7 +22,7 @@
 :- ensure_loaded('../../lib/bio_db_build_aliases').  % /1.
 
 % local libs & sources
-:- ensure_loaded('../hs/src/map_uniprot').  % /4.
+:- ensure_loaded('../human/src/map_uniprot').  % /4.
 :- lib(bio_db_add_infos/1). % bio_db_add_infos_to/2.
 :- lib(csv_ids_map/6).
 :- lib(link_to_bio_sub/3).
@@ -43,18 +43,29 @@ unip_dnload( Self, Loc ) :-
 
 std_gallus_maps_unip_defaults(debug(true)).
 
-%% std_gallus_maps_unip(Opts).
-%
-% Create some uniprot maps.
-%
-%==
-% ?- std_gallus_maps_unip
-% ?- shell( 'wc -l uniprot_*' ).
-%==
-%
-% @author nicos angelopoulos
-% @version  0.1 2022/12/20
-%
+/** std_gallus_maps_unip(Opts).
+
+Create bio_db uniprot maps.
+
+==
+?- std_gallus_maps_unip([]).
+
+ορέστης;unip/maps% pwd
+/usr/local/users/nicos/local/share/swi-prolog/pack/Downloads/bio_db_repo-22.12.27/dnloads/unip/maps
+ορέστης;unip/maps% date
+Tue 27 Dec 12:58:09 GMT 2022
+ορέστης;unip/maps% wc -l *gal*
+  73128 unip_galg_unip_ensp.pl
+   1862 unip_galg_unip_gyno.pl
+  12697 unip_galg_unip_ncbi.pl
+  13189 unip_galg_unip_strp.pl
+  61681 unip_galg_unip_symb.pl
+ 162557 total
+
+@author nicos angelopoulos
+@version  0.1 2022/12/20
+
+*/
 std_gallus_maps_unip( Args ) :-
      Self = std_gallus_maps_unip,
      options_append( Self, Args, Opts ),
@@ -71,40 +82,40 @@ std_gallus_maps_unip( Args ) :-
      os_make_path( maps, debug(true) ),
 
      debuc( Self, 'Dir location: ~p', DnDir ),
-     Rev = [uniprot('CHICK_9031_idmapping.dat'),f_call(de_pfx_dot),org(gallus),interface(prolog),reverse(false)],
+     Rev = [uniprot('CHICK_9031_idmapping.dat'),f_call(de_pfx_dot),org(galg),interface(prolog),reverse(false)],
      map_uniprot( 'Ensembl_PRO', Csv, [EnspF], Rev ),
 
      % Fgnc = [interface(prolog),f_call(de_semi('HGNC'))],
      % map_uniprot( 'HGNC', Csv, [FromHgncF], Fgnc ),
-     Sem = [interface(prolog),f_call(de_semi_dot('9031')),reverse(false),uniprot('CHICK_9031_idmapping.dat'),org(gallus)],
+     Sem = [interface(prolog),f_call(de_semi_dot('9031')),reverse(false),uniprot('CHICK_9031_idmapping.dat'),org(galg)],
      map_uniprot( 'STRING', Csv, [StrF], Sem ),
 
-     Ifc = [uniprot('CHICK_9031_idmapping.dat'),org(gallus),interface(prolog)],
-     Rfc = [uniprot('CHICK_9031_idmapping.dat'),org(gallus),interface(prolog),reverse(false)],
+     Ifc = [uniprot('CHICK_9031_idmapping.dat'),org(galg),interface(prolog)],
+     Rfc = [uniprot('CHICK_9031_idmapping.dat'),org(galg),interface(prolog),reverse(false)],
 
-     map_uniprot( 'GeneID', Csv, [EtzF], Ifc ),
+     map_uniprot( 'GeneID', Csv, [NcbF], Ifc ),
      % map_uniprot( 'UniGene', Csv, [UniGF], Ifc ),
      map_uniprot( 'Gene_Name', Csv, [SymbF], Ifc ),
      map_uniprot( 'Gene_Synonym', Csv, [GynoF], Rfc ),
 
      % Files = [HgncF,FromHgncF,EtzF,UniGF,EnspF],
      % Files = [MgiF,EtzF,UniGF,EnspF,SymbF,GynoF],
-     Files = [StrF,EtzF,EnspF,SymbF,GynoF],
+     Files = [StrF,NcbF,EnspF,SymbF,GynoF],
      % working_directory( _, maps ),
      % maplist( link_to_map_sub(unip), Files ),
-    Cpts = [org(gallus),type(maps)],
+    Cpts = [org(galg),type(maps)],
     map_list_options( link_to_bio_sub(unip), Files, call_options(Cpts) ),
 
      bio_db_dnt_times( File, SwDnDt, _SwDnEn ),
      SwOpts = [source(Url),datetime(SwDnDt)],
-     bio_db_add_infos_to( [header(row('UniProt','Ensembl_Protein'))|SwOpts], 'maps/map_unip_gallus_unip_ensp.pl' ),
-     bio_db_add_infos_to( [header(row('Uni_Protein','Entrez_ID'))|SwOpts], 'maps/map_unip_gallus_unip_entz.pl' ),
-     bio_db_add_infos_to( [header(row('Uni_Protein','String Protein'))|SwOpts], 'maps/map_unip_gallus_unip_strp.pl' ),
+     bio_db_add_infos_to( [header(row('UniProt','Ensembl_Protein'))|SwOpts], 'maps/map_unip_galg_unip_ensp.pl' ),
+     bio_db_add_infos_to( [header(row('Uni_Protein','NCBI_ID'))|SwOpts], 'maps/map_unip_galg_unip_ncbi.pl' ),
+     bio_db_add_infos_to( [header(row('Uni_Protein','String Protein'))|SwOpts], 'maps/map_unip_galg_unip_strp.pl' ),
      % bio_db_add_infos_to( [header(row('Uni Protein','HGNC ID'))|SwOpts], 'maps/map_unip_mouse_unip_hgnc.pl' ),
     % Unigene has been discontinued
      %bio_db_add_infos_to( [header(row('Uni_Protein','Uni_Gene'))|SwOpts], 'maps/map_unip_mouse_unip_unig.pl' ),
-     bio_db_add_infos_to( [header(row('Uni_Protein','Symbol'))|SwOpts], 'maps/map_unip_gallus_unip_symb.pl' ),
-     bio_db_add_infos_to( [header(row('Uni_Protein','Symbol Synonym'))|SwOpts], 'maps/map_unip_gallus_unip_gyno.pl' ),
+     bio_db_add_infos_to( [header(row('Uni_Protein','Symbol'))|SwOpts], 'maps/map_unip_galg_unip_symb.pl' ),
+     bio_db_add_infos_to( [header(row('Uni_Protein','Symbol Synonym'))|SwOpts], 'maps/map_unip_galg_unip_gyno.pl' ),
 
 /*
      working_directory( _, DnDir ),
@@ -173,7 +184,7 @@ std_map_usyn_unip :-
      csv_ids_map( _, usyn, unip, [row(usyn,unip)|OrdRs], MapF, Opts ),
      os_path( MapsD, MapF, AbsMapF ),
      % link_to_map_sub( unip, AbsMapF ).
-    link_to_bio_sub( unip, AbsMapF, [org(mouse),type(maps)] ).
+    link_to_bio_sub( unip, AbsMapF, [org(chicken),type(maps)] ).
 
 sprot_synonym_rows( end_of_file, _In, [] ) :- !.
 sprot_synonym_rows( Line, In, SynRs ) :-

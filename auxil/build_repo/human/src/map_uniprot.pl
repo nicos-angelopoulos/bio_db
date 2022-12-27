@@ -198,7 +198,7 @@ uniprot_cname( A, A ).
 uniprot_cname_known(  'Ensembl_PRO', ensp ).
 uniprot_cname_known(  'uniprot', unip ).
 uniprot_cname_known(  'HGNC', hgnc ).
-uniprot_cname_known(  'GeneID', entz ).
+uniprot_cname_known(  'GeneID', ncbi ).
 uniprot_cname_known(  'UniGene', unig ).
 % mouse
 uniprot_cname_known(  'MGI', mgim ).

@@ -26,7 +26,7 @@ Build all the standard datasets for bio_db.
 
 Dependencies
  * on([])
-   maps_mgim, maps,maps_ncbi
+   maps_mgim, maps,maps_ncbi, maps_unip
  * on(maps_mgim)
    maps_ense
 
@@ -35,6 +35,7 @@ Dependencies
 @version  0.2 2018/03/30
 @version  0.3 2018/11/05, everything tested, and working
 @version  0.4 2020/09/11, added ense
+@version  0.5 2022/12/27, added reac
 @tbd add timings (in file)
 
 */

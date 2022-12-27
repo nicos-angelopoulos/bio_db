@@ -47,8 +47,8 @@ W = 389
 ...
 ==
 */
-strg_homs_edge_ensg( X, Y, Z ) :-
-    bio_db:bio_db_serve( strg_homs_edge_ensg(X,Y,Z) ).
+strg_homs_edge_ensp( X, Y, Z ) :-
+    bio_db:bio_db_serve( strg_homs_edge_ensp(X,Y,Z) ).
 
 /** strg_homs_edge_symb( ?Symb1, ?Symb2, ?W ).
 

@@ -29,7 +29,6 @@ Documentation predicate for Homo sapiens data from Uniprot database.
 */
 bio_db_homs_unip.
 
-                unip_homs_hgnc_unip/2,
 /**  unip_homs_hgnc_unip( +Hgnc, -UniP ).
 
 Map predicate from HGNC gene ids to Uniprot proteins.

@@ -1,5 +1,6 @@
 
 :- use_module(library(debug)).  %  simply to stop std_org/2 from complaining
+:- use_module(library(options)).
 
 % if library(lib) is missing, install via pack_install(lib).
 %

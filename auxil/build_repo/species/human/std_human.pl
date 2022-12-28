@@ -1,4 +1,5 @@
 :- use_module(library(debug)).  % make std_org/2 stop complaining of missing token
+:- use_module(library(options)).
 
 % if library(lib) is missing, install via pack_install(lib).
 %

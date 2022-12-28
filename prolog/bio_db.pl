@@ -217,7 +217,7 @@ bio_db_default_interface( prolog ).
 
 :- lib(ui_yes_no/5).
 :- lib(bio_db_map/2).
-:- ensure_loaded( '../auxil/lib/bio_db_pl_info' ).   % /2.
+:- ensure_loaded( '../auxil/build_repo/lib/bio_db_pl_info' ).   % /2.
 :- lib( end(bio_db) ).
 
 stoics( 'http://stoics.org.uk/~nicos/sware/packs/bio_db_repo/data' ).

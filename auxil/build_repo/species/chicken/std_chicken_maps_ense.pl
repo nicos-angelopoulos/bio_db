@@ -45,20 +45,6 @@ Tue 27 Dec 13:04:38 GMT 2022
 % ...Done
 Tue 27 Dec 13:09:40 GMT 2022
 
-ορέστης;ense/maps% pwd
-/usr/local/users/nicos/local/share/swi-prolog/pack/Downloads/bio_db_repo-22.12.27/dnloads/ense/maps
-ορέστης;ense/maps% date
-Tue 27 Dec 13:12:27 GMT 2022
-ορέστης;ense/maps% wc -l *_g*
-   30115 map_ense_galg_ensg_chrl.pl
-   13788 map_ense_galg_ensg_symb.pl
-   72696 map_ense_galg_enst_chrl.pl
-   72696 map_ense_galg_enst_ensg.pl
-   30869 map_ense_gg6a_ensg_chrl.pl
-    6487 map_ense_gg6a_ensg_symb.pl
-   74303 map_ense_gg6a_enst_chrl.pl
-   74303 map_ense_gg6a_enst_ensg.pl
-  375257 total
 ==
 
 @author nicos angelopoulos
@@ -100,10 +86,10 @@ std_chicken_maps_ense( Tkn, EnsDir, Args ) :-
     ense_transcripts( Rows, EnsTGRows, EnsTLRows ),
     debuc( Self, length, tg_rows/EnsTGRows ),
     debuc( Self, length, tl_rows/EnsTLRows ),
-    at_con( [map,ense,Tkn,enst,'ensg.csv'], '_', EnsTGF ),
+    at_con( [ense,Tkn,enst,'ensg.csv'], '_', EnsTGF ),
     % mtx( 'map_ense_gallus_enst_ensg.csv', EnsTGRows ),
     mtx( EnsTGF, EnsTGRows ),
-    at_con( [map,ense,Tkn,enst,'chrl.csv'], '_', EnsTLF ),
+    at_con( [ense,Tkn,enst,'chrl.csv'], '_', EnsTLF ),
     mtx( EnsTLF, EnsTLRows ),
     % mtx( 'map_ense_gallus_enst_chrl.csv', EnsTLRows ),
 
@@ -115,10 +101,10 @@ std_chicken_maps_ense( Tkn, EnsDir, Args ) :-
     %
     sort( EnsGSRows, EnsGSRowsSet ),
 
-     at_con( [map,ense,Tkn,ensg,'symb.csv'], '_', EnsGSF ),
+     at_con( [ense,Tkn,ensg,'symb.csv'], '_', EnsGSF ),
      % mtx( 'map_ense_gallus_ensg_symb.csv', EnsGSRowsSet ),
      mtx( EnsGSF, EnsGSRowsSet ),
-     at_con( [map,ense,Tkn,ensg,'chrl.csv'], '_', EnsGLF ),
+     at_con( [ense,Tkn,ensg,'chrl.csv'], '_', EnsGLF ),
      mtx( EnsGLF, EnsGCRows  ),
      % mtx( 'map_ense_gallus_ensg_chrl.csv', EnsGCRows ),
 

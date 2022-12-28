@@ -9,8 +9,6 @@
 :- lib(mtx).
 :- lib(os_lib).
 :- lib(by_unix).
-% :- lib(stoics_lib:prefix_atom/2).
-
 
 % also sets lib alias to that dir
 :- ensure_loaded('../../lib/bio_db_build_aliases').  % /1.

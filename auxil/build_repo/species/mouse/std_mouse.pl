@@ -16,8 +16,6 @@ organism(mouse).
 % local libs & sources
 :- lib(debug_colours/1).
 
-:- organism(Org), debuc(Org).
-
 std_mouse_defaults(debug(true)).
 
 /** std_mouse.
@@ -26,7 +24,7 @@ Build all the standard datasets for bio_db.
 
 Dependencies
  * on([])
-   maps_mgim, maps,maps_ncbi, maps_unip
+   maps_mgim,maps_ncbi,maps_reac,maps_unip
  * on(maps_mgim)
    maps_ense, maps_gont
  * on([maps_mgim,maps_unip])

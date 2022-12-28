@@ -17,18 +17,18 @@
 :- lib(os_lib). 
 :- lib(options).
 :- lib(debug_call).                     % debuc/1,3.
+:- lib(stoics_lib:map_list_options/3).
 
 % also sets lib alias to that dir
 :- ensure_loaded('../../lib/bio_db_build_aliases').  % /1.
 
 % local libs & sources
-:- ensure_loaded('../human/src/map_uniprot').  % /4.
+:- lib(map_uniprot/4).
 :- lib(bio_db_add_infos/1). % bio_db_add_infos_to/2.
 :- lib(csv_ids_map/6).
 :- lib(link_to_bio_sub/3).
 :- lib(bio_db_dnt_times/3).
 :- lib(url_file_local_date_mirror/3).
-:- lib(stoics_lib:map_list_options/3).
 
 unip_mouse( 'ftp://ftp.ebi.ac.uk/pub/databases/uniprot/current_release/knowledgebase/idmapping/by_organism/MOUSE_10090_idmapping.dat.gz' ).
 trem_mouse( 'ftp://ftp.ebi.ac.uk/pub/databases/uniprot/current_release/knowledgebase/idmapping/by_organism/MOUSE_10090_idmapping_selected.tab.gz' ).

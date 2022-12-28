@@ -15,7 +15,7 @@
 
 
 % also sets lib alias to that dir
-:- ensure_loaded('../lib/bio_db_build_aliases').  % /1.
+:- ensure_loaded('../../lib/bio_db_build_aliases').  % /1.
 
 % local libs & sources
 :- lib(url_file_local_date_mirror/3).

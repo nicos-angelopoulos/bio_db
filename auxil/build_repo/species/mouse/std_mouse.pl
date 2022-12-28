@@ -1,22 +1,24 @@
 
+:- use_module(library(debug)).  %  simply to stop std_org/2 from complaining
+
 % if library(lib) is missing, install via pack_install(lib).
 %
 :- use_module(library(lib) ).
 
-organism(mouse).
+% organism(mouse).
 
-% external code, lib knowns how to deal with these (will install if missing)
-:- lib(os_lib).
-:- lib(by_unix).
-:- lib(debug_call).
+% stoics.org.uk packs, lib knowns how to deal with these (will install if missing)
+:- lib(options).
+% :- lib(debug_call).
 
 % also sets lib alias to that dir
-:- ensure_loaded('../../lib/bio_db_build_aliases').  % /1.
+% :- ensure_loaded('../../lib/bio_db_build_aliases').  % /1.
+:- ensure_loaded('../../lib/std_org.pl').  % /2.
 
 % local libs & sources
-:- lib(debug_colours/1).
+% :- lib(debug_colours/1).
 
-std_mouse_defaults(debug(true)).
+std_mouse_defaults([debug(true),org(mouse)]).
 
 /** std_mouse.
 
@@ -42,41 +44,15 @@ Dependencies
 std_mouse( Args ) :-
     Self = std_mouse,
     options_append( Self, Args, Opts ),
-    bio_db_build_aliases( Opts ),
-    organism( Org ),
-    std_org( Self, Org, Opts ).
+    options( org(Org), Opts ),
+    % bio_db_build_aliases( Opts ),
+    % organism( Org ),
+    std_org( Org, Opts ).
 
+% not used. just makes human a valid debug token
 
-std_org( Self, Org, _Opts ) :-
-    % debug_call( std_hs, start, true ),
-    findall( Succ-Type-Db, ( std(Org,Type,Db),
-                            std_upsh(Org,Db,Type,Succ)
-                        ),
-                                Trips ),
-    % atomic_list_concat( [std,maps,Db], '_', Upsh ),
-    Mess = '... finished ~w, standards: ~w',
-    debug_consec( Self, [black,black],  Mess, [Org, Trips] ).
-
-std_upsh( Org, Db, Type, Succ ) :-
-    debug_colours( Dlrs ),
-    ( Org \== hs ->
-        atomic_list_concat( [std,Org,Type,Db], '_', Upsh )
-        ;
-        atomic_list_concat( [std,Type,Db], '_', Upsh )
-    ),
-    debug_consec( Org, Dlrs, 'Starting ~w\'s type: ~w, db: ~w ... ', [Org,Type,Db] ),
-    at_con( [Org,Type,Db], :, Task ),
-    debuc( Org, task(start), Task ),
-    catch( @ upsh(Upsh,f,p), Err, true ),
-    ( \+ var(Err) ->
-        debug_consec( Org, [red,red], 'Caught while running: ~w:~w:~w, error: ~w', [Org,Type,Db,Err] ),
-        Succ = error,
-        abort
-        ;
-        debug_consec( Org, Dlrs, '... finished organism: ~w, type: ~w Db: ~w.', [Org,Type,Db] ),
-        Succ = ok
-    ),
-    debuc( Org, task(stop), Task ).   % fixme: change colour.. time to optionise debug_call ?
+std_mouse_debug( Org ) :-
+    debug( mouse, 'finished all standards for: ~w', [Org] ).
 
 std(mouse, maps, mgim).
 std(mouse, maps, ense).

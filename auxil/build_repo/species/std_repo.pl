@@ -67,7 +67,7 @@ std_repo( Args ) :-
     os_path( Work, BioDbDir, BioDb ),
     debuc( Self, 'Work dir: ~p', Work ),
     debuc( Self, 'Bio db work dir: ~p', BioDbDir ),
-    os_dirs( DnSubs, dir(DnDir) ),
+
     debuc( Self, 'Subs in download dir: ~p', [DnSubs] ),
     std_repo_subs( DnSubs, Work+BioDbDir+BioDb, Opts ).
 

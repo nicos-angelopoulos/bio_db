@@ -29,7 +29,7 @@
 :- debuc(by_unix).
 :- debuc(std_graphs_strg). % fixme:
 
-std_gallus_graphs_strg_defaults( [debug(true)|T] ) :-
+std_chicken_graphs_strg_defaults( [debug(true)|T] ) :-
     ( std_graphs_strg_auto_version(Vers) -> % let options/2 do the erroring
                                             % because user might provide it
         T = [string_version(Vers)]
@@ -40,12 +40,12 @@ std_gallus_graphs_strg_defaults( [debug(true)|T] ) :-
 % last good one: std_graphs_string( '10' ).  2016/09/08
 % last good one: std_graphs_string( '10.5' ).  2018/03/30
 
-/** std_gallus_graphs_strg(+Opts).
+/** std_chicken_graphs_strg(+Opts).
 
 String graphs and a map for chicken products.
 
 ==
-?- std_gallus_graphs_str([]).
+?- std_chicken_graphs_str([]).
 
 ορέστης;dnloads/strg% pwd
 /usr/local/users/nicos/local/share/swi-prolog/pack/Downloads/bio_db_repo-22.12.27/dnloads/strg
@@ -63,8 +63,8 @@ Tue 27 Dec 14:01:05 GMT 2022
 @author nicos angelopoulos
 @version  0:1 2022/12/19
 */
-std_gallus_graphs_strg( Args ) :-
-    Self = std_gallus_graphs_strg,
+std_chicken_graphs_strg( Args ) :-
+    Self = std_chicken_graphs_strg,
     options_append( Self, Args, Opts ),
     bio_db_build_aliases( Opts ),
     options( string_version(VersionPrv), Opts ),

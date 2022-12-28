@@ -24,14 +24,14 @@
 % gont_gallus_url('http://geneontology.org/gene-associations/mgi.gaf.gz').
 gont_gallus_url('http://current.geneontology.org/annotations/goa_chicken.gaf.gz').
 
-std_gallus_maps_gont_defaults(debug(true)).
+std_chicken_maps_gont_defaults(debug(true)).
 
-/**  std_gallus_maps_gont.
+/**  std_chicken_maps_gont.
 
 Build maps from gene ontology data.
 
 ==
-?- std_gallus_maps_gont([]).
+?- std_chicken_maps_gont([]).
 
 ορέστης;dnloads/gont% date
 Tue 27 Dec 12:04:28 GMT 2022
@@ -51,8 +51,8 @@ Tue 27 Dec 12:04:28 GMT 2022
 @version  0.1 2022/12/17
 
 */
-std_gallus_maps_gont( Args ) :-
-    Self = std_gallus_maps_gont,
+std_chicken_maps_gont( Args ) :-
+    Self = std_chicken_maps_gont,
     options_append( Self, Args, Opts ),
     bio_db_build_aliases( Opts ),
     gont_gallus_url( Url ),
@@ -66,7 +66,7 @@ std_gallus_maps_gont( Args ) :-
     os_ext( gz, GontF, GzGontF ),
     mtx( GontF, GAs, [skip_heading('!'),sep(tab)] ),
     debuc( Self, dims, gaf/GAs ),
-    findall( map_gont_gallus_symb_gont(Symb,Rel,Evid,Gont),
+    findall( gont_galg_symb_gont(Symb,Rel,Evid,Gont),
                     ( member(Row,GAs),
                       arg(3,Row,Symb), 
                       Symb \== '',
@@ -77,7 +77,7 @@ std_gallus_maps_gont( Args ) :-
                         FactsAll ),
     sort( FactsAll, Facts ),
     os_make_path( maps ),
-    os_dir_stem_ext( maps, map_gont_gallus_symb_gont, pl, MapF ),
+    os_dir_stem_ext( maps, gont_galg_symb_gont, pl, MapF ),
     portray_clauses( Facts, file(MapF) ),
     bio_db_dnt_times( GzGontF, DnDt, _SwDnEn ),
     InfoOpts = [header(row('Symbol','Relation','Evidence','GO_Term')),source(Url),datetime(DnDt)],

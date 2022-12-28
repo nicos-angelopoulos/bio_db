@@ -89,8 +89,8 @@ when none is given explicitly (eg via a predicate's Options).
 
 */
 
-bio_db_organism(hs).      % defaulty
-bio_db_organism(gallus).  % 2022/12/21
+bio_db_organism(human).      % defaulty
+bio_db_organism(chicken).  % 2022/12/21
 bio_db_organism(mouse).
 
 /* bio_db_organism( ?Known, ?Canon ).
@@ -146,8 +146,8 @@ bio_db_organism( TokenIs, Token, Canon ) :-
 
 
 
-bio_db_organism_token(gallus, galg).
-bio_db_organism_token(hs, homs).
+bio_db_organism_token(chicken, galg).
+bio_db_organism_token(human, homs).
 bio_db_organism_token(mouse, musm).
 
 /** bio_db_organism_alias( ?Alias, -Org ).
@@ -166,10 +166,10 @@ Note this used to be bio_db_organism/2 which has now (19.05.02) changed.
 @version  0:1 2019/5/2
 @version  0:2 2022/12/20, gallus also known as chicken and gallus_gallus
 */
-bio_db_organism_alias( human, hs ).
-bio_db_organism_alias( chicken, gallus ).
-bio_db_organism_alias( gallus_gallus, gallus ).
-bio_db_organism_alias( gg6a, gallus ).
+bio_db_organism_alias( hs, human ).
+bio_db_organism_alias( gallus, chicken ).
+bio_db_organism_alias( gallus_gallus, chicken ).
+bio_db_organism_alias( gg6a, chicken ).
 
 % this search path can be added to requires
 % bio_db_map/2,

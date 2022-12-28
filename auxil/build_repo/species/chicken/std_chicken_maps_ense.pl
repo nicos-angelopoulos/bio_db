@@ -22,9 +22,9 @@
 :- lib(bio_db_add_infos/1).   % bio_db_add_infos_to/2
 :- lib(link_to_bio_sub/3).
 
-std_gallus_maps_ense_defaults(debug(true)).
+std_chicken_maps_ense_defaults(debug(true)).
 
-/** std_gallus_maps_ense( +Opts ).
+/** std_chicken_maps_ense( +Opts ).
 
 Maps based on ensembl .gtf file.
 
@@ -36,9 +36,9 @@ Currently only gene symbols, but as per human it should be trivial to do sequenc
   * ense: the database abbv.
 
 ==
-?- std_gallus_maps_ense([]).
+?- std_chicken_maps_ense([]).
 
-ορέστης;build_repo/chicken% date ; pupsh std_gallus_maps_ense.pl ; date
+ορέστης;build_repo/chicken% date ; pupsh std_chicken_maps_ense.pl ; date
 Tue 27 Dec 13:04:38 GMT 2022
 % Building at: '/home/nicos/.local/share/swi-prolog/pack/Downloads/bio_db_repo-22.12.27'
 ...
@@ -67,12 +67,12 @@ Tue 27 Dec 13:12:27 GMT 2022
 
 */
 
-std_gallus_maps_ense( Args ) :-
-    std_gallus_maps_ense( galg, gallus_gallus, Args ),
-    std_gallus_maps_ense( gg6a, gallus_gallus_gca000002315v5, Args ).
+std_chicken_maps_ense( Args ) :-
+    std_chicken_maps_ense( galg, gallus_gallus, Args ),
+    std_chicken_maps_ense( gg6a, gallus_gallus_gca000002315v5, Args ).
 
-std_gallus_maps_ense( Tkn, EnsDir, Args ) :-
-    Self = std_gallus_maps_ense,
+std_chicken_maps_ense( Tkn, EnsDir, Args ) :-
+    Self = std_chicken_maps_ense,
     options_append( Self, Args, Opts ),
     bio_db_build_aliases( Opts ),
     absolute_file_name( bio_db_build_downloads(ense), DnDir ),

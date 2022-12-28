@@ -1,5 +1,5 @@
 
-:- set_prolog_flag(stack_limit, 20 000 000 000).
+:- set_prolog_flag(stack_limit, 12 000 000 000).
 
 % if library(lib) is missing, install via pack_install(lib).
 %
@@ -30,6 +30,7 @@
 :- lib(bio_db_dnt_times/3).
 :- lib(bio_db_add_infos/1).     % bio_db_add_infos_to/2.
 :- lib(std_graphs_strg_auto_version/1).
+:- lib(portray_informed_clauses/4).
 
 :- debuc(by_unix).
 :- debuc(std_graphs_strg). % fixme:
@@ -96,18 +97,18 @@ std_mouse_graphs_strg( Args ) :-
     Opt = [ csv_read(separator(0' )),predicate_name(EnspPn),
             rows_transform(maplist(user:de_mouse)),header_remove(true) ],
     mtx_prolog( TxtF, File, Opt ),
-    debuc( _, 'Edges output: ~w', File ),
+    debuc( Self, 'Wrote on file: ~p', [File] ),
     delete_file( TxtF ),
     % @ rm( -rf, graphs ), don't do that ! there are now multiple downloads from string..
     os_make_path( graphs, debug(true) ),
 
     % Trg = 'graphs/edge_strg_mouse.pl',
-    os_dir_stem_ext( graphs, EnspPn, pl, EnspRel ),
-    @ rm( -f, EnspRel ),
-    @ mv( File, EnspRel ),
+    os_dir_stem_ext( graphs, EnspPn, pl, EnspRelF ),
+    @ rm( -f, EnspRelF ),
+    @ mv( File, EnspRelF ),
 
-    consult( EnspPn:EnspRel ),
-    debuc( Self, 'consulted eges from: ~w', [EnspPn:EnspRel] ),
+    consult( EnspPn:EnspRelF ),
+    debuc( Self, 'consulted eges from: ~w', [EnspPn:EnspRelF] ),
 
     EnspGoal =.. [EnspPn,EnsP1,EnsP2,W],
     findall( strg_musm_edge_symb(SymbA,SymbB,W),
@@ -120,19 +121,24 @@ std_mouse_graphs_strg( Args ) :-
           ),
     sort( UnoSymbEdges, SymbEdges ),
     length( SymbEdges, SymbEdgesLen ),
-    debuc( _, 'unique symbol edges (mouse): ~w', [SymbEdgesLen] ),
-    EdgeSymbsF = 'graphs/edge_strg_mouse_symb.pl',
-    portray_clauses( SymbEdges, file(EdgeSymbsF) ),
+    debuc( Self, 'unique symbol edges (mouse): ~w', [SymbEdgesLen] ),
+    EdgeSymbsF = 'graphs/strg_musm_edge_symb.pl',
+
     bio_db_dnt_times( Bname, DnDt, _EndDt ),
+    EdgeSymbsInfos = [ source-From, datetime-DnDt, header-header('Symbol','Symbol',weight),
+                       data_types-data_types(atom,atom,integer)
+                     ],
+    portray_informed_clauses( SymbEdges, EdgeSymbsInfos, file(EdgeSymbsF), [] ),
+    % SymbOpts = [source(From),datetime(DnDt),header(row('MGI_Symbol','MGI_Symbol',weight))],
+    % bio_db_add_infos_to( SymbOpts, EdgeSymbsF ),
+    debuc( Self, wrote, EdgeSymbsF ),
+
     MousOpts = [ source(From), datetime(DnDt),
                   header(row('Ensembl_Protein','Ensembl_Protein',weight))
                 ],
-    bio_db_add_infos_to( MousOpts, Trg ),
+    bio_db_add_infos_to( MousOpts, EnspRelF ),
 
-    SymbOpts = [source(From),datetime(DnDt),header(row('MGI_Symbol','MGI_Symbol',weight))],
-    bio_db_add_infos_to( SymbOpts, EdgeSymbsF ),
-
-    link_to_bio_sub( strg, Trg, [org(mouse),type(graphs)] ),
+    link_to_bio_sub( strg, EnspRelF, [org(mouse),type(graphs)] ),
     link_to_bio_sub( strg, EdgeSymbsF, [org(mouse),type(graphs)] ),
     working_directory( _, Here ).
 

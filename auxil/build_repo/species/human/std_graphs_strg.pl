@@ -25,6 +25,7 @@
 :- lib(bio_db_dnt_times/3).
 :- lib(bio_db_add_infos/1).  % bio_db_add_infos_to/2, fixme:
 :- lib(std_graphs_strg_auto_version/1).
+:- lib(portray_informed_clauses/4).
 
 :- debuc(by_unix).
 :- debuc(std_graphs_strg).  % fixme: you probably don't need this. 
@@ -97,14 +98,14 @@ std_graphs_strg( Args ) :-
      % @ rm( -rf, graphs ), % don't do this. there are now other organisms 
     % puting stuff in graphs/ (eg mouse...)
      os_make_path( graphs, debug(true) ),
-     os_dir_stem_ext( graphs, EnspPn, pl, EnspRel ),
+     os_dir_stem_ext( graphs, EnspPn, pl, EnspRelF ),
      % Trg = 'graphs/edge_strg_hs.pl',
-     @ rm( -f, EnspRel ),
-     @ mv( File, EnspRel ),
+     @ rm( -f, EnspRelF ),
+     @ mv( File, EnspRelF ),
 
-     consult( EnspPn:EnspRel ),
+     consult( EnspPn:EnspRelF ),
 
-     debuc( _, 'Consulted ensp: ~w', [EnspPn:EnspRel] ),
+     debuc( _, 'Consulted ensp: ~w', [EnspPn:EnspRelF] ),
 
      EnspGoal =.. [EnspPn,EnsP1,EnsP2,W],
      findall( edge_strg_hs_symb(SymbA,SymbB,W),
@@ -119,18 +120,24 @@ std_graphs_strg( Args ) :-
      length( SymbEdges, SymbEdgesLen ),
      debuc( _, 'Unique symbol edges hs: ~w', [SymbEdgesLen] ),
 
-     SymbsPn  = strg_homs_edge_symb,
-     os_dir_stem_ext( graphs, SymbsPn, pl, SymbsRel ),
-     portray_clauses( SymbEdges, file(SymbsRel) ),
      bio_db_dnt_times( Bname, DnDt, _EndDt ),
      HsOpts = [source(From),datetime(DnDt),header(row('Ensembl Protein','Ensembl Protein',weight))],
-     bio_db_add_infos_to( HsOpts, EnspRel ),
+     bio_db_add_infos_to( HsOpts, EnspRelF ),
 
-     SymbOpts = [source(From),datetime(DnDt),header(row('HGNC Symbol','HGNC Symbol',weight))],
-     bio_db_add_infos_to( SymbOpts, SymbsRel ),
+     SymbsPn  = strg_homs_edge_symb,
+     os_dir_stem_ext( graphs, SymbsPn, pl, SymbRelF ),
 
-     link_to_bio_sub( strg, EnspRel, [org(hs),type(graphs)] ),
-     link_to_bio_sub( strg, SymbsRel, [org(hs),type(graphs)]  ),
+    EdgeSymbsInfos = [ source-From, datetime-DnDt, header-header('Symbol','Symbol',weight),
+                       data_types-data_types(atom,atom,integer)
+                     ],
+    portray_informed_clauses( SymbEdges, EdgeSymbsInfos, file(SymbRelF), [] ),
+     
+     % portray_clauses( SymbEdges, file(SymbsRel) ),
+     % SymbOpts = [source(From),datetime(DnDt),header(row('HGNC Symbol','HGNC Symbol',weight))],
+     % bio_db_add_infos_to( SymbOpts, SymbsRel ),
+
+     link_to_bio_sub( strg, EnspRelF, [org(hs),type(graphs)] ),
+     link_to_bio_sub( strg, SymbRelF, [org(hs),type(graphs)]  ),
      working_directory( _, Here ).
 
 ensp_symb( EnsP, Symb ) :-

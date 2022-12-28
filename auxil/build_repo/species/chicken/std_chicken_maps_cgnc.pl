@@ -29,17 +29,17 @@
 
 true(_,_).
 
-std_gallus_maps_cgnc_defaults( Defs ) :-
+std_chicken_maps_cgnc_defaults( Defs ) :-
     Defs = [
                     debug(true),
                     db_dir(cgnc),  % is this used ?
                     download(true),
-                    map_prefix(true),
-                    prefix(cgnc_gallus),
+                    map_prefix(false),
+                    prefix(cgnc),
                     sub(maps)
            ].
 
-/** std_gallus_maps_cgnc( +Opts ).
+/** std_chicken_maps_cgnc( +Opts ).
 
 Create ID maps from CGNC's main download data file.
 
@@ -82,23 +82,10 @@ Opts
     prefix to include, passed to csv_ids_map/6
 
 ==
-?- std_gallus_maps_cgnc.
+?- std_chicken_maps_cgnc.
 ?- cd( '$HOME/.local/share/swi-prolog/pack/Downloads/bio_db-22.12.17/maps/cgnc' ).
 ?- shell( 'wc -l *' ).
 
-ορέστης;dnloads/cgnc% pwd
-/usr/local/users/nicos/local/share/swi-prolog/pack/Downloads/bio_db_repo-22.12.27/dnloads/cgnc/maps
-ορέστης;dnloads/cgnc% date
-Tue 27 Dec 11:46:41 GMT 2022
-ορέστης;dnloads/cgnc% wc -l *
-  25923 maps/map_cgnc_gallus_homs_cgnc_curs.pl
-  25923 maps/map_cgnc_gallus_homs_cgnc_edat.pl
-  15245 maps/map_cgnc_gallus_homs_cgnc_ensg.pl
-  25923 maps/map_cgnc_gallus_homs_cgnc_name.pl
-  25923 maps/map_cgnc_gallus_homs_cgnc_ncbi.pl
-  25923 maps/map_cgnc_gallus_homs_cgnc_symb.pl
-   2967 maps/map_cgnc_gallus_homs_cgnc_syno.pl
- 147827 total
 ==
 
 @author nicos angelopoulos
@@ -106,11 +93,11 @@ Tue 27 Dec 11:46:41 GMT 2022
 @tbd convert to url_..._mirror.pl
 @see http://birdgenenames.org/cgnc/downloads.jsp?file=standard
 */
-std_gallus_maps_cgnc :-
-    std_gallus_maps_cgnc( [] ).
+std_chicken_maps_cgnc :-
+    std_chicken_maps_cgnc( [] ).
 
-std_gallus_maps_cgnc( Args ) :-
-    Self = std_gallus_maps_cgnc,
+std_chicken_maps_cgnc( Args ) :-
+    Self = std_chicken_maps_cgnc,
     CsvF = 'cgnc_complete_set.txt',
     options_append( Self, Args, Opts ),
     bio_db_build_aliases( Opts ),
@@ -147,7 +134,7 @@ std_gallus_maps_cgnc( Args ) :-
     debuc( Self, 'doing links...', [] ),
     Files = [SymbF,NcbiF,EnsgF,NameF,SynoF,CursF,EdatF],
     % maplist( link_to_bio_sub(RelDir), Files ),
-    map_list_options( link_to_bio_sub(RelDir), Files, call_options([org(gallus),type(maps)]) ),
+    map_list_options( link_to_bio_sub(RelDir), Files, call_options([org(chicken),type(maps)]) ),
     % file_name_extension( TxtF, gz, GzF ),
     % delete_file( TxtF ),
     working_directory( _, Old ).
@@ -168,18 +155,6 @@ cgnc_std_column_to_value_call( 'gene name', non_empty_atom ).
 cgnc_std_column_to_value_call( 'gene synonym', sep_split('|') ).      % fixme: check for multis
 cgnc_std_column_to_value_call( 'curation status', non_empty_atom ).  
 cgnc_std_column_to_value_call( 'last edit date', non_empty_atom ).    % fixme: a date
-      % fixme: prefixed ENSG
-% hgnc_std_column_to_value_call( 'prev_symbol', sep_split('|') ).
-% hgnc_std_column_to_value_call( 'Chromosome', non_empty_atom ).   % old
-% hgnc_std_column_to_value_call( 'Entrez Gene ID (supplied by NCBI)', pos_integer ).
-% hgnc_std_column_to_value_call( 'Ensembl ID + supplied by Ensembl', non_empty_atom ). 
-% hgnc_std_column_to_value_call( 'Entrez Gene ID + supplied by NCBI', pos_integer ).
-% hgnc_std_column_to_value_call( 'hgnc_id', de_semi('HGNC') ).
-% hgnc_std_column_to_value_call( 'symbol', non_empty_atom ).
-% hgnc_std_column_to_value_call( 'name', non_empty_atom ). % old
-% hgnc_std_column_to_value_call( 'entrez_id', pos_integer ).  % old
-% hgnc_std_column_to_value_call( 'CCDS IDs', non_empty_atom ).  % old
-% hgnc_std_column_to_value_call( 'ccds_id', non_empty_atom ). 
     
 cohese_ensebl_gene_id( Dom, _Subo, Gid ) :-
     Dom \== '', 

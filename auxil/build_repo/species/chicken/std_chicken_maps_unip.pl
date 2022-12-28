@@ -1,6 +1,6 @@
 
 :- set_prolog_flag(allow_dot_in_atom,false).
-:- set_prolog_flag(stack_limit, 8 000 000 000).
+:- set_prolog_flag(stack_limit, 12 000 000 000).
 
 :- use_module(library(csv)).      % csv_read_file/2.
 :- use_module(library(lists)).    % member/2.
@@ -30,8 +30,8 @@
 :- lib(url_file_local_date_mirror/3).
 :- lib(stoics_lib:map_list_options/3).
 
-unip_gallus( 'ftp://ftp.ebi.ac.uk/pub/databases/uniprot/current_release/knowledgebase/idmapping/by_organism/CHICK_9031_idmapping.dat.gz' ).
-trem_gallus( 'ftp://ftp.ebi.ac.uk/pub/databases/uniprot/current_release/knowledgebase/idmapping/by_organism/CHICK_9031_idmapping_selected.tab.gz' ).
+unip_chicken( 'ftp://ftp.ebi.ac.uk/pub/databases/uniprot/current_release/knowledgebase/idmapping/by_organism/CHICK_9031_idmapping.dat.gz' ).
+trem_chicken( 'ftp://ftp.ebi.ac.uk/pub/databases/uniprot/current_release/knowledgebase/idmapping/by_organism/CHICK_9031_idmapping_selected.tab.gz' ).
 % use this if from outside europe:
 % unip_hs( 'ftp://ftp.uniprot.org/pub/databases/uniprot/current_release/knowledgebase/idmapping/by_organism/HUMAN_9606_idmapping.dat.gz' ).
 %trem_hs( 'ftp://ftp.uniprot.org/pub/databases/uniprot/current_release/knowledgebase/idmapping/by_organism/HUMAN_9606_idmapping_selected.tab.gz' ).
@@ -41,14 +41,14 @@ unip_dnload( Self, Loc ) :-
      debuc( Self, 'Loc: ~p', Loc ),
      os_make_path( Loc, debug(true) ).
 
-std_gallus_maps_unip_defaults(debug(true)).
+std_chicken_maps_unip_defaults(debug(true)).
 
-/** std_gallus_maps_unip(Opts).
+/** std_chicken_maps_unip(Opts).
 
 Create bio_db uniprot maps.
 
 ==
-?- std_gallus_maps_unip([]).
+?- std_chicken_maps_unip([]).
 
 ορέστης;unip/maps% pwd
 /usr/local/users/nicos/local/share/swi-prolog/pack/Downloads/bio_db_repo-22.12.27/dnloads/unip/maps
@@ -66,14 +66,14 @@ Tue 27 Dec 12:58:09 GMT 2022
 @version  0.1 2022/12/20
 
 */
-std_gallus_maps_unip( Args ) :-
-     Self = std_gallus_maps_unip,
+std_chicken_maps_unip( Args ) :-
+     Self = std_chicken_maps_unip,
      options_append( Self, Args, Opts ),
      bio_db_build_aliases( Opts ),
      unip_dnload( Self, DnDir ),  %
      /* double check unip part works with the nucl part // 15.05.15 */
      working_directory( Old, DnDir ),
-     unip_gallus( Url ),
+     unip_chicken( Url ),
      % url_file( Url, 
      UrlOpts = [debug(true),interface(wget),file(File)],
      url_file_local_date_mirror( Url, DnDir, UrlOpts ),

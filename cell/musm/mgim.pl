@@ -2,7 +2,7 @@
                 bio_db_musm_mgim/0,
                 %       + MGI database: fixme: url
                 mgim_musm_mgim_chrl/5,
-                mgim_musm_mgim_entz/2,
+                mgim_musm_mgim_ncbi/2,
                 mgim_musm_mgim_genb/2,
                 mgim_musm_mgim_symb/2,
                 mgim_musm_mgim_unip/2,
@@ -77,21 +77,21 @@ false.
 mgim_musm_mgim_genb( X, Y ) :-
     bio_db:bio_db_serve( mgim_musm_mgim_genb(X,Y) ).
 
-/**  mgim_musm_mgim_entz( +Mgim, -Entz ).
+/**  mgim_musm_mgim_ncbi( +Mgim, -Ncbi ).
 
 Map predicate from MGI marker to NCBI, Entrez ids.
 
 ==
 ?-  mgim_musm_mgim_symb( Mgim, 'Lmtk3' ),
-    mgim_musm_mgim_entz( Mgim, Entz ).
+    mgim_musm_mgim_ncbi( Mgim, Ncbi ).
 
-Entz = 381983,
+Ncbi = 381983,
 Mgim = 3039582.
 
 ==
 */
-mgim_musm_mgim_entz( X, Y ) :-
-    bio_db:bio_db_serve( mgim_musm_mgim_entz(X,Y) ).
+mgim_musm_mgim_ncbi( X, Y ) :-
+    bio_db:bio_db_serve( mgim_musm_mgim_ncbi(X,Y) ).
 
 /**  mgim_musm_mgim_symb( +Mgim, -Symb ).
 

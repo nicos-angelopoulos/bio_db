@@ -4,7 +4,7 @@
                 unip_musm_ensp_unip/2,
                 unip_musm_mgim_unip/2,
                 unip_musm_trem_nucs/2,
-                unip_musm_unip_entz/2,
+                unip_musm_unip_ncbi/2,
                 unip_musm_unip_symb/2,
                 % unip_musm_unip_unig/2,  % unigene was discontinued
                 unip_musm_gyno_unip/2
@@ -69,17 +69,17 @@ Map predicate from Trembl ids to nucleotide sequences.
 unip_musm_trem_nucs( X, Y ) :-
     bio_db:bio_db_serve( unip_musm_trem_nucs(X,Y) ).
 
-/**  unip_musm_unip_entz( ?Unip, ?Entz ).
+/**  unip_musm_unip_ncbi( ?Unip, ?Ncbi ).
 
-Map predicate from Uniprot Entrez ids.
+Map predicate from Uniprot NCBI/Entrez ids.
 
 ==
-?- unip_musm_unip_entz( Unip, Entz ).
+?- unip_musm_unip_ncbi( Unip, ncbi ).
 ==
 
 */
-unip_musm_unip_entz( Unip, Entz ) :-
-    bio_db:bio_db_serve( unip_musm_unip_entz(Unip,Entz) ).
+unip_musm_unip_ncbi( Unip, Ncbi ) :-
+    bio_db:bio_db_serve( unip_musm_unip_ncbi(Unip,Ncbi) ).
     
 /**  unip_musm_unip_symb( ?Unip, ?Symb ).
 

@@ -41,7 +41,7 @@ unip_dnload( Self, Loc ) :-
      debuc( Self, 'Loc: ~p', Loc ),
      os_make_path( Loc, debug(true) ).
 
-std_chicken_maps_unip_defaults(debug(true)).
+std_chicken_maps_unip_defaults([debug(true),org(chicken)].
 
 /** std_chicken_maps_unip(Opts).
 

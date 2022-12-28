@@ -4,7 +4,7 @@
                 unip_homs_hgnc_unip/2,
                 unip_homs_ensp_unip/2,
                 unip_homs_trem_nucs/2,
-                unip_homs_unip_entz/2,
+                unip_homs_unip_ncbi/2,
                 unip_homs_unip_hgnc/2,
                 unip_homs_sprt_seqn/2,
                 unip_homs_trem_seqn/2
@@ -122,14 +122,14 @@ B2RTX2-CH471056
 unip_homs_trem_nucs( X, Y ) :-
     bio_db:bio_db_serve( unip_homs_trem_nucs(X,Y) ).
 
-/**  unip_homs_unip_entz( ?UniP, ?Entz ).
+/**  unip_homs_unip_ncbi( ?UniP, ?Ncbi ).
 
 Map predicate from Uniprot proteins to Entrez ids.
 
 ==
-?- unip_homs_unip_entz( 'Q96Q04', Entz ).
-Entz = 114783.
+?- unip_homs_unip_ncbi( 'Q96Q04', Ncbi ).
+Ncbi = 114783.
 ==
 */
-unip_homs_unip_entz( X, Y ) :-
-    bio_db:bio_db_serve( unip_homs_unip_entz(X,Y) ).
+unip_homs_unip_ncbi( X, Y ) :-
+    bio_db:bio_db_serve( unip_homs_unip_ncbi(X,Y) ).

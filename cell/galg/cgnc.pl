@@ -3,7 +3,7 @@
                     %       + CGNC ids to:
                 cgnc_galg_cgnc_curs/2,   % -> curation status
                 cgnc_galg_cgnc_edat/2,   % -> last edit date
-                cgnc_galg_cgnc_entz/2,   % -> entrez id
+                cgnc_galg_cgnc_ncbi/2,   % -> entrez id
                 cgnc_galg_cgnc_ensg/2,   % -> ensembl gene
                 cgnc_galg_cgnc_name/2,   % -> name (text describing)
                 cgnc_galg_cgnc_symb/2,   % -> symbol (short, compact name)
@@ -78,21 +78,21 @@ Syno = 'tripartite motif-containing protein 7'.
 cgnc_galg_cgnc_syno( X, Y ) :-
     bio_db:bio_db_serve( cgnc_galg_cgnc_syno(X,Y) ).
 
-/** cgnc_galg_cgnc_entz( ?CGNC, ?Entz ).
+/** cgnc_galg_cgnc_ncbi( ?CGNC, ?Ncbi ).
 
 Map predicate from CGNC ids to entrez gene ids.
 
 ==
-?- cgnc_galg_cgnc_entz( 20061, Entz ).
-Entz = 374233.
+?- cgnc_galg_cgnc_ncbi( 20061, Ncbi ).
+Ncbi = 374233.
 
-?- cgnc_galg_cgnc_entz( 20064, Entz ).
-Entz = 374240.
+?- cgnc_galg_cgnc_ncbi( 20064, Ncbi ).
+Ncbi = 374240.
 
 ==
 */
-cgnc_galg_cgnc_entz( X, Y ) :-
-    bio_db:bio_db_serve( cgnc_galg_cgnc_entz(X,Y) ).
+cgnc_galg_cgnc_ncbi( X, Y ) :-
+    bio_db:bio_db_serve( cgnc_galg_cgnc_ncbi(X,Y) ).
 
 /**  cgnc_galg_cgnc_ensg( +Cgnc, -EnsG ).
 

@@ -35,6 +35,7 @@ std_chicken_maps_cgnc_defaults( Defs ) :-
                     db_dir(cgnc),  % is this used ?
                     download(true),
                     map_prefix(false),
+                    org(chicken),
                     prefix(cgnc),
                     sub(maps)
            ].
@@ -113,8 +114,8 @@ std_chicken_maps_cgnc( Args ) :-
     options( sub(SubDir), Opts ),
     make_directory_path( SubDir ),
     mtx( CsvF, Mtx, sep(tab) ),
-    options_propagate( [map_prefix,prefix], Opts, StdOT, true ),
-    StdO= [dir(SubDir),cnm_transform(cgnc_cname)|StdOT],
+    % options_propagate( [map_prefix,prefix], Opts, StdOT, true ),
+    StdO= [dir(SubDir),cnm_transform(cgnc_cname)|Opts],
     Cgnc = 'CGNC id',
     Symb = 'gene symbol',
     Ncbi = 'Entrez Gene id',

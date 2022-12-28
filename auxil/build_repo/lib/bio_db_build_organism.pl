@@ -16,8 +16,8 @@ when none is given explicitly (eg via a predicate's Options).
 
 */
 
-bio_db_organism(hs).      % defaulty
-bio_db_organism(gallus).  % 2022/12/21
+bio_db_organism(human).      % defaulty
+bio_db_organism(chicken).  % 2022/12/21
 bio_db_organism(mouse).
 
 /* bio_db_organism( ?Known, ?Canon ).

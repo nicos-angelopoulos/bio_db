@@ -31,16 +31,16 @@ W is an integer in 0 < W < 1000.
 
 ==
 Symb = 'LMTK3'.
-?- hgnc_homs_symb_entz('LMTK3',Entz),ncbi_homs_entz_ensp(Entz,EnsP),strg_homs_edge_ensg( EnsP, Inter, W ).
-Entz = 114783,
+?- hgnc_homs_symb_ncbi('LMTK3',Ncbi),ncbi_homs_ncbi_ensp(Ncbi,EnsP),strg_homs_edge_ensg( EnsP, Inter, W ).
+Ncbi = 114783,
 EnsP = 'ENSP00000270238',
 Inter = 'ENSP00000075503',
 W = 186 ;
-Entz = 114783,
+Ncbi = 114783,
 EnsP = 'ENSP00000270238',
 Inter = 'ENSP00000162044',
 W = 165 ;
-Entz = 114783,
+Ncbi = 114783,
 EnsP = 'ENSP00000270238',
 Inter = 'ENSP00000178640',
 W = 389

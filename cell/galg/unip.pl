@@ -2,7 +2,7 @@
                 bio_db_galg_unip/0,
                     %       + Uniprot id to:
                 unip_galg_unip_ensp/2,   % -> ensemblprotein id
-                unip_galg_unip_entz/2,   % -> entrez gene id
+                unip_galg_unip_ncbi/2,   % -> entrez gene id
                 unip_galg_unip_gyno/2,   % -> synonym
                 unip_galg_unip_strp/2,   % -> STRING protein id
                 unip_galg_unip_symb/2    % -> symbol
@@ -72,17 +72,17 @@ Map predicate from Uniprot ids to gene synonyms.
 unip_galg_unip_gyno( X, Y ) :-
     bio_db:bio_db_serve( unip_galg_unip_gyno(X,Y) ).
 
-/** unip_galg_unip_entz( ?Unip, ?Entz ).
+/** unip_galg_unip_ncbi( ?Unip, ?Ncbi ).
 
 Map predicate from Uniprot ids to entrez gene ids.
 
 ==
-?- unip_galg_unip_entz( Unip, Entz ).
+?- unip_galg_unip_ncbi( Unip, Ncbi ).
 
 ==
 */
-unip_galg_unip_entz( X, Y ) :-
-    bio_db:bio_db_serve( unip_galg_unip_entz(X,Y) ).
+unip_galg_unip_ncbi( X, Y ) :-
+    bio_db:bio_db_serve( unip_galg_unip_ncbi(X,Y) ).
 
 /** unip_galg_unip_ensp( ?Unip, ?Ensp ).
 

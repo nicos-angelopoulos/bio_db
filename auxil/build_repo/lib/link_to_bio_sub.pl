@@ -9,7 +9,7 @@
 link_to_bio_sub_defaults( Defs ) :-
     Defs = [
         debug(true),
-        org(hs),
+        org(homs),
         type(maps)
     ].
 
@@ -49,14 +49,18 @@ link_to_bio_sub( Sub, File, Args ) :-
     options_append( Self, Args, Opts ),
 	absolute_file_name( File, AbsFile, [access(exist)] ),
     options( [org(Org),type(Type)], Opts ),
-    bio_db_organism_token( Org, Tkn ),
+    trace,
+    bio_db_organism( Org, Tkn, _ ),
     directory_file_path( Tkn, Type, Rel ),
 	absolute_file_name( bio_db_build_data(Rel), Dir ),
 	directory_file_path( Dir, Sub, ToDir ),
 	file_base_name( AbsFile, Base ),
 	os_make_path( ToDir, debug(true) ),
 	directory_file_path( ToDir, Base, Dest ),
-	link_to_bio_sub_read( Dest, AbsFile, Self ).
+	link_to_bio_sub_read( Dest, AbsFile, Self ),
+     !.
+link_to_bio_sub( Sub, File, Args ) :-
+     throw( liking_failed(Sub,File,Args) ).
 
 link_to_bio_sub_read( Dest, AbsFile, _Self ) :-
 	read_link( Dest, _Link, Target ),

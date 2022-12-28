@@ -147,8 +147,8 @@ bio_db_organism( TokenIs, Token, Canon ) :-
 
 
 bio_db_organism_token(chicken, galg).
-bio_db_organism_token(human, homs).
-bio_db_organism_token(mouse, musm).
+bio_db_organism_token(human,   homs).
+bio_db_organism_token(mouse,   musm).
 
 /** bio_db_organism_alias( ?Alias, -Org ).
 
@@ -1246,7 +1246,7 @@ bio_db_close_connections.
 /** bio_db_db_predicate( ?Pid ).
 
     True if Pid is a predicate identifier which is defined in current bio_db session,
-    and starts with either edge_ or map_. When Pid is a free variable
+    and contains 4 _ sep tokens, each of length 4. When Pid is a free variable
     all such predicate identifiers are returned on backtracking.
 
     For a statically produced list of all data predicates in _bio_db_
@@ -1266,7 +1266,7 @@ bio_db_close_connections.
 bio_db_db_predicate( Pname/Arity) :-
     ground(Pname/Arity), !,
     functor(Head,Pname,Arity),
-    bio_db_predicate_name(Pname),
+    bio_db_data_predicate_name(Pname),
     % predicate_property(bio_db:Head, exported), !.
     predicate_property(bio_db:Head, defined), !.  
     % fixme: when called from closing,  maybe do a bit of checking ? \+ (rule=:=1,clauses=:=1)
@@ -1274,13 +1274,14 @@ bio_db_db_predicate( Pname/Arity) :-
     % module_property(bio_db, exports(List)),
     % member(Pname/Arity, List),
     current_predicate( bio_db:Pname/Arity ),
-    bio_db_predicate_name(Pname).
+    bio_db_data_predicate_name(Pname).
 
-bio_db_predicate_name(Pname) :-
-    (   sub_atom(Pname, 0, _, _, map_)
-    ->  true
-    ;   sub_atom(Pname, 0, _, _, edge_)
-    ).
+bio_db_data_predicate_name( Pname ) :-
+     atomic_list_concat( Parts, '_', Pname ),
+     maplist( atom_length, Parts, [4,4,4,4] ),
+     !.
+bio_db_data_predicate_name( _Db, _Parts, Pname, Arity ) :-
+    throw( not_a_db_pred(Pname/Arity), [pack(bio_db),pred(bio_db_close/1)] ).
 
 % map stubs, 
 % these are in memory iff the map is to be loaded as prolog 
@@ -1289,21 +1290,13 @@ bio_db_predicate_name(Pname) :-
 % 
 bio_db_serve( Call ) :-
     functor( Call, Pn, _ ),
-    ( ( atomic_list_concat([_,_,OrgTkn,_,_],'_',Pn),
-        bio_db_organism(OrgTkn,Org)
-       ) ->
-            true
-            ; 
-            ( (atomic_list_concat([_,_,OrgTkn|_],'_',Pn),
-                 bio_db_organism(OrgTkn,Org)
-              ) ->
-                    true
-                    ;
-                    % fixme: it is probably better to abort here...
-                    Org = hs
-       )
+    ( atomic_list_concat([_,OrgTkn,_,_],'_',Pn) ->
+          % bio_db_organism(OrgTkn,Org)
+          true
+          ;
+          throw( cannot_get_org_token_for_bio_db_served(Call) )
     ),
-    bio_db_serve( Org, Call, true ).
+    bio_db_serve( OrgTkn, Call, true ).
 
 bio_db_serve( Org, Call ) :-
     bio_db_serve( Org, Call, true ).
@@ -1832,11 +1825,11 @@ bio_db_predicate_info( Pname, InfoName ) :-
     atom_concat( Pname, '_info', InfoName ).
 
 bio_db_pred_name_type( Pname, Type ) :-
-    atomic_list_concat( [Fst|_], '_', Pname ),
-    bio_db_pred_name_prefix_type( Fst, Type ).
+    atomic_list_concat( [_,_,Trd|_], '_', Pname ),
+    bio_db_pred_name_prefix_type( Trd, Type ).
 
-bio_db_pred_name_prefix_type( edge, graphs ).
-bio_db_pred_name_prefix_type( map, maps ).
+bio_db_pred_name_prefix_type( edge, graphs ) :- !.
+bio_db_pred_name_prefix_type( _, maps ).
 
 bio_db_load_call( false, Pname, Arity, Iface, File, _Call ) :-
     ( Iface == prolog -> 
@@ -1886,7 +1879,7 @@ bio_db_map_call_db_pname_check( Db, Parts, _Pname, _Arity ) :-
      maplist( atom_length, [Db|Parts], [4,4,4,4] ),
      !.
 bio_db_map_call_db_pname_check( _Db, _Parts, Pname, Arity ) :-
-    throw( does_not_look_like_a_bio_db_data_pred(Pname,Arity) ).
+    throw( not_a_db_pred(Pname/Arity), [pack(bio_db),pred(bio_db_serve/3)] ).
 
 % fixme: delete these 2 preds
 bio_db_type_arity_check( Type, Arity ) :-

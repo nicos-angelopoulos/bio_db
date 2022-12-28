@@ -33,7 +33,7 @@ mgim_report(prot, 'MRK_SwissProt_TrEMBL').
 mgim_report(swiss_prot, 'MRK_SwissProt').
 mgim_report(ncbi, 'MGI_EntrezGene').
 
-std_mouse_maps_mgim_defaults(debug(true)).
+std_mouse_maps_mgim_defaults([debug(true),org(mouse)]).
 
 /**  std_mouse_maps_mgim.
 

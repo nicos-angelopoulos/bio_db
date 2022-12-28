@@ -29,8 +29,8 @@ Tue 27 Dec 12:08:13 GMT 2022
 ορέστης;dnloads/reac% date
 Tue 27 Dec 12:12:18 GMT 2022
 ορέστης;dnloads/reac% pwd 
-/usr/local/users/nicos/local/share/swi-prolog/pack/Downloads/bio_db_repo-22.12.27/dnloads/reac
-ορέστης;dnloads/reac% wc -l maps/*
+/usr/local/users/nicos/local/share/swi-prolog/pack/Downloads/bio_db_repo-22.12.27/dnloads/reac/maps
+ορέστης;dnloads/reac% wc -l *
     7150 maps/reac_galg_ncbi_reac.pl
    34935 maps/reac_galg_ncbi_reap.pl
    49728 maps/reac_galg_reac_reap.pl

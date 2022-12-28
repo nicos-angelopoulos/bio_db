@@ -24,9 +24,9 @@ organism(hs).
 
 :- organism(Org), debuc(Org).
 
-std_hs_defaults(debug(true)).
+std_human_defaults(debug(true)).
 
-/** std_hs(+Opts).
+/** std_human(+Opts).
 
 Build all the standard datasets for bio_db.
 
@@ -51,7 +51,7 @@ Dependencies
 ==
 % date
 Thu 10 Sep 19:34:38 BST 2020
-% upsh std_hs pass=assembly=38 release=101
+% upsh std_human pass=assembly=38 release=101
 ==
 
 @author nicos angelopoulos
@@ -61,15 +61,15 @@ Thu 10 Sep 19:34:38 BST 2020
 @tbd add timings (in file)
 
 */
-std_hs( Args ) :-
-    Self = std_hs,
+std_human( Args ) :-
+    Self = std_human,
     options_append( Self, Args, Opts ),
     bio_db_build_aliases( Opts ),
     organism( Org ),
     std_org( Org, Opts ).
 
 std_org( Org, Opts ) :-
-    % debug_call( std_hs, start, true ),
+    % debug_call( std_human, start, true ),
     findall( Succ-Type-Db, ( std(Org,Type,Db),
                              std_upsh(Org,Db,Type,Opts,Succ)
                         ),
@@ -91,7 +91,7 @@ std_upsh( Org, Db, Type, Opts, Succ ) :-
     findall( Urg, (member(pass(Trg),Opts),Trg=..Parts,at_con(Parts,'=',Urg)), Urgs ),
     % at_con( [Upsh|Urgs], ' ', Upshable ),
     Upsh =.. [upsh,Ucmd,f,p|Urgs],
-    debuc( Org, 'std_hs is shelling ~w,', [Upsh] ),
+    debuc( Org, 'std_human is shelling ~w,', [Upsh] ),
     % catch( @ upsh(p,f,Upshable), Err, true ),
     catch( @ Upsh, Err, true ),
     ( \+ var(Err) ->

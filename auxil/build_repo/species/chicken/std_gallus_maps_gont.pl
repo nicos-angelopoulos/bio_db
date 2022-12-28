@@ -36,8 +36,8 @@ Build maps from gene ontology data.
 ορέστης;dnloads/gont% date
 Tue 27 Dec 12:04:28 GMT 2022
 ορέστης;dnloads/gont% pwd
-/usr/local/users/nicos/local/share/swi-prolog/pack/Downloads/bio_db_repo-22.12.27/dnloads/gont
-ορέστης;dnloads/gont% wc -l maps/*
+/usr/local/users/nicos/local/share/swi-prolog/pack/Downloads/bio_db_repo-22.12.27/dnloads/gont/maps
+ορέστης;dnloads/gont% wc -l *
    99017 maps/map_gont_gallus_symb_gont.pl
    43279 maps/map_gont_gont_gonm.pl
   332010 maps/map_gont_gont_symb.csv

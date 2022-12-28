@@ -31,10 +31,10 @@ There are no building dependencies between the datasets.
 std_chicken( Args ) :-
     Self = std_chicken,
     options_append( Self, Args, Opts ),
-    options( Org, Opts ),
+    options( org(Org), Opts ),
     std_org( Org, Opts ).
 
-std_chicken_debug( Orgs ) :-
+std_chicken_debug( Org ) :-
      debug( chicken, 'finished all standards for: ~w', [Org] ).
 
 std(chicken, graphs, strg).

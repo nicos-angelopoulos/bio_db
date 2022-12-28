@@ -1879,7 +1879,7 @@ bio_db_predicate_type_sub_dir( edge, graphs ).
 bio_db_map_call_db_pname( Call, Db, Pname, Arity ) :-
     functor( Call, Pname, Arity ),
     at_con( [Db|Parts], '_', Pname ),
-    bio_db_map_call_db_pname_check( Db, Parts, Arity ).
+    bio_db_map_call_db_pname_check( Db, Parts, Pname, Arity ).
     % bio_db_type_arity_check( Type, Arity ).
 
 bio_db_map_call_db_pname_check( Db, Parts, _Pname, _Arity ) :-

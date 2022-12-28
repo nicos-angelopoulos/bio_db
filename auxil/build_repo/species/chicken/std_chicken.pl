@@ -11,7 +11,8 @@
 :- lib(debug_call).
 
 % also sets lib alias to that dir
-:- ensure_loaded('../../lib/bio_db_build_aliases').  % /1.
+% :- ensure_loaded('../../lib/bio_db_build_aliases').  % /1.
+:- ensure_loaded('../../lib/std_org').   % /2.
 
 % local libs & sources
 % :- lib(debug_colours/1).

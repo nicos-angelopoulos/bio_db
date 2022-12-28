@@ -30,6 +30,7 @@ Dependencies
  * on(maps_mgim)
    maps_ense, maps_gont
  * on([maps_mgim,maps_unip])
+   mouse_graphs_strg
 
 @author nicos angelopoulos
 @version  0.1 2017/10/12

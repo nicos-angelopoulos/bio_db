@@ -4,8 +4,8 @@
 
 :- debug(mgim_unip).
 
-:- ensure_loaded( '../bio_db_build_aliases' ).
-:- bio_db_build_aliases([]).
+:- ensure_loaded( '..//lib/bio_db_build_aliases' ).
+% :- bio_db_build_aliases([]).
 
 /**  mgim_unip.
 

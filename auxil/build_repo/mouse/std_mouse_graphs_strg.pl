@@ -1,5 +1,5 @@
 
-:- set_prolog_flag(stack_limit, 12 000 000 000).
+:- set_prolog_flag(stack_limit, 20 000 000 000).
 
 % if library(lib) is missing, install via pack_install(lib).
 %
@@ -17,7 +17,7 @@
 :- lib(stoics_lib:url_file/3).
 
 % also sets lib alias to that dir
-:- ensure_loaded( '../../lib/bio_db_build_aliases' ).  % /1.
+:- ensure_loaded( '../lib/bio_db_build_aliases' ).  % /1.
 
 % load necessary data that has already been generated
 % :- ensure_loaded(unip:bio_db_build_downloads('unip/maps/map_unip_mouse_ensp_unip')).
@@ -49,11 +49,14 @@ std_mouse_graphs_strg_defaults( [debug(true)|T] ) :-
 
 Mouse graphs for STRING protein protein interactions.
 
+Depends on std_maps_mgim std_maps_unip.
+
 ==
 ?- std_mouse_graphs_strg([]).
 
 
 ==
+
 @author nicos angelopoulos
 @version  0:2 2022/12/27,  
 @see https://string-db.org

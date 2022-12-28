@@ -13,7 +13,7 @@
 :- lib(stoics_lib:at_con/3).
 
 % also loads lib locations for locals below
-:- ensure_loaded('../../lib/bio_db_build_aliases').  % /1.
+:- ensure_loaded('../lib/bio_db_build_aliases').  % /1.
 
 % local
 :- lib(csv_to_pl/2).

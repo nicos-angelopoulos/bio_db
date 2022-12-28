@@ -128,7 +128,7 @@ std_mouse_graphs_strg( Args ) :-
     EdgeSymbsInfos = [ source-From, datetime-DnDt, header-header('Symbol','Symbol',weight),
                        data_types-data_types(atom,atom,integer)
                      ],
-    portray_informed_clauses( SymbEdges, EdgeSymbsInfos, file(EdgeSymbsF), [] ),
+    portray_informed_clauses( SymbEdges, EdgeSymbsInfos, EdgeSymbsF, [] ),
     % SymbOpts = [source(From),datetime(DnDt),header(row('MGI_Symbol','MGI_Symbol',weight))],
     % bio_db_add_infos_to( SymbOpts, EdgeSymbsF ),
     debuc( Self, wrote, EdgeSymbsF ),

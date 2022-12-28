@@ -130,7 +130,7 @@ std_graphs_strg( Args ) :-
     EdgeSymbsInfos = [ source-From, datetime-DnDt, header-header('Symbol','Symbol',weight),
                        data_types-data_types(atom,atom,integer)
                      ],
-    portray_informed_clauses( SymbEdges, EdgeSymbsInfos, file(SymbRelF), [] ),
+    portray_informed_clauses( SymbEdges, EdgeSymbsInfos, SymbRelF, [] ),
      
      % portray_clauses( SymbEdges, file(SymbsRel) ),
      % SymbOpts = [source(From),datetime(DnDt),header(row('HGNC Symbol','HGNC Symbol',weight))],

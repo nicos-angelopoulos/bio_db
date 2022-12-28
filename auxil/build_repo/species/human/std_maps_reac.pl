@@ -13,7 +13,7 @@
 :- lib(stoics_lib).
 
 % bio_db loads
-:- ensure_loaded('../lib/bio_db_build_aliases').  % /1.  also adds lib alias to that dir
+:- ensure_loaded('../../lib/bio_db_build_aliases').  % /1.  also adds lib alias to that dir
 :- lib(bio_db_build_organism/0). % bio_db_organism/3.
 :- lib(link_to_bio_sub/3).
 :- lib(bio_db_dnt_times/3).

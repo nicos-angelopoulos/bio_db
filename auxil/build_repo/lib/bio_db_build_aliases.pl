@@ -8,7 +8,11 @@
 :- lib( stoics_lib:date_two_digit_dotted/1 ).
 
 :- prolog_load_context(directory, Lib ),
-   lib(Lib).
+   lib(Lib),
+   directory_file_path( Pa, lib, Lib ),
+   directory_file_path( GPa, build_repo, Pa ),
+   directory_file_path( GPa, lib, PaLib ),
+   lib(PaLib).
 
 :- debuc(bio_db_build_aliases).
 

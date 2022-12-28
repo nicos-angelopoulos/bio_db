@@ -11,9 +11,9 @@
 :- lib(stoics_lib:portray_clauses/2).
 :- lib(stoics_lib:io_sections/3).
 
-:- ensure_loaded('src/go_obo').
 % also sets lib alias to that dir
 :- ensure_loaded('../../lib/bio_db_build_aliases' ).  % /1.
+:- lib(go_obo/2).
 
 % local libs & sources
 :- lib(link_to_bio_sub/3).

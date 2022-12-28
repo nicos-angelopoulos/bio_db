@@ -87,10 +87,10 @@ Opts
 ?- shell( 'wc -l *' ).
 
 ορέστης;dnloads/cgnc% pwd
-/usr/local/users/nicos/local/share/swi-prolog/pack/Downloads/bio_db_repo-22.12.27/dnloads/cgnc
+/usr/local/users/nicos/local/share/swi-prolog/pack/Downloads/bio_db_repo-22.12.27/dnloads/cgnc/maps
 ορέστης;dnloads/cgnc% date
 Tue 27 Dec 11:46:41 GMT 2022
-ορέστης;dnloads/cgnc% wc -l maps/*
+ορέστης;dnloads/cgnc% wc -l *
   25923 maps/map_cgnc_gallus_homs_cgnc_curs.pl
   25923 maps/map_cgnc_gallus_homs_cgnc_edat.pl
   15245 maps/map_cgnc_gallus_homs_cgnc_ensg.pl

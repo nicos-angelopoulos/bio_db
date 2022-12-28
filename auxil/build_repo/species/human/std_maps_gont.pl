@@ -15,10 +15,10 @@
 :- lib(by_unix).
 :- lib(stoics_lib:map_succ_list/3).
 
-:- ensure_loaded('src/go_obo').
 
 % also sets lib alias to that dir
 :- ensure_loaded('../../lib/bio_db_build_aliases').  % /1.
+:- lib(go_obo/2).
 
 % load necessary data that has already been generated
 % :- ensure_loaded( hgnc:bio_db_build_downloads('hgnc/maps/map_hgnc_symb_hgnc') ).

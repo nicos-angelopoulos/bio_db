@@ -18,7 +18,7 @@
 :- ensure_loaded('../lib/bio_db_build_aliases').  % /1.
 
 % local libs & sources
-:- ensure_loaded( '../lib/bio_db_repo_info.pl' ).
+:- ensure_loaded( '../../lib/bio_db_repo_info.pl' ).
 
 :- debuc(std_repo).
 :- debuc(by_unix).  % fixme: temporary ?

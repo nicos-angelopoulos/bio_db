@@ -193,9 +193,11 @@ bio_db_pred_stats( Pn, Pa, Abl, Len ) :-
     findall( Pn/Pa, current_predicate(bio_db:Pn/Pa), PnPas ),
     sort( PnPas, OrdPnPas ),
     member( Pn/Pa, OrdPnPas ),
-    member( Pfx, [map_,edge_] ),
-    atom_concat( Pfx, _, Pn ),
-    \+ atom_concat( _, info, Pn ),  % currently map_mgim_mouse_syno_mgim_info/2 is tried...
+    % member( Pfx, [map_,edge_] ),
+    % atom_concat( Pfx, _, Pn ),
+    atomic_list_concat( [Db,Org,Obj1,Obj2], '_', Pn ),
+    maplist( atom_length, [Db,Org,Obj1,Obj2], [4,4,4,4] ),
+    % \+ atom_concat( _, info, Pn ),  % currently map_mgim_mouse_syno_mgim_info/2 is tried...
     functor( G, Pn, Pa ),
     findall( 1, G, Ones ),
     length( Ones, Len ),

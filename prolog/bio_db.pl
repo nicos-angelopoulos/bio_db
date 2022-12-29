@@ -143,7 +143,7 @@ bio_db_organism( Org, Token, Canon ) :-
     Canon = Org.
 bio_db_organism( TokenIs, Token, Canon ) :-
     ( ground(TokenIs) -> Backtrack = false; Backtrack = true ),
-    bio_db_organism_token( Canon, Token ),
+    bio_db_organism_token( Canon, TokenIs ),
     ( Backtrack == false -> !; true ),
     Token = TokenIs.
 

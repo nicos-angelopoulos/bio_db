@@ -1291,8 +1291,8 @@ bio_db_data_predicate_name( _Db, _Parts, Pname, Arity ) :-
 % 
 bio_db_serve( Call ) :-
     functor( Call, Pn, _ ),
-    ( atomic_list_concat([_,Org,_,_],'_',Pn) ->
-          once(bio_db_organism(Org,OrgTkn,Org))
+    ( atomic_list_concat([_,OrgPredTkn,_,_],'_',Pn) ->
+          once(bio_db_organism(OrgPredTkn,OrgTkn,_Org))
           ;
           throw( cannot_get_org_token_for_bio_db_served(Call) )
     ),

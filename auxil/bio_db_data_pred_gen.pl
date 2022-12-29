@@ -48,13 +48,15 @@ bio_db_data_pred_gen :-
     working_directory( _, Old ).
 
 bio_db_data_pred_gen_doc( Out, Os, Org-OrgPreds) :-
+    write( doing(Out,Os,Org,OrgPreds) ), nl,
     os_ext( pl, Org, Os ),
-    os_files( Subs, dir(Org) ),
+    bio_db_data_org_token( Org, Okn ),
+    os_files( Subs, dir(Okn) ),
     findall( SubF-Pred, ( member(Sub,Subs),
                       write( Out, '%  * '), write( Out, Org ),
                       write( Out, '/' ),
                       write( Out, Sub ), nl( Out ),
-                      os_path(Org,Sub,SubStem),
+                      os_path(Okn,Sub,SubStem),
                       os_ext(pl,SubStem,SubF),
                       open(SubF,read,In),
                       read( In, (:- module(_,SubPreds)) ),
@@ -75,3 +77,7 @@ bio_db_data_pred_gen_prefix( Out ) :-
     write( Out, '% Auto-generated predicate; listing and name-documenting all data predicates in bio_db.' ), nl( Out ),
     write( Out, '% This predicate is statically generated from the source cell files.' ), nl( Out ),
     write( Out, '%' ), nl( Out ).
+
+bio_db_data_org_token( chicken, galg ).
+bio_db_data_org_token( human, homs ).
+bio_db_data_org_token( mouse, musm ).

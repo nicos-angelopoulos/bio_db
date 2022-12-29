@@ -36,7 +36,7 @@
                 % 2 derived
                 % A.symbols
                 is_symbol/2,
-                entz_symb/3,
+                ncbi_symb/3,
                 % B. gene ontology
                 go_id/2,          % +/-Go, -/+Int
                 go_id/3,          % +GoOrInt, -Go, -Int
@@ -65,7 +65,7 @@
 :- lib(stoics_lib:date_two_digit_dotted/1).
 :- lib(go_id/2).
 :- lib(is_symbol/2).
-:- lib(entz_symb/3).
+:- lib(ncbi_symb/3).
 :- lib(org_edge_strg_symb/4).
 
 :- lib(end(bio_db)).
@@ -174,8 +174,8 @@ bio_db_organism_alias( gg6a, chicken ).
 
 % this search path can be added to requires
 % bio_db_map/2,
-% map_ncbi_ensp_unip/2,
-% map_ncbi_ensp_ensg/2,
+% ncbi_homs_ensp_unip/2,
+% ncbi_homs_ensp_ensg/2,
 
 /* was:
 bio_db_interface_atom( prolog ).
@@ -256,30 +256,31 @@ transparently to the user, where a data set is downloaded by simply calling the 
 
 For example
 ==
-?- hgnc_symb_hgnc( 'LMTK3', Hgnc ).
-% prolog DB:table hgnc:map_hgnc_symb_hgnc/2 is not installed, do you want to download (Y/n) ? 
-% Trying to get: url_file(http://www.stoics.org.uk/bio_db_repo/data/maps/hgnc/map_hgnc_symb_hgnc.pl,/usr/local/users/nicos/local/git/test_bio_db/data/maps/hgnc/map_hgnc_symb_hgnc.pl)
-% Loading prolog db: /usr/local/users/nicos/local/git/test_bio_db/data/maps/hgnc/map_hgnc_symb_hgnc.pl
+?- hgnc_homs_symb_hgnc( 'LMTK3', Hgnc ).
+% prolog DB:table hgnc:hgnc_homs_symb_hgnc/2 is not installed, do you want to download (Y/n) ? 
+% Trying to get: url_file(http://www.stoics.org.uk/bio_db_repo/data/maps/hgnc/hgnc_homs_symb_hgnc.pl,/usr/local/users/nicos/local/git/test_bio_db/data/maps/hgnc/hgnc_homs_symb_hgnc.pl)
+% Loading prolog db: /usr/local/users/nicos/local/git/test_bio_db/data/maps/hgnc/hgnc_homs_symb_hgnc.pl
 Hgnc = 19295.
 
 ?- bio_db_interface( prosqlite ).
 % Setting bio_db_interface prolog_flag, to: prosqlite
 true.
 
-?- map_hgnc_prev_symb( Prv, Symb ).
-% prosqlite DB:table hgnc:map_hgnc_prev_symb/2 is not installed, do you want to download (Y/n) ? 
-% Trying to get: url_file(http://www.stoics.org.uk/bio_db_repo/data/maps/hgnc/map_hgnc_prev_symb.sqlite,/usr/local/users/nicos/local/git/test_bio_db/data/maps/hgnc/map_hgnc_prev_symb.sqlite)
+?- hgnc_homs_prev_symb( Prv, Symb ).
+% prosqlite DB:table hgnc:hgnc_homs_prev_symb/2 is not installed, do you want to download (Y/n) ? 
+% Trying to get: url_file(http://www.stoics.org.uk/bio_db_repo/data/maps/hgnc/hgnc_homs_prev_symb.sqlite,/usr/local/users/nicos/local/git/test_bio_db/data/maps/hgnc/hgnc_homs_prev_symb.sqlite)
 false.
 
-?- map_hgnc_prev_symb( Prv, Symb ).
-% prosqlite DB:table hgnc:map_hgnc_prev_symb/2 is not installed, do you want to download (Y/n) ? 
-% Trying to get: url_file(http://www.stoics.org.uk/bio_db_repo/data/maps/hgnc/map_hgnc_prev_symb.sqlite,/usr/local/users/nicos/local/git/test_bio_db/data/maps/hgnc/map_hgnc_prev_symb.sqlite)
-% Loading prosqlite db: /usr/local/users/nicos/local/git/test_bio_db/data/maps/hgnc/map_hgnc_prev_symb.sqlite
+?- hgnc_homs_prev_symb( Prv, Symb ).
+% prosqlite DB:table hgnc:hgnc_homs_prev_symb/2 is not installed, do you want to download (Y/n) ? 
+% Trying to get: url_file(http://www.stoics.org.uk/bio_db_repo/data/maps/hgnc/hgnc_homs_prev_symb.sqlite,/usr/local/users/nicos/local/git/test_bio_db/data/maps/hgnc/hgnc_homs_prev_symb.sqlite)
+% Loading prosqlite db: /usr/local/users/nicos/local/git/test_bio_db/data/maps/hgnc/hgnc_homs_prev_symb.sqlite
 Prv = 'A1BG-AS',
 Symb = 'A1BG-AS1' .
 ==
 
-See bio_db_data_predicate/4.
+See bio_db_data_predicate/4 for a way to enumerate all data predicates. The source of which is in src/bio_db_data_predicate.pl which also includes in the comments 
+the cell structure.
 
 As of version 2.0 bio_db is formed of a number of hierarchically organised cells that 
 can be loaded independently. This is because there now too many predicates and is also a devise
@@ -317,7 +318,7 @@ In both the above loads, the following becomes available, however, the former lo
 also loads additional predicates for human, but non hgnc based.
 
 ==
-?- map_hgnc_hgnc_symb( Hgnc, 'LMTK3' ).
+?- hgnc_homs_hgnc_symb( Hgnc, 'LMTK3' ).
 Hgnc = 19295.
 ==
 
@@ -353,80 +354,87 @@ that the field is the unique identifier of the object
 in that database.
 
 Tokens
-  * mouse
-    mouse 
-  * hs
-    human, often missing as originally was the only organism supported)
+ * homs
+   colloquial: human
 
-  * symb
-    HGNC gene symbol (short, unique name for genes)
+ * musm
+   colloquial: mouse
 
-  * name
-    HGNC gene name (long, less standarised version of gene name)
+ * galg
+   colloquial: chicken
 
-  * prev
-    HGNC previous gene symbol
+ * symb
+   HGNC gene symbol (short, unique name for genes)
 
-  * syno
-    HGNC gene symbol synonym
+ * name
+   HGNC gene name (long, less standarised version of gene name)
 
-  * ensg 
-    ensembl gene
+ * prev
+   HGNC previous gene symbol
 
-  * enst
-    ensembl transcript
+ * syno
+   HGNC gene symbol synonym
 
-  * ensp
-    ensembl protein
+ * ensg 
+   ensembl gene
 
-  * gonm
-    GO name of a term
+ * enst
+   ensembl transcript
 
-  * pros
-    Prosite protein family information
+ * ensp
+   ensembl protein
 
-  * rnuc
-    RNA nucleic sequence ID to HGNC symbol.
+ * gonm
+   GO name of a term
 
-  * unig
-    uniprotein gene id
-    
-  * sprt
-    Swiss-Prot part of Uniprot (high quality, curated)
+ * pros
+   Prosite protein family information
 
-  * trem
-    TrEMBL part of Uniprot (non curated)
+ * rnuc
+   RNA nucleic sequence ID to HGNC symbol.
 
-  * mgim
-    MGI Marker (identifier for Mouse Genome Informatics Markers)
+ * unig
+   uniprotein gene id
+   
+ * sprt
+   Swiss-Prot part of Uniprot (high quality, curated)
 
-The name convension for maps is
+ * trem
+   TrEMBL part of Uniprot (non curated)
+
+ * mgim
+   MGI Marker (identifier for Mouse Genome Informatics Markers)
+
+  *cgnc
+   Chicken gene nomenclature committee
+
+The name convention for maps is
   ==
-   ?- map_hgnc_hgnc_symb( Hgnc, Symb ).
+   ?- hgnc_homs_hgnc_symb( Hgnc, Symb ).
    Hgnc = 1,
    Symb = 'A12M1~withdrawn' ;
    Hgnc = 2,
    Symb = 'A12M2~withdrawn' .
 
-   ?- map_hgnc_hgnc_symb( 19295, Symb ).
+   ?- hgnc_homs_hgnc_symb( 19295, Symb ).
    Symb = 'LMTK3'.
 
-   ?- map_hgnc_symb_hgnc( 'LMTK3', Hgnc ).
+   ?- hgnc_homs_symb_hgnc( 'LMTK3', Hgnc ).
   Hgnc = 19295.
 
   == 
 
   Where the first hgnc corresponds to the source database, the second identifies the first argument of the 
   map to be the unique identifier field for that database (here a positive integer starting at 1 and with no gaps),
-  The last part of the predicate name corresponds to the second argument, which here is the unique Symbol 
+  The last part of the predicate name corresponds to the second (or all other) argument(s), which here is the unique Symbol 
   assigned to a gene by HGNC. In the current version of bio_db, all tokens in map filenames are 4 characters long.
   Map data for predicate Pname from database DB are looked for in DB(Pname.Ext) (see bio_db_paths/0).
   Extension, Ext, depends on the current bio_db database interface (see bio_db_interface/1), and it is sqlite if
   the interface is prosqlite and pl otherwise.
 
-The name convesion for graphs is 
+The name convention for graphs is 
   == 
-  ?- edge_string_hs_symb( Symb1, Symb2, W ).
+  ?- strg_homs_edge_symb( Symb1, Symb2, W ).
   S1 = 'A1BG',
   S2 = 'ABAT',
   W = 360 ;
@@ -435,8 +443,7 @@ The name convesion for graphs is
   W = 158 .
   ==
 
-Where only the first and second tokens, edge and string respectively, are controlled. The second token
-indicates the database of origin. Graph data for predicate Pname from database DB are looked for in
+The first part indicates the database and the second one the organism/species. Graph data for predicate Pname from database DB are looked for in
 bio_db_data(graphs/DB/Pname.Ext) (see bio_db_paths/1).
   Extension, Ext, depends on the current bio_db database interface (see bio_db_interface/1), and it is sqlite if
   the interface is prosqlite and pl otherwise.
@@ -467,11 +474,11 @@ Once the user has initiated the serving of a predicate via calling a goal to it,
 possible to have access to information about the dataset such as download date and sourle url. 
 
 ==
-?- map_hgnc_hgnc_symb( Hgnc, Symb ).
+?- hgnc_homs_hgnc_symb( Hgnc, Symb ).
 Hgnc = 1,
 Symb = 'A12M1~withdrawn' .
 
-?- bio_db_info( map_hgnc_hgnc_symb/2, Key, Value ), write( Key-Value ), nl, fail.
+?- bio_db_info( hgnc_homs_hgnc_symb/2, Key, Value ), write( Key-Value ), nl, fail.
 interface-prolog
 source_url-ftp://ftp.ebi.ac.uk/pub/databases/genenames/hgnc_complete_set.txt.gz
 datetime-datetime(2018,11,27,12,32,11)
@@ -495,6 +502,7 @@ The first flag automates conversion from .pl.zip to .pl (which will be the case
 for the first time you access any dataset if you have installed bio_db_repo),
 and the second controls the deletion of the zip file once the .pl file has been created.
 
+As of version 4.0 there are 91 associated data predicates serving 55444729 records.
 
 Thanks to Jan Wielemaker for a retractall fix and for code for fast loading of precompiled fact bases
 (and indeed for the changes in SWI that made this possible).
@@ -514,7 +522,10 @@ Thanks to Jan Wielemaker for a retractall fix and for code for fast loading of p
 @version  3.2 2020/9/18    include mouse ense + fixes/updates on building scripts
 @version  3:4 2021/5/10    removed edge_gont_includes/2 (reciprocal of is_a), and edge_gont_consists_of/2 (reciprocal of part_of/2)
 @version  3:6 2021/12/4    fixed pack_errors and map_ense_mouse_enst_chrl/5; bio_db_stats.pl version  0.2
-@see doc/Releases.txt      for version details.
+@version  4:1 2022/12/29   huge re-config of data predicate names + reac-tome (maps) + chicken
+@see doc/Releases.txt      for version details
+@see bio_db_data_predicate/4 for a way to enumerate all data predicates
+@see cell/ for the definitions of the data predicates
 
 */
 
@@ -701,19 +712,19 @@ Version Mj:Mn:Fx, and release date date(Y,M,D).
 
 ==
 ?- bio_db_version( V, D ).
-V = 4:0:0,
+V = 4:1:0,
 D = date(2022, 12, 29).
 ==
 
 @author Nicos Angelopoulos
 @version  3:6 2021/12/4
-@version  4:0 2022/12/26, uniform pred names convention + reactome + chicken
+@version  4:1 2022/12/26, uniform pred names convention + reactome + chicken
 @see bio_db_data_predicate/4  (which should be generated for each new version)
 @see doc/Releases.txt for more detail on change log
 @see module documentation for brief comments on versioning history of this pack
 
 */
-bio_db_version( 4:0:0, date(2022,12,29) ).   
+bio_db_version( 4:1:0, date(2022,12,29) ).   
 
 %% bio_db_citation( -Atom, -Bibterm ).
 %
@@ -840,19 +851,19 @@ bio_db_interface( rocks, Bool ) :-
 % ?- bio_db_interface( Iface ).
 % Iface = prolog.
 % 
-% ?- map_hgnc_symb_hgnc( 'LMTK3', Hgnc ).
-% % Loading prolog db: /usr/local/users/nicos/local/git/lib/swipl-7.1.32/pack/bio_db_repo/data/maps/hgnc/map_hgnc_symb_hgnc.pl
+% ?- hgnc_homs_symb_hgnc( 'LMTK3', Hgnc ).
+% % Loading prolog db: /usr/local/users/nicos/local/git/lib/swipl-7.1.32/pack/bio_db_repo/data/maps/hgnc/hgnc_homs_symb_hgnc.pl
 % Hgnc = 19295.
 % 
 % ?- bio_db_interface( prosqlite ).
 % % Setting bio_db_interface prolog_flag, to: prosqlite
 % true.
 % 
-% ?- map_hgnc_prev_symb( Prev, Symb ).
-% % prosqlite DB:table hgnc:map_hgnc_prev_symb/2 is not installed, do you want to download (Y/n) ? 
+% ?- hgnc_homs_prev_symb( Prev, Symb ).
+% % prosqlite DB:table hgnc:hgnc_homs_prev_symb/2 is not installed, do you want to download (Y/n) ? 
 % % Execution Aborted
-% ?- map_hgnc_prev_symb( Prev, Symb ).
-% % Loading prosqlite db: /usr/local/users/nicos/local/git/lib/swipl-7.1.32/pack/bio_db_repo/data/maps/hgnc/map_hgnc_prev_symb.sqlite
+% ?- hgnc_homs_prev_symb( Prev, Symb ).
+% % Loading prosqlite db: /usr/local/users/nicos/local/git/lib/swipl-7.1.32/pack/bio_db_repo/data/maps/hgnc/hgnc_homs_prev_symb.sqlite
 % Prev = 'A1BG-AS',
 % Symb = 'A1BG-AS1' ;
 %
@@ -1100,7 +1111,7 @@ Key
     where From and To take values in 1 and m
 
 ==
-?- bio_db_info( Iface, map_hgnc_hgnc_symb/2, Key, Value), write( Iface:Key:Value ), nl, fail.
+?- bio_db_info( Iface, hgnc_homs_hgnc_symb/2, Key, Value), write( Iface:Key:Value ), nl, fail.
 prolog:source_url:ftp://ftp.ebi.ac.uk/pub/databases/genenames/hgnc_complete_set.txt.gz
 prolog:datetime:datetime(2016,9,10,0,2,14)
 prolog:data_types:data_types(integer,atom)
@@ -1185,16 +1196,16 @@ bio_db_info_interface_infos( rocks, _Pid, File, _Handle, KVs ) :-
 
 ===
 ?- bio_db_interface( prosqlite ).
-?- map_hgnc_hgnc_symb( Hgnc, Symb ).
+?- hgnc_homs_hgnc_symb( Hgnc, Symb ).
 Hgnc = 506,
 Symb = 'ANT3~withdrawn' .
 
-?- bio_db_close( map_hgnc_hgnc_symb/2 ).
+?- bio_db_close( hgnc_homs_hgnc_symb/2 ).
 ?- bio_db_interface( prolog ).
-?- map_hgnc_hgnc_symb( Hgnc, Symb ).
+?- hgnc_homs_hgnc_symb( Hgnc, Symb ).
 Hgnc = 1,
 Symb = 'A12M1~withdrawn' .
-?- bio_db_close( map_hgnc_hgnc_symb/2 ).
+?- bio_db_close( hgnc_homs_hgnc_symb/2 ).
 
 ===
     
@@ -1254,12 +1265,12 @@ bio_db_close_connections.
     see, bio_db_data_predicate/4.
 
 ==
-  ?- bio_db_db_predicate( map_hgnc_hgnc_symb/2 ).
+  ?- bio_db_db_predicate( hgnc_homs_hgnc_symb/2 ).
   true.
 
   ?- bio_db_db_predicate( X ).
-  X = map_hgnc_symb_entz/2 ;
-  X = map_ense_enst_ensg/2 ;
+  X = hgnc_homs_symb_ncbi/2 ;
+  X = ense_homs_enst_ensg/2 ;
   ...
 ==
 

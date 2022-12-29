@@ -106,7 +106,7 @@ std_maps_pros( Args ) :-
 	working_directory( _, Old ),
 	debuc( std_maps_pros, 'Done Prosite maps', true ).
 	
-msa_file_pros_prsn( File, map_pros_pros_prsn(Base,Prsn) ) :-
+msa_file_pros_prsn( File, pros_homs_pros_prsn(Base,Prsn) ) :-
 	% debuc( std_maps_pros, 'prositing prosite names: ~p', File ),
 	os_ext( msa, Base, File ),
 	os_path( prosite_alignments, File, Path ),

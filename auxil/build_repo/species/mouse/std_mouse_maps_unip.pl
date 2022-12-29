@@ -151,7 +151,7 @@ std_mouse_maps_unip( Args ) :-
      % write( trem_length(TremLen) ), nl,
     debuc( Self, length, trem_rows/TremRows ),
      % 17/22
-     findall( map_unip_mouse_trem_nucs(TremId,Nucs), (
+     findall( unip_musm_trem_nucs(TremId,Nucs), (
                        member(TremRow,TremRows), arg(1,TremRow,TremId), \+ empty(TremId), 
                        arg(17,TremRow,NucsConcat), \+ empty(NucsConcat), 
                        atomic_list_concat(NucsList,'; ',NucsConcat),

@@ -70,7 +70,6 @@ std_graphs_strg( Args ) :-
     ( number(VersionPrv) -> atom_number(Version,VersionPrv); Version = VersionPrv ),
      debuc( Self, 'Version: ~w', Version ),
      std_graphs_string_version_base_name( Version, Bname, From ),
-     Self = std_graphs_strg,
      debuc( Self, 'Base name: ~w', Bname ),
      absolute_file_name( bio_db_build_downloads(strg), Parent ),
      % absolute_file_name( baio_db_downloads(string/Bname), LocalFile ),
@@ -108,7 +107,7 @@ std_graphs_strg( Args ) :-
      debuc( _, 'Consulted ensp: ~w', [EnspPn:EnspRelF] ),
 
      EnspGoal =.. [EnspPn,EnsP1,EnsP2,W],
-     findall( edge_strg_hs_symb(SymbA,SymbB,W),
+     findall( strg_homs_edge_symb(SymbA,SymbB,W),
                           ( EnspPn:EnspGoal,
                                 ensp_symb(EnsP1,Symb1),
                                 ensp_symb(EnsP2,Symb2),
@@ -136,8 +135,8 @@ std_graphs_strg( Args ) :-
      % SymbOpts = [source(From),datetime(DnDt),header(row('HGNC Symbol','HGNC Symbol',weight))],
      % bio_db_add_infos_to( SymbOpts, SymbsRel ),
 
-     link_to_bio_sub( strg, EnspRelF, [org(hs),type(graphs)] ),
-     link_to_bio_sub( strg, SymbRelF, [org(hs),type(graphs)]  ),
+     link_to_bio_sub( strg, EnspRelF, [org(human),type(graphs)] ),
+     link_to_bio_sub( strg, SymbRelF, [org(human),type(graphs)]  ),
      working_directory( _, Here ).
 
 ensp_symb( EnsP, Symb ) :-

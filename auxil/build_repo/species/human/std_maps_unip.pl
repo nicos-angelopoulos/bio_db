@@ -125,7 +125,7 @@ std_maps_unip( Args ) :-
 	csv_read_file( TremDatF, TremRows, [separator(0'\t)] ),
     debuc( Self, length, trem/TremRows ),
 	% 17/22
-	findall( map_unip_trem_nucs(TremId,Nucs), (
+	findall( unip_homs_trem_nucs(TremId,Nucs), (
 	                  member(TremRow,TremRows), arg(1,TremRow,TremId), \+ empty(TremId), 
 	                  arg(17,TremRow,NucsConcat), \+ empty(NucsConcat), 
 				   atomic_list_concat(NucsList,'; ',NucsConcat),

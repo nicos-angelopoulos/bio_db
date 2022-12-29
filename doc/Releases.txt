@@ -12,7 +12,7 @@ TBD:
          21.12.03 make sure existing handles are checked before opening another handle to same predicate 
                   (map_ense_mouse_enst_chrl/5 was opening map_ense_enst_chrl/5).
 
-4.0
+4.0               @ 22.12.29
       22.12.26    BUILD:   remove dependency to R in csv_ids_map.pl
                   CELL:    hgnc and ncbi now produce ncbi rather than entz tokens
       22.12.25    IFACE:   start work on 4.0, all predicates to be 4x4
@@ -24,7 +24,7 @@ TBD:
       21.12.04    SCRIPT:  examples/bio_db_stats.pl added output directory bio_db_stats & comment on versions kept there
                   SCRIPT:  moved examples/bio_db_stats.pl to scripts/ (spuds finds there for docs)
 
-3.6               21.12.04
+3.6               @ 21.12.04
       21.12.04    VERS:    3.5 was spoiled by a 3.4 in bio_db_version/2
                   DEPS:    added library(lists) to examples/bio_db_stats.pl
                   DOC:     moved version comments to module tags

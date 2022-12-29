@@ -701,8 +701,8 @@ Version Mj:Mn:Fx, and release date date(Y,M,D).
 
 ==
 ?- bio_db_version( V, D ).
-V = 3:6:0,
-D = date(2021, 12, 4).
+V = 4:0:0,
+D = date(2022, 12, 29).
 ==
 
 @author Nicos Angelopoulos
@@ -713,7 +713,7 @@ D = date(2021, 12, 4).
 @see module documentation for brief comments on versioning history of this pack
 
 */
-bio_db_version( 4:0:0, date(2022,12,26) ).   
+bio_db_version( 4:0:0, date(2022,12,29) ).   
 
 %% bio_db_citation( -Atom, -Bibterm ).
 %

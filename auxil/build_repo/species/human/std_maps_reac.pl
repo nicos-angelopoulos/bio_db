@@ -179,6 +179,9 @@ std_maps_reac_id( Feac, Roid, Reac ) :-
 std_maps_reac_id( Feac, Roid, _Reac ) :-
      thrown( could_not_convert_reactome_token_to_int_id(Feac,Roid) ).
      
+std_maps_reac_org( chicken, 'GGA', 'Gallus gallus' ).
 std_maps_reac_org( gallus, 'GGA', 'Gallus gallus' ).
 std_maps_reac_org( hs, 'HSA', 'Homo sapiens' ).
+std_maps_reac_org( human, 'HSA', 'Homo sapiens' ).
 std_maps_reac_org( mouse, 'MMU', 'Mus musculus' ).
+std_maps_reac_org( musm, 'MMU', 'Mus musculus' ).

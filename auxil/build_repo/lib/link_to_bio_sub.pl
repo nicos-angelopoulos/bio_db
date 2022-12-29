@@ -22,7 +22,7 @@ link_to_bio_sub_defaults( Defs ) :-
 %
 % Opts 
 %  * debug(Dbg=true)
-%    Listens to debug( link_to_bio_sub ).
+%    listens to debug(link_to_bio_sub)
 %  * org(Org=hs)
 %    organism (defines first level of directory structure)
 %  * type(Type=maps)
@@ -42,43 +42,42 @@ link_to_bio_sub_defaults( Defs ) :-
 % @version  0.2 2020/9/13
 %
 link_to_bio_sub( Sub, File ) :-
-    link_to_bio_sub( Sub, File, [] ).
+     link_to_bio_sub( Sub, File, [] ).
 
 link_to_bio_sub( Sub, File, Args ) :-
-    Self = link_to_bio_sub,
-    options_append( Self, Args, Opts ),
-	absolute_file_name( File, AbsFile, [access(exist)] ),
-    options( [org(Org),type(Type)], Opts ),
-    trace,
-    bio_db_organism( Org, Tkn, _ ),
-    directory_file_path( Tkn, Type, Rel ),
-	absolute_file_name( bio_db_build_data(Rel), Dir ),
-	directory_file_path( Dir, Sub, ToDir ),
-	file_base_name( AbsFile, Base ),
-	os_make_path( ToDir, debug(true) ),
-	directory_file_path( ToDir, Base, Dest ),
-	link_to_bio_sub_read( Dest, AbsFile, Self ),
+     Self = link_to_bio_sub,
+     options_append( Self, Args, Opts ),
+     absolute_file_name( File, AbsFile, [access(exist)] ),
+     options( [org(Org),type(Type)], Opts ),
+     bio_db_organism( Org, Tkn, _ ),
+     directory_file_path( Tkn, Type, Rel ),
+     absolute_file_name( bio_db_build_data(Rel), Dir ),
+     directory_file_path( Dir, Sub, ToDir ),
+     file_base_name( AbsFile, Base ),
+     os_make_path( ToDir, debug(true) ),
+     directory_file_path( ToDir, Base, Dest ),
+     link_to_bio_sub_read( Dest, AbsFile, Self ),
      !.
 link_to_bio_sub( Sub, File, Args ) :-
-     throw( liking_failed(Sub,File,Args) ).
+     throw( linking_failed(Sub,File,Args) ).
 
 link_to_bio_sub_read( Dest, AbsFile, _Self ) :-
-	read_link( Dest, _Link, Target ),
-	!,
-	link_to_bio_sub_target( Target, AbsFile, Dest ).
+     read_link( Dest, _Link, Target ),
+     !,
+     link_to_bio_sub_target( Target, AbsFile, Dest ).
 link_to_bio_sub_read( Dest, AbsFile, _Self ) :-
-	exists_file( Dest ),
-	!,
-	Mess = 'Destination:~w already exists & is a file. Refusing to connect to:~w', 
-	message_report( Mess, [Dest,AbsFile], error ),
-	fail.
+     exists_file( Dest ),
+     !,
+     Mess = 'Destination:~w already exists & is a file. Refusing to connect to:~w', 
+     message_report( Mess, [Dest,AbsFile], error ),
+     fail.
 link_to_bio_sub_read( Dest, AbsFile, Self ) :-
-	debuc( Self, 'Symbolic linking, ~p, to ~p', [AbsFile,Dest] ),
-	link_file( AbsFile, Dest, symbolic ).
+     debuc( Self, 'Symbolic linking, ~p, to ~p', [AbsFile,Dest] ),
+     link_file( AbsFile, Dest, symbolic ).
 
 link_to_bio_sub_target( Target, Target, _ ) :- !.
 link_to_bio_sub_target( Target, AbsF, Dest ) :- !,
-	Mess = 'Destination:~w was pointing to:~w, repointing to:~w', 
-	message_report( Mess, [Dest,Target,AbsF], warning ),
-	delete_file( Dest ),
-	link_file( AbsF, Dest, symbolic ).
+     Mess = 'Destination:~w was pointing to:~w, repointing to:~w', 
+     message_report( Mess, [Dest,Target,AbsF], warning ),
+     delete_file( Dest ),
+     link_file( AbsF, Dest, symbolic ).

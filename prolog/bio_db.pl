@@ -73,12 +73,11 @@
 % :- initialization( lib(& bio_db, load_main(false)), after_load ).
 :- initialization( lib(@(bio_db)), after_load ).
 
-/** bio_db_organism( -Org ).
+/** bio_db_organism( ?Org ).
 
-Organisms supported by bio_db.
+Colloquial name for organisms supported by bio_db.
 
-hs will always be returned first, and is considered the default organism
-when none is given explicitly (eg via a predicate's Options).
+Human is considered the default organism and returned first.
 
 ==
 ?- bio_db_organism( Org ).
@@ -86,6 +85,7 @@ when none is given explicitly (eg via a predicate's Options).
 
 @author nicos angelopoulos
 @version  0:2 2019/4/8
+@version  0:3 2022/12/29,  changed to colloquials and added chicken, were hs and mouse.
 
 */
 
@@ -93,22 +93,25 @@ bio_db_organism(human).      % defaulty
 bio_db_organism(chicken).  % 2022/12/21
 bio_db_organism(mouse).
 
-/* bio_db_organism( ?Known, ?Canon ).
+/* bio_db_organism( ?KnownAs, ?Canon ).
    bio_db_organism( ?Known, ?Token, ?Canon ).
 
-Canon is the canonical representation of Known which is either 
-a known bio_db organism/1 or an alias (bio_db_organism/2) to one.
-Token is the token used in predicate names for this organism.
-
-Please note this used to have the semantics of bio_db_organism_alias/2
-(until 19.05.02).
+Canon is the canonical, colloquial, representation of Known which is either 
+a known bio_db organism/1, an alias to one or a organism token.
+Token is the token used in bio_db predicate, file and directory names for this organism.
 
 ==
-?- bio_db_organism( Known, Org ).
-Known = human,
-Org = hs ;
-Known = Org, Org = hs ;
-Known = Org, Org = mouse.
+?- bio_db_organism(Known,Org),write(Known:Org),nl,fail.
+hs:human
+gallus:chicken
+gallus_gallus:chicken
+gg6a:chicken
+human:human
+chicken:chicken
+mouse:mouse
+galg:chicken
+homs:human
+musm:mouse
 
 ?- bio_db_organism( human, Org ).
 Org = hs.
@@ -121,7 +124,7 @@ false.
 
 @author nicos angelopoulos
 @version  0.2 2019/5/2
-@version  0.3 2022/12/25, added /3 version
+@version  0.3 2022/12/25, added /3 version, and added many aliases
 
 */
 bio_db_organism( Alias, Org ) :-
@@ -143,8 +146,6 @@ bio_db_organism( TokenIs, Token, Canon ) :-
     bio_db_organism_token( Canon, Token ),
     ( Backtrack == false -> !; true ),
     Token = TokenIs.
-
-
 
 bio_db_organism_token(chicken, galg).
 bio_db_organism_token(human,   homs).

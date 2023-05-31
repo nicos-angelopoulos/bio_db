@@ -18,8 +18,9 @@ Human is considered the default organism and returned first.
 */
 
 bio_db_organism(human).      % defaulty
-bio_db_organism(chicken).  % 2022/12/21
+bio_db_organism(chicken).    % 2022/12/21
 bio_db_organism(mouse).
+bio_db_organism(pig).        % 2023/05/31
 
 /* bio_db_organism( ?KnownAs, ?Canon ).
    bio_db_organism( ?Known, ?Token, ?Canon ).
@@ -37,9 +38,12 @@ gg6a:chicken
 human:human
 chicken:chicken
 mouse:mouse
+pig:pig
 galg:chicken
 homs:human
 musm:mouse
+suss:pig
+false.
 
 ?- bio_db_organism( human, Org ).
 Org = hs.
@@ -53,6 +57,7 @@ false.
 @author nicos angelopoulos
 @version  0.2 2019/5/2
 @version  0.3 2022/12/25, added /3 version, and added many aliases
+@version  0.4 2023/05/31, added organism sus scrofa with alias pig and token suss.
 
 */
 bio_db_organism( Alias, Org ) :-
@@ -78,6 +83,7 @@ bio_db_organism( TokenIs, Token, Canon ) :-
 bio_db_organism_token(chicken, galg).
 bio_db_organism_token(human,   homs).
 bio_db_organism_token(mouse,   musm).
+bio_db_organism_token(pig,     suss).
 
 /** bio_db_organism_alias( ?Alias, -Org ).
 

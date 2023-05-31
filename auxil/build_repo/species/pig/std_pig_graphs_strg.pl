@@ -105,7 +105,7 @@ std_pig_graphs_strg( Args ) :-
     std_graph_string_download_string( LocalInfoFile, InfoFrom, Self ),
     @ gunzip( -k, InfoBname ),  % keeps .gz file
     % Map = map_strg_gallus_ensp_symb,
-    Map = strg_galg_ensp_symb,
+    Map = strg_suss_ensp_symb,
     file_name_extension( InfoTxtF, gz, InfoBname ),
     InfoMess1 = 'Converting map string file: ~p, to Prolog',
     debuc( Self, InfoMess1, [InfoTxtF] ),
@@ -121,18 +121,18 @@ std_pig_graphs_strg( Args ) :-
     % mtx( InfoBname, MapRows ),
     debuc( Self, 'wrote, and consulting: ~p', [MapPlF] ),
     Map:consult(MapPlF),
-    findall( strg_galg_edge_symb(SymbA,SymbB,W),
-                         ( EnspPn:strg_galg_edge_ensp(EnsP1,EnsP2,W),
-                           Map:strg_galg_ensp_symb(EnsP1,Symb1),
-                           Map:strg_galg_ensp_symb(EnsP2,Symb2),
+    findall( strg_suss_edge_symb(SymbA,SymbB,W),
+                         ( EnspPn:strg_suss_edge_ensp(EnsP1,EnsP2,W),
+                           Map:strg_suss_ensp_symb(EnsP1,Symb1),
+                           Map:strg_suss_ensp_symb(EnsP2,Symb2),
                            sort(Symb1,Symb2,SymbA,SymbB)
                      ),
             UnoSymbEdges
           ),
     sort( UnoSymbEdges, SymbEdges ),
     length( SymbEdges, SymbEdgesLen ),
-    debuc( Self, 'unique symbol edges (gallus): ~w', [SymbEdgesLen] ),
-    EdgeSymbsF = 'graphs/strg_galg_edge_symb.pl',
+    debuc( Self, 'unique symbol edges (pig): ~w', [SymbEdgesLen] ),
+    EdgeSymbsF = 'graphs/strg_suss_edge_symb.pl',
     bio_db_dnt_times( Bname, DnDt, _EndDt ),
     EdgeSymbsInfos = [ source-From,datetime-DnDt,header-header('Symbol','Symbol',weight),
                        data_types-data_types(atom,atom,integer)
@@ -145,9 +145,9 @@ std_pig_graphs_strg( Args ) :-
                 ],
     debuc( Self, 'doing infos for: ~p', [EnspRel] ),
     bio_db_add_infos_to( BaseOpts, EnspRel ),
-    link_to_bio_sub( strg, EnspRel, [org(gallus),type(graphs)] ),
-    link_to_bio_sub( strg, EdgeSymbsF, [org(gallus),type(graphs)] ),
-    link_to_bio_sub( strg, MapPlF, [org(gallus),type(maps)] ),
+    link_to_bio_sub( strg, EnspRel, [org(pig),type(graphs)] ),
+    link_to_bio_sub( strg, EdgeSymbsF, [org(pig),type(graphs)] ),
+    link_to_bio_sub( strg, MapPlF, [org(pig),type(maps)] ),
     delete_file( InfoTxtF ),
     working_directory( _, Here ).
 

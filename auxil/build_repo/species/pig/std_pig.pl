@@ -24,10 +24,12 @@ std_pig_defaults([debug(true),org(pig)]).
 
 Build all the standard datasets for bio_db for pig.
 
+There doesn't seem to be a nonmeclature committee for pig.
+Currently supported database are ense, gont ncbi and strg.
 There are no building dependencies between the datasets.
 
 @author nicos angelopoulos
-@version  0.1 2023/06/01
+@version  0.1 2023/06/02
 
 */
 std_pig( Args ) :-

@@ -37,7 +37,6 @@ Databases
 @tbd uniprot does not have protein files for pig similar to the ones for the other organisms
 @tbd pig nonmeclature standard ? (similar to human HGNC or chicken CGNC)
 @tbd ense also provides gont files
-
 */
 
 bio_db_suss.

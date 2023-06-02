@@ -62,7 +62,7 @@ Tue 27 Dec 14:01:05 GMT 2022
 ==
 
 @author nicos angelopoulos
-@version  0:1 2022/05/31
+@version  0:1 2023/05/31
 */
 std_pig_graphs_strg( Args ) :-
     Self = std_pig_graphs_strg,

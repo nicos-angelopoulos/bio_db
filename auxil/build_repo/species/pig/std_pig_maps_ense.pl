@@ -28,9 +28,6 @@ std_pig_maps_ense_defaults(debug(true)).
 
 Maps based on ensembl .gtf file.
 
-fixme:  map_ense_gallus_ensg_symb.pl, 2nd arg contains "faf" and ENSG for some symbols, 
-although the later might be margianlly useful ?  
-
 Currently only gene symbols, but as per human it should be trivial to do sequences.
 
   * ense: the database abbv.

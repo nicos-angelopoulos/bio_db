@@ -21,11 +21,12 @@ csv_ids_map_defaults( [ cnm_transform(=),dir('.'),
                         source('not_known')
                     ] ).
 
-%% csv_ids_map( +CsvF, +Cnm1, +Cnm2, -Csv, -OutF, +Opts ).
+%% csv_ids_map( +CsvF, +Cnm1, +Cnm2, ?Mtx, ?OutF, +Opts ).
 %
-% Create an ids map (sqlite,prolog,odbc) from CsvF the rows are in Csv.
-% If Csv is ground then CsvF is not read. Csv allows for chain calls on same CsvF.
-% OutF is the filename used for the output.
+% Create a map predicate from two columns in CsvF. 
+% 
+% The predicate name is produced by map_predicate_name/4 (Opts are passed to this) and it will be saved at OutF (if unbound, then the predicate's name +.pl is used to produce the filename).
+% If Mtx is ground, then CsvF is not read, otherwise is bound to the read-in rows from MtxF. Mtx allows for chain calls on same CsvF.
 %
 % Options
 %   * cnm_transform(Ctr=true)  
@@ -62,7 +63,7 @@ csv_ids_map_defaults( [ cnm_transform(=),dir('.'),
 % @version  0.2 2015/3/19    added map_prefix(MapPfx), 
 % @version  0.2 2015/11/3    return values from tvs can now be lists (multiple clauses will be added)
 % @tbd odbc interface, sqlite + mysql,  and debug
-%
+% @see map_predicate_name/4
 csv_ids_map( CsvF, Cid1, Cid2, Tbl, File, Args ) :-
     options_append( csv_ids_map, Args, Opts ),
     options( delim(Dlm), Opts ),

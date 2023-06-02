@@ -198,7 +198,8 @@ std_pig_maps_ncbi( Args ) :-
      file_name_extension( RemS, gz, RemB ),
      at_con( [RemS,pig], '_', PigG2NF ),
      grep( RemS, '^9823', PigG2NF ),
-     std_maps_ncbi( Self, RemS, Url, DnDt ),
+     debuc( Self, 'Grepped pig gene2ensembl into: ~p', [PigG2NF] ),
+     std_maps_ncbi( Self, PigG2NF, Url, DnDt ),
      delete_file( RemS ),
      %pig?: maps_ncbi_rnuc_symb( Self ),
      % maps_ncbi_unig_ncbi,  % unigene is no longer maintained as of Feb.2019

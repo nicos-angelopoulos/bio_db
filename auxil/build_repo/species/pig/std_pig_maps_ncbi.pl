@@ -178,7 +178,7 @@ std_pig_maps_ncbi_defaults(debug(true)).
 % @version  0.1 2022/12/26, entz-> ncbi, url via wget, csv without R
 %
 std_pig_maps_ncbi( Args ) :-
-     Self = std_maps_ncbi,
+     Self = std_pig_maps_ncbi,
      options_append( Self, Args, Opts ),
      bio_db_build_aliases( Opts ),
      % load necessary data that has already been generated

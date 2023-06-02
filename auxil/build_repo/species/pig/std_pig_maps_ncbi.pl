@@ -164,9 +164,9 @@ ncbi_gene2asseccion_cnms( 'RNA_nucleotide_accession.version', rnuc ).
 ncbi_gene2asseccion_cnms( 'genomic_nucleotide_accession.version', dnuc ).
 ncbi_gene2asseccion_cnms( 'Symbol', symb ).
 
-std_maps_ncbi_defaults(debug(true)).
+std_pig_maps_ncbi_defaults(debug(true)).
 
-%% std_maps_ncbi(+Opts).
+%% std_pig_maps_ncbi(+Opts).
 %
 % Download latest NCBI gene to ensembl map file and convert it to 
 % a few standard maps.
@@ -177,12 +177,12 @@ std_maps_ncbi_defaults(debug(true)).
 % @version  0.1 2014/7/23
 % @version  0.1 2022/12/26, entz-> ncbi, url via wget, csv without R
 %
-std_maps_ncbi( Args ) :-
+std_pig_maps_ncbi( Args ) :-
      Self = std_maps_ncbi,
      options_append( Self, Args, Opts ),
      bio_db_build_aliases( Opts ),
      % load necessary data that has already been generated
-     ensure_loaded(hgnc:bio_db_build_downloads('hgnc/maps/hgnc_homs_symb_hgnc')),
+     % ensure_loaded(hgnc:bio_db_build_downloads('hgnc/maps/hgnc_homs_symb_hgnc')),
      ncbi_dnload( NcbiD ),
      Url = 'ftp://ftp.ncbi.nih.gov/gene/DATA/gene2ensembl.gz',
      url_file_local_date_mirror( Url, NcbiD, interface(wget) ),
@@ -198,7 +198,7 @@ std_maps_ncbi( Args ) :-
      file_name_extension( RemS, gz, RemB ),
      std_maps_ncbi( Self, RemS, Url, DnDt ),
      delete_file( RemS ),
-     maps_ncbi_rnuc_symb( Self ),
+     %pig?: maps_ncbi_rnuc_symb( Self ),
      % maps_ncbi_unig_ncbi,  % unigene is no longer maintained as of Feb.2019
      working_directory( _, Old ).
 

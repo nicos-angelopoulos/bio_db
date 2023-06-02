@@ -18,7 +18,7 @@
 % local libs & sources
 % :- lib(debug_colours/1).
 
-std_chicken_defaults([debug(true),org(chicken)]).
+std_pig_defaults([debug(true),org(pig)]).
 
 /** std_chicken.
 
@@ -44,5 +44,6 @@ std(pig, graphs, strg).
 % std(chicken, maps, cgnc). % haven't found a resource for pig gene names yet.
 std(pig, maps, ense).
 std(pig, maps, gont).
+std(pig, maps, ncbi).
 % std(pig, maps, reac).
 % std(pig, maps, unip).  % this is not avaiable at: https://ftp.ebi.ac.uk/pub/databases/uniprot/current_release/knowledgebase/idmapping/by_organism/

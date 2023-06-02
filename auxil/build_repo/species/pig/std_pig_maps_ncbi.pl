@@ -1,5 +1,5 @@
 
-:- set_prolog_flag(stack_limit, 20 000 000 000).
+:- set_prolog_flag(stack_limit, 10 000 000 000).
 
 :- use_module(library(csv)).        % csv_read_file/2.
 :- use_module(library(process)).    % process_create/3.
@@ -196,30 +196,32 @@ std_pig_maps_ncbi( Args ) :-
      working_directory( _ParentD, MapsD ),
      @ gunzip( RemB ),
      file_name_extension( RemS, gz, RemB ),
+     at_con( [RemS,pig], '_', PigG2NF ),
+     grep( RemS, '^9823', PigG2NF ),
      std_maps_ncbi( Self, RemS, Url, DnDt ),
      delete_file( RemS ),
      %pig?: maps_ncbi_rnuc_symb( Self ),
      % maps_ncbi_unig_ncbi,  % unigene is no longer maintained as of Feb.2019
      working_directory( _, Old ).
 
-std_maps_ncbi( Self, File, Url, DnDt ) :-
+std_maps_ncbi( Self, PigF, Url, DnDt ) :-
      TsvOpts = [match_arity(false),separator(0'\t)],
-     csv_read_file( File, Csv, TsvOpts ),
-     Csv = [_Comment|Rows],
-     New = [row(tax_id,ncbi,ensg,nucl_acc,ensr,prot_acc,ensp)|Rows],
+     csv_read_file( PigF, Mtx, TsvOpts ),
+     Mtx = [_Comment|Rows],
+     Pig = [row(tax_id,ncbi,ensg,nucl_acc,ensr,prot_acc,ensp)|Rows],
      % GEnsGF = entrez_gene_id_ensg.pl,
      % csv_filter_by_column( New, tax_id, =(9606), HS ),
-     mtx_column_values_select( New, tax_id, 9823, Pig, _, true ),
+     % mtx_column_values_select( New, tax_id, 9823, Pig, _, true ),
     debuc( Self, length, hs_len/Pig ),
      Lens = [prefix(ncbi),to_value_1(pos_integer),to_value_2(pfx_by('ENS')),datetime(DnDt),source(Url),org(pig)],
      Rens = [prefix(ncbi),to_value_2(pos_integer),to_value_1(pfx_by('ENS')),datetime(DnDt),source(Url),org(pig)],
-     csv_ids_map( File, ncbi, ensg, Pig, GEnsGF, [header(row('Entrez ID','Ensembl Gene'))|Lens] ),
-     csv_ids_map( File, ensg, ncbi, Pig, EnsGGF, [header(row('Ensembl Gene','Entrez ID'))|Rens] ),
+     csv_ids_map( PigF, ncbi, ensg, Pig, GEnsGF, [header(row('Entrez ID','Ensembl Gene'))|Lens] ),
+     csv_ids_map( PigF, ensg, ncbi, Pig, EnsGGF, [header(row('Ensembl Gene','Entrez ID'))|Rens] ),
      % need to ensure prots are of ENSP  there are - in some entries
      Lenp = [prefix(ncbi),to_value_1(pos_integer),to_value_2(pfx_by_de_v('ENS')),datetime(DnDt),source(Url)],
-     csv_ids_map( File, ncbi, ensp, Pig, GEnsPF, [header(row('Entrez ID','Ensembl Protein'))|Lenp] ),
+     csv_ids_map( PigF, ncbi, ensp, Pig, GEnsPF, [header(row('Entrez ID','Ensembl Protein'))|Lenp] ),
      Renp = [prefix(ncbi),to_value_2(pos_integer),to_value_1(pfx_by_de_v('ENS')),datetime(DnDt),source(Url)],
-     csv_ids_map( File, ensp, ncbi, Pig, EnsPGF, [header(row('Ensembl Protein','Entrez ID'))|Renp] ),
+     csv_ids_map( PigF, ensp, ncbi, Pig, EnsPGF, [header(row('Ensembl Protein','Entrez ID'))|Renp] ),
      maplist( link_to_bio_sub(ncbi), [GEnsGF,EnsGGF,GEnsPF,EnsPGF] ).
 
 pos_integer( Numb, Numb ) :-

@@ -30,7 +30,7 @@ Weighted graph edges predicate from String database between Ensembl protein ids.
 
 W is an integer in 0 < W < 1000.
 ==
-?- strg_galg_edge_ensp(Ensp1,Ensp2, W).
+?- strg_suss_edge_ensp(Ensp1,Ensp2, W).
 ==
 
 @author nicos angelopoulos
@@ -44,8 +44,13 @@ strg_suss_edge_ensp( X, Y, Z ) :-
 Weighted graph edges predicate from String database between symbols.
 
 ==
-?- strg_suss_edge_symb( 'Lmtk3', Inter, W ).
-
+?- strg_suss_edge_symb(A,B,C).
+A = 'A1BG',
+B = 'A2M',
+C = 317 ;
+A = 'A1BG',
+B = 'A4GNT',
+C = 198 ...
 ==
 
 @author nicos angelopoulos

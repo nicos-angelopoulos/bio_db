@@ -90,8 +90,9 @@ Human is considered the default organism and returned first.
 */
 
 bio_db_organism(human).      % defaulty
-bio_db_organism(chicken).  % 2022/12/21
+bio_db_organism(chicken).    % 2022/12/21
 bio_db_organism(mouse).
+bio_db_organism(pig).        % 2023/6/2
 
 /* bio_db_organism( ?KnownAs, ?Canon ).
    bio_db_organism( ?Known, ?Token, ?Canon ).
@@ -112,6 +113,7 @@ mouse:mouse
 galg:chicken
 homs:human
 musm:mouse
+suss:pig
 
 ?- bio_db_organism( human, Org ).
 Org = hs.
@@ -150,6 +152,7 @@ bio_db_organism( TokenIs, Token, Canon ) :-
 bio_db_organism_token(chicken, galg).
 bio_db_organism_token(human,   homs).
 bio_db_organism_token(mouse,   musm).
+bio_db_organism_token(pig,     suss).
 
 /** bio_db_organism_alias( ?Alias, -Org ).
 
@@ -523,6 +526,7 @@ Thanks to Jan Wielemaker for a retractall fix and for code for fast loading of p
 @version  3:4 2021/5/10    removed edge_gont_includes/2 (reciprocal of is_a), and edge_gont_consists_of/2 (reciprocal of part_of/2)
 @version  3:6 2021/12/4    fixed pack_errors and map_ense_mouse_enst_chrl/5; bio_db_stats.pl version  0.2
 @version  4:1 2022/12/29   huge re-config of data predicate names + reac-tome (maps) + chicken
+@version  4:2 20??/??/??   support for pig
 @see doc/Releases.txt      for version details
 @see bio_db_data_predicate/4 for a way to enumerate all data predicates
 @see cell/ for the definitions of the data predicates
@@ -1303,9 +1307,15 @@ bio_db_data_predicate_name( _Db, _Parts, Pname, Arity ) :-
 bio_db_serve( Call ) :-
     functor( Call, Pn, _ ),
     ( atomic_list_concat([_,OrgPredTkn,_,_],'_',Pn) ->
-          once(bio_db_organism(OrgPredTkn,OrgTkn,_Org))
-          ;
-          throw( cannot_get_org_token_for_bio_db_served(Call) )
+          ( bio_db_organism(OrgPredTkn,OrgTkn,_Org) ->
+               true
+               ; 
+               ( bio_db_organism(_,OrgPredTkn,_) ->
+                    OrgTkn = OrgPredTkn
+                    ;
+                    throw( cannot_get_org_token_for_bio_db_served(Call) )
+               )
+          )
     ),
     bio_db_serve( OrgTkn, Call, true ).
 

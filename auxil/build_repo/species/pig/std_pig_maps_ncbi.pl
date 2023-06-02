@@ -219,9 +219,9 @@ std_maps_ncbi( Self, PigF, Url, DnDt ) :-
      csv_ids_map( PigF, ncbi, ensg, Pig, GEnsGF, [header(row('Entrez ID','Ensembl Gene'))|Lens] ),
      csv_ids_map( PigF, ensg, ncbi, Pig, EnsGGF, [header(row('Ensembl Gene','Entrez ID'))|Rens] ),
      % need to ensure prots are of ENSP  there are - in some entries
-     Lenp = [prefix(ncbi),to_value_1(pos_integer),to_value_2(pfx_by_de_v('ENS')),datetime(DnDt),source(Url)],
+     Lenp = [prefix(ncbi),to_value_1(pos_integer),to_value_2(pfx_by_de_v('ENS')),datetime(DnDt),source(Url),org(pig)],
      csv_ids_map( PigF, ncbi, ensp, Pig, GEnsPF, [header(row('Entrez ID','Ensembl Protein'))|Lenp] ),
-     Renp = [prefix(ncbi),to_value_2(pos_integer),to_value_1(pfx_by_de_v('ENS')),datetime(DnDt),source(Url)],
+     Renp = [prefix(ncbi),to_value_2(pos_integer),to_value_1(pfx_by_de_v('ENS')),datetime(DnDt),source(Url),org(pig)],
      csv_ids_map( PigF, ensp, ncbi, Pig, EnsPGF, [header(row('Ensembl Protein','Entrez ID'))|Renp] ),
      maplist( link_to_bio_sub_pig(ncbi), [GEnsGF,EnsGGF,GEnsPF,EnsPGF] ).
 

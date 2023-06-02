@@ -223,7 +223,10 @@ std_maps_ncbi( Self, PigF, Url, DnDt ) :-
      csv_ids_map( PigF, ncbi, ensp, Pig, GEnsPF, [header(row('Entrez ID','Ensembl Protein'))|Lenp] ),
      Renp = [prefix(ncbi),to_value_2(pos_integer),to_value_1(pfx_by_de_v('ENS')),datetime(DnDt),source(Url)],
      csv_ids_map( PigF, ensp, ncbi, Pig, EnsPGF, [header(row('Ensembl Protein','Entrez ID'))|Renp] ),
-     maplist( link_to_bio_sub(ncbi), [GEnsGF,EnsGGF,GEnsPF,EnsPGF] ).
+     maplist( link_to_bio_sub_pig(ncbi), [GEnsGF,EnsGGF,GEnsPF,EnsPGF] ).
+
+link_to_bio_sub_pig( Db, File ) :-
+     link_to_bio_sub( Db, File, org(pig) ).
 
 pos_integer( Numb, Numb ) :-
      integer( Numb ),

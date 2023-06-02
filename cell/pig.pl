@@ -14,30 +14,28 @@
 
 Bio_db data sets for pig (sus scrofa)- token suss.
 
-From chicken, fixme:
-Please note that the identifiers in string are incompatible to the 
-other databases on ensembl ids. That is why a map from ensembl proteins 
-to symbols as per string is included (map_strg_gallus_ensp_symb/2).
-
 Databases
-  * cgnc
-    chicken gene nomenclature committee
   * ense
     embl's ensembl
   * gont
     gene ontology
+  * ncbi
+    NCBI ids (previously Entrez ids)
   * strg
     String PPIs db
-  * unip
-    Uniprot (all proteins)
 
 ==
 ?- lib( & bio_db(suss) ).
 ?- lib( & bio_db(suss(ense)) ).
+?- lib( & bio_db(suss(gont)) ).
+?- lib( & bio_db(suss(ncbi)) ).
+?- lib( & bio_db(suss(strg)) ).
 ==
 
 @author nicos angelopoulos
-@version  0.1 2023/05/31
+@version  0.1 2023/06/02
+@tbd uniprot does not have protein files for pig similar to the ones for the other organisms
+@tbd pig nonmeclature standard ? (similar to human HGNC or chicken CGNC)
 
 */
 

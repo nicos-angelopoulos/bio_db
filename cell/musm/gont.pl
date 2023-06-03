@@ -24,7 +24,7 @@ Documentation predicate for mouse data from gene ontology database.
 */
 bio_db_musm_gont.
 
-/** gont_musm_mgim_gont( +Mgim, -Relation, -Evidence, -GoTerm ).
+/** gont_musm_mgim_gont(+Mgim, -Relation, -Evidence, -GoTerm).
 
 MGI marker to gene ontology term and evidence.
 
@@ -58,7 +58,7 @@ false.
 gont_musm_mgim_gont( Mgi, Rel, Evid, Gont ) :-
     bio_db:bio_db_serve( gont_musm_mgim_gont(Mgi,Rel,Evid,Gont) ).
 
-/** gont_musm_gont_symb( +GoTerm, -Relation, -Evidence, -Symb ).
+/** gont_musm_gont_symb(+GoTerm, -Relation, -Evidence, -Symb).
 
 GO term to mouse Symbol.
 

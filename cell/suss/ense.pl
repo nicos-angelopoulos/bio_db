@@ -13,13 +13,14 @@
 Documentation predicate for pig (sus scrofa) data from Ensembl databases.
 
 Ensembl generated predicates:
- * ense_suss_ensg_chrl/5
- * ense_suss_ensg_symb/2
- * ense_suss_enst_chrl/5
- * ense_suss_enst_ensg/2
+  * ense_suss_ensg_chrl/5
+  * ense_suss_ensg_symb/2
+  * ense_suss_enst_chrl/5
+  * ense_suss_enst_ensg/2
 
 @author nicos angelopoulos
 @version  0.1 2023/6/3
+@see bio_db_suss/0
 
 */
 bio_db_suss_ense.

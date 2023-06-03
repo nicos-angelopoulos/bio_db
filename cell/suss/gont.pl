@@ -11,6 +11,9 @@
 
 Documentation predicate for pig (sus scrofa) data from gene ontology data.
 
+Defined predicates:
+  * gont_suss_symb_gont/4
+
 ==
 ?- lib( &bio_db(suss(gont)) ).
 ?- [ pack('bio_db/cell/suss/gont') ].
@@ -18,15 +21,17 @@ Documentation predicate for pig (sus scrofa) data from gene ontology data.
 
 @author nicos angelopoulos
 @version  0.1 2023/6/2
+@see bio_db_suss/0
 
 */
 bio_db_suss_gont.
 
-/**  gont_suss_symb_gont( ?Symb, ?Gont ).
+/**  gont_suss_symb_gont(?Symb, -Relation, -Evidence, ?GoTerm).
+
+Gene ontology map from symbols to Go term (ids). 
 
 ==
-?- gont_suss_symb_gont(S,G).
-
+?- gont_suss_symb_gont(S,R,E,G).
 ==
 
 @author nicos angelopoulos

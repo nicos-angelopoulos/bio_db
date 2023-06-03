@@ -22,10 +22,10 @@ Documentation predicate for chicken (gallus gallus) data from gene ontology data
 */
 bio_db_galg_gont.
 
-/**  map_gont_galg_symb_gont( ?Symb, ?Gont ).
+/**  map_gont_galg_symb_gont(?Symb, -Relation, -Evidence, ?GoTerm).
 
 ==
-?- gont_galg_symb_gont(S,G).
+?- gont_galg_symb_gont(S,R,E,G).
 
 ==
 

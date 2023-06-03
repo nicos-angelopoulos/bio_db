@@ -13,6 +13,11 @@
 
 Documentation predicate for pig (sus scrofa) data from String database.
 
+Defined predicates:
+  * strg_suss_edge_ensp/3
+  * strg_suss_edge_symb/3
+  * strg_suss_ensp_symb/2
+
 ==
 ?- lib( &bio_db(suss(strg)) ).
 ?- [ pack('bio_db/cell/suss/strg') ].
@@ -20,6 +25,7 @@ Documentation predicate for pig (sus scrofa) data from String database.
 
 @author nicos angelopoulos
 @version  0.1 2023/6/2
+@see bio_db_suss/0
 
 */
 bio_db_suss_strg.

@@ -1,5 +1,5 @@
-:- module( bio_db_galg_ense, [
-                bio_db_suss_ense/0,
+:- module( bio_db_galg_ncbi, [
+                bio_db_suss_ncbi/0,
                 ncbi_suss_ensg_ncbi/2,
                 ncbi_suss_ensp_ncbi/2,
                 ncbi_suss_ncbi_ensg/2,
@@ -10,16 +10,17 @@
 
 /**  bio_db_suss_ncbi.
 
-Documentation predicate for pig (sus scrofa) data from Ncbi databases.
+Documentation predicate for pig (sus scrofa) data from NCBI databases.
 
 Defined predicates:
- * ncbi_suss_ensg_ncbi/2
- * ncbi_suss_ensp_ncbi/2
- * ncbi_suss_ncbi_ensg/2
- * ncbi_suss_ncbi_ensp/2
+  * ncbi_suss_ensg_ncbi/2
+  * ncbi_suss_ensp_ncbi/2
+  * ncbi_suss_ncbi_ensg/2
+  * ncbi_suss_ncbi_ensp/2
 
 @author nicos angelopoulos
 @version  0.1 2023/6/2
+@see bio_db_suss/0
 
 */
 bio_db_suss_ncbi.
@@ -69,4 +70,3 @@ Ncbi accession number to Ensembl proteing id (atom).
 */
 ncbi_suss_ncbi_ensp( Ncbi, EnsP ) :-
     bio_db:bio_db_serve( ncbi_suss_ncbi_ensp(Ncbi,EnsP) ).
-

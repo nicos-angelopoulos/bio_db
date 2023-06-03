@@ -7,6 +7,7 @@
 % :- lib( &(bio_db(suss(cgnc))) ).  % it doen't look like there is an equivelant for pig
 :- lib( &(bio_db(suss(ense))) ).
 :- lib( &(bio_db(suss(gont))) ).
+:- lib( &(bio_db(suss(ncbi))) ).
 :- lib( &(bio_db(suss(strg))) ).
 % :- lib( &(bio_db(suss(unip))) ).
 
@@ -16,13 +17,13 @@ Bio_db data sets for pig (sus scrofa)- token suss.
 
 Databases
   * ense
-    embl's ensembl
+    embl's ensembl, bio_db_suss_ense/0
   * gont
-    gene ontology
+    gene ontology, bio_db_suss_gont/0
   * ncbi
-    NCBI ids (previously Entrez ids)
+    NCBI ids (previously Entrez ids), bio_db_suss_ncbi/0
   * strg
-    String PPIs db
+    String PPIs db, bio_db_suss_strg/0
 
 ==
 ?- lib( & bio_db(suss) ).
@@ -37,6 +38,7 @@ Databases
 @tbd uniprot does not have protein files for pig similar to the ones for the other organisms
 @tbd pig nonmeclature standard ? (similar to human HGNC or chicken CGNC)
 @tbd ense also provides gont files
+@see bio_db_suss_ense/0, bio_db_suss_gont/0, bio_db_suss_ncbi/0, bio_db_suss_strg/0.
 */
 
 bio_db_suss.

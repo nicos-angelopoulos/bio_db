@@ -100,7 +100,7 @@ A = 'protein serine/threonine kinase activity'.
 gont_homs_gont_gonm( X, Y ) :-
     bio_db:bio_db_serve( gont_homs_gont_gonm(X,Y) ).
 
-/**  gont_homs_symb_gont( +Symb, -Ev, -Gont ).
+/**  gont_homs_symb_gont(+Symb, -Ev, -Gont).
 
 Map predicate from HGNC symbols to GO terms.
 

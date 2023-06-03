@@ -58,7 +58,7 @@ Ncbi accession number to Ensembl gene id (atom).
 ==
 */
 ncbi_suss_ncbi_ensg( Ncbi, EnsG ) :-
-    bio_db:bio_db_serve( ense_suss_ncbi_ensg(Ncbi,EnsG) ).
+    bio_db:bio_db_serve( ncbi_suss_ncbi_ensg(Ncbi,EnsG) ).
 
 /**  ncbi_suss_ncbi_ensp(+Ncbi, -EnsG).
 

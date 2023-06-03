@@ -86,7 +86,7 @@ Human is considered the default organism and returned first.
 @author nicos angelopoulos
 @version  0:2 2019/4/8
 @version  0:3 2022/12/29,  changed to colloquials and added chicken, were hs and mouse.
-@version  0:4 2023/6/3     added pig
+@version  0:4 2023/6/3,    added pig
 
 */
 

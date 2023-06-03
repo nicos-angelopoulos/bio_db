@@ -81,6 +81,10 @@ Human is considered the default organism and returned first.
 
 ==
 ?- bio_db_organism(Org).
+Org = human ;
+Org = chicken ;
+Org = mouse ;
+Org = pig.
 ==
 
 @author nicos angelopoulos

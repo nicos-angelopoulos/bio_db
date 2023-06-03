@@ -15,6 +15,13 @@
 
 Documentation predicate for Homo sapiens data from Ensembl databases.
 
+Predicates defined:
+  * ense_homs_ensg_hgnc/2
+  * ense_homs_ensg_symb/2
+  * ense_homs_enst_chrl/5
+  * ense_homs_ensg_chrl/5
+  * ense_homs_enst_ensg/2
+
 ==
 ?- lib( & bio_db(homs(ense)) ).
 ?- [ pack('bio_db/cell/homs/ense') ].

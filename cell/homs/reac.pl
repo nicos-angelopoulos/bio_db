@@ -16,6 +16,14 @@
 
 Documentation predicate for Homo sapiens data from reactome database.
 
+Predicatess defined:
+  * reac_homs_ncbi_reac/2
+  * reac_homs_ncbi_reap/2
+  * reac_homs_reac_reap/3
+  * reac_homs_reac_recl/2
+  * reac_homs_reac_recn/2
+  * reac_homs_reap_repn/2
+
 ==
 ?- lib( &bio_db(homs(reac)) ).
 ?- [ pack('bio_db/cell/homs/reac') ].

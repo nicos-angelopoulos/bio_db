@@ -12,6 +12,10 @@
 
 Documentation predicate for Homo sapiens data from Uniprot database.
 
+Predicates defined:
+ * pros_homs_pros_prsn/2
+ * pros_homs_pros_sprt/7
+
 ==
 ?- lib( & bio_db(homs(pros)) ).
 ?- [ pack('bio_db/cell/homs/pros') ].

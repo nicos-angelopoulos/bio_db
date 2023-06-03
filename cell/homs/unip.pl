@@ -17,6 +17,15 @@
 
 Documentation predicate for Homo sapiens data from Uniprot database.
 
+Predicates defined:
+  * unip_homs_hgnc_unip/2
+  * unip_homs_ensp_unip/2
+  * unip_homs_trem_nucs/2
+  * unip_homs_unip_ncbi/2
+  * unip_homs_unip_hgnc/2
+  * unip_homs_sprt_seqn/2
+  * unip_homs_trem_seqn/2
+                
 ==
 ?- lib( & bio_db(homs(unip)) ).
 ?- [ pack('bio_db/cell/homs/unip') ].
@@ -41,15 +50,15 @@ Map predicate from HGNC gene ids to Uniprot proteins.
 unip_homs_hgnc_unip( X, Y ) :-
     bio_db:bio_db_serve( unip_homs_hgnc_unip(X,Y) ).
 
-/**  unip_homs_unip_hgnc( ?UniP, ?Hgnc ).
+/**  unip_homs_unip_hgnc(?UniP, ?Hgnc).
 
 Map predicate from Uniprot proteins to HGNC ids.
 
 ==
-?-  unip_homs_unip_hgnc( 'Q96Q04', Hgnc ).
+?-  unip_homs_unip_hgnc('Q96Q04', Hgnc).
 Hgnc = 19295.
 
-?- unip_homs_unip_hgnc( 'A0A0A0MQW5', Hgnc ).
+?- unip_homs_unip_hgnc('A0A0A0MQW5', Hgnc).
 Hgnc = 19295.
 
 ==
@@ -57,12 +66,12 @@ Hgnc = 19295.
 unip_homs_unip_hgnc( X, Y ) :-
     bio_db:bio_db_serve( unip_homs_unip_hgnc(X,Y) ).
 
-/**  unip_homs_sprt_seqn( ?Swissprot, ?Seqn ).
+/**  unip_homs_sprt_seqn(?Swissprot, ?Seqn).
 
 Map predicate from Uniprot (Swiprot, the curated parts) to its sequence.
 
 ==
-?- unip_homs_sprt_seqn( 'Q96Q04', Seqn ).
+?- unip_homs_sprt_seqn('Q96Q04', Seqn).
 
 UniG = 'MPAPGALI....'.
 
@@ -85,25 +94,25 @@ Seqn = 'MSRSRHARPSRLVRKEDVNKKKKNSQLRKTTKGANKNVASVKTLSPGKLKQLIQERDVKKKTEPKPPVPVRS
 unip_homs_trem_seqn( Trem, Seqn ) :-
     bio_db:bio_db_serve( unip_homs_trem_seqn(Trem,Seqn) ).
 
-/**  unip_homs_ensp_unip( ?EnsP, ?UniP ).
+/** unip_homs_ensp_unip(?EnsP, ?UniP).
 
 Map predicate from Ensembl proteins to Uniprot proteins.
 
 ==
-?- unip_homs_ensp_unip( 'ENSP00000472020', UniP ).
+?- unip_homs_ensp_unip('ENSP00000472020', UniP).
 UniP = 'Q96Q04'.
 ==
 */
 unip_homs_ensp_unip( X, Y ) :-
     bio_db:bio_db_serve( unip_homs_ensp_unip(X,Y) ).
 
-/**  unip_homs_trem_nucs( ?Trem, ?Nucs ).
+/** unip_homs_trem_nucs(?Trem, ?Nucs).
 
 Map predicate from treMBLE protein to Nucleotide sequence (ENA).
 This is an Many to Many relation.
 
 ==
-?- unip_homs_trem_nucs( 'B2RTS4', Nucs ).
+?- unip_homs_trem_nucs('B2RTS4', Nucs).
 Nucs = 'BC140794'.
 
 ?- unip_homs_trem_nucs( 'B4E273', Nucs ), unip_homs_trem_nucs( Trem, Nucs ), write( Trem-Nucs ), nl, fail.
@@ -122,12 +131,12 @@ B2RTX2-CH471056
 unip_homs_trem_nucs( X, Y ) :-
     bio_db:bio_db_serve( unip_homs_trem_nucs(X,Y) ).
 
-/**  unip_homs_unip_ncbi( ?UniP, ?Ncbi ).
+/** unip_homs_unip_ncbi(?UniP, ?Ncbi).
 
 Map predicate from Uniprot proteins to Entrez ids.
 
 ==
-?- unip_homs_unip_ncbi( 'Q96Q04', Ncbi ).
+?- unip_homs_unip_ncbi('Q96Q04', Ncbi).
 Ncbi = 114783.
 ==
 */

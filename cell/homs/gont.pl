@@ -20,6 +20,16 @@
 
 Documentation predicate for Homo sapiens data from GO database.
 
+Predicates defined:
+  * gont_homs_edge_gisa/2
+  * gont_homs_edge_greg/2
+  * gont_homs_edge_gprg/2
+  * gont_homs_edge_gnrg/2
+  * gont_homs_edge_gpof/2
+  * gont_homs_gont_symb/3
+  * gont_homs_gont_gonm/2
+  * gont_homs_symb_gont/3
+
 ==
 ?- lib( & bio_db(homs(gont)) ).
 ?- [ pack('bio_db/cell/homs/gont') ].

@@ -12,6 +12,10 @@
 
 Documentation predicate for Homo sapiens data from String database.
 
+Predicates defined:
+  * strg_homs_edge_ensp/3
+  * strg_homs_edge_symb/3
+
 ==
 ?- lib( &bio_db(homs(strg)) ).
 ?- [ pack('bio_db/cell/homs/strg') ].

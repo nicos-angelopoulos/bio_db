@@ -17,6 +17,14 @@
 
 Documentation predicate for Homo sapiens data from NCBI database.
 
+Predicates defined:
+  * ncbi_homs_ensg_ncbi/2
+  * ncbi_homs_ensp_ncbi/2
+  * ncbi_homs_ncbi_ensg/2
+  * ncbi_homs_ncbi_ensp/2
+  * ncbi_homs_rnuc_symb/2
+  * ncbi_homs_dnuc_symb/2
+
 ==
 ?- lib( & bio_db(homs(ncbi)) ).
 ?- [ pack('bio_db/cell/homs/ncbi') ].

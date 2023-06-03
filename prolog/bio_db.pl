@@ -99,7 +99,7 @@ bio_db_organism(pig).        % 2023/6/2
     bio_db_organism( ?Known, ?Token, ?Canon ).
 
 Canon is the canonical, colloquial, representation of Known which is either 
-a known bio_db organism/1, an alias to one or a organism token.
+a known bio_db_organism/1, an alias to one or a organism token.
 Token is the token used in bio_db predicate, file and directory names for this organism.
 
 ==

@@ -73,14 +73,14 @@
 % :- initialization( lib(& bio_db, load_main(false)), after_load ).
 :- initialization( lib(@(bio_db)), after_load ).
 
-/** bio_db_organism( ?Org ).
+/** bio_db_organism(?Org).
 
 Colloquial name for organisms supported by bio_db.
 
 Human is considered the default organism and returned first.
 
 ==
-?- bio_db_organism( Org ).
+?- bio_db_organism(Org).
 ==
 
 @author nicos angelopoulos
@@ -95,15 +95,15 @@ bio_db_organism(chicken).    % 2022/12/21
 bio_db_organism(mouse).
 bio_db_organism(pig).        % 2023/6/2
 
-/** bio_db_organism( ?KnownAs, ?Canon ).
-    bio_db_organism( ?Known, ?Token, ?Canon ).
+/** bio_db_organism(?KnownAs, ?Canon).
+    bio_db_organism(?Known, ?Token, ?Canon).
 
 Canon is the canonical, colloquial, representation of Known which is either 
 a known bio_db_organism/1, an alias to one or a organism token.
 Token is the token used in bio_db predicate, file and directory names for this organism.
 
 ==
-?- bio_db_organism(Known,Org),write(Known:Org),nl,fail.
+?- bio_db_organism(Known,Org), write(Known:Org), nl, fail.
 hs:human
 gallus:chicken
 gallus_gallus:chicken
@@ -116,10 +116,10 @@ homs:human
 musm:mouse
 suss:pig
 
-?- bio_db_organism( human, Org ).
+?- bio_db_organism(human, Org).
 Org = hs.
 
-?- bio_db_organism( KnownAs, hs ).
+?- bio_db_organism(KnownAs, hs).
 KnownAs = human ;
 KnownAs = hs ;
 false.

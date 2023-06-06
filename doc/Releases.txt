@@ -12,7 +12,7 @@ TBD:
          21.12.03 make sure existing handles are checked before opening another handle to same predicate 
                   (map_ense_mouse_enst_chrl/5 was opening map_ense_enst_chrl/5).
 
-4.2               
+4.2               @ 23.06.06
       23.06.02    CELL:    sus scrofa, pig support with token suss
       23.05.31    BUILD:   start support for pig
       23.01.02    DOC:     updated numbers of records and preds at the top of the module doc

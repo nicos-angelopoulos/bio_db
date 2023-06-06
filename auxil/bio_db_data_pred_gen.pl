@@ -81,3 +81,4 @@ bio_db_data_pred_gen_prefix( Out ) :-
 bio_db_data_org_token( chicken, galg ).
 bio_db_data_org_token( human, homs ).
 bio_db_data_org_token( mouse, musm ).
+bio_db_data_org_token( pig, suss ).

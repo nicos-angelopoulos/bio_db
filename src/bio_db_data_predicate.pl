@@ -133,8 +133,24 @@
 %    * unip_musm_unip_ncbi/2
 %    * unip_musm_unip_symb/2
 %    * unip_musm_gyno_unip/2
+%  * pig/ense.pl
+%    * ense_suss_ensg_chrl/5
+%    * ense_suss_ensg_symb/2
+%    * ense_suss_enst_chrl/5
+%    * ense_suss_enst_ensg/2
+%  * pig/gont.pl
+%    * gont_suss_symb_gont/4
+%  * pig/ncbi.pl
+%    * ncbi_suss_ensg_ncbi/2
+%    * ncbi_suss_ensp_ncbi/2
+%    * ncbi_suss_ncbi_ensg/2
+%    * ncbi_suss_ncbi_ensp/2
+%  * pig/strg.pl
+%    * strg_suss_edge_ensp/3
+%    * strg_suss_edge_symb/3
+%    * strg_suss_ensp_symb/2
 %
-% Generated on 22.12.29 from bio_db with pack.pl version: 4.1.
+% Generated on 23.06.06 from bio_db with pack.pl version: 4.2.
 % 
 %
 bio_db_data_predicate(cgnc_galg_cgnc_curs, 2, chicken, 'galg/cgnc.pl').
@@ -246,3 +262,15 @@ bio_db_data_predicate(unip_musm_mgim_unip, 2, mouse, 'musm/unip.pl').
 bio_db_data_predicate(unip_musm_trem_nucs, 2, mouse, 'musm/unip.pl').
 bio_db_data_predicate(unip_musm_unip_ncbi, 2, mouse, 'musm/unip.pl').
 bio_db_data_predicate(unip_musm_unip_symb, 2, mouse, 'musm/unip.pl').
+bio_db_data_predicate(ense_suss_ensg_chrl, 5, pig, 'suss/ense.pl').
+bio_db_data_predicate(ense_suss_ensg_symb, 2, pig, 'suss/ense.pl').
+bio_db_data_predicate(ense_suss_enst_chrl, 5, pig, 'suss/ense.pl').
+bio_db_data_predicate(ense_suss_enst_ensg, 2, pig, 'suss/ense.pl').
+bio_db_data_predicate(gont_suss_symb_gont, 4, pig, 'suss/gont.pl').
+bio_db_data_predicate(ncbi_suss_ensg_ncbi, 2, pig, 'suss/ncbi.pl').
+bio_db_data_predicate(ncbi_suss_ensp_ncbi, 2, pig, 'suss/ncbi.pl').
+bio_db_data_predicate(ncbi_suss_ncbi_ensg, 2, pig, 'suss/ncbi.pl').
+bio_db_data_predicate(ncbi_suss_ncbi_ensp, 2, pig, 'suss/ncbi.pl').
+bio_db_data_predicate(strg_suss_edge_ensp, 3, pig, 'suss/strg.pl').
+bio_db_data_predicate(strg_suss_edge_symb, 3, pig, 'suss/strg.pl').
+bio_db_data_predicate(strg_suss_ensp_symb, 2, pig, 'suss/strg.pl').

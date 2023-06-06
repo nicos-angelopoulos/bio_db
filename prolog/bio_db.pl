@@ -516,22 +516,22 @@ Thanks to Jan Wielemaker for a retractall fix and for code for fast loading of p
 (and indeed for the changes in SWI that made this possible).
 
 @author nicos angelopoulos
-@version  0.5 2016/9/11
+@version  0.5 2016/09/11
 @version  0.7 2016/10/21,  experimenting with distros in github
-@version  0.9 2017/3/10,   small changes for pack(requires) -> pack(lib) v1.1
-@version  1.0 2017/10/9    to coincide with ppdp paper presentation
-@version  2.1 2018/11/27   introduces cells and mouse data (and fixed dependency of 2.0)
-@version  2.4 2019/4/2     test: bio_db_stats, new mouse db predicates, iface: bio_db_data_predicate/4
-@version  2.5 2019/4/22    edge_strg_symb/4; bio_db_organism/1,2; go_id/2,3
-@version  2.6 2019/5/8     changed to organism alias interface; evidence in gont maps
-@version  2.7 2019/5/12    edge_strg_symb/4 -> org_edge_strg_symb/4
-@version  3.0 2019/5/15    paper submission
-@version  3.1 2020/3/9     fixed lib; no unigene
-@version  3.2 2020/9/18    include mouse ense + fixes/updates on building scripts
-@version  3:4 2021/5/10    removed edge_gont_includes/2 (reciprocal of is_a), and edge_gont_consists_of/2 (reciprocal of part_of/2)
-@version  3:6 2021/12/4    fixed pack_errors and map_ense_mouse_enst_chrl/5; bio_db_stats.pl version  0.2
-@version  4:1 2022/12/29   huge re-config of data predicate names + reac-tome (maps) + chicken
-@version  4:2 20??/??/??   support for pig
+@version  0.9 2017/03/10,  small changes for pack(requires) -> pack(lib) v1.1
+@version  1.0 2017/10/09,  to coincide with ppdp paper presentation
+@version  2.1 2018/11/27,  introduces cells and mouse data (and fixed dependency of 2.0)
+@version  2.4 2019/04/02,  test: bio_db_stats, new mouse db predicates, iface: bio_db_data_predicate/4
+@version  2.5 2019/04/22,  edge_strg_symb/4; bio_db_organism/1,2; go_id/2,3
+@version  2.6 2019/05/08,  changed to organism alias interface; evidence in gont maps
+@version  2.7 2019/05/12,  edge_strg_symb/4 -> org_edge_strg_symb/4
+@version  3.0 2019/05/15,  paper submission
+@version  3.1 2020/03/09,  fixed lib; no unigene
+@version  3.2 2020/09/18,  include mouse ense + fixes/updates on building scripts
+@version  3:4 2021/05/10,  removed edge_gont_includes/2 (reciprocal of is_a), and edge_gont_consists_of/2 (reciprocal of part_of/2)
+@version  3:6 2021/12/04,  fixed pack_errors and map_ense_mouse_enst_chrl/5; bio_db_stats.pl version  0.2
+@version  4:1 2022/12/29,  huge re-config of data predicate names + reac-tome (maps) + chicken
+@version  4:2 2023/06/06,  support for pig
 @see doc/Releases.txt      for version details
 @see bio_db_data_predicate/4 for a way to enumerate all data predicates
 @see cell/ for the definitions of the data predicates
@@ -721,19 +721,18 @@ Version Mj:Mn:Fx, and release date date(Y,M,D).
 
 ==
 ?- bio_db_version( V, D ).
-V = 4:1:0,
-D = date(2022, 12, 29).
+V = 4:2:0,
+D = date(2023, 6, 6).
 ==
 
 @author Nicos Angelopoulos
-@version  3:6 2021/12/4
-@version  4:1 2022/12/26, uniform pred names convention + reactome + chicken
+@version  4:2 2023/6/6,   support for pig data
 @see bio_db_data_predicate/4  (which should be generated for each new version)
 @see doc/Releases.txt for more detail on change log
 @see module documentation for brief comments on versioning history of this pack
 
 */
-bio_db_version( 4:1:0, date(2022,12,29) ).   
+bio_db_version( 4:2:0, date(2023,6,6) ).   
 
 %% bio_db_citation( -Atom, -Bibterm ).
 %

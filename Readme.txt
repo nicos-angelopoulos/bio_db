@@ -23,8 +23,7 @@ to contact the server and install the specific dataset.
 
 Minimal example:
 
-?- map_hgnc_symb_hgnc( 'LMTK3', Hgnc ).
-
+?- map_homs_symb_hgnc( 'LMTK3', Hgnc ).
 
 The served tables include data from
    * HGNC
@@ -35,13 +34,12 @@ The served tables include data from
    * STRING
    * GENE ONTOLOGY
    * MGI (mouse)
+   * CGNC (chicken)
 
 Organisms
 
-   The data are organised by organism, currently this is either hs
-   (for human) or mouse. As the library was originally only for human
-   data, predicates that do not specify organism of origin are assumed
-   to be related to human databases.
+   The data are organised by organism, currently these are human (homs), mouse (musm),
+   chicken (galg) and pig (suss).
 
 Links
 
@@ -52,6 +50,4 @@ Links
 
 Nicos Angelopoulos
 ---
-London,
-November 2018.
-(2016-2018)
+London, (2016-2023)

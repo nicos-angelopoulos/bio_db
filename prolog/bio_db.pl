@@ -1202,8 +1202,8 @@ bio_db_info_interface_infos( rocks, _Pid, File, _Handle, KVs ) :-
     Predicate throws an error if the Pid does not correspond to a db_predicate
     or if it is not currently servered by any of the backends.
 
-===
-?- bio_db_interface( prosqlite ).
+==
+?- bio_db_interface(prosqlite).
 ?- hgnc_homs_hgnc_symb( Hgnc, Symb ).
 Hgnc = 506,
 Symb = 'ANT3~withdrawn' .
@@ -1213,9 +1213,8 @@ Symb = 'ANT3~withdrawn' .
 ?- hgnc_homs_hgnc_symb( Hgnc, Symb ).
 Hgnc = 1,
 Symb = 'A12M1~withdrawn' .
-?- bio_db_close( hgnc_homs_hgnc_symb/2 ).
-
-===
+?- bio_db_close(hgnc_homs_hgnc_symb/2).
+==
     
 */
 bio_db_close( Pid ) :-

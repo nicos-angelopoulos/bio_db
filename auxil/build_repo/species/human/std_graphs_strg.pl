@@ -161,7 +161,7 @@ strg_human_symbolise_edges_stream( InTerm, Pn, InS, Edges ) :-
                ( (ensp_human_symb( EnsP1, Symb1 ),
                   ensp_human_symb( EnsP2, Symb2 )) ->
                          sort_four( Symb1, Symb2, SymbA, SymbB ),
-                         [strg_musm_edge_symb(SymbA,SymbB,W)|TEdges] = Edges
+                         [strg_homs_edge_symb(SymbA,SymbB,W)|TEdges] = Edges
                          ;
                          TEdges = Edges
                )
@@ -176,11 +176,11 @@ ensp_human_symb( EnsP, Symb ) :-
      hgnc:hgnc_homs_ncbi_symb( Ncbi, Symb ),
      !.
 
-sort( X, Y, A, B ) :-
+sort_four( X, Y, A, B ) :-
      Y @< X,
      !,
      A = Y, B = X.
-sort( A, B, A, B ).
+sort_four( A, B, A, B ).
 
 std_graph_string_download_string( LocalFile, _From, Self ) :-
      exists_file( LocalFile ),

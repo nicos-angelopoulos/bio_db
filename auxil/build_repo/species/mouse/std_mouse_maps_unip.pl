@@ -93,7 +93,7 @@ std_mouse_maps_unip( Args ) :-
      os_make_path( maps, debug(true) ),
 
      debuc( Self, 'Dir location: ~p', DnDir ),
-     Rev = [uniprot('MOUSE_10090_idmapping.dat'),org(mouse),interface(prolog),reverse(true)],
+     Rev = [uniprot('MOUSE_10090_idmapping.dat'),org(mouse),f_call(de_vers),interface(prolog),reverse(true)],
      map_uniprot( 'Ensembl_PRO', Csv, [EnspF], Rev ),
 
      % Fgnc = [interface(prolog),f_call(de_semi('HGNC'))],
@@ -217,6 +217,12 @@ os_rm_rf( Dir ) :-
      delete_directory_and_contents(Dir),
      !.
 os_rm_rf( _Dir ).
+
+de_vers( Prv, Cln ) :-
+     atomic_list_concat( [Cln,Ver], '.', Prv ),
+     atom_number( Ver, _ ),
+     !.
+de_vers( Cln, Cln ).
 
 de_semi( Pfx, AccPrv, Acc ) :-
      atomic_list_concat( [Pfx,AccAtm], ':', AccPrv ), 

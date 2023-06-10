@@ -24,7 +24,7 @@ org_edge_strg_symb( Org, Symb1, Symb2, W ) :-
     sort( [Symb1,Symb2], [SymbA,SymbB] ),
     org_edge_strg_symb_ord( Org, SymbA, SymbB, W ).
 
-org_edge_strg_symb_ord( gallus, SymbA, SymbB, W ) :-
+org_edge_strg_symb_ord( chicken, SymbA, SymbB, W ) :-
     % edge_strg_gallus_symb( SymbA, SymbB, W ).
     strg_galg_edge_symb( SymbA, SymbB, W ).
 org_edge_strg_symb_ord( human, SymbA, SymbB, W ) :-

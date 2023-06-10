@@ -108,18 +108,7 @@ std_mouse_graphs_strg( Args ) :-
     @ rm( -f, EnspRelF ),
     @ mv( File, EnspRelF ),
 
-    consult( EnspPn:EnspRelF ),
-    debuc( Self, 'consulted eges from: ~w', [EnspPn:EnspRelF] ),
-
-    EnspGoal =.. [EnspPn,EnsP1,EnsP2,W],
-    findall( strg_musm_edge_symb(SymbA,SymbB,W),
-                         ( EnspPn:EnspGoal,
-                           ensp_mouse_symb(EnsP1,Symb1),
-                           ensp_mouse_symb(EnsP2,Symb2),
-                           sort_four(Symb1,Symb2,SymbA,SymbB)
-                     ),
-            UnoSymbEdges
-          ),
+    mouse_strg_symbolise_edges( Self, EnspPn, EnspRelF, UnoSymbEdges ),
     sort( UnoSymbEdges, SymbEdges ),
     length( SymbEdges, SymbEdgesLen ),
     debuc( Self, 'unique symbol edges (mouse): ~w', [SymbEdgesLen] ),
@@ -142,6 +131,50 @@ std_mouse_graphs_strg( Args ) :-
     link_to_bio_sub( strg, EnspRelF, [org(mouse),type(graphs)] ),
     link_to_bio_sub( strg, EdgeSymbsF, [org(mouse),type(graphs)] ),
     working_directory( _, Here ).
+
+/*
+mouse_strg_symbolise_edges( Self, EnspPn, EnspRelF, UnoSymbEdges ) :-
+    % This is the original ?slower? version ?
+    debuc( Self, task(start), symbolise(original) ),
+    consult( EnspPn:EnspRelF ),
+    debuc( Self, 'consulted edges from: ~w', [EnspPn:EnspRelF] ),
+    EnspGoal =.. [EnspPn,EnsP1,EnsP2,W],
+    findall( strg_musm_edge_symb(SymbA,SymbB,W),
+                         ( EnspPn:EnspGoal,
+                           ensp_mouse_symb(EnsP1,Symb1),
+                           ensp_mouse_symb(EnsP2,Symb2),
+                           sort_four(Symb1,Symb2,SymbA,SymbB)
+                         ),
+                              UnoSymbEdges
+           ),
+    debuc( Self, task(stop), symbolise(original) ).
+*/
+
+mouse_strg_symbolise_edges( Self, EnspPn, EnspRelF, Edges ) :-
+     open( EnspRelF, read, InS ),
+     read( InS, Term ),
+     debuc( Self, task(start), symbolise(streamed) ),
+     mouse_strg_symbolise_edges_stream( Term, EnspPn, InS, Edges ),
+     debuc( Self, task(stop), symbolise(streamed) ),
+     close( InS ).
+
+mouse_strg_symbolise_edges_stream( end_of_file, _Pn, _InS, Edges ) :-
+     !,
+     [] = Edges.
+mouse_strg_symbolise_edges_stream( InTerm, Pn, InS, [strg_musm_edge_symb(SymbA,SymbB,W)|Edges] ) :-
+     ( functor(InTerm,Pn,3) ->
+               arg( 1, InTerm, EnsP1 ),
+               arg( 2, InTerm, EnsP2 ),
+               arg( 3, InTerm, W     ),
+               ensp_mouse_symb( EnsP1, Symb1 ),
+               ensp_mouse_symb( EnsP2, Symb2 ),
+               sort_four( Symb1, Symb2, SymbA, SymbB )
+               ;
+               throw(rogue_ensp_to_symb_term(InTerm))
+     ),
+     read( InS, NxtTerm ),
+     mouse_strg_symbolise_edges_stream( NxtTerm, Pn, InS, TEdges ).
+
 
 ensp_mouse_symb( EnsP, Symb ) :-   % fixme: make sure the cut is green ! 
     unip:unip_musm_ensp_unip( EnsP, Unip ),

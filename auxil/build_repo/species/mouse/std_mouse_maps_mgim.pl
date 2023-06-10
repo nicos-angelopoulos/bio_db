@@ -81,7 +81,6 @@ Tue 27 Dec 14:45:59 GMT 2022
 */
 std_mouse_maps_mgim( Args ) :-
     Self = std_mouse_maps_mgim,
-    write( in(Self) ), nl,
     options_append( Self, Args, Opts ),
     bio_db_build_aliases( Opts ),
     mgim_get_report( symb, Self, SymbUrl, DnDir, _SymbInF, SymbMtx, SymbDnt ),

@@ -112,7 +112,7 @@ bio_db_file_add_infos( Os, NewInfos ) :-
 	open( TmpOs, write, Onto ),
 	maplist( portray_clause(Onto), NewInfos ),
 	nl( Onto ),
-	portray_clause( Onto, InTerm ),
+	portray_clause( Onto, NexTerm ),
      copy_stream_data( DbS, Onto ),
 	% copy_term_data( NexTerm, DbS, Onto ),
 	close( DbS ),

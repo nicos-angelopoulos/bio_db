@@ -95,10 +95,10 @@ std_pig_graphs_strg( Args ) :-
     delete_file( TxtF ),
     os_make_path( graphs, debug(true) ),
     os_make_path( maps, debug(true) ),
-    os_dir_stem_ext( graphs, EnspPn, pl, EnspRel ),
-    @ rm( -f, EnspRel ),
-    @ mv( File, EnspRel ),
-    consult( EnspPn:EnspRel ),
+    os_dir_stem_ext( graphs, EnspPn, pl, EnspRelF ),
+    @ rm( -f, EnspRelF ),
+    @ mv( File, EnspRelF ),
+
      
     % info file connect protein to SYmbol
     directory_file_path( Parent, InfoBname, LocalInfoFile ),
@@ -119,16 +119,12 @@ std_pig_graphs_strg( Args ) :-
                ],
     portray_informed_clauses( MapRows, MapInfos, MapPlF, [] ),
     % mtx( InfoBname, MapRows ),
+
     debuc( Self, 'wrote, and consulting: ~p', [MapPlF] ),
     Map:consult(MapPlF),
-    findall( strg_suss_edge_symb(SymbA,SymbB,W),
-                         ( EnspPn:strg_suss_edge_ensp(EnsP1,EnsP2,W),
-                           Map:strg_suss_ensp_symb(EnsP1,Symb1),
-                           Map:strg_suss_ensp_symb(EnsP2,Symb2),
-                           sort(Symb1,Symb2,SymbA,SymbB)
-                     ),
-            UnoSymbEdges
-          ),
+
+    strg_pig_symbolise_edges( Self, EnspPn, EnspRelF, Map, UnoSymbEdges ),
+
     sort( UnoSymbEdges, SymbEdges ),
     length( SymbEdges, SymbEdgesLen ),
     debuc( Self, 'unique symbol edges (pig): ~w', [SymbEdgesLen] ),
@@ -143,13 +139,59 @@ std_pig_graphs_strg( Args ) :-
     BaseOpts = [ source(From), datetime(DnDt),
                   header(row('Ensembl_Protein','Ensembl_Protein',weight))
                 ],
-    debuc( Self, 'doing infos for: ~p', [EnspRel] ),
-    bio_db_add_infos_to( BaseOpts, EnspRel ),
-    link_to_bio_sub( strg, EnspRel, [org(pig),type(graphs)] ),
+    debuc( Self, 'doing infos for: ~p', [EnspRelF] ),
+    bio_db_add_infos_to( BaseOpts, EnspRelF ),
+    link_to_bio_sub( strg, EnspRelF, [org(pig),type(graphs)] ),
     link_to_bio_sub( strg, EdgeSymbsF, [org(pig),type(graphs)] ),
     link_to_bio_sub( strg, MapPlF, [org(pig),type(maps)] ),
     delete_file( InfoTxtF ),
     working_directory( _, Here ).
+
+/** old implementation:
+strg_pig_symbolise_edges( Self, EnspPn, EnspRelF, Map, UnoSymbEdges ) :-
+    debuc( Self, task(start), symbolise(original) ),
+    consult( EnspPn:EnspRelF ),
+    findall( strg_suss_edge_symb(SymbA,SymbB,W),
+                         ( EnspPn:strg_suss_edge_ensp(EnsP1,EnsP2,W),
+                           Map:strg_suss_ensp_symb(EnsP1,Symb1),
+                           Map:strg_suss_ensp_symb(EnsP2,Symb2),
+                           sort(Symb1,Symb2,SymbA,SymbB)
+                     ),
+            UnoSymbEdges
+          ),
+    debuc( Self, task(stop), symbolise(original) ).
+*/
+
+strg_pig_symbolise_edges( Self, EnspPn, EnspRelF, Map, Edges ) :-
+     open( EnspRelF, read, InS ),
+     read( InS, Term ),
+     debuc( Self, task(start), symbolise(streamed) ),
+     strg_pig_symbolise_edges_stream( Term, EnspPn, Map, InS, Edges ),
+     debuc( Self, task(stop), symbolise(streamed) ),
+     close( InS ).
+
+strg_pig_symbolise_edges_stream( end_of_file, _Pn, _Map, _InS, Edges ) :-
+     !,
+     [] = Edges.
+strg_pig_symbolise_edges_stream( InTerm, Pn, Map, InS, Edges ) :-
+     ( functor(InTerm,Pn,3) ->
+               arg( 1, InTerm, EnsP1 ),
+               arg( 2, InTerm, EnsP2 ),
+               arg( 3, InTerm, W     ),
+               ( (Map:strg_suss_ensp_symb( EnsP1, Symb1 ),
+                  Map:strg_suss_ensp_symb( EnsP2, Symb2 )) ->
+                         sort_four( Symb1, Symb2, SymbA, SymbB ),
+                         [strg_suss_edge_symb(SymbA,SymbB,W)|TEdges] = Edges
+                         ;
+                         TEdges = Edges
+               )
+               ;
+               throw(rogue_ensp_to_symb_term(InTerm))
+     ),
+     read( InS, NxtTerm ),
+     strg_pig_symbolise_edges_stream( NxtTerm, Pn, Map, InS, TEdges ).
+
+
 
 strg_map_row( Pname, InfoRow, Term ) :-
      arg( 1, InfoRow, PfxProt ),

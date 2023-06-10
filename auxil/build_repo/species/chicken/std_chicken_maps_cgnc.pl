@@ -113,7 +113,9 @@ std_chicken_maps_cgnc( Args ) :-
     bio_db_dnt_times( DntF, DnDt, _DnEnd ),
     options( sub(SubDir), Opts ),
     make_directory_path( SubDir ),
-    mtx( CsvF, Mtx, sep(tab) ),
+    std_chicken_cgnc_mtx( CsvF, Mtx ),
+    % 23.06.05, the cgnc file introduced a /9 (instead of /8 line in late May).
+    % mtx( CsvF, Mtx, sep(tab) ),
     % options_propagate( [map_prefix,prefix], Opts, StdOT, true ),
     StdO= [dir(SubDir),cnm_transform(cgnc_cname)|Opts],
     Cgnc = 'CGNC id',
@@ -203,6 +205,24 @@ cgnc_cname_known( 'gene name', name ).
 cgnc_cname_known( 'gene synonym', syno ).
 cgnc_cname_known( 'curation status', curs ).
 cgnc_cname_known( 'last edit date', edat ).
+
+% 23.06.05, the cgnc file introduced a /9 (instead of /8 line in late May).
+% in next version revert back to the mtx/3 call above
+std_chicken_cgnc_mtx( CsvF, Mtx ) :-
+    mtx( CsvF, Csv, [match(false),sep(tab)] ),
+     std_chicken_cgnc_mtx_fix( Csv, Mtx ).
+
+std_chicken_cgnc_mtx_fix( [], [] ).
+std_chicken_cgnc_mtx_fix( [H|Rs], [R|M] ) :-
+     functor( H, _, Arity ),
+     ( Arity =:= 8 -> 
+          R = H   
+          ;
+          Arity =:= 9,
+          H =.. [Func,89661,121109795,'','HSFX1','heat shock transcription factor','X1','','Approved','2023-05-23'],
+          R =.. [Func,89661,121109795,'','HSFX1','heat shock transcription factor X1','','Approved','2023-05-23']
+     ),
+     std_chicken_cgnc_mtx_fix( Rs, M ).
 
 cgnc_download_file( true, Self, Url, Dst, Opts ) :-
      Url = 'http://birdgenenames.org/cgnc/downloads.jsp?file=standard',

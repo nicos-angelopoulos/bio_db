@@ -120,14 +120,9 @@ std_chicken_graphs_strg( Args ) :-
     % mtx( InfoBname, MapRows ),
     debuc( Self, 'wrote, and consulting: ~p', [MapPlF] ),
     Map:consult(MapPlF),
-    findall( strg_galg_edge_symb(SymbA,SymbB,W),
-                         ( EnspPn:strg_galg_edge_ensp(EnsP1,EnsP2,W),
-                           Map:strg_galg_ensp_symb(EnsP1,Symb1),
-                           Map:strg_galg_ensp_symb(EnsP2,Symb2),
-                           sort(Symb1,Symb2,SymbA,SymbB)
-                     ),
-            UnoSymbEdges
-          ),
+
+     strg_chicken_symbolise_edges( Self, EnspPn, EnspRel, Map, UnoSymbEdges ),
+
     sort( UnoSymbEdges, SymbEdges ),
     length( SymbEdges, SymbEdgesLen ),
     debuc( Self, 'unique symbol edges (gallus): ~w', [SymbEdgesLen] ),
@@ -150,12 +145,57 @@ std_chicken_graphs_strg( Args ) :-
     delete_file( InfoTxtF ),
     working_directory( _, Here ).
 
+/* this is the old implementation:
+strg_chicken_symbolise_edges( Self, EnspPn, EnspRel, Map, UnoSymbEdges ) :-
+    findall( strg_galg_edge_symb(SymbA,SymbB,W),
+                         ( EnspPn:strg_galg_edge_ensp(EnsP1,EnsP2,W),
+                           Map:strg_galg_ensp_symb(EnsP1,Symb1),
+                           Map:strg_galg_ensp_symb(EnsP2,Symb2),
+                           sort_four(Symb1,Symb2,SymbA,SymbB)
+                     ),
+            UnoSymbEdges
+          ).
+*/
+
+/* new implementation
+*/
+strg_chicken_symbolise_edges( Self, EnspPn, EnspRel, Map, UnoSymbEdges ) :-
+strg_chicken_symbolise_edges( Self, EnspPn, EnspRelF, Map, Edges ) :-
+     open( EnspRelF, read, InS ),
+     read( InS, Term ),
+     debuc( Self, task(start), symbolise(streamed) ),
+     strg_chicken_symbolise_edges_stream( Term, EnspPn, Map, InS, Edges ),
+     debuc( Self, task(stop), symbolise(streamed) ),
+     close( InS ).
+
+strg_chicken_symbolise_edges_stream( end_of_file, _Pn, _Map, _InS, Edges ) :-
+     !,
+     [] = Edges.
+strg_chicken_symbolise_edges_stream( InTerm, Pn, Map, InS, Edges ) :-
+     ( functor(InTerm,Pn,3) ->
+               arg( 1, InTerm, EnsP1 ),
+               arg( 2, InTerm, EnsP2 ),
+               arg( 3, InTerm, W     ),
+               ( (Map:strg_galg_ensp_symb( EnsP1, Symb1 ),
+                  Map:strg_galg_ensp_symb( EnsP2, Symb2 )) ->
+                         sort_four( Symb1, Symb2, SymbA, SymbB ),
+                         [strg_galg_edge_symb(SymbA,SymbB,W)|TEdges] = Edges
+                         ;
+                         TEdges = Edges
+               )
+               ;
+               throw(rogue_ensp_to_symb_term(InTerm))
+     ),
+     read( InS, NxtTerm ),
+     strg_chicken_symbolise_edges_stream( NxtTerm, Pn, Map, InS, TEdges ).
+
 strg_map_row( Pname, InfoRow, Term ) :-
      arg( 1, InfoRow, PfxProt ),
      arg( 2, InfoRow, Symb ),
      atom_concat( '9031.', Prot, PfxProt ),
      Term =.. [Pname,Prot,Symb].
 
+/*
 ensp_mouse_symb( EnsP, Symb ) :-   % fixme: make sure the cut is green ! 
     unip:map_unip_mouse_ensp_unip( EnsP, Unip ),
     (   unip:map_unip_mouse_mgim_unip(Mgim,Unip)
@@ -164,12 +204,13 @@ ensp_mouse_symb( EnsP, Symb ) :-   % fixme: make sure the cut is green !
     ),
     mgim:map_mgim_mouse_mgim_symb( Mgim, Symb ),
     !.
+    */
 
-sort( X, Y, A, B ) :-
+sort_four( X, Y, A, B ) :-
     Y @< X,
     !,
     A = Y, B = X.
-sort( A, B, A, B ).
+sort_four( A, B, A, B ).
 
 std_graph_string_download_string( LocalFile, _From, Self ) :-
     exists_file( LocalFile ),

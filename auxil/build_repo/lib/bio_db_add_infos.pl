@@ -112,18 +112,21 @@ bio_db_file_add_infos( Os, NewInfos ) :-
 	open( TmpOs, write, Onto ),
 	maplist( portray_clause(Onto), NewInfos ),
 	nl( Onto ),
-	copy_term_data( NexTerm, DbS, Onto ),
+	portray_clause( Onto, InTerm ),
+     copy_stream_data( DbS, Onto ),
+	% copy_term_data( NexTerm, DbS, Onto ),
 	close( DbS ),
 	close( Onto ),
 	delete_file( Os ),
 	debuc( add_infos, 'Replacing: ~p, with: ~p', [Os,TmpOs] ),
 	rename_file( TmpOs, Os ).
 
-copy_term_data( end_of_file, _DbS, _Onto ) :- !.
-copy_term_data( InTerm, DbS, Onto ) :-
-	portray_clause( Onto, InTerm ),
-	read( DbS, NexTerm ),
-	copy_term_data( NexTerm, DbS, Onto ).
+
+% copy_term_data( end_of_file, _DbS, _Onto ) :- !.
+% copy_term_data( InTerm, DbS, Onto ) :-
+	% portray_clause( Onto, InTerm ),
+	% read( DbS, NexTerm ),
+	% copy_term_data( NexTerm, DbS, Onto ).
 
 bio_db_relation_stream_pairs( end_of_file, _Pname, _Arity, _DbS, [], [], [] ) :- !.
 bio_db_relation_stream_pairs( Term, Pname, Arity, DbS, [K-V|KVs], [K|Ks], [V|Vs] ) :-

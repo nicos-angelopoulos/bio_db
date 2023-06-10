@@ -102,19 +102,7 @@ std_graphs_strg( Args ) :-
      @ rm( -f, EnspRelF ),
      @ mv( File, EnspRelF ),
 
-     consult( EnspPn:EnspRelF ),
-
-     debuc( _, 'Consulted ensp: ~w', [EnspPn:EnspRelF] ),
-
-     EnspGoal =.. [EnspPn,EnsP1,EnsP2,W],
-     findall( strg_homs_edge_symb(SymbA,SymbB,W),
-                          ( EnspPn:EnspGoal,
-                                ensp_symb(EnsP1,Symb1),
-                                ensp_symb(EnsP2,Symb2),
-                                sort(Symb1,Symb2,SymbA,SymbB)
-                          ),
-               UnoSymbEdges
-            ),
+     strg_human_symbolise_edges( Self, EnspPn, EnspRelF, UnoSymbEdges ),
      sort( UnoSymbEdges, SymbEdges ),
      length( SymbEdges, SymbEdgesLen ),
      debuc( _, 'Unique symbol edges hs: ~w', [SymbEdgesLen] ),
@@ -125,21 +113,65 @@ std_graphs_strg( Args ) :-
 
      SymbsPn  = strg_homs_edge_symb,
      os_dir_stem_ext( graphs, SymbsPn, pl, SymbRelF ),
-
-    EdgeSymbsInfos = [ source-From, datetime-DnDt, header-header('Symbol','Symbol',weight),
+     EdgeSymbsInfos = [ source-From, datetime-DnDt, header-header('Symbol','Symbol',weight),
                        data_types-data_types(atom,atom,integer)
                      ],
-    portray_informed_clauses( SymbEdges, EdgeSymbsInfos, SymbRelF, [] ),
-     
+     portray_informed_clauses( SymbEdges, EdgeSymbsInfos, SymbRelF, [] ),
      % portray_clauses( SymbEdges, file(SymbsRel) ),
      % SymbOpts = [source(From),datetime(DnDt),header(row('HGNC Symbol','HGNC Symbol',weight))],
      % bio_db_add_infos_to( SymbOpts, SymbsRel ),
-
      link_to_bio_sub( strg, EnspRelF, [org(human),type(graphs)] ),
      link_to_bio_sub( strg, SymbRelF, [org(human),type(graphs)]  ),
      working_directory( _, Here ).
 
-ensp_symb( EnsP, Symb ) :-
+/* old code: uses a findall
+strg_human_symbolise_edges( Self, EnspPn, EnspRelF, UnoSymbEdges ) :-
+     debuc( Self, task(start), human(symbolise(original)) ),
+     consult( EnspPn:EnspRelF ),
+     debuc( _, 'Consulted ensp: ~w', [EnspPn:EnspRelF] ),
+     EnspGoal =.. [EnspPn,EnsP1,EnsP2,W],
+     findall( strg_homs_edge_symb(SymbA,SymbB,W),
+                          ( EnspPn:EnspGoal,
+                                ensp_symb(EnsP1,Symb1),
+                                ensp_symb(EnsP2,Symb2),
+                                sort(Symb1,Symb2,SymbA,SymbB)
+                          ),
+               UnoSymbEdges
+            ),
+     debuc( Self, task(stop), human(symbolise(original)) ).
+*/
+
+strg_human_symbolise_edges( Self, EnspPn, EnspRelF, UnoSymbEdges ) :-
+     % fixme:
+     open( EnspRelF, read, InS ),
+     read( InS, Term ),
+     debuc( Self, task(start), human(symbolise(streamed)) ),
+     strg_human_symbolise_edges_stream( Term, EnspPn, InS, Edges ),
+     close( InS ),
+     debuc( Self, task(stop), human(symbolise(streamed)) ).
+
+strg_human_symbolise_edges_stream( end_of_file, _EnspPn, _InS, Edges ) :-
+     !,
+     [] = Edges.
+strg_human_symbolise_edges_stream( InTerm, Pn, InS, Edges ) :-
+     ( functor(InTerm,Pn,3) ->
+               arg( 1, InTerm, EnsP1 ),
+               arg( 2, InTerm, EnsP2 ),
+               arg( 3, InTerm, W     ),
+               ( (ensp_human_symb( EnsP1, Symb1 ),
+                  ensp_human_symb( EnsP2, Symb2 )) ->
+                         sort_four( Symb1, Symb2, SymbA, SymbB ),
+                         [strg_musm_edge_symb(SymbA,SymbB,W)|TEdges] = Edges
+                         ;
+                         TEdges = Edges
+               )
+               ;
+               throw(rogue_ensp_to_symb_term(InTerm))
+     ),
+     read( InS, NxtTerm ),
+     mouse_strg_symbolise_edges_stream( NxtTerm, Pn, InS, TEdges ).
+
+ensp_human_symb( EnsP, Symb ) :-
      ncbi:ncbi_homs_ensp_ncbi( EnsP, Ncbi ),
      hgnc:hgnc_homs_ncbi_symb( Ncbi, Symb ),
      !.

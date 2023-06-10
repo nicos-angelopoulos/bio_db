@@ -135,6 +135,10 @@ std_mouse_graphs_strg( Args ) :-
     working_directory( _, Here ).
 
 /*
+% At 15:37:9 on 10th of Jun 2023 starting task: symbolise(original).
+% consulted edges from: strg_musm_edge_ensp:graphs/strg_musm_edge_ensp.pl
+% At 15:42:0 on 10th of Jun 2023 stop task: symbolise(original).
+
 mouse_strg_symbolise_edges( Self, EnspPn, EnspRelF, UnoSymbEdges ) :-
     % This is the original ?slower? version ?
     debuc( Self, task(start), symbolise(original) ),
@@ -152,6 +156,9 @@ mouse_strg_symbolise_edges( Self, EnspPn, EnspRelF, UnoSymbEdges ) :-
     debuc( Self, task(stop), symbolise(original) ).
 */
 
+% At 13:34:57 on 10th of Jun 2023 starting task: symbolise(streamed).
+% At 13:37:29 on 10th of Jun 2023 stop task: symbolise(streamed).
+% 
 mouse_strg_symbolise_edges( Self, EnspPn, EnspRelF, Edges ) :-
      open( EnspRelF, read, InS ),
      read( InS, Term ),

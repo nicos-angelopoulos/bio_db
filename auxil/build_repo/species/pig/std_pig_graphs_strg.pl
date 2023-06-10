@@ -155,7 +155,7 @@ strg_pig_symbolise_edges( Self, EnspPn, EnspRelF, Map, UnoSymbEdges ) :-
                          ( EnspPn:strg_suss_edge_ensp(EnsP1,EnsP2,W),
                            Map:strg_suss_ensp_symb(EnsP1,Symb1),
                            Map:strg_suss_ensp_symb(EnsP2,Symb2),
-                           sort(Symb1,Symb2,SymbA,SymbB)
+                           sort_four(Symb1,Symb2,SymbA,SymbB)
                      ),
             UnoSymbEdges
           ),
@@ -191,8 +191,6 @@ strg_pig_symbolise_edges_stream( InTerm, Pn, Map, InS, Edges ) :-
      read( InS, NxtTerm ),
      strg_pig_symbolise_edges_stream( NxtTerm, Pn, Map, InS, TEdges ).
 
-
-
 strg_map_row( Pname, InfoRow, Term ) :-
      arg( 1, InfoRow, PfxProt ),
      arg( 2, InfoRow, Symb ),
@@ -208,11 +206,11 @@ ensp_mouse_symb( EnsP, Symb ) :-   % fixme: make sure the cut is green !
     mgim:map_mgim_mouse_mgim_symb( Mgim, Symb ),
     !.
 
-sort( X, Y, A, B ) :-
+sort_four( X, Y, A, B ) :-
     Y @< X,
     !,
     A = Y, B = X.
-sort( A, B, A, B ).
+sort_four( A, B, A, B ).
 
 std_graph_string_download_string( LocalFile, _From, Self ) :-
     exists_file( LocalFile ),

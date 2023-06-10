@@ -126,7 +126,9 @@ std_mouse_graphs_strg( Args ) :-
     MousOpts = [ source(From), datetime(DnDt),
                   header(row('Ensembl_Protein','Ensembl_Protein',weight))
                 ],
+    debuc( Self, task(stop), infosise(copy_stream(EnspRelF )) ),
     bio_db_add_infos_to( MousOpts, EnspRelF ),
+    debuc( Self, task(stop), infosise(copy_stream) ),
 
     link_to_bio_sub( strg, EnspRelF, [org(mouse),type(graphs)] ),
     link_to_bio_sub( strg, EdgeSymbsF, [org(mouse),type(graphs)] ),
@@ -173,7 +175,7 @@ mouse_strg_symbolise_edges_stream( InTerm, Pn, InS, [strg_musm_edge_symb(SymbA,S
                throw(rogue_ensp_to_symb_term(InTerm))
      ),
      read( InS, NxtTerm ),
-     mouse_strg_symbolise_edges_stream( NxtTerm, Pn, InS, TEdges ).
+     mouse_strg_symbolise_edges_stream( NxtTerm, Pn, InS, Edges ).
 
 
 ensp_mouse_symb( EnsP, Symb ) :-   % fixme: make sure the cut is green ! 

@@ -159,7 +159,6 @@ strg_chicken_symbolise_edges( Self, EnspPn, EnspRel, Map, UnoSymbEdges ) :-
 
 /* new implementation
 */
-strg_chicken_symbolise_edges( Self, EnspPn, EnspRel, Map, UnoSymbEdges ) :-
 strg_chicken_symbolise_edges( Self, EnspPn, EnspRelF, Map, Edges ) :-
      open( EnspRelF, read, InS ),
      read( InS, Term ),

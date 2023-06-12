@@ -169,7 +169,7 @@ strg_human_symbolise_edges_stream( InTerm, Pn, InS, Edges ) :-
                throw(rogue_ensp_to_symb_term(InTerm))
      ),
      read( InS, NxtTerm ),
-     mouse_strg_symbolise_edges_stream( NxtTerm, Pn, InS, TEdges ).
+     strg_human_symbolise_edges_stream( NxtTerm, Pn, InS, TEdges ).
 
 ensp_human_symb( EnsP, Symb ) :-
      ncbi:ncbi_homs_ensp_ncbi( EnsP, Ncbi ),

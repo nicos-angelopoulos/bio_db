@@ -141,7 +141,7 @@ strg_human_symbolise_edges( Self, EnspPn, EnspRelF, UnoSymbEdges ) :-
      debuc( Self, task(stop), human(symbolise(original)) ).
 */
 
-strg_human_symbolise_edges( Self, EnspPn, EnspRelF, UnoSymbEdges ) :-
+strg_human_symbolise_edges( Self, EnspPn, EnspRelF, Edges ) :-
      % fixme:
      open( EnspRelF, read, InS ),
      read( InS, Term ),

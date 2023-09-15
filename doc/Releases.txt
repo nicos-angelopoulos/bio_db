@@ -13,7 +13,7 @@ TBD:
                   (map_ense_mouse_enst_chrl/5 was opening map_ense_enst_chrl/5).
 
 4.3   
-      23.09.15    CELL:    mult for preds across multiple species: ncbi_mult_taxo_scnm/2, ncbi_mult_taxo_gbnm/2.
+      23.09.15    CELL:    mult for preds across multiple species: ncbi_mult_taxo_scnm/2, ncbi_mult_taxo_gbnm/2
       23.06.21    SCRIPT:  new version of bio_db_stats.pl (via by_unix: avoid mem probs), also new csv output added
       23.06.10    CHANGE:  mouse unip-rot was using .versioned ensp-roteins; which was also knocking on string
       23.06.07    FIXED:   updated table names to new regime, + support for pig (ord_edge_strg_symb/4)

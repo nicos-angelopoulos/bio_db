@@ -13,6 +13,7 @@ TBD:
                   (map_ense_mouse_enst_chrl/5 was opening map_ense_enst_chrl/5).
 
 4.3   
+      23.09.16    FIXED:   auto fill for info headers was broken
       23.09.15    CELL:    mult/multi for preds across multiple species: ncbi_mult_taxo_scnm/2, ncbi_mult_taxo_gbnm/2
                   BUILD:   scripts for the multi predicates from NCBI: ncbi_mult_taxo_scnm/2, ncbi_mult_taxo_gbnm/2
       23.06.21    SCRIPT:  new version of bio_db_stats.pl (via by_unix: avoid mem probs), also new csv output added

@@ -86,8 +86,8 @@ bio_db_add_infos_file( Os, InOpts ) :-
 		true
 		;
           % fixme: this is difficult to guess
-		atomic_list_concat( [TknDB,TknOrg,PTkn1,CTkn2], '_', Pname ),
-          ( PTKn1 == edge ->
+		atomic_list_concat( [TknDB,_TknOrg,PTkn1,CTkn2], '_', Pname ),
+          ( PTkn1 == edge ->
                     CTkn1 = TknDB
                     ;
                     CTkn1 = PTkn1
@@ -97,7 +97,7 @@ bio_db_add_infos_file( Os, InOpts ) :-
           DiffAr is Arity - 2,
           findall( unk, between(1,DiffAr,_), Unkns ),
           append( [CTkn1|Unkns], [CTkn2], CTkns ),
-		Hdr =.. [row|CTKns]
+		Hdr =.. [row|CTkns]
 	),
 	HeaderInfo =.. [Iname,header,Hdr],			%  header DONE
 

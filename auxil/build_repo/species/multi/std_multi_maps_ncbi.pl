@@ -58,7 +58,7 @@ std_multi_maps_ncbi( Args ) :-
      ncbi_dnload( NcbiD ),
      url_file_local_date_mirror( Url, NcbiD, interface(wget) ),
      working_directory( Old, NcbiD ),
-     @unzip( '-f', '-o', ZipF, DmpF ),
+     @unzip( '-o', ZipF, DmpF ),
      mtx( DmpF, Ntx, sep(0'|) ),
      debuc( Self, dims, names_dump/Ntx ),
      maplist( taxon_names_args, Ntx, Atx ),

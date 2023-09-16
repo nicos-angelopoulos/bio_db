@@ -72,7 +72,7 @@ std_multi_maps_ncbi( Args ) :-
      GbnmF = 'maps/ncbi_mult_taxo_gbnm.pl',
      portray_clauses( OSnms, file(ScnmF) ),
      portray_clauses( OGnms, file(GbnmF) ),
-     bio_db_dnt_times( DmpF, DnDt, _DnEn ),
+     bio_db_dnt_times( ZipF, DnDt, _DnEn ),
      working_directory( _ParentD, MapsD ),
      bio_db_add_infos( [ScnmF,GbnmF,source(Url),datetime(DnDt)] ),
      link_to_bio_sub( ncbi, ScnmF, org(multi) ),

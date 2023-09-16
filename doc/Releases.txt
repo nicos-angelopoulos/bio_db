@@ -14,6 +14,7 @@ TBD:
 
 4.3   
       23.09.16    FIXED:   auto fill for info headers was broken
+                  LIB:     added cnm_token/3, mapping db column names to bio_db tokens 
       23.09.15    CELL:    mult/multi for preds across multiple species: ncbi_mult_taxo_scnm/2, ncbi_mult_taxo_gbnm/2
                   BUILD:   scripts for the multi predicates from NCBI: ncbi_mult_taxo_scnm/2, ncbi_mult_taxo_gbnm/2
       23.06.21    SCRIPT:  new version of bio_db_stats.pl (via by_unix: avoid mem probs), also new csv output added

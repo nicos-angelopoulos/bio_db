@@ -54,7 +54,6 @@ bio_db_add_infos_file( Os, InOpts ) :-
 	% bio_db_pl_info( Os, Pname, Arity, Infos, NexTerm, DbStream1 ),
 	% bio_db:bio_db_pl_info( Os, Pname, Arity, Infos, NexTerm, DbStream1 ),
 	bio_db_pl_info( Os, Pname, Arity, Infos, NexTerm, DbStream1 ),
-     trace,
 	findall( Info, (member(Info,Infos),debuc(bio_db_add_info,'Info term will be removed: ~w', [Info])), _ ),
 	findall( IOpt, (member(Info,Infos),arg(1,Info,IKey),arg(2,Info,IVal),IOpt=..[IKey,IVal]), InfoOpts ),
 	append( InOpts, InfoOpts, Opts ),
@@ -63,6 +62,7 @@ bio_db_add_infos_file( Os, InOpts ) :-
 	findall( atom, between(1,Arity,_), TrmTypes ),
 	add_data_type_get_types( NexTerm, Pname, Arity, DbStream1, DefTypes, TrmTypes, DataTypes ),
 	close( DbStream1 ),
+     trace,
 	DataTypeVal =.. [data_types|DataTypes],
 	atom_concat( Pname, '_info', Iname ),
 	DataTypeInfo =.. [Iname,data_types,DataTypeVal],   % data_types  DONE

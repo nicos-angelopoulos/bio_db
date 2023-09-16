@@ -30,6 +30,7 @@ Opts
 bio_db_add_infos( OsS ) :-
 	en_list( OsS, All ),
 	partition( atomic, All, Oss, Opts ),
+	debuc( bio_db_add_infos, 'Oses: ~w', [Oss] ),
 	maplist( bio_db_add_infos_to(Opts), Oss ).
 
 bio_db_add_infos_to( Opts, Os ) :-

@@ -77,6 +77,8 @@ std_multi_maps_ncbi( Args ) :-
      debuc( Self, wrote, ScnmF ),
      portray_clauses( OGnms, file(GbnmF) ),
      debuc( Self, wrote, GbnmF ),
+     @ pwd(),
+     debuc( bio_db_add_infos ),
      bio_db_add_infos( [ScnmF,GbnmF,source(Url),datetime(DnDt)] ),
      debuc( Self, 'Done: ~w', [bio_db_add_infos/1] ),
      trace,

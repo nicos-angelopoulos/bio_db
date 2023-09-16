@@ -77,8 +77,9 @@ std_multi_maps_ncbi( Args ) :-
      debuc( Self, wrote, ScnmF ),
      portray_clauses( OGnms, file(GbnmF) ),
      debuc( Self, wrote, GbnmF ),
-     trace,
      bio_db_add_infos( [ScnmF,GbnmF,source(Url),datetime(DnDt)] ),
+     debuc( Self, 'Done: ~w', [bio_db_add_infos/1] ),
+     trace,
      link_to_bio_sub( ncbi, ScnmF, org(multi) ),
      link_to_bio_sub( ncbi, GbnmF, org(multi) ),
      working_directory( _, Old ).

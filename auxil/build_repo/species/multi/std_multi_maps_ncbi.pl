@@ -66,6 +66,7 @@ std_multi_maps_ncbi( Args ) :-
      sort( Snms, OSnms ),
      sort( Gnms, OGnms ),
      debuc( Self, length, [sc_names,gb_names]/[OSnms,OGnms] ),
+     trace,
      ScnmF = 'ncbi_mult_taxo_scnm.pl',
      GbnmF = 'ncbi_mult_taxo_gbnm.pl',
      bio_db_dnt_times( ZipF, DnDt, _DnEn ),

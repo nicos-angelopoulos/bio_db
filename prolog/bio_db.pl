@@ -436,7 +436,7 @@ Relation tokens
     genbank common name (NCBI)
 
 The name convention for maps is
-  ==
+==
    ?- hgnc_homs_hgnc_symb( Hgnc, Symb ).
    Hgnc = 1,
    Symb = 'A12M1~withdrawn' ;
@@ -449,18 +449,18 @@ The name convention for maps is
    ?- hgnc_homs_symb_hgnc( 'LMTK3', Hgnc ).
   Hgnc = 19295.
 
-  == 
+== 
 
-  Where the first hgnc corresponds to the source database, the second identifies the first argument of the 
-  map to be the unique identifier field for that database (here a positive integer starting at 1 and with no gaps),
-  The last part of the predicate name corresponds to the second (or all other) argument(s), which here is the unique Symbol 
-  assigned to a gene by HGNC. In the current version of bio_db, all tokens in map filenames are 4 characters long.
-  Map data for predicate Pname from database DB are looked for in DB(Pname.Ext) (see bio_db_paths/0).
-  Extension, Ext, depends on the current bio_db database interface (see bio_db_interface/1), and it is sqlite if
-  the interface is prosqlite and pl otherwise.
+Where the first hgnc corresponds to the source database, the second identifies the first argument of the 
+map to be the unique identifier field for that database (here a positive integer starting at 1 and with no gaps),
+The last part of the predicate name corresponds to the second (or all other) argument(s), which here is the unique Symbol 
+assigned to a gene by HGNC. In the current version of bio_db, all tokens in map filenames are 4 characters long.
+Map data for predicate Pname from database DB are looked for in DB(Pname.Ext) (see bio_db_paths/0).
+Extension, Ext, depends on the current bio_db database interface (see bio_db_interface/1), and it is sqlite if
+the interface is prosqlite and pl otherwise.
 
 The name convention for graphs is 
-  == 
+== 
   ?- strg_homs_edge_symb( Symb1, Symb2, W ).
   S1 = 'A1BG',
   S2 = 'ABAT',
@@ -468,12 +468,12 @@ The name convention for graphs is
   S1 = 'A1BG',
   S2 = 'ABCC6',
   W = 158 .
-  ==
+==
 
 The first part indicates the database and the second one the organism/species. Graph data for predicate Pname from database DB are looked for in
 bio_db_data(graphs/DB/Pname.Ext) (see bio_db_paths/1).
-  Extension, Ext, depends on the current bio_db database interface (see bio_db_interface/1), and it is sqlite if
-  the interface is prosqlite and pl otherwise.
+Extension, Ext, depends on the current bio_db database interface (see bio_db_interface/1), and it is sqlite if
+the interface is prosqlite and pl otherwise.
 
 Bio_db supports four db interfaces: prolog, prosqlite, berkeley and rocks.  The first one is via Prolog fact bases, which is the default. 
 The second is an interface to SQLite via pack(prosqlite) while the third and fourth work with the SWI-Prolog packs bdb and rocksdb.

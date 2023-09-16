@@ -358,79 +358,82 @@ Databases
     Protein-Protein interactions data base
 
   * MGI=mgim
-    mouse specific datasets 
+    Mouse Genome Informatics, mouse specific datasets (last M for marker, their identifier)
 
 For each database a token with the same token means 
 that the field is the unique identifier of the object
 in that database.
 
-Tokens
- * homs
-  colloquial: human
+Organisms
+  * galg
+    Gallus gallus (red junglefowl), colloquial: chicken
 
+  * homs
+    Homo sapiens, colloquial: human
 
-More 
- * musm
-  colloquial: mouse
+  * mult
+    covers multiple organisms, longer form: multi
 
- * galg
-   colloquial: chicken
+  * musm
+    Mus musculus, colloquial: mouse
 
- * symb
-   HGNC gene symbol (short, unique name for genes)
+  * suss
+    Sus scrofa (wild boar or Eurasian boar) colloquial: pig
 
- * name
-   HGNC gene name (long, less standarised version of gene name)
+Relation tokens
+  * symb
+    HGNC gene symbol (short, unique name for genes)
 
- * prev
-   HGNC previous gene symbol
+  * name
+    (HGNC) gene name (long, less standarised version of gene name)
 
- * syno
-   HGNC gene symbol synonym
+  * prev
+    HGNC previous gene symbol
 
+  * syno
+    HGNC gene symbol synonym
 
-And Others
- * ensg 
-   ensembl gene
+  * ensg 
+    ensembl gene
 
- * enst
-   ensembl transcript
+  * enst
+    ensembl transcript
 
- * ensp
-   ensembl protein
+  * ensp
+    ensembl protein
 
- * gonm
-   GO name of a term
+  * gonm
+    GO name of a term
 
- * pros
-   Prosite protein family information
+  * pros
+    Prosite protein family information
 
- * rnuc
-   RNA nucleic sequence ID to HGNC symbol.
+  * rnuc
+    RNA nucleic sequence ID to HGNC symbol.
 
- * unig
-   uniprotein gene id
+  * unig
+    uniprotein gene id
    
- * sprt
-   Swiss-Prot part of Uniprot (high quality, curated)
+  * sprt
+    Swiss-Prot part of Uniprot (high quality, curated)
 
- * trem
-   TrEMBL part of Uniprot (non curated)
+  * trem
+    TrEMBL part of Uniprot (non curated)
 
- * mgim
-   MGI Marker (identifier for Mouse Genome Informatics Markers)
+  * mgim
+    MGI Marker (identifier for Mouse Genome Informatics Markers)
 
- * cgnc
-   Chicken gene nomenclature committee
+  * cgnc
+    Chicken gene nomenclature committee
 
- * taxo
-   taxonomy id (NCBI)
+  * taxo
+    taxonomy id (NCBI)
 
- * scnm
+  * scnm
    scientific names for species (NCBI)
 
- * gbnm
-   genbank common name (NCBI)
+  * gbnm
+    genbank common name (NCBI)
 
 The name convention for maps is
   ==

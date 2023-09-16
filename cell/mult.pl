@@ -5,19 +5,22 @@
 :- use_module(library(lib)).
 
 :- lib( &(bio_db(mult(ncbi))) ).
+:- lib( &(bio_db(mult(vgnc))) ).
 
 /**  bio_db_mult.
 
 Bio_db data sets for predicates that span multiple species token mult.
 
 Databases
-    gene ontology, bio_db_mult_gont/0
   * ncbi
     NCBI,  bio_db_mult_ncbi/0
+  * vgnc
+    VGNC, bio_db_vgnc_
 
 ==
 ?- lib( & bio_db(mult) ).
 ?- lib( & bio_db(mult(ncbi)) ).
+?- lib( & bio_db(mult(vgnc)) ).
 ==
 
 @author nicos angelopoulos

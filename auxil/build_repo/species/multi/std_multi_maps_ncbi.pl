@@ -60,7 +60,7 @@ std_multi_maps_ncbi( Args ) :-
      working_directory( Old, NcbiD ),
      MapsD = maps,
      make_directory_path( MapsD ),
-     @unzip( ZipF, DmpF ),
+     @unzip( '-f', '-o', ZipF, DmpF ),
      % directory_file_path( MapsD, DmpF, ToP ),
      mtx( DmpF, Ntx, sep(0'|) ),
      debuc( Self, dims, names_dump/Ntx ),

@@ -35,6 +35,7 @@ bio_db_add_infos( OsS ) :-
 
 bio_db_add_infos_to( Opts, Os ) :-
 	os_file( Os ),
+	debuc( bio_db_add_infos, 'Found file: ~p', [Os] ),
 	os_ext( pl, Os ),
 	!,
 	bio_db_add_infos_file( Os, Opts ).
@@ -53,6 +54,7 @@ bio_db_add_infos_file( Os, InOpts ) :-
 	% bio_db_pl_info( Os, Pname, Arity, Infos, NexTerm, DbStream1 ),
 	% bio_db:bio_db_pl_info( Os, Pname, Arity, Infos, NexTerm, DbStream1 ),
 	bio_db_pl_info( Os, Pname, Arity, Infos, NexTerm, DbStream1 ),
+     trace,
 	findall( Info, (member(Info,Infos),debuc(bio_db_add_info,'Info term will be removed: ~w', [Info])), _ ),
 	findall( IOpt, (member(Info,Infos),arg(1,Info,IKey),arg(2,Info,IVal),IOpt=..[IKey,IVal]), InfoOpts ),
 	append( InOpts, InfoOpts, Opts ),

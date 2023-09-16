@@ -354,10 +354,10 @@ Databases
   * Uniprot=unip
     Protein database.
 
-  * String 
+  * String=strg
     Protein-Protein interactions data base
 
-  * MGI
+  * MGI=mgim
     mouse specific datasets 
 
 For each database a token with the same token means 
@@ -366,10 +366,12 @@ in that database.
 
 Tokens
  * homs
-   colloquial: human
+  colloquial: human
 
+
+More 
  * musm
-   colloquial: mouse
+  colloquial: mouse
 
  * galg
    colloquial: chicken
@@ -386,6 +388,8 @@ Tokens
  * syno
    HGNC gene symbol synonym
 
+
+And Others
  * ensg 
    ensembl gene
 
@@ -416,8 +420,17 @@ Tokens
  * mgim
    MGI Marker (identifier for Mouse Genome Informatics Markers)
 
-  *cgnc
+ * cgnc
    Chicken gene nomenclature committee
+
+ * taxo
+   taxonomy id (NCBI)
+
+ * scnm
+   scientific names for species (NCBI)
+
+ * gbnm
+   genbank common name (NCBI)
 
 The name convention for maps is
   ==

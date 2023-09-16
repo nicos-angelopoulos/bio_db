@@ -62,7 +62,6 @@ bio_db_add_infos_file( Os, InOpts ) :-
 	findall( atom, between(1,Arity,_), TrmTypes ),
 	add_data_type_get_types( NexTerm, Pname, Arity, DbStream1, DefTypes, TrmTypes, DataTypes ),
 	close( DbStream1 ),
-     trace,
 	DataTypeVal =.. [data_types|DataTypes],
 	atom_concat( Pname, '_info', Iname ),
 	DataTypeInfo =.. [Iname,data_types,DataTypeVal],   % data_types  DONE
@@ -86,13 +85,19 @@ bio_db_add_infos_file( Os, InOpts ) :-
 	( memberchk(header(Hdr),Opts) ->
 		true
 		;
-		( atomic_list_concat( [PType,_,KeyTkn,ValTkn], '_', Pname ) ->
-            true
-            ;
-		    atomic_list_concat( [PType,_,_Org,KeyTkn,ValTkn], '_', Pname )
-        ),
-		bio_add_infos_header_val_tokens( PType, KeyTkn, ValTkn, Arity, AllTkns ),
-		Hdr =.. [row|AllTkns]
+          % fixme: this is difficult to guess
+		atomic_list_concat( [TknDB,TknOrg,PTkn1,CTkn2], '_', Pname ),
+          ( PTKn1 == edge ->
+                    CTkn1 = TknDB
+                    ;
+                    CTkn1 = PTkn1
+          ),
+          % fixme double check Arity is what we think it is (ie arity of relation
+		% atomic_list_concat( [PType,_,_Org,KeyTkn,ValTkn], '_', Pname )
+          DiffAr is Arity - 2,
+          findall( unk, between(1,DiffAr,_), Unkns ),
+          append( [CTkn1|Unkns], [CTkn2], CTkns ),
+		Hdr =.. [row|CTKns]
 	),
 	HeaderInfo =.. [Iname,header,Hdr],			%  header DONE
 
@@ -138,6 +143,7 @@ bio_db_relation_stream_pairs( Term, Pname, Arity, DbS, [K-V|KVs], [K|Ks], [V|Vs]
 	read( DbS, Next ),
 	bio_db_relation_stream_pairs( Next, Pname, Arity, DbS, KVs, Ks, Vs ).
 
+/* These are no longer valid
 bio_add_infos_header_val_tokens( edge, KeyTkn, ValTkn, Arity, Tkns ) :-
 	bio_add_infos_header_val_tokens_edge( Arity, KeyTkn, ValTkn, Tkns ).
 bio_add_infos_header_val_tokens( map, KeyTkn, ValTkn, Arity, [KeyTkn|Tkns] ) :-
@@ -155,3 +161,4 @@ bio_add_infos_header_val_tokens_edge( 2, Key, Val, [Tkn1,Tkn2] ) :-
 bio_add_infos_header_val_tokens_edge( 3, Key, Val, [Tkn1,Tkn2,weight] ) :-
 	atomic_list_concat( [Key,Val,1], '_', Tkn1 ),
 	atomic_list_concat( [Key,Val,2], '_', Tkn2 ).
+*/

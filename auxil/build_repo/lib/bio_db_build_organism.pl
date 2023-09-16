@@ -20,6 +20,7 @@ Human is considered the default organism and returned first.
 bio_db_organism(human).      % defaulty
 bio_db_organism(chicken).    % 2022/12/21
 bio_db_organism(mouse).
+bio_db_organism(multi).      % 2023/09/16
 bio_db_organism(pig).        % 2023/05/31
 
 /* bio_db_organism( ?KnownAs, ?Canon ).
@@ -83,6 +84,7 @@ bio_db_organism( TokenIs, Token, Canon ) :-
 bio_db_organism_token(chicken, galg).
 bio_db_organism_token(human,   homs).
 bio_db_organism_token(mouse,   musm).
+bio_db_organism_token(multi,   mult).
 bio_db_organism_token(pig,     suss).
 
 /** bio_db_organism_alias( ?Alias, -Org ).

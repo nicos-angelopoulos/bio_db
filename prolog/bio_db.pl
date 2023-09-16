@@ -340,6 +340,21 @@ The following
 also loads just the HGNC part of the human section of bio_db, but it is not a 
 recommended way to do so.
 
+Organisms
+  * galg
+    Gallus gallus (red junglefowl), colloquial: chicken
+
+  * homs
+    Homo sapiens, colloquial: human
+
+  * mult
+    covers multiple organisms, longer form: multi
+
+  * musm
+    Mus musculus, colloquial: mouse
+
+  * suss
+    Sus scrofa (wild boar or Eurasian boar) colloquial: pig
 
 Databases
   * Ensembl=ense
@@ -360,27 +375,9 @@ Databases
   * MGI=mgim
     Mouse Genome Informatics, mouse specific datasets (last M for marker, their identifier)
 
-For each database a token with the same token means 
-that the field is the unique identifier of the object
-in that database.
+For each database, a relation token with the same name, maps the field is the unique identifier of that database.
 
-Organisms
-  * galg
-    Gallus gallus (red junglefowl), colloquial: chicken
-
-  * homs
-    Homo sapiens, colloquial: human
-
-  * mult
-    covers multiple organisms, longer form: multi
-
-  * musm
-    Mus musculus, colloquial: mouse
-
-  * suss
-    Sus scrofa (wild boar or Eurasian boar) colloquial: pig
-
-Relation tokens
+Other relation tokens
   * symb
     HGNC gene symbol (short, unique name for genes)
 

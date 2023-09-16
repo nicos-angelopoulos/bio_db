@@ -432,7 +432,7 @@ Other relation tokens
   * gbnm
     genbank common name (NCBI)
 
-The name convention for maps is
+The name convention for map predicates is
 ==
    ?- hgnc_homs_hgnc_symb( Hgnc, Symb ).
    Hgnc = 1,
@@ -448,8 +448,9 @@ The name convention for maps is
 
 == 
 
-Where the first hgnc corresponds to the source database, the second identifies the first argument of the 
-map to be the unique identifier field for that database (here a positive integer starting at 1 and with no gaps),
+Where the first hgnc corresponds to the source database, the second token, homs, identifies the organism,
+the third and fourth tokens are the fields of the map. Above, the second =|hgnc|=
+
 The last part of the predicate name corresponds to the second (or all other) argument(s), which here is the unique Symbol 
 assigned to a gene by HGNC. In the current version of bio_db, all tokens in map filenames are 4 characters long.
 Map data for predicate Pname from database DB are looked for in DB(Pname.Ext) (see bio_db_paths/0).

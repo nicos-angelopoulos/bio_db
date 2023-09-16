@@ -17,3 +17,4 @@ Symb = symb.
 */
 
 cnm_token(symbol, _, symb).
+cnm_token(vgnc_id, _, vgnc).

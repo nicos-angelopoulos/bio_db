@@ -156,6 +156,13 @@ bio_db_organism( TokenIs, Token, Canon ) :-
     ( Backtrack == false -> !; true ),
     Token = TokenIs.
 
+bio_db_organism_known( A, T, O ) :-
+     bio_db_organism( A, T, O ),
+     !.
+bio_db_organism_known( A, T, O ) :-
+     throw( un_known(bio_db_organism(A,T,O)) ).
+     
+
 bio_db_organism_token(chicken, galg).
 bio_db_organism_token(human,   homs).
 bio_db_organism_token(mouse,   musm).

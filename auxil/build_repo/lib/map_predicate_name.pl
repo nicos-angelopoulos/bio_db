@@ -26,12 +26,12 @@ map_predicate_name_defaults( [db(hgnc),org(homs)] ).
 map_predicate_name( Comp1, Comp2, Pname, Args ) :-
      Self = map_predicate_name,
      options_append( Self, Args, Opts ),
-     map_predicate_name_opts( Self, Comp1, Comp2, Pname, Opts ).
+     map_predicate_name_opts( Comp1, Comp2, Pname, Opts ).
 
 map_predicate_name_opts( _Cnm1, _Cnm2, Pname, Opts ) :-
 	memberchk( predicate(Pname), Opts ),
 	!.
-map_predicate_name( Comp1, Comp2, Pname, Opts ) :-
+map_predicate_name_opts( Comp1, Comp2, Pname, Opts ) :-
 	map_predicate_name_token( Comp1, Tkn1 ),
 	map_predicate_name_token( Comp2, Tkn2 ),
      options( org(OrgIn), Opts ),

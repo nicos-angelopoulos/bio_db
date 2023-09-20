@@ -84,6 +84,7 @@ Human is considered the default organism and returned first.
 Org = human ;
 Org = chicken ;
 Org = mouse ;
+Org = multi ;
 Org = pig.
 ==
 
@@ -97,8 +98,8 @@ Org = pig.
 bio_db_organism(human).      % defaulty
 bio_db_organism(chicken).    % 2022/12/21
 bio_db_organism(mouse).
-bio_db_organism(pig).        % 2023/6/2
 bio_db_organism(multi).      % 2023/9/15
+bio_db_organism(pig).        % 2023/6/2
 
 /** bio_db_organism(?KnownAs, ?Canon).
     bio_db_organism(?Known, ?Token, ?Canon).
@@ -556,6 +557,7 @@ Thanks to Jan Wielemaker for a retractall fix and for code for fast loading of p
 @version  3:6 2021/12/04,  fixed pack_errors and map_ense_mouse_enst_chrl/5; bio_db_stats.pl version  0.2
 @version  4:1 2022/12/29,  huge re-config of data predicate names + reac-tome (maps) + chicken
 @version  4:2 2023/06/06,  support for pig
+@version  4:3 2023/09/22,  mult for multi organisms; vgnc database; ncbi taxonomy db
 @see doc/Releases.txt      for version details
 @see bio_db_data_predicate/4 for a way to enumerate all data predicates
 @see cell/ for the definitions of the data predicates

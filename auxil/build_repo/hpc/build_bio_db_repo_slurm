@@ -1,5 +1,10 @@
 #!/bin/bash
 
+## customise to your own set-up 
+
+OUTS_DIR=${HOME}/aurochs/clust/outs/
+PACKS_DIR=/mnt/lustre/RDS-ephemeral/angelopoulos/local.home/src/packs/
+
 ## an attemt to build the bio_db_repo(sitory) on the cluster
 ## run this with: sbatch build_bio_db_repo
 ## check queue with squeue
@@ -7,11 +12,11 @@
 ## this script builds bio_db_repo at ...fixme: 
 
 ## Resource Request
-#SBATCH --job-name=build_bio_db_repo
+#SBATCH --job-name=build_bio_db_repo_slurm
 ## %j is job number, %x is the job name above
-#SBATCH --output=/mnt/lustre/RDS-live/angelopoulos/aurochs/clust/outs/out-%x-%j.txt
-## 12 hours
-#SBATCH --time=1-12:00:00
+#SBATCH --output=${OUTS_DIR}/out-%x-%j.txt
+## 6 hours
+#SBATCH --time=1-6:00:00
 #SBATCH --ntasks=1
 ## fixme: test against 1
 #SBATCH --cpus-per-task=8
@@ -22,17 +27,7 @@
 echo "Starting: in sbatch we asked for 8 threads and 128G mem"
 echo `date`
 echo $PATH
-## srun echo "echo LD_LIBRARY_PATH"
-## srun echo $LD_LIBRARY_PATH
-## srun echo "ls /cm/shared/apps/slurm/current/lib64/slurm"
-## srun ls /cm/shared/apps/slurm/current/lib64/slurm
-## srun echo "ls /cm/shared/apps/slurm/current/lib64"
-## srun ls /cm/shared/apps/slurm/current/lib64
-## cd /mnt/lustre/RDS-live/angelopoulos/local/src/swipl-devel
-## LD_LIBRARY_PATH=/mnt/lustre/RDS-live/angelopoulos/local/lib/:$LD_LIBRARY_PATH
-## srun echo "echo LD_LIBRARY_PATH"
-## srun echo $LD_LIBRARY_PATH
-cd /mnt/lustre/RDS-ephemeral/angelopoulos/local.home/src/packs/bio_db
+cd ${PACKS_DIR}/bio_db
 git pull
 cd auxil/build_repo/species
 

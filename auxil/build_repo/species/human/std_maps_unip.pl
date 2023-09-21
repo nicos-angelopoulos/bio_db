@@ -143,7 +143,7 @@ std_maps_unip( Args ) :-
  	link_to_bio_sub(unip, 'unip_homs_trem_nucs.pl' ),
 
 	TrOpts = [source(TremUrl),datetime(TrDnDt),header(row('treMBLE Protein','Nucleotide Sequence'))],
-	bio_db_add_infos_to( TrOpts, unip_homs_trem_nucs.pl ),
+	bio_db_add_infos_to( TrOpts, 'unip_homs_trem_nucs.pl' ),
 
 	% run this manually, it is a biggie: 
 	% uniprot_sprot.dat is 2.9 G

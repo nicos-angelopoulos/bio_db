@@ -230,9 +230,10 @@ std_graphs_string_version_base_name( VersionPrv, Bname, InfoBname, Remote, InfoR
     atomic_list_concat( [DnldBaseUrl,'protein.links.v',Version,'/',Bname], Remote ),
     % 10/9606.protein.links.v10.txt.gz
     % 9031.protein.info.v11.5.txt
-    InfoPfx = 'https://stringdb-static.org/download/protein.info.v',
-    atom_concat( InfoPfx, Version, InfoRemoteDir ),
+    % InfoPfx = 'https://stringdb-static.org/download/protein.info.v',
+    % atom_concat( InfoPfx, Version, InfoRemoteDir ),
     atomic_list_concat( [9031,protein,info,Vied,txt,gz], '.', InfoBname ),
+    atomic_list_concat( [DnldBaseUrl,'protein.info.v',Version,'/',InfoBname], Remote ),
     directory_file_path( InfoRemoteDir, InfoBname, InfoRemote ).
 
 de_gallus( row(MousEnsP1,MousEnsP2,WAtm), row(EnsP1,EnsP2,W) ) :-

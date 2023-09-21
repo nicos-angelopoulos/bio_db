@@ -14,7 +14,7 @@
 :- lib(options).
 :- lib(stoics_lib:message_report/3).
 :- lib(stoics_lib:portray_clauses/2).
-:- lib(stoics_lib:url_file/3).
+:- lib(url_file_local_date_mirror/3).
 
 % also sets lib alias to that dir
 :- ensure_loaded( '../../lib/bio_db_build_aliases' ).  % /1.
@@ -228,6 +228,7 @@ std_graph_string_download_string( LocalFile, _From, _Verb, Self ) :-
 std_graph_string_download_string( Local, Remote, Verb, Self ) :-
     debuc( Self, 'Downloading from: ~p', Remote ),
     url_file( Remote, Local, [dnt(true),iface(wget),verb(Verb)] ),
+    url_file_local_date_mirror( Remote, Local, [dnt(true),iface(wget),verb(Verb)] ),
     debuc( Self, '... to local file: ~p', Local ).
 
 std_graphs_string_version_base_name( VersionPrv, Bname, InfoBname, Remote, InfoRemote ) :-
@@ -242,8 +243,7 @@ std_graphs_string_version_base_name( VersionPrv, Bname, InfoBname, Remote, InfoR
     % InfoPfx = 'https://stringdb-static.org/download/protein.info.v',
     % atom_concat( InfoPfx, Version, InfoRemoteDir ),
     atomic_list_concat( [9031,protein,info,Vied,txt,gz], '.', InfoBname ),
-    atomic_list_concat( [DnldBaseUrl,'protein.info.v',Version,'/',InfoBname], InfoRemoteDir ),
-    directory_file_path( InfoRemoteDir, InfoBname, InfoRemote ).
+    atomic_list_concat( [DnldBaseUrl,'protein.info.v',Version,'/',InfoBname], InfoRemote ).
 
 de_gallus( row(MousEnsP1,MousEnsP2,WAtm), row(EnsP1,EnsP2,W) ) :-
     atom_concat( '9031.', EnsP1, MousEnsP1 ),

@@ -24,7 +24,7 @@
 :- set_prolog_flag(allow_dot_in_atom, false).   % for portaying correctly
 
 std_repo_defaults( [   debug(true),
-                       iactive(true)
+                       iactive(true),
                        in_subs(true)
                    ] ).
 
@@ -85,7 +85,7 @@ std_repo( Args ) :-
     debuc( Self, 'Subs in download dir: ~p', [DnSubs] ),
     options( iactive(Iact), Opts ),
     options( in_subs(InSubs), Opts ),
-    atomic_list_concat( [iactive,Icat], '=', Uact ),
+    atomic_list_concat( [iactive,Iact], '=', Uact ),
     std_repo_subs( DnSubs, Iact, InSubs, Uact, Work+BioDbDir+BioDb, Opts ).
 
 std_repo_subs( [], Iact, InSubs, Uact, Dirs, Opts ) :-

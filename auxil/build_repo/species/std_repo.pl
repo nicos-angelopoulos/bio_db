@@ -20,12 +20,13 @@
 % local libs & sources
 :- ensure_loaded( '../../lib/bio_db_repo_info.pl' ).
 
-:- debuc(std_repo).
-:- debuc(by_unix).  % fixme: temporary ?
 
 :- set_prolog_flag(allow_dot_in_atom, false).   % for portaying correctly
 
-std_repo_defaults( [] ).
+std_repo_defaults( [   debug(true),
+                       iactive(true)
+                       in_subs(true)
+                   ] ).
 
 /** std_repo( Opts ).
 
@@ -41,6 +42,14 @@ Running with options is still experimental and in theory you can force the scrip
 on a directory with a previous time stamp. Opts are passed through to the children scripts.
 
 This scripts have been build and (currently only) tested on Linux OS.
+
+Opts
+  * debug(Dbg=true)
+    informational, progress messages
+  * iactive(Iact=true)
+    whether this is an interactive invocation
+  * in_subs(InSubs=true)
+    when =|Iact==false|=, this is used as the user input, in order to descent to subs or not
 
 ==
 % date
@@ -59,7 +68,8 @@ Thu 10 Sep 19:34:38 BST 2020
 */
 std_repo( Args ) :-
     Self = std_repo,
-    options_append( std_repo, Args, Opts ),
+    options_append( std_repo, Args, Opts ),  % deals with debug()
+    ( options(debug(false),Opts) -> true ; debuc(by_unix) ),
     bio_db_build_aliases( Opts ),
     absolute_file_name( bio_db_build_downloads('.'), DnDir ),
     debuc( Self, start, true ),
@@ -73,23 +83,33 @@ std_repo( Args ) :-
                DnSubs = []
     ),
     debuc( Self, 'Subs in download dir: ~p', [DnSubs] ),
-    std_repo_subs( DnSubs, Work+BioDbDir+BioDb, Opts ).
+    options( iactive(Iact), Opts ),
+    options( in_subs(InSubs), Opts ),
+    std_repo_subs( DnSubs, Iact, InSubs, Work+BioDbDir+BioDb, Opts ).
 
-std_repo_subs( [], Dirs, Opts ) :-
+std_repo_subs( [], Iact, InSubs, Dirs, Opts ) :-
     !,
     debuc( std_repo, 'Downloads dir has no sub dirs.', [] ),
     ensure_loaded( pack('bio_db/src/lib/ui_yes_no') ),
     findall( StdSub, (os_dir(StdSub),StdSub\==lib), StdSubs ),
     Mess = 'Do you want me to run standards in subs: ~w',
-    ui_yes_no( true, Mess, [StdSubs], y, Reply ),
-    std_repo_subs_reply( Reply, StdSubs, Dirs, true, Opts ).
-std_repo_subs( [H|T], Dirs, Opts ) :-
+    ( Iact == false ->
+          ( InSubs == false -> Reply = false; Reply = true )
+          ;
+          ui_yes_no( true, Mess, [StdSubs], y, Reply )
+    ),
+    std_repo_subs_reply( Reply, Iact, InSubs, StdSubs, Dirs, true, Opts ).
+std_repo_subs( [H|T], Iact, InSubs, Dirs, Opts ) :-
     debuc( std_repo, 'Some sub-dirs exist: ~w', [[H|T]] ),
     ensure_loaded( pack('bio_db/src/lib/ui_yes_no') ),
     findall( StdSub, (os_dir(StdSub),StdSub\==lib), StdSubs ),
     Mess = 'Do you want me to run standards in subs: ~w',
-    ui_yes_no( true, Mess, [StdSubs], y, Reply ),
     Alt = std_repo_create( Dirs, Opts ),
+    ( Iact == false ->
+          ( InSubs == false -> Reply = false; Reply = true )
+          ;
+          ui_yes_no( true, Mess, [StdSubs], y, Reply )
+    ),
     std_repo_subs_reply( Reply, StdSubs, Dirs, Alt, Opts ).
 
 std_repo_subs_reply( true, Subs, Dirs, _Alt, Opts ) :-

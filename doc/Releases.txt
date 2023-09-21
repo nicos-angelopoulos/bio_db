@@ -18,6 +18,7 @@ TBD:
       23.09.21    BUILD:   begin gathering the base urls into auxil/build_repo/lib/bio_db_source_base_url/2
                   SCRIPT:  auxil/build_repo/hpc/build_bio_db_repo_slurm
                   OPTS:    verb(Verb) in url_file_local_date_mirror
+                  OPTS:    iactive(Iact=false) and in_subs(InSubs=true) for hpc and non supervised running
       23.09.20    CELL:    cell/multi for multi-species preds
                   BioDB:   vgnc, multi + pig
                   BioDB:   NCBI taxonomy

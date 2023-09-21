@@ -12,8 +12,7 @@
 :- lib(stoics_lib:date_two_digit_dotted/1).
 :- lib(stoics_lib:datime_two_digit_dotted/1).
 
-url_file_local_date_mirror_defaults( [ 
-                                        date(postfix), 
+url_file_local_date_mirror_defaults( [  date(postfix), 
                                         debug(false),
                                         file(_), 
                                         interface(prolog),
@@ -140,7 +139,7 @@ url_interface_file( prolog, Url, _Verb, LocP ) :-
     url_file( Url, LocP, dnt(true) ).
 url_interface_file( wget, Url, Verb, LocP ) :-
     url_interface_file_wget_verbosity( Verb, Vf ),
-    @ wget( Url, '-O', Vf, LocP ).
+    @ wget( Url, Vf, '-O', LocP ).
 
 url_interface_file_wget_verbosity( true, '--verbose' ).
 url_interface_file_wget_verbosity( false, '--no-verbose' ).

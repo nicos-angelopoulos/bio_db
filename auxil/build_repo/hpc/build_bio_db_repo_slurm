@@ -9,7 +9,7 @@
 ## Resource Request
 #SBATCH --job-name=build_bio_db_repo_slurm
 ## %j is job number, %x is the job name above
-#SBATCH --output=/mnt/lustre/RDS-live/angelopoulos/aurochs/clust/outs/%j-%x-outs.txt
+#SBATCH --output=/mnt/lustre/RDS-live/angelopoulos/aurochs/clust/outs/%x-%j-outs.txt
 ## 6 hours
 #SBATCH --time=1-6:00:00
 #SBATCH --ntasks=1

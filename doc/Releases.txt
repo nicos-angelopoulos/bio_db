@@ -13,6 +13,7 @@ TBD:
                   (map_ense_mouse_enst_chrl/5 was opening map_ense_enst_chrl/5).
 
 4.3   
+      23.09.21    BUILD:   begin gathering the base urls into auxil/build_repo/lib/bio_db_source_base_url/2
       23.09.20    CELL:    cell/multi for multi-species preds
                   BioDB:   vgnc, multi + pig
                   BioDB:   NCBI taxonomy

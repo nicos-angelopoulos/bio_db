@@ -25,6 +25,7 @@
 :- lib(bio_db_add_infos/1).     % bio_db_add_infos_to/2.
 :- lib(std_graphs_strg_auto_version/1).
 :- lib(portray_informed_clauses/4).
+:- lib(bio_db_source_base_url/2).
 
 :- debuc(by_unix).
 :- debuc(std_graphs_strg). % fixme:
@@ -223,11 +224,10 @@ std_graph_string_download_string( Local, Remote, Self ) :-
 std_graphs_string_version_base_name( VersionPrv, Bname, InfoBname, Remote, InfoRemote ) :-
     ( atom_concat(v,Version,VersionPrv)->true;Version=VersionPrv ),
     atom_concat( v, Version, Vied ),
-    % Pfx = 'http://string-db.org/newstring_download/protein.links.v',
-    Pfx = 'https://string-db.org/download/protein.links.v',
-    atom_concat( Pfx, Version, RemoteDir ),
+    % Pfx = 'https://string-db.org/download/protein.links.v',
+    bio_db_source_base_url( string, DnldBaseUrl ),
     atomic_list_concat( [9031,protein,links,Vied,txt,gz], '.', Bname ),
-    directory_file_path( RemoteDir, Bname, Remote ),
+    atomic_list_concat( [DnlBaseUrl,'protein.links.v',Version,'/',Bname], Remote ),
     % 10/9606.protein.links.v10.txt.gz
     % 9031.protein.info.v11.5.txt
     InfoPfx = 'https://stringdb-static.org/download/protein.info.v',

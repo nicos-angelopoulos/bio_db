@@ -180,7 +180,7 @@ mgim_get_report( Which, Self, Url, DnDir, RelF, Mtx, DntStamp ) :-
     % atomic_list_concat( [Base,'/MRK_',Stem,'.rpt'], Url ),
     atomic_list_concat( [Base,'/',Stem,'.rpt'], Url ),
     mgim_dnload_dir( DnDir ),
-	UrlOpts = [debug(true),interface(wget),file(RelF),dnt_stamp(DntStamp)],
+    UrlOpts = [debug(true),interface(wget),file(RelF),dnt_stamp(DntStamp)],
     url_file_local_date_mirror( Url, DnDir, UrlOpts ),
     os_path( DnDir, RelF, AbsF ),
     mtx( AbsF, Mtx, sep(tab) ),

@@ -12,10 +12,17 @@
 :- lib(stoics_lib:date_two_digit_dotted/1).
 :- lib(stoics_lib:datime_two_digit_dotted/1).
 
-url_file_local_date_mirror_defaults( [  date(postfix),file(_), 
-                                        make_path(true), link_stem(true),
-                                        replace_todays(false), interface(prolog),
-                                        stamp(date),ext(_),record_time(true), debug(false)
+url_file_local_date_mirror_defaults( [ 
+                                        date(postfix), 
+                                        debug(false),
+                                        file(_), 
+                                        interface(prolog),
+                                        link_stem(true),
+                                        make_path(true), 
+                                        replace_todays(false), 
+                                        stamp(date),ext(_),
+                                        record_time(true), 
+                                        verb(true)
                                      ] ).
 
 %% url_file_local_date_mirror( +Url, +LocalD ).
@@ -30,6 +37,9 @@ url_file_local_date_mirror_defaults( [  date(postfix),file(_),
 %  Opts, a term or list of the following
 %  * date(postfix)    
 %    or prefix if date stamp is prefered before the stem (then LocF = Date-Basename)
+%
+%  * dnt_stamp(DntStamp)
+%    returns the download stamp recorded in .dnt (the existing if nothing was downloaded)
 %
 %  * ext(Ext)
 %    insist Ext is the extension of the file. that allows you to strip tar.gz as an extension, but make sure
@@ -56,8 +66,8 @@ url_file_local_date_mirror_defaults( [  date(postfix),file(_),
 %  * stamp(Stamp=date)
 %      or datetime if you want to include time (up to and including minutes)
 %  
-%  * dnt_stamp(DntStamp)
-%    returns the download stamp recorded in .dnt (the existing if nothing was downloaded)
+%  * verb(Verb=true)
+%      only implemented for wget currently. Alt values =false= (alias =no=) and =quiet= (stricter)
 %
 %==
 % ?- debug(url_file_local_date_mirror).
@@ -95,10 +105,11 @@ url_file_local_date_mirror( Url, LocalD, Args ) :-
     os_ext( dnt, LocP, LocDt ),
     options( replace_todays(Repl), Opts ),
     options( interface(Iface), Opts ),
-    url_file_replace( Repl, Url, LocD, LocP, LocDt, Iface, RemB, Self, DntStamp ),
+    options( verb(Verb), Opts ),
+    url_file_replace( Repl, Url, LocD, LocP, LocDt, Iface, Verb, RemB, Self, DntStamp ),
     ( memberchk(dnt_stamp(DntStamp),Opts) -> true; true ).
 
-url_file_replace( false, Url, _LocD, LocP, LocDt, _Iface, _RemB, _Self, DtStamp ) :-
+url_file_replace( false, Url, _LocD, LocP, LocDt, _Iface, _Verb, _RemB, _Self, DtStamp ) :-
     exists_file( LocP ),
     !,
     open( LocDt, read, DtStream ),
@@ -106,11 +117,10 @@ url_file_replace( false, Url, _LocD, LocP, LocDt, _Iface, _RemB, _Self, DtStamp 
     close( DtStream ),
     % fixme: non debug
     debuc( _, 'File with today\'s date exists: ~p, so skipping download of:~p.', [LocP,Url] ).
-url_file_replace( _, Url, LocD, LocP, LocDt, Iface, RemB, Self, BefStamp ) :-
+url_file_replace( _, Url, LocD, LocP, LocDt, Iface, Verb, RemB, Self, BefStamp ) :-
     debug_chain( Self, url_file, UfPrior ),
-  
     get_datetime( BefStamp ),
-    url_interface_file( Iface, Url, LocP ),
+    url_interface_file( Iface, Url, Verb, LocP ),
     get_datetime( AftStamp ),
     debug_set( UfPrior, url_file ),
     debuc( Self, 'Downloaded url: ~p, to local: ~p', [Url,LocP] ),
@@ -126,10 +136,16 @@ url_file_replace( _, Url, LocD, LocP, LocDt, Iface, RemB, Self, BefStamp ) :-
     % repoint_link( LnkP, LocP ),
     debug_set( RlPrior, os_repoint ).
 
-url_interface_file( prolog, Url, LocP ) :-
+url_interface_file( prolog, Url, _Verb, LocP ) :-
     url_file( Url, LocP, dnt(true) ).
-url_interface_file( wget, Url, LocP ) :-
-    @ wget( Url, '-O', LocP ).
+url_interface_file( wget, Url, Verb, LocP ) :-
+    url_interface_file_wget_verbosity( Verb, Vf ),
+    @ wget( Url, '-O', Vf, LocP ).
+
+url_interface_file_wget_verbosity( true, '--verbose' ).
+url_interface_file_wget_verbosity( false, '--no-verbose' ).
+url_interface_file_wget_verbosity( no, '--no-verbose' ).
+url_interface_file_wget_verbosity( quiet, '--quiet' ).
 
 url_file_local_date_mirror_local_file_name( LocB, Opts, RemB, Self, Ext ) :-
     var( LocB ),

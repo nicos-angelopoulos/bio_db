@@ -12,9 +12,12 @@ TBD:
          21.12.03 make sure existing handles are checked before opening another handle to same predicate 
                   (map_ense_mouse_enst_chrl/5 was opening map_ense_enst_chrl/5).
 
+
+
 4.3   
       23.09.21    BUILD:   begin gathering the base urls into auxil/build_repo/lib/bio_db_source_base_url/2
                   SCRIPT:  auxil/build_repo/hpc/build_bio_db_repo_slurm
+                  OPTS:    verb(Verb) in url_file_local_date_mirror
       23.09.20    CELL:    cell/multi for multi-species preds
                   BioDB:   vgnc, multi + pig
                   BioDB:   NCBI taxonomy

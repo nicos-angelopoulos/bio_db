@@ -14,7 +14,7 @@ PACKS_DIR=/mnt/lustre/RDS-ephemeral/angelopoulos/local.home/src/packs/
 ## Resource Request
 #SBATCH --job-name=build_bio_db_repo_slurm
 ## %j is job number, %x is the job name above
-#SBATCH --output=${OUTS_DIR}/out-%x-%j.txt
+#SBATCH --output=${OUTS_DIR}/%j-%x-outs.txt
 ## 6 hours
 #SBATCH --time=1-6:00:00
 #SBATCH --ntasks=1

@@ -227,7 +227,7 @@ std_graph_string_download_string( LocalFile, _From, _Verb, Self ) :-
     !.
 std_graph_string_download_string( Local, Remote, Verb, Self ) :-
     debuc( Self, 'Downloading from: ~p', Remote ),
-    url_file( Remote, Local, [dnt(true),iface(wget),verb(Verb)] ),
+    % url_file( Remote, Local, [dnt(true),iface(wget),verb(Verb)] ),
     url_file_local_date_mirror( Remote, Local, [dnt(true),iface(wget),verb(Verb)] ),
     debuc( Self, '... to local file: ~p', Local ).
 

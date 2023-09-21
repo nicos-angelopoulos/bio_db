@@ -11,7 +11,6 @@
 :- lib(options).
 :- lib(stoics_lib:at_con/3).
 :- lib(stoics_lib:portray_clauses/2).
-% :- lib(stoics_lib:url_file/3).
 :- lib(stoics_lib:io_lines/2).
 
 % also sets lib alias that dir
@@ -232,7 +231,6 @@ cgnc_download_file( true, Self, Verb, Url, Dst, Opts ) :-
      Url = 'http://birdgenenames.org/cgnc/downloads.jsp?file=standard',
      options( dir(Dir), Opts ),
      url_file_local_date_mirror( Url, Dir, [file(Dst),date(prefix),interface(wget),verb(Verb)|Opts] ),
-     % url_file( Url, Dst, [dnt(true)|Opts] ),
      cgnc_download_file_fix( Self, Dst ).
 cgnc_download_file( false, Self, _Verb, Url, Dst, _Opts ) :-
      debuc( Self, 'Asked not to download: ~p', [Dst] ),

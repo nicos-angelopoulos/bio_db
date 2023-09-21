@@ -86,7 +86,6 @@ std_chicken_maps_unip( Args ) :-
      /* double check unip part works with the nucl part // 15.05.15 */
      working_directory( Old, DnDir ),
      unip_chicken( Url ),
-     % url_file( Url, 
     ( options(iactive(false),Opts) -> WgVerb=false; WgVerb=true ),
      UrlOpts = [debug(true),interface(wget),file(File),verb(WgVerb)],
      url_file_local_date_mirror( Url, DnDir, UrlOpts ),

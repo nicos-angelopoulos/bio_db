@@ -1,3 +1,6 @@
+
+:- set_prolog_flag(stack_limit, 17_179_869_184). % cluster complains
+
 :- use_module(library(lists)).      % member/2.
 :- use_module(library(apply)).      % maplist/3.
 :- use_module(library(readutil)).   % read_line_to_codes/2.

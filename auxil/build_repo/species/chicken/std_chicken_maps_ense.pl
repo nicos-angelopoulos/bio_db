@@ -22,7 +22,10 @@
 :- lib(bio_db_add_infos/1).   % bio_db_add_infos_to/2
 :- lib(link_to_bio_sub/3).
 
-std_chicken_maps_ense_defaults(debug(true)).
+std_chicken_maps_ense_defaults( [ debug(true),
+                                  iactive(true)
+                                ]
+                              ).
 
 /** std_chicken_maps_ense( +Opts ).
 
@@ -35,6 +38,11 @@ Currently only gene symbols, but as per human it should be trivial to do sequenc
 
   * ense: the database abbv.
 
+Opts
+  * debug(Dbg=true)
+    progress, informational messages
+  * iactive(Iact=true)
+    whether the session is interactive, otherwise wget gets --no-verbose
 ==
 ?- std_chicken_maps_ense([]).
 
@@ -72,7 +80,8 @@ std_chicken_maps_ense( Tkn, EnsDir, Args ) :-
     % Mus_musculus.GRCm39.108.gtf.gz
     std_gallus_ense_gtf_file( Tkn, Found, MsGtfF ),
     atom_concat( FtpDir, MsGtfF, Url ),
-    url_file_local_date_mirror( Url, DnDir, [file(File),interface(wget)] ),
+    ( options(iactive(false),Opts) -> WgVerb=false; WgVerb=true ),
+    url_file_local_date_mirror( Url, DnDir, [file(File),interface(wget),verb(WgVerb)] ),
     debuc( Self, 'Dnload done, file is: ~p', File ),
     working_directory( Old, DnDir ),
     bio_db_dnt_times( File, DnDt, _DnEn ),

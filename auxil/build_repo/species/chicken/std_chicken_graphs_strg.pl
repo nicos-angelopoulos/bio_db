@@ -30,7 +30,7 @@
 :- debuc(by_unix).
 :- debuc(std_graphs_strg). % fixme:
 
-std_chicken_graphs_strg_defaults( [debug(true)|T] ) :-
+std_chicken_graphs_strg_defaults( [debug(true),iactive(true)|T] ) :-
     ( std_graphs_strg_auto_version(Vers) -> % let options/2 do the erroring
                                             % because user might provide it
         T = [string_version(Vers)]
@@ -44,6 +44,14 @@ std_chicken_graphs_strg_defaults( [debug(true)|T] ) :-
 /** std_chicken_graphs_strg(+Opts).
 
 String graphs and a map for chicken products.
+
+Opts
+  * debug(Dbg=true)
+    informational, progress messages
+  * iactive(Iact=true)
+    whether the session is interactive, otherwise wget gets --no-verbose
+  * string_version(Vers)
+    default is collected by visiting the STRING web-page
 
 ==
 ?- std_chicken_graphs_str([]).
@@ -78,7 +86,8 @@ std_chicken_graphs_strg( Args ) :-
     % directory_file_path( Parent, _BnameAgain, LocalFile ),
     directory_file_path( Parent, Bname, LocalFile ),
     os_make_path( Parent, debug(true) ),
-    std_graph_string_download_string( LocalFile, From, Self ),
+    ( options(iactive(false),Opts) -> WgVerb=false; WgVerb=true ),
+    std_graph_string_download_string( LocalFile, From, WgVerb, Self ),
     working_directory( Here, Parent ),
     @ gunzip( -k, Bname ),  % keeps .gz file
     % @ gunzip( '9606.protein.links.v10.txt.gz' ),
@@ -102,7 +111,7 @@ std_chicken_graphs_strg( Args ) :-
      
     % info file connect protein to SYmbol
     directory_file_path( Parent, InfoBname, LocalInfoFile ),
-    std_graph_string_download_string( LocalInfoFile, InfoFrom, Self ),
+    std_graph_string_download_string( LocalInfoFile, InfoFrom, WgVerb, Self ),
     @ gunzip( -k, InfoBname ),  % keeps .gz file
     % Map = map_strg_gallus_ensp_symb,
     Map = strg_galg_ensp_symb,
@@ -212,13 +221,13 @@ sort_four( X, Y, A, B ) :-
     A = Y, B = X.
 sort_four( A, B, A, B ).
 
-std_graph_string_download_string( LocalFile, _From, Self ) :-
+std_graph_string_download_string( LocalFile, _From, _Verb, Self ) :-
     exists_file( LocalFile ),
     debuc( Self, 'Using existing local string file: ~p', LocalFile ),
     !.
-std_graph_string_download_string( Local, Remote, Self ) :-
+std_graph_string_download_string( Local, Remote, Verb, Self ) :-
     debuc( Self, 'Downloading from: ~p', Remote ),
-    url_file( Remote, Local, [dnt(true),iface(wget)] ),
+    url_file( Remote, Local, [dnt(true),iface(wget),verb(Verb)] ),
     debuc( Self, '... to local file: ~p', Local ).
 
 std_graphs_string_version_base_name( VersionPrv, Bname, InfoBname, Remote, InfoRemote ) :-

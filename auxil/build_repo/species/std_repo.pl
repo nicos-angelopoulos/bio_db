@@ -85,9 +85,10 @@ std_repo( Args ) :-
     debuc( Self, 'Subs in download dir: ~p', [DnSubs] ),
     options( iactive(Iact), Opts ),
     options( in_subs(InSubs), Opts ),
-    std_repo_subs( DnSubs, Iact, InSubs, Work+BioDbDir+BioDb, Opts ).
+    atomic_list_concat( [iactive,Icat], '=', Uact ),
+    std_repo_subs( DnSubs, Iact, InSubs, Uact, Work+BioDbDir+BioDb, Opts ).
 
-std_repo_subs( [], Iact, InSubs, Dirs, Opts ) :-
+std_repo_subs( [], Iact, InSubs, Uact, Dirs, Opts ) :-
     !,
     debuc( std_repo, 'Downloads dir has no sub dirs.', [] ),
     ensure_loaded( pack('bio_db/src/lib/ui_yes_no') ),
@@ -98,8 +99,8 @@ std_repo_subs( [], Iact, InSubs, Dirs, Opts ) :-
           ;
           ui_yes_no( true, Mess, [StdSubs], y, Reply )
     ),
-    std_repo_subs_reply( Reply, Iact, InSubs, StdSubs, Dirs, true, Opts ).
-std_repo_subs( [H|T], Iact, InSubs, Dirs, Opts ) :-
+    std_repo_subs_reply( Reply, Uact, StdSubs, Dirs, true, Opts ).
+std_repo_subs( [H|T], Iact, InSubs, Uact, Dirs, Opts ) :-
     debuc( std_repo, 'Some sub-dirs exist: ~w', [[H|T]] ),
     ensure_loaded( pack('bio_db/src/lib/ui_yes_no') ),
     findall( StdSub, (os_dir(StdSub),StdSub\==lib), StdSubs ),
@@ -110,23 +111,23 @@ std_repo_subs( [H|T], Iact, InSubs, Dirs, Opts ) :-
           ;
           ui_yes_no( true, Mess, [StdSubs], y, Reply )
     ),
-    std_repo_subs_reply( Reply, StdSubs, Dirs, Alt, Opts ).
+    std_repo_subs_reply( Reply, Uact, StdSubs, Dirs, Alt, Opts ).
 
-std_repo_subs_reply( true, Subs, Dirs, _Alt, Opts ) :-
+std_repo_subs_reply( true, Uact, Subs, Dirs, _Alt, Opts ) :-
     findall( pass(Pass), member(pass(Pass),Opts), Passes ),
-    map_list_options( std_sub, Subs, [call_options(Passes)|Opts] ),
+    map_list_options( std_sub(Uact), Subs, [call_options(Passes)|Opts] ),
     std_repo_create( Dirs, Opts ).
-std_repo_subs_reply( false, _Subs, _Dirs, Alt, _Opts ) :-
-    % ??? debug-write something here ?
+std_repo_subs_reply( false, _Uact, _Subs, _Dirs, Alt, _Opts ) :-
+    % fixme: debug-write something here ?
     % true.
     call( Alt ).
 
-std_sub( Sub, Opts ) :-
+std_sub( Uact, Sub, Opts ) :-
     working_directory( Old, Sub ),
     atomic_list_concat( [std,Sub], '_', StdSub ),
     maplist( opt_pl_cline, Opts, Crgs ),
     % Upsh =.. [upsh,StdSub,p,' - '|Crgs],
-    Upsh =.. [upsh,StdSub,p|Crgs],
+    Upsh =.. [upsh,StdSub,p,Uact|Crgs],
     % @ upsh( StdSub ),
     debuc( std_repo, 'Top level is shelling: ~w', Upsh ),
     @ Upsh,

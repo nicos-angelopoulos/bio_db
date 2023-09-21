@@ -41,11 +41,23 @@ unip_dnload( Self, Loc ) :-
      debuc( Self, 'Loc: ~p', Loc ),
      os_make_path( Loc, debug(true) ).
 
-std_chicken_maps_unip_defaults([debug(true),org(chicken)]).
+std_chicken_maps_unip_defaults( [ debug(true),
+                                  iactive(true),
+                                  org(chicken)
+                                ]
+                              ).
 
 /** std_chicken_maps_unip(Opts).
 
 Create bio_db uniprot maps.
+
+Opts
+  * debug(Dbg=true)
+    progress, informational messages
+  * iactive(Iact=true)
+    whether the session is interactive, otherwise wget gets --no-verbose
+  * org(Org=chicken)
+    organism
 
 ==
 ?- std_chicken_maps_unip([]).
@@ -75,7 +87,8 @@ std_chicken_maps_unip( Args ) :-
      working_directory( Old, DnDir ),
      unip_chicken( Url ),
      % url_file( Url, 
-     UrlOpts = [debug(true),interface(wget),file(File)],
+    ( options(iactive(false),Opts) -> WgVerb=false; WgVerb=true ),
+     UrlOpts = [debug(true),interface(wget),file(File),verb(WgVerb)],
      url_file_local_date_mirror( Url, DnDir, UrlOpts ),
      % cd( bio_dn_root(uniprot) ),
      % os_rm_rf( maps ), % don't do that human puts stuff there tooo ! 

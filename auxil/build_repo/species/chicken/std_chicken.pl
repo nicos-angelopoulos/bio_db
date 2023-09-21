@@ -18,13 +18,25 @@
 % local libs & sources
 % :- lib(debug_colours/1).
 
-std_chicken_defaults([debug(true),org(chicken)]).
+std_chicken_defaults( [ debug(true),
+                        iactive(true),
+                        org(chicken)
+                      ]
+                    ).
 
 /** std_chicken.
 
 Build all the standard datasets for bio_db for chicken.
 
 There are no building dependencies between the datasets.
+
+Opts
+  * debug(Dbg=true)
+    progress, informational messages
+  * iactive(Iact=true)
+    whether the session is interactive, otherwise wget gets --no-verbose
+  * org(Org=chicken)
+    organism
 
 @author nicos angelopoulos
 @version  0.1 2022/12/20

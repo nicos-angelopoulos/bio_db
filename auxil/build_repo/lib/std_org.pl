@@ -7,6 +7,7 @@
 % stoics libs, lib/1 know how to install those, if they are missing
 :- lib(by_unix).
 :- lib(debug_call).
+:- lib(options).
 
 % local libs & sources
 :- ensure_loaded('../../lib/debug_colours').  % /1.
@@ -34,14 +35,16 @@ start support more species.
 std_org( Org, Opts ) :-
     debuc( Org ),
     debug_colours( Dlrs ),
+    options( iactive(Iact), Opts ),
+    atomic_list_concat( [iactive,Iact], '=', IactArg ),
     findall( Succ-Type-Db, ( std(Org,Type,Db),
-                             std_upsh(Org,Db,Type,Dlrs,Opts,Succ)
+                             std_upsh(Org,Db,Type,Dlrs,IactArg,Opts,Succ)
                         ),
                                 Trips ),
     Mess = '... finished ~w, standards: ~w',
     debug_consec( Org, [black,black],  Mess, [Org, Trips] ).
 
-std_upsh( Org, Db, Type, Dlrs, Opts, Succ ) :-
+std_upsh( Org, Db, Type, Dlrs, Iarg, Opts, Succ ) :-
     ( Org \== human ->
         atomic_list_concat( [std,Org,Type,Db], '_', Ucmd )
         ;
@@ -51,7 +54,7 @@ std_upsh( Org, Db, Type, Dlrs, Opts, Succ ) :-
     atomic_list_concat( [Org,Type,Db], ':', Task ),
     debuc( Org, task(start), Task ),
     findall( Urg, (member(pass(Trg),Opts),Trg=..Parts,atomic_list_concat(Parts,'=',Urg)), Urgs ),
-    Upsh =.. [upsh,Ucmd,f,p|Urgs],
+    Upsh =.. [upsh,Ucmd,f,p,Iarg|Urgs],
     debuc( Org, 'std_org is shelling ~w,', [Upsh] ),
     % catch( @ upsh(p,f,Upshable), Err, true ),
     ( catch(@ Upsh,Err,true) ->

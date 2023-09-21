@@ -34,6 +34,7 @@ std_chicken_maps_cgnc_defaults( Defs ) :-
                     debug(true),
                     db_dir(cgnc),  % is this used ?
                     download(true),
+                    iactive(true),
                     map_prefix(false),
                     org(chicken),
                     prefix(cgnc),
@@ -69,18 +70,20 @@ Tokens
     should be a date data type
 
 Opts
-  * debug(Dbg=true)
-    progress, informational messages
   * db_dir(DbDir=cgnc)
     relative directory within downloads and data to work in
-  * sub(Dir=maps)
-    sub-directory for creating the maps
+  * debug(Dbg=true)
+    progress, informational messages
   * download(Dn=true)
     set to false to skip downloading a fresh copy of the CGNC file(s)
+  * iactive(Iact=true)
+    whether the session is interactive, otherwise wget gets --no-verbose
   * map_prefix(Mfx=true)
     whether to include the prefix in the predicate name, passed to csv_ids_map/6
   * prefix(Pfx=cgnc)
     prefix to include, passed to csv_ids_map/6
+  * sub(Dir=maps)
+    sub-directory for creating the maps
 
 ==
 ?- std_chicken_maps_cgnc.
@@ -107,7 +110,8 @@ std_chicken_maps_cgnc( Args ) :-
     os_make_path( Dir, debug(true) ),
     options( download(Dnload), Opts ),
     os_path( Dir, CsvF, CsvP ),
-    cgnc_download_file( Dnload, Self, SrcUrl, CsvP, [dir(Dir)|Opts] ),
+    ( options(iactive(false),Opts) -> WgVerb=false; WgVerb=true ),
+    cgnc_download_file( Dnload, Self, WgVerb, SrcUrl, CsvP, [dir(Dir)|Opts] ),
     working_directory( Old, Dir ),
     os_ext( dnt, CsvF, DntF ),
     bio_db_dnt_times( DntF, DnDt, _DnEnd ),
@@ -224,13 +228,13 @@ std_chicken_cgnc_mtx_fix( [H|Rs], [R|M] ) :-
      ),
      std_chicken_cgnc_mtx_fix( Rs, M ).
 
-cgnc_download_file( true, Self, Url, Dst, Opts ) :-
+cgnc_download_file( true, Self, Verb, Url, Dst, Opts ) :-
      Url = 'http://birdgenenames.org/cgnc/downloads.jsp?file=standard',
      options( dir(Dir), Opts ),
-     url_file_local_date_mirror( Url, Dir, [file(Dst),date(prefix)|Opts] ),
+     url_file_local_date_mirror( Url, Dir, [file(Dst),date(prefix),verb(Verb)|Opts] ),
      % url_file( Url, Dst, [dnt(true)|Opts] ),
      cgnc_download_file_fix( Self, Dst ).
-cgnc_download_file( false, Self, Url, Dst, _Opts ) :-
+cgnc_download_file( false, Self, _Verb, Url, Dst, _Opts ) :-
      debuc( Self, 'Asked not to download: ~p', [Dst] ),
      Url = 'http://birdgenenames.org/cgnc/downloads.jsp?file=standard'.
 

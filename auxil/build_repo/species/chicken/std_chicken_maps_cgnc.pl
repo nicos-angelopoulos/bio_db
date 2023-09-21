@@ -231,7 +231,7 @@ std_chicken_cgnc_mtx_fix( [H|Rs], [R|M] ) :-
 cgnc_download_file( true, Self, Verb, Url, Dst, Opts ) :-
      Url = 'http://birdgenenames.org/cgnc/downloads.jsp?file=standard',
      options( dir(Dir), Opts ),
-     url_file_local_date_mirror( Url, Dir, [file(Dst),date(prefix),verb(Verb)|Opts] ),
+     url_file_local_date_mirror( Url, Dir, [file(Dst),date(prefix),interface(wget),verb(Verb)|Opts] ),
      % url_file( Url, Dst, [dnt(true)|Opts] ),
      cgnc_download_file_fix( Self, Dst ).
 cgnc_download_file( false, Self, _Verb, Url, Dst, _Opts ) :-

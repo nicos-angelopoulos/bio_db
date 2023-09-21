@@ -227,7 +227,7 @@ std_graphs_string_version_base_name( VersionPrv, Bname, InfoBname, Remote, InfoR
     % Pfx = 'https://string-db.org/download/protein.links.v',
     bio_db_source_base_url( string, DnldBaseUrl ),
     atomic_list_concat( [9031,protein,links,Vied,txt,gz], '.', Bname ),
-    atomic_list_concat( [DnlBaseUrl,'protein.links.v',Version,'/',Bname], Remote ),
+    atomic_list_concat( [DnldBaseUrl,'protein.links.v',Version,'/',Bname], Remote ),
     % 10/9606.protein.links.v10.txt.gz
     % 9031.protein.info.v11.5.txt
     InfoPfx = 'https://stringdb-static.org/download/protein.info.v',

@@ -16,9 +16,9 @@
 
 % also sets lib alias to that dir
 :- ensure_loaded('../../lib/bio_db_build_aliases' ).  % /1.
-:- lib(go_obo/2).
 
 % local libs & sources
+:- lib(go_obo/2).
 :- lib(link_to_bio_sub/3).
 :- lib(bio_db_dnt_times/3).
 :- lib(bio_db_source_base_url/2).

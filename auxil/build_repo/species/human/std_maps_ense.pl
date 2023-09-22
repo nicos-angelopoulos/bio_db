@@ -34,7 +34,7 @@
 
 :- debuc(std_maps_ense).
 
-std_maps_ense_defaults(debug(true)).
+std_maps_ense_defaults( [debug(true),iactive(true)] ).
 
 /** std_maps_ense( +Opts ).
 
@@ -44,6 +44,10 @@ to hgncs and locations of transcipt and genes to chromosomome locations.
 Opts
   * assembly(Assembly)
     assembly number (just the number)
+  * debug(Dbg=true)
+    informational, progress messages
+  * iactive(Iact=true)
+    whether the session is interactive, otherwise wget gets --no-verbose
   * release(Release)
     release number
 
@@ -99,13 +103,14 @@ std_maps_ense( Args ) :-
                          atom_number(AmbAtm,Amb), atom_number(RelAtm,Rel)
                         ),
                             HsGtfs ),
-    ( HsGtfs = [HsGtfF-_Amb-_Rel] ->
-        true
-        ;
-        throw( non_unique_auto_ided_ense_gtf_file(HsGtfF) )
-    ),
-    atom_concat( FtpDir, HsGtfF, Url ),
-	url_file_local_date_mirror( Url, DnDir, [file(File),interface(wget)] ),
+     ( HsGtfs = [HsGtfF-_Amb-_Rel] ->
+          true
+          ;
+          throw( non_unique_auto_ided_ense_gtf_file(HsGtfF) )
+     ),
+     atom_concat( FtpDir, HsGtfF, Url ),
+    ( options(iactive(false),Opts) -> WgVerb=false; WgVerb=true ),
+	url_file_local_date_mirror( Url, DnDir, [file(File),interface(wget),verb(WgVerb)] ),
 	debuc( Self, 'Dnload done, file is: ~p', File ),
 	working_directory( Old, DnDir ),
 	bio_db_dnt_times( File, DnDt, _DnEn ),

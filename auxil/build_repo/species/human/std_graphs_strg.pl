@@ -13,7 +13,6 @@
 :- lib(by_unix).
 :- lib(options).
 :- lib(stoics_lib:portray_clauses/2).
-:- lib(stoics_lib:url_file/3).
 
 % also sets lib alias to that dir
 :- ensure_loaded( '../../lib/bio_db_build_aliases' ).  % /1.
@@ -26,12 +25,13 @@
 :- lib(bio_db_add_infos/1).  % bio_db_add_infos_to/2, fixme:
 :- lib(std_graphs_strg_auto_version/1).
 :- lib(portray_informed_clauses/4).
+:- lib(url_file_local_date_mirror/3).
 
 :- debuc(by_unix).
 :- debuc(std_graphs_strg).  % fixme: you probably don't need this. 
 % now there is an option...
 
-std_graphs_strg_defaults( [debug(true)|T] ) :-
+std_graphs_strg_defaults( [debug(true),iactive(true)|T] ) :-
     ( std_graphs_strg_auto_version(Vers) -> % let options/2 do the erroring
                                             % because user might provide it
         T = [string_version(Vers)]
@@ -44,6 +44,14 @@ std_graphs_strg_defaults( [debug(true)|T] ) :-
 String does not provide an easy way to get the current version.<br>
 This script now does go into auto detecting the version. 
 If you notice that it is picking an old one, you can re-run with
+
+Opts
+  * debug(Dbg=true)
+    informational, progress messages
+  * iactive(Iact=true)
+    whether the session is interactive, otherwise wget gets --no-verbose
+  * string_version(Vers)
+    default is collected by visiting the STRING web-page
 
 ==
   ?- std_graphs_strg( string_version('9.1') ).
@@ -76,7 +84,7 @@ std_graphs_strg( Args ) :-
      % directory_file_path( Parent, _BnameAgain, LocalFile ),
      directory_file_path( Parent, Bname, LocalFile ),
      os_make_path( Parent, debug(true) ),
-     std_graph_string_download_string( LocalFile, From, Self ),
+     std_graph_string_download_string( LocalFile, From, Self, Opts ),
      working_directory( Here, Parent ),
      @ gunzip( -k, Bname ),  % keeps .gz file
      % @ gunzip( '9606.protein.links.v10.txt.gz' ),
@@ -182,13 +190,14 @@ sort_four( X, Y, A, B ) :-
      A = Y, B = X.
 sort_four( A, B, A, B ).
 
-std_graph_string_download_string( LocalFile, _From, Self ) :-
+std_graph_string_download_string( LocalFile, _From, Self, _Opts ) :-
      exists_file( LocalFile ),
      debuc( Self, 'Using existing local string file: ~p', LocalFile ),
      !.
-std_graph_string_download_string( Local, Remote, Self ) :-
+std_graph_string_download_string( Local, Remote, Self, Opts ) :-
      debuc( Self, 'Downloading from: ~p', Remote ),
-     url_file( Remote, Local, [dnt(true),iface(wget)] ),
+     ( options(iactive(false),Opts) -> Verb=false; Verb=true ),
+     url_file_local_date_mirror( Remote, Local, [iface(wget),verb(Verb)] ),
      debuc( Self, '... to local file: ~p', Local ).
 
 std_graphs_string_version_base_name( VersionPrv, Bname, Remote ) :-

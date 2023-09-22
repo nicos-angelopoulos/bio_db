@@ -21,11 +21,31 @@
 % local libs & sources
 :- lib(link_to_bio_sub/3).
 :- lib(bio_db_dnt_times/3).
+:- lib(bio_db_source_base_url/2).
 :- lib(url_file_local_date_mirror/3).
 :- lib(bio_db_add_infos/1). % bio_db_add_infos_to/2
 
-std_graphs_gont_defaults(debug(true)).
+std_graphs_gont_defaults( [   debug(true),
+                              iactive(true),
+                              obo_file('go.obo')
+                          ] ).
 
+/** std_graphs_gont(+Opts)
+
+Build data predicates for Gene Ontology graphs.
+
+Opts
+  * debug(Dbg=true)
+    informational, progress messages
+  * iactive(Iact=true)
+    whether the session is interactive, otherwise wget gets --no-verbose
+  * obo_file(OboF='go.obo')
+    the file name for the download (appended to Ufx@bio_db_source_base_url(gont_obo,Ufx))
+
+@author nicos angelopoulos
+@version  0:2 2023/09/22,  Iact and OboF
+
+*/
 % entry point
 std_graphs_gont( Args ) :-
     Self = std_graphs_gont,
@@ -33,12 +53,14 @@ std_graphs_gont( Args ) :-
     bio_db_build_aliases( Opts ),
     % File = '/usr/local/users/nicos/work/bio_db/dnloads/go/new/go-basic.obo',
     % write( 'fixme these are now maps....' ), nl,
-    Url = 'http://purl.obolibrary.org/obo/go/go.obo',
+    bio_db_source_base_url( gont_obo, UrlPfx ),
+    options( obo_file(OboF), Opts ),
+    atom_concat( UrlPfx, OboF, Url ),
     absolute_file_name( bio_db_build_downloads(gont), DnDir ),
-    url_file_local_date_mirror( Url, DnDir, debug(true) ),
+    ( options(iactive(false),Opts) -> WgVerb=false; WgVerb=true ),
+    url_file_local_date_mirror( Url, DnDir, [debug(true),verb(WgVerb)] ),
     debuc( Self, 'Dnload done: ~w', [DnDir] ),
     working_directory( Old, DnDir ),
-    OboF = 'go.obo',
     /* here new code */
     go_obo( OboF, GoObo),
     go_obo_non_obs( GoObo, GoOboCurr ),

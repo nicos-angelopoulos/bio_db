@@ -17,7 +17,11 @@
 % local libs & sources
 % :- lib(debug_colours/1).  % /1.
 
-std_human_defaults([org(human),debug(true)]).
+std_human_defaults( [ org(human),
+                      iactive(true),
+                      debug(true)
+                    ]
+                 ).
 
 /** std_human(+Opts).
 
@@ -26,6 +30,8 @@ Build all the standard datasets for bio_db.
 Opts
   * debug(Dbg=true)
     debug this level
+  * iactive(Iact=true)
+    whether the session is interactive, otherwise wget gets --no-verbose
   * pass(Term)
     Terms to pass to the upsh calls in lower level
 

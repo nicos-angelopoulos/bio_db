@@ -18,12 +18,12 @@
 
 % also sets lib alias to that dir
 :- ensure_loaded('../../lib/bio_db_build_aliases').  % /1.
-:- lib(go_obo/2).
 
 % load necessary data that has already been generated
 % :- ensure_loaded( hgnc:bio_db_build_downloads('hgnc/maps/map_hgnc_symb_hgnc') ).
 
 % local libs & sources
+:- lib(go_obo/2).
 :- lib(link_to_bio_sub/2).
 :- lib(bio_db_dnt_times/3).
 :- lib(url_file_local_date_mirror/3).
@@ -36,22 +36,28 @@ gont_goa_hs_url( Url ) :-
     Url = 'http://geneontology.org/gene-associations/goa_human.gaf.gz'.
     % Url = 'http://geneontology.org/gene-associations/gene_association.goa_human.gz'.
 
-gont_term_db_url( Url ) :-
-    Url = 'http://archive.geneontology.org/latest-termdb/go_daily-termdb-tables.tar.gz'.
-
 std_maps_gont_defaults(debug(true)).
 
 % std_maps_gont( Opts ).
 % 
 % Set up some standard maps for gene ontology (GO, gont) data.
 %
-% http://geneontology.org/gene-associations/gene_association.goa_human.gz
+% Source:  http://geneontology.org/gene-associations/gene_association.goa_human.gz
+% 
 % Currrently this sets ups 
 %  * map_gont_gont_symb( GOTERM, Symb ).
 %  * map_gont_symb_gont( Symb, GOTERM ).
 %
 %   TermGz = 'go_daily-termdb-tables.tar.gz',
 %  * map_gont_gont_gonm( GOTERM, GONM ).
+%
+% Opts
+%  * debug(Dbg=true)
+%    informational, progress messages
+%  * iactive(Iact=true)
+%    whether the session is interactive, otherwise wget gets --no-verbose
+%  * goa_file(GoaF='goa_human.gaf.gz')
+%    the file name for the download (appended to Ufx@bio_db_source_base_url(gont_goa,Ufx))
 %
 % @author  nicos angelopoulos
 % @version 0.1 2015/3/26
@@ -106,34 +112,6 @@ std_maps_gont( Args ) :-
     bio_db_add_infos_to( [header(row('HGNC Symbol','Evidence','GO Term'))|AddOpts], 'maps/gont_homs_symb_gont.pl' ),
     
     debuc( Self, 'Building term to name map', true ),
-
-    /*
-    gont_term_db_url( TermUrl ),
-    % url_file( TermUrl, TermGz ),
-    url_file_local_date_mirror( TermUrl, DnDir, true ),
-
-    TermGz = 'go_daily-termdb-tables.tar.gz',
-    @ gunzip(--force, -k, TermGz),
-    @ rm(-rf, 'go_daily-termdb-tables'),
-    file_name_extension( TermTar, gz, TermGz ),
-    @ tar(xf, TermTar),
-    csv_read_file( 'go_daily-termdb-tables/term.txt', TermRows, [separator(0'\t),convert(true)] ),
-    % consult( go_assoc_db_term:'go_assoc_db_term' ), 
-    % findall( row(GoT,GoN), go_assoc_db_term:term(_,GoN,_,GoT,_,_,_), GTNRows ),
-    % findall( row(GoT,GoN), (member(row(_,GoN,SECTION,GoTFull,_,_,_),TermRows),go_term(GoTFull,GoT)), GTNRows ),
-    findall( row(GoT,GoN), (member(row(_,GoN,_,GoTFull,_,_,_),TermRows),go_id(GoTFull,GoT)), GTNRows ),
-    % 19.05.04 term.txt 
-    % findall( row(GoT,GoN), (member(row(GoT,GoN,_,_,_,_,_),TermRows)), GTNRows ),
-    GTopts = [predicate_name(map_gont_gont_gonm)],
-    sort( GTNRows, OrdGTNRows ),
-    mtx_prolog( OrdGTNRows, 'maps/map_gont_gont_gonm.pl', GTopts ),
-    delete_file( 'maps/map_gont_gont_symb.csv' ),
-    debuc( Self, 'Fixme: add GOterm -> go Section', true ),
-    % here
-    bio_db_dnt_times( 'go_daily-termdb-tables.tar.gz', TermUrlDntSt, _TermDntEnd ),
-    TermOpts = [header('GO Term','GO Name'),source(TermUrl),datetime(TermUrlDntSt)],
-    bio_db_add_infos_to( TermOpts, 'maps/map_gont_gont_gonm.pl' ),
-    */
 
     OboUrl = 'http://purl.obolibrary.org/obo/go/go.obo',
     absolute_file_name( bio_db_build_downloads(gont), DnDir ),

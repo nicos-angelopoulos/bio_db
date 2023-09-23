@@ -69,7 +69,7 @@ maps_ncbi_ncbi_gont :-
      % system( 'grep "^9606" gene2go | cat gene2go_hs' ),
      working_directory( _, Old ).
 
-maps_ncbi_rnuc_symb( Self ) :-
+maps_ncbi_rnuc_symb( Self, Opts ) :-
      debuc( by_unix ),
      ncbi_dnload( Dir ),
      % ncbi_repo( Repo ),
@@ -229,13 +229,13 @@ std_maps_ncbi( Args ) :-
      working_directory( _ParentD, MapsD ),
      @ gunzip( GnsF ),
      file_name_extension( RemS, gz, GnsF ),
-     std_maps_ncbi( Self, RemS, Url, DnDt ),
+     std_maps_ncbi_1( Self, RemS, Url, DnDt, Opts ),
      delete_file( RemS ),
-     maps_ncbi_rnuc_symb( Self ),
+     maps_ncbi_rnuc_symb( Self, Opts ),
      % maps_ncbi_unig_ncbi,  % unigene is no longer maintained as of Feb.2019
      working_directory( _, Old ).
 
-std_maps_ncbi( Self, File, Url, DnDt ) :-
+std_maps_ncbi_1( Self, File, Url, DnDt, Opts ) :-
      TsvOpts = [match_arity(false),separator(0'\t)],
      csv_read_file( File, Csv, TsvOpts ),
      Csv = [_Comment|Rows],

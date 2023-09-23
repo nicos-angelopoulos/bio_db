@@ -25,8 +25,7 @@ url_file_local_date_mirror_defaults( Args, Defs ) :-
                                             stamp(date),ext(_),
                                             record_time(true), 
                                             verb(Verb)
-                                         ],
-                                  ).
+                                         ].
 
 %% url_file_local_date_mirror( +Url, +LocalD ).
 %% url_file_local_date_mirror( +Url, +LocalD, +Opts ).

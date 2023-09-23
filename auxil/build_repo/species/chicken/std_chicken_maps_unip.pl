@@ -41,7 +41,8 @@ unip_dnload( Self, Loc ) :-
      debuc( Self, 'Loc: ~p', Loc ),
      os_make_path( Loc, debug(true) ).
 
-std_chicken_maps_unip_defaults( [ debug(true),
+std_chicken_maps_unip_defaults( [ db(unip),
+                                  debug(true),
                                   iactive(true),
                                   org(chicken)
                                 ]
@@ -52,6 +53,8 @@ std_chicken_maps_unip_defaults( [ debug(true),
 Create bio_db uniprot maps.
 
 Opts
+  * db(Db=unip)
+    source database
   * debug(Dbg=true)
     progress, informational messages
   * iactive(Iact=true)
@@ -86,8 +89,7 @@ std_chicken_maps_unip( Args ) :-
      /* double check unip part works with the nucl part // 15.05.15 */
      working_directory( Old, DnDir ),
      unip_chicken( Url ),
-    ( options(iactive(false),Opts) -> WgVerb=false; WgVerb=true ),
-     UrlOpts = [debug(true),interface(wget),file(File),verb(WgVerb)],
+     UrlOpts = [debug(true),interface(wget),file(File)|Opts],
      url_file_local_date_mirror( Url, DnDir, UrlOpts ),
      % cd( bio_dn_root(uniprot) ),
      % os_rm_rf( maps ), % don't do that human puts stuff there tooo ! 
@@ -124,61 +126,10 @@ std_chicken_maps_unip( Args ) :-
      bio_db_add_infos_to( [header(row('Uni_Protein','NCBI_ID'))|SwOpts], 'maps/map_unip_galg_unip_ncbi.pl' ),
      bio_db_add_infos_to( [header(row('Uni_Protein','String Protein'))|SwOpts], 'maps/map_unip_galg_unip_strp.pl' ),
      % bio_db_add_infos_to( [header(row('Uni Protein','HGNC ID'))|SwOpts], 'maps/map_unip_mouse_unip_hgnc.pl' ),
-    % Unigene has been discontinued
+     % Unigene has been discontinued
      %bio_db_add_infos_to( [header(row('Uni_Protein','Uni_Gene'))|SwOpts], 'maps/map_unip_mouse_unip_unig.pl' ),
      bio_db_add_infos_to( [header(row('Uni_Protein','Symbol'))|SwOpts], 'maps/map_unip_galg_unip_symb.pl' ),
      bio_db_add_infos_to( [header(row('Uni_Protein','Symbol Synonym'))|SwOpts], 'maps/map_unip_galg_unip_gyno.pl' ),
-
-/*
-     working_directory( _, DnDir ),
-     % trem_hs( TremUrl ),
-    trem_mouse( TremUrl ),
-     % 15.05.14 adding support for treMBL, at least that 's what i think the selected file is all about
-     TrUrlOpts = [debug(true),interface(wget),file(TrFile)],
-     url_file_local_date_mirror( TremUrl, DnDir, TrUrlOpts ),
-     bio_db_dnt_times( TrFile, TrDnDt, _TrDnEn ),
-
-     os_make_path( maps, afresh(false) ),
-     os_make_path( trembl, afresh(true) ),
-     directory_file_path( _, TremFile, TremUrl ),
-     % @ pwd(),
-     directory_file_path( trembl, TremFile, TremTrg ),
-     copy_file( TremFile, TremTrg ),
-     working_directory( _, trembl ), 
-     file_name_extension( TremDatF, gz, TremFile ),
-     atom_concat( 'gunzip ', TremFile, Gunzip ),
-     debuc( Self, 'Gunzipping: ~p', TremFile ),
-     shell( Gunzip ),
-     csv_read_file( TremDatF, TremRows, [separator(0'\t)] ),
-     % length( TremRows, TremLen ), 
-     % write( trem_length(TremLen) ), nl,
-    debuc( Self, length, trem_rows/TremRows ),
-     % 17/22
-     findall( map_unip_mouse_trem_nucs(TremId,Nucs), (
-                       member(TremRow,TremRows), arg(1,TremRow,TremId), \+ empty(TremId), 
-                       arg(17,TremRow,NucsConcat), \+ empty(NucsConcat), 
-                       atomic_list_concat(NucsList,'; ',NucsConcat),
-                       member(Nucs,NucsList)
-                                ), 
-                                      TNRows ),
-     % length(TNRows, TNLen), 
-     % write( tn_len(TNLen) ), nl,
-    debuc( Self, length, tn_len/TNRows ),
-     sort( TNRows, TNOrdRows ),
-     open( '../maps/map_unip_mouse_trem_nucs.pl', write, TNOut ),
-     maplist( portray_clause(TNOut), TNOrdRows ),
-     close( TNOut ),
-     working_directory( _, '../maps' ),
-     link_to_bio_sub( unip, 'map_unip_mouse_trem_nucs.pl', [org(mouse),type(maps)] ),
-
-     TrOpts = [source(TremUrl),datetime(TrDnDt),header(row('treMBLE_Protein','Nucleotide_Sequence'))],
-     bio_db_add_infos_to( TrOpts, map_unip_mouse_trem_nucs.pl ),
-     % run this manually, it is a biggie: 
-     % uniprot_sprot.dat is 2.9 G
-     % std_map_usyn_unip,
-     %
-*/
-
      working_directory( _, Old ).
 
 empty( '' ).

@@ -74,7 +74,7 @@ maps_ncbi_rnuc_symb( Self, Opts ) :-
      ncbi_dnload( Dir ),
      % ncbi_repo( Repo ),
      bio_db_source_base_url( ncbi, NcbiRepo ),
-     ncbi_humanise_data( gene2accession, Dir, NcbiRepo, Old, HsStem, HsUrl, HsDnDt ),
+     ncbi_humanise_data( gene2accession, Dir, NcbiRepo, Old, HsStem, HsUrl, HsDnDt, Opts ),
 
      file_name_extension( HsStem, tmp, TmpF ),
      @ mv( -f, HsStem, TmpF ),
@@ -140,10 +140,10 @@ maps_ncbi_unig_ncbi :-
      working_directory( _, Old ).
 */
 
-ncbi_humanise_data( Stem, Dir, Repo, Old, HsStem, Url, DnDt ) :-
+ncbi_humanise_data( Stem, Dir, Repo, Old, HsStem, Url, DnDt, Opts ) :-
      file_name_extension( Stem, gz, GzF ),
      os_path( Repo, GzF, Url ),
-     url_file_local_date_mirror( Url, Dir, [debug(true),interface(wget)] ),
+     url_file_local_date_mirror( Url, Dir, [debug(true),interface(wget)|Opts] ),
      os_path( Dir, GzF, DnlF ),
      bio_db_dnt_times( DnlF, DnDt, _DnEn ),
 

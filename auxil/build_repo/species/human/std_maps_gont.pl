@@ -34,8 +34,11 @@
 
 std_maps_gont_defaults( Defs ) :-
                                    Defs = [ debug(true),
+                                            debug_url(false),
                                             goa_base(gont_goa),
                                             goa_file('goa_human.gaf.gz'),
+                                            obo_base('gont_obo'),
+                                            obo_file('go.obo'),
                                             iactive(true)
                                           ].
 
@@ -57,12 +60,12 @@ std_maps_gont_defaults( Defs ) :-
 %    informational, progress messages
 %  * debug_url(Ubg=false)
 %    whether to debug the concatenation of the url (via bio_db_source_url/2)
-%  * iactive(Iact=true)
-%    whether the session is interactive, otherwise wget gets --no-verbose
 %  * goa_base(GoaB=gont_goa)
 %    bio_db_source_base_url/2, token or url to download from
 %  * goa_file(GoaF='goa_human.gaf.gz')
 %    the file name for the download (appended to Ufx@bio_db_source_base_url(gont_goa,Ufx))
+%  * iactive(Iact=true)
+%    whether the session is interactive, otherwise wget gets --no-verbose
 %  * obo_base(OboB=gont_obo)
 %    the url base for the obo download
 %  * obo_file(OboF='go.obo')

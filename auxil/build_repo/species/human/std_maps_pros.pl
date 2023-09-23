@@ -25,12 +25,11 @@
 % :- hgnc:ensure_loaded( bio_db_build_downloads('hgnc/maps/map_hgnc_hgnc_symb') ).
 
 % local libs & sources
-:- lib(bio_db_add_infos/1).  % bio_db_add_infos_to/2.
+:- lib(bio_db_source_url/2).
+:- lib(bio_db_add_infos/1).             % bio_db_add_infos_to/2.
 :- lib(bio_db_dnt_times/3).
 :- lib(url_file_local_date_mirror/3).
 :- lib(link_to_bio_sub/2).
-
-pros_alignments_url( 'ftp://ftp.expasy.org/databases/prosite/prosite_alignments.tar.gz' ).
 
 pros_dnload_dir( Old, Loc, Opts ) :-
 	absolute_file_name( bio_db_build_downloads(pros), Loc ),
@@ -38,14 +37,33 @@ pros_dnload_dir( Old, Loc, Opts ) :-
 	debuc( maps_unip_seqs, 'Prosite build directory: ~p', Loc ),
 	working_directory( Old, Loc ).
 
-std_maps_pros_defaults( debug(true) ).
+std_maps_pros_defaults( Defs ) :-
+                              Defs = [ debug(true),
+                                       debug_url(false),
+                                       iactive(true),
+                                       pros_base(pros),
+                                       pros_file('prosite_alignments.tar.gz')
+                                     ].
 
-/** std_maps_pros.
+/** std_maps_pros(+Opts).
 
 Support for prosite annotations of uniprot proteins.
 
+Opts
+  * debug(Dbg=true)
+    informational, progress messages
+  * debug_url(Ubg=false)
+    whether to debug the concatenation of the url (via bio_db_source_url/2)
+  * iactive(Iact=true)
+    whether the session is interactive, otherwise wget gets --no-verbose
+  * pros_base(ProsB=pros)
+    the url base for prosite download
+  * pros_file(ProsF='prosite_alignments.tar.gz')
+    the file name for prosite downlad
+
 @author nicos angelopoulos
 @version  0.1 2016/2/4
+@version  0.2 2023/9/22,  moved URL components to the options
 
 */
 std_maps_pros :-
@@ -55,13 +73,17 @@ std_maps_pros( Args ) :-
 	Self = std_maps_pros,
 	options_append( Self, Args, Opts ),
 	bio_db_build_aliases( Opts ),
-    % load necessary data that has already been generated
-    unip:ensure_loaded( bio_db_build_downloads('unip/maps/unip_homs_sprt_seqn') ),
-    unip:ensure_loaded( bio_db_build_downloads('unip/maps/unip_homs_unip_hgnc') ),
-    hgnc:ensure_loaded( bio_db_build_downloads('hgnc/maps/hgnc_homs_hgnc_symb') ),
+     % load necessary data that has already been generated
+     unip:ensure_loaded( bio_db_build_downloads('unip/maps/unip_homs_sprt_seqn') ),
+     unip:ensure_loaded( bio_db_build_downloads('unip/maps/unip_homs_unip_hgnc') ),
+     hgnc:ensure_loaded( bio_db_build_downloads('hgnc/maps/hgnc_homs_hgnc_symb') ),
 	debuc( std_maps_pros, 'Starting Prosite maps', true ),
 	pros_dnload_dir( Old, DnDir, Opts ),
-	pros_alignments_url( Url ),
+	% pros_alignments_url( Url ),
+     options( [pros_base(ProsB),pros_file(ProsF),debug_url(Ubg)], Opts ),
+     Upts = [url_base(ProsB),url_file(ProsF),debug(Ubg)],
+     bio_db_source_url( Url, Upts ),
+
 	UrlOpts = [debug(true),interface(wget),file(ProsF),ext('tar.gz')],
 	url_file_local_date_mirror( Url, DnDir, UrlOpts ),
 	bio_db_dnt_times( ProsF, DnSt, _DnEn ),

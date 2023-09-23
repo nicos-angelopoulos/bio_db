@@ -20,6 +20,7 @@
 :- lib(de_semi/3).
 :- lib(sep_split/3).
 :- lib(csv_ids_map/6).
+:- lib(bio_db_source_url/2).
 :- lib(link_to_bio_sub/2).
 :- lib(bio_db_dnt_times/3).
 :- lib(url_file_local_date_mirror/3).
@@ -35,17 +36,33 @@ std_maps_hgnc_defaults( Defs ) :-
     % absolute_file_name( bio_db_build_downloads(hgnc), Dir ),
     % expand_file_name( '$local/../work/db/data/hgnc', [Exp] ),
     % absolute_file_name( Exp, Dir ),
-    Defs = [ debug(true), download(true) ].
+                              Defs = [  db(hgnc),
+                                        debug(true), 
+                                        debug_url(false),
+                                        download(true),
+                                        hgnc_file('hgnc_complete_set.txt'),
+                                        iactive(true)
+                                     ].
 
 /** std_maps_hgnc( +Opts ).
 
 Create some maps from HGNC's "complete" data file.
 
 Opts
+ * db(hgnc)
+   the source database
+ * debug(Dbg=true)
+   whether the session is interactive, otherwise wget gets --no-verbose
+ * debug_url(Ubg=false)
+   whether to debug the concatenation of the url (via bio_db_source_url/2)
  * dir(Dir=maps)
    sub-directory for creating the maps
- * download(Dn=true)
-   set to false to skip downloading a fresh copy of the HGNC file(s)
+ * hgnc_base(hgnc)
+   Url prefix for HGNC downlaods, token of bio_db_source_base_url/2 or Url prefix
+ * hgnc_file('hgnc_complete_set.txt')
+   file for HGNC downloads
+ * iactive(Iact=true)
+   informational, progress messages
  * map_prefix(Mfx)
    if present is passed on csv_ids_map/6, else their default applies
 
@@ -59,30 +76,30 @@ Opts
 @version  0.1 2014/7/2
 @version  0.2 2015/3/18,   added db based prefix
 @version  0.3 2019/2/8,    accommodate the changes to the location and format of the file at the source
-@tbd convert to url_..._mirror.pl
+@version  0.4 2023/9/22,   move download components to options
 
 */
 std_maps_hgnc :-
     std_maps_hgnc( [] ).
 
 std_maps_hgnc( Args ) :-
-    CsvF = 'hgnc_complete_set.txt',
     Self = std_maps_hgnc,
     options_append( Self, Args, Opts ),
     bio_db_build_aliases( Opts ),
     absolute_file_name( bio_db_build_downloads(hgnc), Dir ),
     os_make_path( Dir, debug(true) ),
-    hgnc_download_file( SrcUrl, [dir(Dir)|Opts] ),
+    options( [db(Db),hgnc_file(UrlF),debug_url(Ubg)], Opts ),
+    Upts = [url_base(Db),url_file(UrlF),debug(Ubg)],
+    bio_db_source_url( SrcUrl, Upts ),
+    ( options(iactive(false),Opts) -> WgVerb=false; WgVerb=true ),
+    url_file_local_date_mirror( SrcUrl, Dir, [debug(true),date(prefix),interface(wget),verb(WgVerb)] ),
     working_directory( Old, Dir ),
     % HgncTxtF = 'hgnc_complete_set.txt',
     % GzF = 'hgnc_complete_set.txt.gz',
     % @ gunzip(-f,-k, GzF ),
     % bio_db_dnt_times( 'hgnc_complete_set.txt.gz.dnt', DnDt, _DnEnd ),
     bio_db_dnt_times( 'hgnc_complete_set.txt.dnt', DnDt, _DnEnd ),
-
-    % CsvF = '14.07.02-hgnc_complete_set.tsv',
     SubDir = maps,
-    % fixme: delete SubDir?  through option ?
     make_directory_path( SubDir ),
 
     options_propagate( map_prefix, Opts, StdOT, true ),
@@ -97,27 +114,27 @@ std_maps_hgnc( Args ) :-
     Chrm = 'location',
     Ccds =  'ccds_id',
 
-    csv_ids_rows( CsvF, '\t', Csv ),
-    hgnc_std_map( Hgnc, Symb, CsvF, Csv, StdO, SrcUrl/DnDt, HgncF ),               % hgnc_symb
+    csv_ids_rows( UrlF, '\t', Csv ),
+    hgnc_std_map( Hgnc, Symb, UrlF, Csv, StdO, SrcUrl/DnDt, HgncF ),               % hgnc_symb
 
     % fixme allow hgnc_std_map's called predicate to deal with multiple entries from single row
     % also it needs to be told not to sort some maps (but with ability to check uniqueness
     % hgnc_extra_symbols_column( Csv, 'alias_symbol', map_hgnc_syno_symb, SrcUrl/DnDt, SynoF ),
     % hgnc_extra_symbols_column( Csv, 'prev_symbol', map_hgnc_prev_symb, SrcUrl/DnDt, PrevF ),
-    hgnc_std_map( Syno, Symb, CsvF, Csv, StdO, SrcUrl/DnDt, SynoF ),               % hgnc_name
-    hgnc_std_map( Prev, Symb, CsvF, Csv, StdO, SrcUrl/DnDt, PrevF ),               % hgnc_name
+    hgnc_std_map( Syno, Symb, UrlF, Csv, StdO, SrcUrl/DnDt, SynoF ),               % hgnc_name
+    hgnc_std_map( Prev, Symb, UrlF, Csv, StdO, SrcUrl/DnDt, PrevF ),               % hgnc_name
 
-    hgnc_std_map( Hgnc, Name, CsvF, Csv, StdO, SrcUrl/DnDt, HgncNameF ),               % hgnc_name
-    hgnc_std_map( Symb, Hgnc, CsvF, Csv, StdO, SrcUrl/DnDt, SymbF ),               % symb_hgnc
-    hgnc_std_map( Entz, Symb, CsvF, Csv, StdO, SrcUrl/DnDt, EntzF ),               % entz_symb
-    hgnc_std_map( Symb, Entz, CsvF, Csv, StdO, SrcUrl/DnDt, SymbEntzF ),               % symb_entz
-    hgnc_std_map( Entz, Hgnc, CsvF, Csv, StdO, SrcUrl/DnDt, EntzHgncF ),               % entz_hgnc
-    hgnc_std_map( Hgnc, Entz, CsvF, Csv, StdO, SrcUrl/DnDt, HgncEntzF ),               % hgnc_entz
-    hgnc_std_map( Ensg, Hgnc, CsvF, Csv, StdO, SrcUrl/DnDt, EnsgF ),      % ensg_hgnc
-    hgnc_std_map( Hgnc, Ensg, CsvF, Csv, StdO, SrcUrl/DnDt, HgncEnsgF ),      % map_hgnc_hgnc_ensg
-    hgnc_std_map( Hgnc, Chrm, CsvF, Csv, StdO, SrcUrl/DnDt, ChrmF ),          % e
-    hgnc_std_map( Hgnc, Ccds, CsvF, Csv, StdO, SrcUrl/DnDt, CcdsF ),          % 
-    hgnc_std_map( Ccds, Hgnc, CsvF, Csv, StdO, SrcUrl/DnDt, HcdsF ),          % 
+    hgnc_std_map( Hgnc, Name, UrlF, Csv, StdO, SrcUrl/DnDt, HgncNameF ),               % hgnc_name
+    hgnc_std_map( Symb, Hgnc, UrlF, Csv, StdO, SrcUrl/DnDt, SymbF ),               % symb_hgnc
+    hgnc_std_map( Entz, Symb, UrlF, Csv, StdO, SrcUrl/DnDt, EntzF ),               % entz_symb
+    hgnc_std_map( Symb, Entz, UrlF, Csv, StdO, SrcUrl/DnDt, SymbEntzF ),               % symb_entz
+    hgnc_std_map( Entz, Hgnc, UrlF, Csv, StdO, SrcUrl/DnDt, EntzHgncF ),               % entz_hgnc
+    hgnc_std_map( Hgnc, Entz, UrlF, Csv, StdO, SrcUrl/DnDt, HgncEntzF ),               % hgnc_entz
+    hgnc_std_map( Ensg, Hgnc, UrlF, Csv, StdO, SrcUrl/DnDt, EnsgF ),      % ensg_hgnc
+    hgnc_std_map( Hgnc, Ensg, UrlF, Csv, StdO, SrcUrl/DnDt, HgncEnsgF ),      % map_hgnc_hgnc_ensg
+    hgnc_std_map( Hgnc, Chrm, UrlF, Csv, StdO, SrcUrl/DnDt, ChrmF ),          % e
+    hgnc_std_map( Hgnc, Ccds, UrlF, Csv, StdO, SrcUrl/DnDt, CcdsF ),          % 
+    hgnc_std_map( Ccds, Hgnc, UrlF, Csv, StdO, SrcUrl/DnDt, HcdsF ),          % 
 
     debuc( Self, 'doing links...', [] ),
     % Files = [HSf,HNf,SHf,EcHf,EcSf,ESf,SEf,EnSf,HEf,HEnf,HEcf,HNcf,NcHf, SynoF,PrevF,ChrmF, CcdsF,HcdsF ],
@@ -126,30 +143,6 @@ std_maps_hgnc( Args ) :-
     % file_name_extension( TxtF, gz, GzF ),
     % delete_file( TxtF ),
     working_directory( _, Old ).
-
-/*
-hgnc_extra_symbols_column( Csv, Cnm, Stem, SrcUrl/DnDt, ExtrF ) :-
-    % memberchk( 'Synonyms'=Synonyms, Csv ),
-    % Cnm2 = 'Approved Symbol',
-    Cnm2 = 'symbol',
-    memberchk( Cnm2=ApvSymbs, Csv ),
-    memberchk( Cnm=ExtSymbs, Csv ),
-    Term =.. [Stem,Syno,ApvSymb],
-    findall( Term,      ( nth1(N,ApvSymbs,ApvSymb),nth1(N,ExtSymbs,NSynonyms),
-                          at_con( Synos, ', ', NSynonyms ),
-                          member(Syno,Synos),
-                          Syno\==ApvSymb,
-                          Syno\==''
-                        ),
-                                SynoClauses ),
-    os_dir_stem_ext( maps, Stem, pl, ExtrF ),
-    % SynoF = 'maps/syno_symb.pl',  % fixme, for links this might have to be sybo_symb.csv
-    % csv_write_file( SynoF, [row('Synonym','HGNC Symbol')|SynoRows] ),
-    portray_clauses( SynoClauses, file(ExtrF) ),
-    debuc( std_maps_hgnc, 'Wrote file: ~p', ExtrF ),
-    TermOpts = [header(Cnm,Cnm2),source(SrcUrl),datetime(DnDt)],
-    bio_db_add_infos_to( TermOpts, ExtrF ).
-    */
 
 hgnc_std_map( Cid1, Cid2, CsvF, Csv, StdO, SrcUrl/DnDt, OutF ) :-
     hgnc_std_column_to_value_call( Cid1, Call1 ),
@@ -241,16 +234,3 @@ hgnc_cname_known( 'location', chrb ).  % chromosome base eg 2p24.1
 hgnc_cname_known( 'CCDS IDs', ccds ).  % 
 hgnc_cname_known( 'ccds_id', ccds ).  % 
 
-hgnc_download_file( Ftp, Opts ) :-
-    options( download(DnloadB), Opts ),
-    debuc( std_maps_hgnc, 'Download boolean: ~w', [DnloadB] ),
-    hgnc_boolean_download_file( DnloadB, Ftp, Opts ).
-
-hgnc_boolean_download_file( false, Ftp, _Opts ) :-
-    % Ftp = 'ftp://ftp.ebi.ac.uk/pub/databases/genenames/hgnc_complete_set.txt.gz'.
-    Ftp = 'ftp://ftp.ebi.ac.uk/pub/databases/genenames/new/tsv/hgnc_complete_set.txt'.
-hgnc_boolean_download_file( true, Ftp, Opts ) :-
-    memberchk( dir(Dir), Opts ),
-    % Ftp = 'ftp://ftp.ebi.ac.uk/pub/databases/genenames/hgnc_complete_set.txt.gz',
-    Ftp = 'ftp://ftp.ebi.ac.uk/pub/databases/genenames/new/tsv/hgnc_complete_set.txt',
-    url_file_local_date_mirror( Ftp, Dir, [debug(true),date(prefix),interface(wget)] ).

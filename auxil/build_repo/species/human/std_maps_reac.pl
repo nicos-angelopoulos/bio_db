@@ -14,19 +14,23 @@
 
 % bio_db loads
 :- ensure_loaded('../../lib/bio_db_build_aliases').  % /1.  also adds lib alias to that dir
-:- lib(bio_db_build_organism/0). % bio_db_organism/3.
+
+:- lib(bio_db_source_url/2).
 :- lib(link_to_bio_sub/3).
 :- lib(bio_db_dnt_times/3).
+:- lib(bio_db_add_infos/1).             % bio_db_add_infos_to/2
+:- lib(bio_db_build_organism/0).        % bio_db_organism/3.
 :- lib(url_file_local_date_mirror/3).
-:- lib(bio_db_add_infos/1).   % bio_db_add_infos_to/2
 
 std_maps_reac_defaults( Def ) :-
-     U='https://reactome.org/download/current/NCBI2Reactome_PE_All_Levels.txt',
      Def = [ 
              db(reac),
              debug(true),
+             debug_url(false),
+             iactive(true),
              org(human),
-             url(U)
+             reac_base(reac),
+             reac_file('NCBI2Reactome_PE_All_Levels.txt')
      ].
 
 /** std_maps_reac( +Opts ).
@@ -41,10 +45,16 @@ Opts
    database token, also rel dir name
  * debug(Dbg=true)
    progress, informational message
+ * debug_url(Ubg=false)
+   whether to debug the concatenation of the url (via bio_db_source_url/2)
+ * iactive(Iact=true)
+   whether the session is interactive, otherwise wget gets --no-verbose
  * org(Org=human)
    as recognised by db_organism. note here human maps are given hs token
- * url(Url=Reactome)
-   the url for the input file
+ * reac_base(Base=reac)
+   the url base for the Reactome Url
+ * reac_base(File='NCBI2Reactome_PE_All_Levels.txt')
+   the url base for the Reactome Url
 
 Tokens
   * ncbi(Ncbi)
@@ -82,9 +92,9 @@ std_maps_reac( Args ) :-
      Self = std_maps_reac,
      options_append( Self, Args, Opts ),
      bio_db_build_aliases( Opts ),
-     options( url(Url), Opts ),
-     debuc( Self, 'Url: ~p', [Url] ),
-     % url_file_local_date_mirror( Url, Dir, [file(Dst),date(prefix)|Opts] ),
+     options( [reac_base(Rb),reac_file(Rf),debug_url(Ubg)], Opts ),
+     Upts = [url_base(Rb),url_file(Rf),debug(Ubg)],
+     bio_db_source_url( Url, Upts ),
      options( db(Db), Opts ),
      absolute_file_name( bio_db_build_downloads(Db), Dir ),
      url_file_local_date_mirror( Url, Dir, [date(prefix)|Opts] ),

@@ -26,17 +26,23 @@
 :- lib(std_graphs_strg_auto_version/1).
 :- lib(portray_informed_clauses/4).
 :- lib(bio_db_source_base_url/2).
+:- lib(bio_db_string_version_base_name/4). % here: replace old call below with two calls to this, one with links and one with info
 
 :- debuc(by_unix).
-:- debuc(std_graphs_strg). % fixme:
 
-std_chicken_graphs_strg_defaults( [debug(true),iactive(true)|T] ) :-
-    ( std_graphs_strg_auto_version(Vers) -> % let options/2 do the erroring
-                                            % because user might provide it
-        T = [string_version(Vers)]
-        ;
-        T = []   
-    ).
+std_chicken_graphs_strg_defaults( Defs ) :-
+               Defs = [  db(strg),
+                         debug(true),
+                         iactive(true),
+                         relation(Rel=links),
+                         org(chicken)
+                         |  T  
+                      ],
+     ( std_graphs_strg_auto_version(Vers) ->     % let options/2 do the erroring, cause user might provide it
+          T = [string_version(Vers)]
+          ;
+          T = []   
+     ).
 
 % last good one: std_graphs_string( '10' ).  2016/09/08
 % last good one: std_graphs_string( '10.5' ).  2018/03/30
@@ -46,10 +52,16 @@ std_chicken_graphs_strg_defaults( [debug(true),iactive(true)|T] ) :-
 String graphs and a map for chicken products.
 
 Opts
+  * db(Db)
+    source database
   * debug(Dbg=true)
     informational, progress messages
   * iactive(Iact=true)
     whether the session is interactive, otherwise wget gets --no-verbose
+  * org(Org=chicken)
+    organism
+  * relation(Rel=links)
+    relation of STRING we are interested in (bio_db_string_version_base_name/4)
   * string_version(Vers)
     default is collected by visiting the STRING web-page
 
@@ -79,7 +91,9 @@ std_chicken_graphs_strg( Args ) :-
     options( string_version(VersionPrv), Opts ),
     ( number(VersionPrv) -> atom_number(Version,VersionPrv); Version = VersionPrv ),
     debuc( Self, 'Version: ~w', Version ),
-    std_graphs_string_version_base_name( Version, Bname, InfoBname, From, InfoFrom ),
+    bio_db_string_version_base_name( Version, Bname, Remote, Opts ),
+    bio_db_string_version_base_name( Version, InfoBname, InfoFrom, [relation(info)|Opts] ),
+    % std_graphs_string_version_base_name( Version, Bname, InfoBname, From, InfoFrom ),
     debuc( Self, 'Base name: ~w', Bname ),
     absolute_file_name( bio_db_build_downloads(strg), Parent ),
     % absolute_file_name( baio_db_downloads(string/Bname), LocalFile ),

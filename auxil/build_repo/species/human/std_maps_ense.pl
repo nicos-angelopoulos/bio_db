@@ -29,12 +29,20 @@
 :- lib(csv_to_pl/2).
 :- lib(link_to_bio_sub/2).
 :- lib(bio_db_dnt_times/3).
+:- lib(bio_db_source_url/2).
 :- lib(url_file_local_date_mirror/3).
 :- lib(bio_db_add_infos/1).   % bio_db_add_infos_to/2
 
 :- debuc(std_maps_ense).
 
-std_maps_ense_defaults( [debug(true),iactive(true)] ).
+std_maps_ense_defaults( Defs ) :-
+                                   Defs = [ db(ense),
+                                            debug(true),
+                                            debug_url(false),
+                                            ense_homs_base(ense_homs),
+                                            ense_homs_file(call(ense_homs_url_file)),
+                                            iactive(true)
+                                          ].
 
 /** std_maps_ense( +Opts ).
 
@@ -44,8 +52,16 @@ to hgncs and locations of transcipt and genes to chromosomome locations.
 Opts
   * assembly(Assembly)
     assembly number (just the number)
+  * db(ense)
+    source database
   * debug(Dbg=true)
     informational, progress messages
+  * debug_url(Ubg=false)
+    whether to debug the concatenation of the url (via bio_db_source_url/2)
+  * ense_homs_base(Eoms=ense_homs)
+    Url or bio_db_source_base_url/2 token for download diretory
+  * ense_homs_file(Eile=call(ense_homs_url_file))
+    the file name  for the download (appended to Ufx@bio_db_source_base_url(gont_obo,Ufx))- or call that produces it
   * iactive(Iact=true)
     whether the session is interactive, otherwise wget gets --no-verbose
   * release(Release)
@@ -67,49 +83,27 @@ Produces:
 @author  nicos angelopoulos
 @version 0.1, 2016/6/17
 @version 0.2, 2016/6/17, added assembly and release options
+@version 0.3, 2023/9/23, factor out the url locations and Url construction
 @see ftp://ftp.ensembl.org/pub/release-84/gtf/homo_sapiens/Homo_sapiens.GRCh38.84.gtf.gz
 @see http://ftp.ensembl.org/pub/current_gtf/homo_sapiens/
-@tbd automate selection of latest version
 
 */
 std_maps_ense( Args ) :-
-    Self = std_maps_ense,
-    options_append( Self, Args, Opts ),
-    bio_db_build_aliases( Opts ),
-    % load necessary data that has already been generated
-    ensure_loaded(hgnc:bio_db_build_downloads('hgnc/maps/hgnc_homs_ensg_hgnc')),
-    ensure_loaded(hgnc:bio_db_build_downloads('hgnc/maps/hgnc_homs_hgnc_symb')),
-    ensure_loaded(hgnc:bio_db_build_downloads('hgnc/maps/hgnc_homs_symb_hgnc')),
-
+     Self = std_maps_ense,
+     options_append( Self, Args, Opts ),
+     bio_db_build_aliases( Opts ),
+     % load necessary data that has already been generated
+     ensure_loaded(hgnc:bio_db_build_downloads('hgnc/maps/hgnc_homs_ensg_hgnc')),
+     ensure_loaded(hgnc:bio_db_build_downloads('hgnc/maps/hgnc_homs_hgnc_symb')),
+     ensure_loaded(hgnc:bio_db_build_downloads('hgnc/maps/hgnc_homs_symb_hgnc')),
 	debuc( Self, 'Starting...', true ),
 	absolute_file_name( bio_db_build_downloads(ense), DnDir ),
 	os_make_path( DnDir ),
 	debuc( Self, 'Downloads dir for ense: ~p', DnDir ),
-	% Url = 'ftp://ftp.ensembl.org/pub/release-85/gtf/homo_sapiens/Homo_sapiens.GRCh38.85.gtf.gz',
-	% Url = 'ftp://ftp.ensembl.org/pub/release-89/gtf/homo_sapiens/Homo_sapiens.GRCh38.89.gtf.gz',
-    % options( [assembly(Amb),release(Rel)], Opts ),
-	% Pfx = 'ftp://ftp.ensembl.org/pub/release-',
-    % Mfx = '/gtf/homo_sapiens/Homo_sapiens.GRCh',
-    % at_con( [Pfx,Rel,Mfx,Amb,'.',Rel,'.gtf.gz'], Url ),
-	% Url = 'ftp://ftp.ensembl.org/pub/release-101/gtf/homo_sapiens/Homo_sapiens.GRCh38.101.gtf.gz',
-	% Url = 'ftp://ftp.ensembl.org/pub/release-99/gtf/homo_sapiens/Homo_sapiens.GRCh38.99.gtf.gz',
-    /* 20.09.10 - starting auto recognition of latest version
-    */
-    FtpDir = 'ftp://ftp.ensembl.org/pub/current_gtf/homo_sapiens/',
-    Found @@ curl( -l, '--no-progress-meter', FtpDir ),
-    % Homo_sapiens.GRCh38.101.gtf.gz
-    findall( HsGtf-Amb-Rel, (member(HsGtf,Found),at_con(['Homo_sapiens',GRChTkn,RelAtm,gtf,gz],'.',HsGtf),
-                         atom_concat('GRCh',AmbAtm,GRChTkn),
-                         atom_number(AmbAtm,Amb), atom_number(RelAtm,Rel)
-                        ),
-                            HsGtfs ),
-     ( HsGtfs = [HsGtfF-_Amb-_Rel] ->
-          true
-          ;
-          throw( non_unique_auto_ided_ense_gtf_file(HsGtfF) )
-     ),
-     atom_concat( FtpDir, HsGtfF, Url ),
-    ( options(iactive(false),Opts) -> WgVerb=false; WgVerb=true ),
+     options( [ense_homs_base(EomsB),ense_homs_file(EomsF),debug_url(Ubg)], Opts ),
+     Epts = [url_base(EomsB),url_file(EomsF),debug(Ubg)],
+     bio_db_source_url( Url, Epts ),
+     ( options(iactive(false),Opts) -> WgVerb=false; WgVerb=true ),
 	url_file_local_date_mirror( Url, DnDir, [file(File),interface(wget),verb(WgVerb)] ),
 	debuc( Self, 'Dnload done, file is: ~p', File ),
 	working_directory( Old, DnDir ),
@@ -122,27 +116,27 @@ std_maps_ense( Args ) :-
 	% fixme: ???:
 	% Stem = 'Homo_sapiens.GRCh38.84.gtf-16.06.20', 
 	% TabF = 'Homo_sapiens.GRCh38.84.gtf-16.06.20.tab', 
-    % fixme: swi has skipping of initial comment lines...
+     % fixme: swi has skipping of initial comment lines...
 	% atomic_list_concat( [grep,'-v','"^#"',Stem,'>',TabF], ' ', Shell ),
-    % debuc( Self, '~w, shelling/1 : ~w', [Self,Shell] ),
+     % debuc( Self, '~w, shelling/1 : ~w', [Self,Shell] ),
 	% shell( Shell ),
 	% debuc( Self, '...done...', true ),
 	% @ grep( -v, '"^#"', Stem, '>', TabF ),
 	% @ ls(),
-    % debuc( Self, 'Reading from: ~p', [TabF] ),
+     % debuc( Self, 'Reading from: ~p', [TabF] ),
 	% mtx( TabF, Rows, sep(tab) ),
-    %
-    debuc( Self, 'Reading from: ~p', [Stem] ),
-    mtx( Stem, Rows, [sep(tab),csv_read(skip_header('#'))] ),
+     %
+     debuc( Self, 'Reading from: ~p', [Stem] ),
+     mtx( Stem, Rows, [sep(tab),csv_read(skip_header('#'))] ),
 	debuc( Self, length, rows/Rows ),
 	ense_transcripts( Rows, EnsTGRows, EnsTLRows ),
-    debuc( Self, length, [tr_to_names_map,tr_locations]/[EnsTGRows,EnsTLRows] ),
+     debuc( Self, length, [tr_to_names_map,tr_locations]/[EnsTGRows,EnsTLRows] ),
 	mtx( 'ense_homs_enst_ensg.csv', EnsTGRows ),
 	mtx( 'ense_homs_enst_chrl.csv', EnsTLRows ),
 
 	ense_genes( Rows, EnsGHRows, EnsGSRows, EnsGCRows, Disagreed, NotInHgnc ),
-    debuc( Self, length, ense_to_hgnc_symbol_disagreements/Disagreed ),
-    debuc( Self, length, ense_has_no_hgnc/NotInHgnc ),
+     debuc( Self, length, ense_to_hgnc_symbol_disagreements/Disagreed ),
+     debuc( Self, length, ense_has_no_hgnc/NotInHgnc ),
 	mtx( 'ense_homs_ensg_hgnc.csv', EnsGHRows ),
 	mtx( 'ense_homs_ensg_symb.csv', EnsGSRows ),
 	mtx( 'ense_homs_ensg_chrl.csv', EnsGCRows ),

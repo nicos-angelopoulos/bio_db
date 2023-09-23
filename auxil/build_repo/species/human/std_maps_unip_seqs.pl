@@ -26,6 +26,7 @@
 :- lib(kv_decompose_vs/2).
 :- lib(link_to_bio_sub/2).
 :- lib(bio_db_dnt_times/3).
+:- lib(bio_db_source_url/2).
 :- lib(io_prefixed_lines/3).
 :- lib(break_list_on_list/4).
 :- lib(url_file_local_date_mirror/3).
@@ -34,16 +35,21 @@
 :- debug(lib).
 :- debug(std_maps_unip_seqs).
 
-unip_sprot_hs_seqs_url( 'ftp://ftp.ebi.ac.uk/pub/databases/uniprot/current_release/knowledgebase/taxonomic_divisions/uniprot_sprot_human.dat.gz' ).
-unip_trembl_hs_seqs_url( 'ftp://ftp.ebi.ac.uk/pub/databases/uniprot/current_release/knowledgebase/taxonomic_divisions/uniprot_trembl_human.dat.gz' ).
-
 unip_dnload_dir( Old, Loc, Opts ) :-
 	absolute_file_name( bio_db_build_downloads(unip), Loc ),
 	os_make_path( Loc, Opts ),
 	debug( std_maps_unip_seqs, 'Uniprot build directory: ~p', Loc ),
 	working_directory( Old, Loc ).
 
-std_maps_unip_seqs_defaults( debug(false) ).
+std_maps_unip_seqs_defaults( Defs ) :-
+                                        Defs = [ db(unip),
+                                                 debug(true),
+                                                 debug_url(false),
+                                                 iactive(true),
+                                                 useqs_base(useqs),
+                                                 useqs_file_sprot('uniprot_sprot_human.dat.gz'),
+                                                 useqs_file_trembl('uniprot_trembl_human.dat.gz')
+                                               ].
 
 /** std_maps_unip_seqs.
 
@@ -54,29 +60,45 @@ std_maps_unip_seqs_defaults( debug(false) ).
 	Derived name map_unip_sprot_seqn
 
 Options
-  * debug(Dbg=false)
+  * db(unip)
+    the source database
+  * debug(Dbg=true)
     produce debugging messages if Dbg==true
+  * debug_url(Ubg=false)
+    whether to debug the concatenation of the url (via bio_db_source_url/2)
+  * iactive(Iact=true)
+    whether the session is interactive, otherwise wget gets --no-verbose
+  * useqs_base(OboB=useqs)
+    the url base for the uniprot seqs download
+  * useqs_file_sprot(OboF='go.obo')
+    the file name for the swiss-prot proteins download
+  * useqs_file_trembl(OboF='go.obo')
+    the file name for the trembl proteins download
 
 @author nicos angelopoulos
 @version  0.1 2015/10/05
+@version  0.2 2023/09/22
 
 */
 std_maps_unip_seqs :-
-	std_maps_unip_seqs( [debug(true)] ).
+	std_maps_unip_seqs( [] ).
 	% maps_unip_seqs( [debug(true),date_stem('16.09.08')] ).
 	
 std_maps_unip_seqs( Args ) :-
 	Self = std_maps_unip_seqs,
 	% cd( '/usr/local/users/nicos/work/2015/15.10.05-lmtk3_substrates/' ),
 	options_append( Self, Args, Opts ),
-    bio_db_build_aliases( Opts ),
+     bio_db_build_aliases( Opts ),
 	unip_dnload_dir( Old, DnDir, Opts ),
-    std_bootstrap_tables,
-	unip_sprot_hs_seqs_url( SprotUrl ),
+     std_bootstrap_tables,
+     options( [useqs_base(Useqs),useqs_file_sprot(SprotF),debug_url(Ubg),useqs_file_trembl(TremblF)], Opts ),
+     Spts = [url_base(Useqs),url_file(SprotF),debug(Ubg)],
+     bio_db_source_url( SprotUrl, Spts ),
 	unip_hs_seqs_file( SprotUrl, DnDir, row('Swiss Prot ID','Sequence') ),
-	unip_trembl_hs_seqs_url( TremblUrl ),
+     Tpts = [url_base(Useqs),url_file(TremblF),debug(Ubg)],
+     bio_db_source_url( TremblUrl, Tpts ),
 	unip_hs_seqs_file( TremblUrl, DnDir, row('TrEMBL Prot ID','Sequence') ),
-    % ( catch(pack_remove(bio_db_repo),_,fail) -> true; true ),
+     % ( catch(pack_remove(bio_db_repo),_,fail) -> true; true ),
 	working_directory( _, Old ).
 
 std_bootstrap_tables :-

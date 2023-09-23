@@ -31,7 +31,8 @@
 
 :- debuc(url_file).
 
-ncbi_repo( 'ftp://ftp.ncbi.nih.gov/gene/DATA/' ).
+% ncbi_repo( 'ftp://ftp.ncbi.nih.gov/gene/DATA/' ).
+
 ncbi_dnload( Loc ) :-
      absolute_file_name( bio_db_build_downloads(ncbi), Loc ),
      os_make_path( Loc, debug(true) ).
@@ -57,6 +58,7 @@ maps_ncbi_ncbi_gont :-
      ncbi_dnload( Dir ),
      ncbi_repo( Repo ),
      os_path( Repo, 'gene2go.gz', Url ),
+
      url_file_local_date_mirror( Url, Dir, [debug(true),interface(wget)] ),
      working_directory( Old, Dir ),
      @ rm( -f, gene2go_hs ),
@@ -164,19 +166,38 @@ ncbi_gene2asseccion_cnms( 'RNA_nucleotide_accession.version', rnuc ).
 ncbi_gene2asseccion_cnms( 'genomic_nucleotide_accession.version', dnuc ).
 ncbi_gene2asseccion_cnms( 'Symbol', symb ).
 
-std_maps_ncbi_defaults(debug(true)).
+std_maps_ncbi_defaults( Defs ) :-
+                                   Defs = [ debug(true),
+                                            debug_url(false),
+                                            iactive(true),
+                                            ncbi_base(ncbi),
+                                            ncbi_genes_file('gene2ensembl.gz')
+                                          ].
 
-%% std_maps_ncbi(+Opts).
-%
-% Download latest NCBI gene to ensembl map file and convert it to 
-% a few standard maps.
-%==
-% std_maps_ncbi([]).
-%==
-% @author nicos angelopoulos
-% @version  0.1 2014/7/23
-% @version  0.1 2022/12/26, entz-> ncbi, url via wget, csv without R
-%
+/** std_maps_ncbi(+Opts).
+
+Download latest NCBI gene to ensembl map file and convert it to a few standard maps.
+
+  * debug(Dbg=true)
+    informational, progress messages
+  * debug_url(Ubg=false)
+    whether to debug the concatenation of the url (via bio_db_source_url/2)
+  * iactive(Iact=true)
+    whether the session is interactive, otherwise wget gets --no-verbose
+  * obo_base(OboB=gont_obo)
+    the url base for the obo download
+  * obo_file(OboF='go.obo')
+    the file name for the obo download
+
+==
+?- std_maps_ncbi([]).
+==
+@author nicos angelopoulos
+@version  0.1 2014/7/23
+@version  0.2 2022/12/26, entz-> ncbi, url via wget, csv without R
+@version  0.3 2023/9/22,  move url locations to options
+
+*/
 std_maps_ncbi( Args ) :-
      Self = std_maps_ncbi,
      options_append( Self, Args, Opts ),
@@ -184,18 +205,22 @@ std_maps_ncbi( Args ) :-
      % load necessary data that has already been generated
      ensure_loaded(hgnc:bio_db_build_downloads('hgnc/maps/hgnc_homs_symb_hgnc')),
      ncbi_dnload( NcbiD ),
-     Url = 'ftp://ftp.ncbi.nih.gov/gene/DATA/gene2ensembl.gz',
+
+     % Url = 'ftp://ftp.ncbi.nih.gov/gene/DATA/gene2ensembl.gz',
+     options( [ncbi_base(NcbiB),ncbi_genes_file(GnsF),debug_url(Ubg)], Opts ),
+     Upts = [url_base(NcbiB),url_file(GnsF),debug(Ubg)],
+     bio_db_source_url( Url, Upts ),
      url_file_local_date_mirror( Url, NcbiD, interface(wget) ),
-     file_base_name( Url, RemB ),
+     % file_base_name( Url, RemB ),
      working_directory( Old, NcbiD ),
      MapsD = maps,
      make_directory_path( MapsD ),
-     directory_file_path( MapsD, RemB, ToP ),
-     copy_file( RemB, ToP ),
-     bio_db_dnt_times( RemB, DnDt, _DnEn ),
+     directory_file_path( MapsD, GnsF, ToP ),
+     copy_file( GnsF, ToP ),
+     bio_db_dnt_times( GnsF, DnDt, _DnEn ),
      working_directory( _ParentD, MapsD ),
-     @ gunzip( RemB ),
-     file_name_extension( RemS, gz, RemB ),
+     @ gunzip( GnsF ),
+     file_name_extension( RemS, gz, GnsF ),
      std_maps_ncbi( Self, RemS, Url, DnDt ),
      delete_file( RemS ),
      maps_ncbi_rnuc_symb( Self ),

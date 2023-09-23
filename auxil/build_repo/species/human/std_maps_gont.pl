@@ -32,11 +32,12 @@
 
 % :- debuc(std_maps_go).
 
-gont_goa_hs_url( Url ) :-
-    Url = 'http://geneontology.org/gene-associations/goa_human.gaf.gz'.
-    % Url = 'http://geneontology.org/gene-associations/gene_association.goa_human.gz'.
-
-std_maps_gont_defaults(debug(true)).
+std_maps_gont_defaults( Defs ) :-
+                                   Defs = [ debug(true),
+                                            goa_base(gont_goa),
+                                            goa_file('goa_human.gaf.gz'),
+                                            iactive(true)
+                                          ].
 
 % std_maps_gont( Opts ).
 % 
@@ -54,14 +55,23 @@ std_maps_gont_defaults(debug(true)).
 % Opts
 %  * debug(Dbg=true)
 %    informational, progress messages
+%  * debug_url(Ubg=false)
+%    whether to debug the concatenation of the url (via bio_db_source_url/2)
 %  * iactive(Iact=true)
 %    whether the session is interactive, otherwise wget gets --no-verbose
+%  * goa_base(GoaB=gont_goa)
+%    bio_db_source_base_url/2, token or url to download from
 %  * goa_file(GoaF='goa_human.gaf.gz')
 %    the file name for the download (appended to Ufx@bio_db_source_base_url(gont_goa,Ufx))
+%  * obo_base(OboB=gont_obo)
+%    the url base for the obo download
+%  * obo_file(OboF='go.obo')
+%    the file name for the obo download
 %
 % @author  nicos angelopoulos
 % @version 0.1 2015/3/26
-% @tbd     add dates to the file
+% @version 0.2 2023/9/22, moved download location to options
+% @see bio_db_source_base_url/2, bio_db_source_url/2.
 %
 std_maps_gont( Args ) :-
     Self = std_maps_gont,
@@ -73,16 +83,13 @@ std_maps_gont( Args ) :-
     absolute_file_name( bio_db_build_downloads(gont), DnDir ),
     os_make_path( DnDir, debug(true) ),
     working_directory( Here, DnDir ),
-    gont_goa_hs_url( Url ),
-    % fixme: used dated mirror:
-    % url_file( Url, GoaHsGz ),
+    options( [goa_base(GoaB),goa_file(GoaF),debug_url(Ubg)], Opts ),
+    Upts = [url_base(GoaB),url_file(GoaF),debug(Ubg)],
+    bio_db_source_url( Url, Upts ),
     url_file_local_date_mirror( Url, DnDir, true ),
 
-    % GoaHsGz = 'gene_association.goa_human.gz',
-    GoaHsGz = 'goa_human.gaf.gz',
-    % @ gunzip( -k, GoaHsGz ),
-    @ gunzip( --force, -k, GoaHsGz ),
-    file_name_extension( GoaHs, gz, GoaHsGz ),
+    @ gunzip( --force, -k, GoaF ),
+    file_name_extension( GoaHs, gz, GoaF ),
     % mtx( 'gene_association.goa_human.tsv', Mtx ),
     % mtx( GoaHs, Mtx, csv_read(sep=0'\t) ),
     csv_read_file( GoaHs, MtxPrv, [separator(0'\t),match_arity(false),convert(false)] ),
@@ -101,7 +108,7 @@ std_maps_gont( Args ) :-
     working_directory( AtHere, AtHere ),
     debuc( Self, 'Currently at: ~p', AtHere ),
     % bio_db_dnt_times( 'gene_association.goa_human.gz', UrlDntSt, _DntEnd ),
-    bio_db_dnt_times( GoaHsGz , UrlDntSt, _DntEnd ),
+    bio_db_dnt_times( GoaF, UrlDntSt, _DntEnd ),
     AddOpts = [source(Url),datetime(UrlDntSt)],
     bio_db_add_infos_to( [header(row('GO Term','Evidence','HGNC Symbol'))|AddOpts], 'maps/gont_homs_gont_symb.pl' ),
     
@@ -113,11 +120,12 @@ std_maps_gont( Args ) :-
     
     debuc( Self, 'Building term to name map', true ),
 
-    OboUrl = 'http://purl.obolibrary.org/obo/go/go.obo',
+    options( [obo_base(OboB),obo_file(OboF),debug_url(Ubg)], Opts ),
+    Upts = [url_file(OboF),url_base(OboB),debug(Ubg)],
+    bio_db_source_url( OboUrl, Upts ),
     absolute_file_name( bio_db_build_downloads(gont), DnDir ),
     url_file_local_date_mirror( OboUrl, DnDir, debug(true) ),
     debuc( Self, 'Dnload done: ~w', [DnDir] ),
-    OboF = 'go.obo',
     go_obo( OboF, GoObo),
     go_obo_non_obs( GoObo, GoOboCurr ),
     GoOboCurr = obo(_,OboTerms),

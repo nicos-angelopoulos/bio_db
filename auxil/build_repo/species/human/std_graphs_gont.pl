@@ -21,12 +21,14 @@
 :- lib(go_obo/2).
 :- lib(link_to_bio_sub/3).
 :- lib(bio_db_dnt_times/3).
-:- lib(bio_db_source_base_url/2).
+:- lib(bio_db_source_url/2).
 :- lib(url_file_local_date_mirror/3).
 :- lib(bio_db_add_infos/1). % bio_db_add_infos_to/2
 
 std_graphs_gont_defaults( [   debug(true),
+                              debug_url(false),
                               iactive(true),
+                              obo_base(gont_obo),
                               obo_file('go.obo')
                           ] ).
 
@@ -37,13 +39,20 @@ Build data predicates for Gene Ontology graphs.
 Opts
   * debug(Dbg=true)
     informational, progress messages
+  * debug_url(Ubg=false)
+    whether to debug the concatenation of the url (via bio_db_source_url/2)
   * iactive(Iact=true)
     whether the session is interactive, otherwise wget gets --no-verbose
+  * obo_base(OboB=gont_obo)
+    the url base for the obo download
   * obo_file(OboF='go.obo')
-    the file name for the download (appended to Ufx@bio_db_source_base_url(gont_obo,Ufx))
+    the file name for the obo download
+
+OboF is passed to url_file_local_date_mirror/3 as option =url_file()=, and OboB as url_
 
 @author nicos angelopoulos
 @version  0:2 2023/09/22,  Iact and OboF
+@see url_file_local_date_mirror/3
 
 */
 % entry point
@@ -51,11 +60,11 @@ std_graphs_gont( Args ) :-
     Self = std_graphs_gont,
     options_append( Self, Args, Opts ),
     bio_db_build_aliases( Opts ),
-    % File = '/usr/local/users/nicos/work/bio_db/dnloads/go/new/go-basic.obo',
-    % write( 'fixme these are now maps....' ), nl,
-    bio_db_source_base_url( gont_obo, UrlPfx ),
-    options( obo_file(OboF), Opts ),
-    atom_concat( UrlPfx, OboF, Url ),
+    %
+    options( [obo_file(OboF),obo_base(OboB),debug_url(Ubg)], Opts ),
+    UrlOpts = [url_file(OboF),url_base(OboB),debug(Ubg)],
+    bio_db_source_url( Url, UrlOpts ),
+    %
     absolute_file_name( bio_db_build_downloads(gont), DnDir ),
     ( options(iactive(false),Opts) -> WgVerb=false; WgVerb=true ),
     url_file_local_date_mirror( Url, DnDir, [debug(true),verb(WgVerb)] ),

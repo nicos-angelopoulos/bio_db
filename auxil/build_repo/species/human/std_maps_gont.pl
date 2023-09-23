@@ -89,7 +89,8 @@ std_maps_gont( Args ) :-
     options( [goa_base(GoaB),goa_file(GoaF),debug_url(Ubg)], Opts ),
     Upts = [url_base(GoaB),url_file(GoaF),debug(Ubg)],
     bio_db_source_url( Url, Upts ),
-    url_file_local_date_mirror( Url, DnDir, true ),
+    ( options(iactive(false),Opts) -> WgVerb=false; WgVerb=true ),
+    url_file_local_date_mirror( Url, DnDir, verb(WgVerb) ),
 
     @ gunzip( --force, -k, GoaF ),
     file_name_extension( GoaHs, gz, GoaF ),
@@ -127,7 +128,7 @@ std_maps_gont( Args ) :-
     Upts = [url_file(OboF),url_base(OboB),debug(Ubg)],
     bio_db_source_url( OboUrl, Upts ),
     absolute_file_name( bio_db_build_downloads(gont), DnDir ),
-    url_file_local_date_mirror( OboUrl, DnDir, debug(true) ),
+    url_file_local_date_mirror( OboUrl, DnDir, [debug(true),verb(WgVerb)] ),
     debuc( Self, 'Dnload done: ~w', [DnDir] ),
     go_obo( OboF, GoObo),
     go_obo_non_obs( GoObo, GoOboCurr ),

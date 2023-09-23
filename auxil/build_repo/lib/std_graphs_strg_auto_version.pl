@@ -2,26 +2,34 @@
 :- use_module(library(lists)).      % member/2.
 :- use_module(library(sgml)).       % load_html/3.
 
+:- lib(options).
 :- lib(by_unix).
 :- lib(stoics_lib:message_report/3).
 
-/**  std_graphs_strg_auto_version( Vers )
+/**  std_graphs_strg_auto_version(-Vers, +Opts)
 
-Description
+Scrobes the current version off the STRING website.
 
 ==
-?- std_graphs_strg_auto_version( Vers ).
+?- std_graphs_strg_auto_version( Vers, true ).
 Vers = '10.5'.
 ==
 
 @author nicos angelopoulos
 @version  0.1 2018/11/09
+@version  0.2 2023/09/23
 
 */
-std_graphs_strg_auto_version( VerAtm ) :-
+std_graphs_strg_auto_version( VerAtm, Args ) :-
 
     % load_html( 'https://string-db.org/', Idx, [] ),
-    @ wget('-O','/tmp/index.html','https://string-db.org'),
+    Self = std_graphs_strg_auto_version,
+
+    ( options(iactive(false),Opts) ->
+          @ wget('--no-verbose','-O','/tmp/index.html','https://string-db.org')
+          ;
+          @ wget('-O','/tmp/index.html','https://string-db.org')
+    ),
     % load_html( 'https://string-db.org/', Idx, [] ),
     load_html( '/tmp/index.html', Idx, [] ),
     % findall( Li, xpath(Idx,//(li),Li), Lis ),

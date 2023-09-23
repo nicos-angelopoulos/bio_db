@@ -94,10 +94,10 @@ std_maps_unip_seqs( Args ) :-
      options( [useqs_base(Useqs),useqs_file_sprot(SprotF),debug_url(Ubg),useqs_file_trembl(TremblF)], Opts ),
      Spts = [url_base(Useqs),url_file(SprotF),debug(Ubg)],
      bio_db_source_url( SprotUrl, Spts ),
-	unip_hs_seqs_file( SprotUrl, DnDir, row('Swiss Prot ID','Sequence') ),
+	unip_hs_seqs_file( SprotUrl, DnDir, row('Swiss Prot ID','Sequence'), Opts ),
      Tpts = [url_base(Useqs),url_file(TremblF),debug(Ubg)],
      bio_db_source_url( TremblUrl, Tpts ),
-	unip_hs_seqs_file( TremblUrl, DnDir, row('TrEMBL Prot ID','Sequence') ),
+	unip_hs_seqs_file( TremblUrl, DnDir, row('TrEMBL Prot ID','Sequence'), Opts ),
      % ( catch(pack_remove(bio_db_repo),_,fail) -> true; true ),
 	working_directory( _, Old ).
 
@@ -111,8 +111,9 @@ std_path( Base, Dir, Path ) :-
     os_path( Base, Dir, Path ),
     os_make_path( Path, debug(true) ).
 
-unip_hs_seqs_file( Url, DnDir, Hdr ) :-
-	UrlOpts = [debug(true),interface(wget),file(SprotF)],
+unip_hs_seqs_file( Url, DnDir, Hdr, Opts ) :-
+    ( options(iactive(false),Opts) -> WgVerb=false; WgVerb=true ),
+	UrlOpts = [debug(true),interface(wget),file(SprotF),verb(Verb)],
 	url_file_local_date_mirror( Url, DnDir, UrlOpts ),
 	debug( std_maps_unip_seqs, 'Uniprot local file: ~p', SprotF ),
 	file_base_name( Url, HumGzF ),

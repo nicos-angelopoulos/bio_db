@@ -29,14 +29,12 @@
 true(_,_).
 
 std_chicken_maps_cgnc_defaults( Defs ) :-
-    Defs = [
-                    debug(true),
+    Defs = [        db(cgnc),
                     db_dir(cgnc),  % is this used ?
+                    debug(true),
                     download(true),
                     iactive(true),
-                    map_prefix(false),
                     org(chicken),
-                    prefix(cgnc),
                     sub(maps)
            ].
 
@@ -69,6 +67,8 @@ Tokens
     should be a date data type
 
 Opts
+  * db(Db=cgnc)
+    source database
   * db_dir(DbDir=cgnc)
     relative directory within downloads and data to work in
   * debug(Dbg=true)
@@ -77,10 +77,8 @@ Opts
     set to false to skip downloading a fresh copy of the CGNC file(s)
   * iactive(Iact=true)
     whether the session is interactive, otherwise wget gets --no-verbose
-  * map_prefix(Mfx=true)
-    whether to include the prefix in the predicate name, passed to csv_ids_map/6
-  * prefix(Pfx=cgnc)
-    prefix to include, passed to csv_ids_map/6
+  * org(Org=chicken)
+    organism
   * sub(Dir=maps)
     sub-directory for creating the maps
 
@@ -119,7 +117,6 @@ std_chicken_maps_cgnc( Args ) :-
     std_chicken_cgnc_mtx( CsvF, Mtx ),
     % 23.06.05, the cgnc file introduced a /9 (instead of /8 line in late May).
     % mtx( CsvF, Mtx, sep(tab) ),
-    % options_propagate( [map_prefix,prefix], Opts, StdOT, true ),
     StdO= [dir(SubDir),cnm_transform(cgnc_cname)|Opts],
     Cgnc = 'CGNC id',
     Symb = 'gene symbol',

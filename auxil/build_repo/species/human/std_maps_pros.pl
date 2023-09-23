@@ -25,11 +25,11 @@
 % :- hgnc:ensure_loaded( bio_db_build_downloads('hgnc/maps/map_hgnc_hgnc_symb') ).
 
 % local libs & sources
-:- lib(bio_db_source_url/2).
+:- lib(link_to_bio_sub/2).
 :- lib(bio_db_add_infos/1).             % bio_db_add_infos_to/2.
 :- lib(bio_db_dnt_times/3).
+:- lib(bio_db_source_url/2).
 :- lib(url_file_local_date_mirror/3).
-:- lib(link_to_bio_sub/2).
 
 pros_dnload_dir( Old, Loc, Opts ) :-
 	absolute_file_name( bio_db_build_downloads(pros), Loc ),
@@ -80,8 +80,8 @@ std_maps_pros( Args ) :-
 	debuc( std_maps_pros, 'Starting Prosite maps', true ),
 	pros_dnload_dir( Old, DnDir, Opts ),
 	% pros_alignments_url( Url ),
-     options( [pros_base(ProsB),pros_file(ProsF),debug_url(Ubg)], Opts ),
-     Upts = [url_base(ProsB),url_file(ProsF),debug(Ubg)],
+     options( [pros_base(ProsB),pros_file(OptProsF),debug_url(Ubg)], Opts ),
+     Upts = [url_base(ProsB),url_file(OptProsF),debug(Ubg)],
      bio_db_source_url( Url, Upts ),
 
 	UrlOpts = [debug(true),interface(wget),file(ProsF),ext('tar.gz')|Opts],

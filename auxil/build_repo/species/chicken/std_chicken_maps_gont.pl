@@ -24,8 +24,10 @@
 % gont_gallus_url('http://geneontology.org/gene-associations/mgi.gaf.gz').
 gont_gallus_url('http://current.geneontology.org/annotations/goa_chicken.gaf.gz').
 
-std_chicken_maps_gont_defaults( [ debug(true),
-                                  iactive(true)
+std_chicken_maps_gont_defaults( [ db(gont),
+                                  debug(true),
+                                  iactive(true),
+                                  org(chicken)
                                 ]
                               ).
 
@@ -34,10 +36,14 @@ std_chicken_maps_gont_defaults( [ debug(true),
 Build maps from gene ontology data.
 
 Opts
+  * db(Db=ense)
+    source database
   * debug(Dbg=true)
     progress, informational messages
   * iactive(Iact=true)
     whether the session is interactive, otherwise wget gets --no-verbose
+  * org(Org=chicken)
+    organism
 
 ==
 ?- std_chicken_maps_gont([]).
@@ -69,8 +75,7 @@ std_chicken_maps_gont( Args ) :-
     os_make_path( Loc ),  % fixme: ensure it complains not...
     debuc( Self, 'build directory: ~p', Loc ),
     working_directory( Old, Loc ),
-    ( options(iactive(false),Opts) -> WgVerb=false; WgVerb=true ),
-    UrlOpts = [debug(true),interface(wget),file(GzGontF),verb(WgVerb)],
+    UrlOpts = [debug(true),interface(wget),file(GzGontF)|Opts],
     url_file_local_date_mirror( Url, Loc, UrlOpts ),
     @ gunzip( -k, GzGontF ),
     os_ext( gz, GontF, GzGontF ),

@@ -34,8 +34,8 @@ std_chicken_graphs_strg_defaults( Defs ) :-
                Defs = [  db(strg),
                          debug(true),
                          iactive(true),
+                         org(chicken),
                          relation(Rel=links),
-                         org(chicken)
                          |  T  
                       ],
      ( std_graphs_strg_auto_version(Vers) ->     % let options/2 do the erroring, cause user might provide it
@@ -52,7 +52,7 @@ std_chicken_graphs_strg_defaults( Defs ) :-
 String graphs and a map for chicken products.
 
 Opts
-  * db(Db)
+  * db(Db=string)
     source database
   * debug(Dbg=true)
     informational, progress messages
@@ -63,7 +63,7 @@ Opts
   * relation(Rel=links)
     relation of STRING we are interested in (bio_db_string_version_base_name/4)
   * string_version(Vers)
-    default is collected by visiting the STRING web-page
+    default is collected by visiting the STRING web-page (missing from defaults if collection failed)
 
 ==
 ?- std_chicken_graphs_str([]).
@@ -100,8 +100,7 @@ std_chicken_graphs_strg( Args ) :-
     % directory_file_path( Parent, _BnameAgain, LocalFile ),
     directory_file_path( Parent, Bname, LocalFile ),
     os_make_path( Parent, debug(true) ),
-    ( options(iactive(false),Opts) -> WgVerb=false; WgVerb=true ),
-    std_graph_string_download_string( LocalFile, From, WgVerb, Self ),
+    std_graph_string_download_string( LocalFile, From, Self, Opts ),
     working_directory( Here, Parent ),
     @ gunzip( -k, Bname ),  % keeps .gz file
     % @ gunzip( '9606.protein.links.v10.txt.gz' ),
@@ -125,7 +124,7 @@ std_chicken_graphs_strg( Args ) :-
      
     % info file connect protein to SYmbol
     directory_file_path( Parent, InfoBname, LocalInfoFile ),
-    std_graph_string_download_string( LocalInfoFile, InfoFrom, WgVerb, Self ),
+    std_graph_string_download_string( LocalInfoFile, InfoFrom, Self, Opts ),
     @ gunzip( -k, InfoBname ),  % keeps .gz file
     % Map = map_strg_gallus_ensp_symb,
     Map = strg_galg_ensp_symb,
@@ -235,14 +234,14 @@ sort_four( X, Y, A, B ) :-
     A = Y, B = X.
 sort_four( A, B, A, B ).
 
-std_graph_string_download_string( LocalFile, _From, _Verb, Self ) :-
+std_graph_string_download_string( LocalFile, _From, Self, _Opts ) :-
     exists_file( LocalFile ),
     debuc( Self, 'Using existing local string file: ~p', LocalFile ),
     !.
-std_graph_string_download_string( Local, Remote, Verb, Self ) :-
+std_graph_string_download_string( Local, Remote, Self, Opts ) :-
     debuc( Self, 'Downloading from: ~p', Remote ),
     % url_file( Remote, Local, [dnt(true),iface(wget),verb(Verb)] ),
-    url_file_local_date_mirror( Remote, Local, [dnt(true),iface(wget),verb(Verb)] ),
+    url_file_local_date_mirror( Remote, Local, [dnt(true),iface(wget)|Opts] ),
     debuc( Self, '... to local file: ~p', Local ).
 
 std_graphs_string_version_base_name( VersionPrv, Bname, InfoBname, Remote, InfoRemote ) :-

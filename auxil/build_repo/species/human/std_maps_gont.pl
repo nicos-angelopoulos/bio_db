@@ -120,6 +120,7 @@ std_maps_gont( Args ) :-
     mtx_prolog( OrdSGRows, 'maps/gont_homs_symb_gont.pl', SGopts ),
     bio_db_add_infos_to( [header(row('HGNC Symbol','Evidence','GO Term'))|AddOpts], 'maps/gont_homs_symb_gont.pl' ),
     debuc( Self, 'Building term to name map', true ),
+    trace,
     options( [obo_base(OboB),obo_file(OboF),debug_url(Ubg)], Opts ),
     Upts = [url_file(OboF),url_base(OboB),debug(Ubg)],
     bio_db_source_url( OboUrl, Upts ),

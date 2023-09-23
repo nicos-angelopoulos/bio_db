@@ -112,13 +112,6 @@ std_path( Base, Dir, Path ) :-
     os_make_path( Path, debug(true) ).
 
 unip_hs_seqs_file( Url, DnDir, Hdr ) :-
-	/* website has the human staff already don't download the generic: 
-	% UnipF = 'uniprot_sprot.dat',
-	% map_unip_human( UnipF ),
-	os_postfix( human, UnipF, HumF ),
-	debug( maps_unip_seqs, 'Human file: ~w', HumF ),
-	*/
-
 	UrlOpts = [debug(true),interface(wget),file(SprotF)],
 	url_file_local_date_mirror( Url, DnDir, UrlOpts ),
 	debug( std_maps_unip_seqs, 'Uniprot local file: ~p', SprotF ),

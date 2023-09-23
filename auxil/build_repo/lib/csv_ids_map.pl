@@ -16,7 +16,7 @@
 csv_ids_map_defaults( [ cnm_transform(=),dir('.'),
                         delim('\t'), has_header(true),
                         interface(prolog),map_prefix(false),
-                        prefix(''), sort_by(1), 
+                        sort_by(1), 
                         to_value_1(=),to_value_2(=),
                         source('not_known')
                     ] ).
@@ -29,6 +29,8 @@ csv_ids_map_defaults( [ cnm_transform(=),dir('.'),
 % If Mtx is ground, then CsvF is not read, otherwise is bound to the read-in rows from MtxF. Mtx allows for chain calls on same CsvF.
 %
 % Options
+%   * db(Db)
+%     used by map_predicate_name/4 to produce the name
 %   * cnm_transform(Ctr=true)  
 %     call which transforms column names
 %   * datetime(DnDt)
@@ -47,8 +49,6 @@ csv_ids_map_defaults( [ cnm_transform(=),dir('.'),
 %     also known is sqlite
 %   * map_prefix(MapPfx=true)
 %     shall map prefix be included 
-%   * prefix(Pfx='')
-%     include this prefix after map_ component if given (usual db name)
 %   * source(Src='not_known'
 %     source info tag
 %   * sort_by(Sby=1)

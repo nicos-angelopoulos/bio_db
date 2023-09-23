@@ -13,7 +13,8 @@ map_predicate_name_defaults( [db(hgnc),org(homs)] ).
 %
 %==
 % ?- map_predicate_name( prosqlite, 'GeneID', Pname, [] ).
-% Pname = prosqlite_geneid.
+%
+% Pname = hgnc_homs_prosqlite_geneid.
 % 
 % ?- map_predicate_name( prosqlite, 'GeneID', Pname, [predicate(what)] ).
 % Pname = what.

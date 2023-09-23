@@ -66,6 +66,8 @@ Opts
  * map_prefix(Mfx)
    if present is passed on csv_ids_map/6, else their default applies
 
+Opts are passed to url_file_local_date_mirror/3.
+
 ==
 ?- std_maps_hgnc.
 ?- cd( '$local/../work/db/maps/hgnc' ).
@@ -91,8 +93,7 @@ std_maps_hgnc( Args ) :-
     options( [db(Db),hgnc_file(UrlF),debug_url(Ubg)], Opts ),
     Upts = [url_base(Db),url_file(UrlF),debug(Ubg)],
     bio_db_source_url( SrcUrl, Upts ),
-    ( options(iactive(false),Opts) -> WgVerb=false; WgVerb=true ),
-    url_file_local_date_mirror( SrcUrl, Dir, [debug(true),date(prefix),interface(wget),verb(WgVerb)] ),
+    url_file_local_date_mirror( SrcUrl, Dir, [debug(true),date(prefix),interface(wget)|Opts] ),
     working_directory( Old, Dir ),
     % HgncTxtF = 'hgnc_complete_set.txt',
     % GzF = 'hgnc_complete_set.txt.gz',

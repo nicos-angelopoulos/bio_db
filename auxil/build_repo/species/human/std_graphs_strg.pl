@@ -218,8 +218,7 @@ std_graph_string_download_string( LocalFile, _From, Self, _Opts ) :-
      !.
 std_graph_string_download_string( Local, Remote, Self, Opts ) :-
      debuc( Self, 'Downloading from: ~p', Remote ),
-     ( options(iactive(false),Opts) -> Verb=false; Verb=true ),
-     url_file_local_date_mirror( Remote, Local, [iface(wget),verb(Verb)] ),
+     url_file_local_date_mirror( Remote, Local, [iface(wget)|Opts] ),
      debuc( Self, '... to local file: ~p', Local ).
 
 

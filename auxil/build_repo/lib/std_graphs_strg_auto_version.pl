@@ -24,7 +24,7 @@ std_graphs_strg_auto_version( VerAtm, Args ) :-
 
     % load_html( 'https://string-db.org/', Idx, [] ),
     Self = std_graphs_strg_auto_version,
-
+    options_append( Self, Args, Opts ),
     ( options(iactive(false),Opts) ->
           @ wget('--no-verbose','-O','/tmp/index.html','https://string-db.org')
           ;

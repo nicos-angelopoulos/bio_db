@@ -67,7 +67,7 @@ std_graphs_gont( Args ) :-
     %
     absolute_file_name( bio_db_build_downloads(gont), DnDir ),
     ( options(iactive(false),Opts) -> WgVerb=false; WgVerb=true ),
-    url_file_local_date_mirror( Url, DnDir, [debug(true),verb(WgVerb)] ),
+    url_file_local_date_mirror( Url, DnDir, Opts ),
     debuc( Self, 'Dnload done: ~w', [DnDir] ),
     working_directory( Old, DnDir ),
     /* here new code */

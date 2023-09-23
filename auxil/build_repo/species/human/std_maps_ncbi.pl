@@ -59,7 +59,6 @@ maps_ncbi_ncbi_gont :-
      ncbi_dnload( Dir ),
      ncbi_repo( Repo ),
      os_path( Repo, 'gene2go.gz', Url ),
-
      url_file_local_date_mirror( Url, Dir, [debug(true),interface(wget)] ),
      working_directory( Old, Dir ),
      @ rm( -f, gene2go_hs ),
@@ -211,7 +210,7 @@ std_maps_ncbi( Args ) :-
      options( [ncbi_base(NcbiB),ncbi_genes_file(GnsF),debug_url(Ubg)], Opts ),
      Upts = [url_base(NcbiB),url_file(GnsF),debug(Ubg)],
      bio_db_source_url( Url, Upts ),
-     url_file_local_date_mirror( Url, NcbiD, interface(wget) ),
+     url_file_local_date_mirror( Url, NcbiD, [interface(wget)|Opts] ),
      % file_base_name( Url, RemB ),
      working_directory( Old, NcbiD ),
      MapsD = maps,

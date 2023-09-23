@@ -89,8 +89,7 @@ std_maps_gont( Args ) :-
     options( [goa_base(GoaB),goa_file(GoaF),debug_url(Ubg)], Opts ),
     Upts = [url_base(GoaB),url_file(GoaF),debug(Ubg)],
     bio_db_source_url( Url, Upts ),
-    ( options(iactive(false),Opts) -> WgVerb=false; WgVerb=true ),
-    url_file_local_date_mirror( Url, DnDir, verb(WgVerb) ),
+    url_file_local_date_mirror( Url, DnDir, Opts ),
 
     @ gunzip( --force, -k, GoaF ),
     file_name_extension( GoaHs, gz, GoaF ),
@@ -104,7 +103,6 @@ std_maps_gont( Args ) :-
     gaf_gont_symb( Mtx, Self, NonSymbs, MultSymbs, NewRows ),
     % fixme: make the messages more informative
     debuc( Self, length, [non_symboled,multi_symboled]/[NonSymbs,MultSymbs] ),
-
     sort( NewRows, OrdRows ),
     mtx( 'maps/gont_homs_gont_symb.csv', OrdRows ),
     GSopts = [predicate_name(gont_homs_gont_symb)],
@@ -115,20 +113,17 @@ std_maps_gont( Args ) :-
     bio_db_dnt_times( GoaF, UrlDntSt, _DntEnd ),
     AddOpts = [source(Url),datetime(UrlDntSt)],
     bio_db_add_infos_to( [header(row('GO Term','Evidence','HGNC Symbol'))|AddOpts], 'maps/gont_homs_gont_symb.pl' ),
-    
     findall( row(Symb,Evid,Gont), member(row(Gont,Evid,Symb),OrdRows), SGRows ),
     sort( SGRows, OrdSGRows ),
     SGopts = [predicate_name(gont_homs_symb_gont)],
     mtx_prolog( OrdSGRows, 'maps/gont_homs_symb_gont.pl', SGopts ),
     bio_db_add_infos_to( [header(row('HGNC Symbol','Evidence','GO Term'))|AddOpts], 'maps/gont_homs_symb_gont.pl' ),
-    
     debuc( Self, 'Building term to name map', true ),
-
     options( [obo_base(OboB),obo_file(OboF),debug_url(Ubg)], Opts ),
     Upts = [url_file(OboF),url_base(OboB),debug(Ubg)],
     bio_db_source_url( OboUrl, Upts ),
     absolute_file_name( bio_db_build_downloads(gont), DnDir ),
-    url_file_local_date_mirror( OboUrl, DnDir, [debug(true),verb(WgVerb)] ),
+    url_file_local_date_mirror( OboUrl, DnDir, Opts ),
     debuc( Self, 'Dnload done: ~w', [DnDir] ),
     go_obo( OboF, GoObo),
     go_obo_non_obs( GoObo, GoOboCurr ),

@@ -84,7 +84,7 @@ std_maps_pros( Args ) :-
      Upts = [url_base(ProsB),url_file(ProsF),debug(Ubg)],
      bio_db_source_url( Url, Upts ),
 
-	UrlOpts = [debug(true),interface(wget),file(ProsF),ext('tar.gz')],
+	UrlOpts = [debug(true),interface(wget),file(ProsF),ext('tar.gz')|Opts],
 	url_file_local_date_mirror( Url, DnDir, UrlOpts ),
 	bio_db_dnt_times( ProsF, DnSt, _DnEn ),
 	debuc( Self, 'Prosite local file: ~p', ProsF ),

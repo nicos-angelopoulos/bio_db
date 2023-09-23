@@ -12,17 +12,21 @@
 :- lib(stoics_lib:date_two_digit_dotted/1).
 :- lib(stoics_lib:datime_two_digit_dotted/1).
 
-url_file_local_date_mirror_defaults( [  date(postfix), 
-                                        debug(false),
-                                        file(_), 
-                                        interface(prolog),
-                                        link_stem(true),
-                                        make_path(true), 
-                                        replace_todays(false), 
-                                        stamp(date),ext(_),
-                                        record_time(true), 
-                                        verb(true)
-                                     ] ).
+url_file_local_date_mirror_defaults( Args, Defs ) :-
+                                  (memberchk(iactive(false),Args) -> Verb=false; Verb=true),
+                                  Defs = [  date(postfix), 
+                                            debug(false),
+                                            file(_), 
+                                            iactive(true),
+                                            interface(prolog),
+                                            link_stem(true),
+                                            make_path(true), 
+                                            replace_todays(false), 
+                                            stamp(date),ext(_),
+                                            record_time(true), 
+                                            verb(Verb)
+                                         ],
+                                  ).
 
 %% url_file_local_date_mirror( +Url, +LocalD ).
 %% url_file_local_date_mirror( +Url, +LocalD, +Opts ).
@@ -47,6 +51,9 @@ url_file_local_date_mirror_defaults( [  date(postfix),
 %  * file(LocF)    
 %    if free variable, returns the local file name (basename only). if ground it is taken as the local output file.
 %  
+%  * iactive(Iact=true)
+%    if =false= is given, default value of Verb changes to =false=
+% 
 %  * interface(Iface=prolog)  
 %    alternatively you can use wget (works for anonymous ftps)
 %    
@@ -66,7 +73,8 @@ url_file_local_date_mirror_defaults( [  date(postfix),
 %      or datetime if you want to include time (up to and including minutes)
 %  
 %  * verb(Verb=true)
-%      only implemented for wget currently. Alt values =false= (alias =no=) and =quiet= (stricter)
+%      only implemented for wget currently. Alt values =false= (alias =no=) and =quiet= (stricter). 
+%      When =|Iact=false|= default value of Verb changes to =false=
 %
 %==
 % ?- debug(url_file_local_date_mirror).

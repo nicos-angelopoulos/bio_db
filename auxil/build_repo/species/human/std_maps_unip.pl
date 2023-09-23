@@ -82,8 +82,7 @@ std_maps_unip( Args ) :-
      options( [db(Db),unip_file_sele(UniSF),unip_file_full(UniFF),debug_url(Dbg)], Opts ),
      Upts = [db(Db),url_file(UniFF),debug(Dbg)],
      bio_db_source_url( Url, Upts ),
-    ( options(iactive(false),Opts) -> WgVerb=false; WgVerb=true ),
-	UrlOpts = [debug(true),interface(wget),file(File),verb(WgVerb)|Opts],
+	UrlOpts = [debug(true),interface(wget),file(File)|Opts],
 	url_file_local_date_mirror( Url, DnDir, UrlOpts ),
 	% cd( bio_dn_root(uniprot) ),
 	% os_rm_rf( maps ), % don't do that, mouse puts stuff there too
@@ -113,7 +112,7 @@ std_maps_unip( Args ) :-
      Tpts = [db(Db),url_file(UniSF),debug(Dbg)],
      bio_db_source_url( TremUrl, Tpts ),
      %
-	TrUrlOpts = [debug(true),interface(wget),file(TremFile),verb(WgVerb)|Opts],
+	TrUrlOpts = [debug(true),interface(wget),file(TremFile)|Opts],
 	url_file_local_date_mirror( TremUrl, DnDir, TrUrlOpts ),
 	bio_db_dnt_times( TremFile, TrDnDt, _TrDnEn ),
      debuc( Self, 'File: ~w, dnt_start: ~w', [TremFile,TrDnDt] ),

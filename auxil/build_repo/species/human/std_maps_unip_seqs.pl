@@ -154,7 +154,7 @@ unip_hs_seqs_file( Url, DnDir, Hdr, Opts ) :-
 	bio_db_dnt_times( SprotF, DnSt, _DnEn ),
 	IdsOpts = [ % delim(','),
                  delim(0',),cnm_transform(unip_seqs_stem_token(SrcStem)), prefix(unip),
-	            source(Url), header(Hdr), datetime(DnSt)
+	            source(Url), header(Hdr), datetime(DnSt)| Opts
 	          ],
 	csv_ids_map( SeqF, 'Protein', 'Sequence', _, MapF, IdsOpts ), 
     debuc( Self, pwd, false ),

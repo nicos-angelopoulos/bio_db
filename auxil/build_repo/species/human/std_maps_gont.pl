@@ -26,6 +26,7 @@
 :- lib(go_obo/2).
 :- lib(link_to_bio_sub/2).
 :- lib(bio_db_dnt_times/3).
+:- lib(bio_db_source_url/2).
 :- lib(url_file_local_date_mirror/3).
 :- lib(bio_db_add_infos/1).  % bio_db_add_infos_to/2
 :- lib(go_id/2).

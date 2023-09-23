@@ -72,8 +72,9 @@ maps_ncbi_ncbi_gont :-
 maps_ncbi_rnuc_symb( Self ) :-
      debuc( by_unix ),
      ncbi_dnload( Dir ),
-     ncbi_repo( Repo ),
-     ncbi_humanise_data( gene2accession, Dir, Repo, Old, HsStem, HsUrl, HsDnDt ),
+     % ncbi_repo( Repo ),
+     bio_db_source_base_url( ncbi, NcbiRepo ),
+     ncbi_humanise_data( gene2accession, Dir, NcbiRepo, Old, HsStem, HsUrl, HsDnDt ),
 
      file_name_extension( HsStem, tmp, TmpF ),
      @ mv( -f, HsStem, TmpF ),
@@ -118,6 +119,7 @@ maps_ncbi_rnuc_symb( Self ) :-
      link_to_bio_sub(ncbi, DNAF ),
      working_directory( _, Old ).
 
+/** %unigene is no longer maintained as of Feb.2019
 maps_ncbi_unig_ncbi :-
      ncbi_dnload( Dir ),
      ncbi_repo( Repo ),
@@ -135,6 +137,7 @@ maps_ncbi_unig_ncbi :-
      working_directory( _, maps ),
      link_to_bio_sub( ncbi, OutF ), 
      working_directory( _, Old ).
+*/
 
 ncbi_humanise_data( Stem, Dir, Repo, Old, HsStem, Url, DnDt ) :-
      file_name_extension( Stem, gz, GzF ),

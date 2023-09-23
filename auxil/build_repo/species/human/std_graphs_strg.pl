@@ -105,10 +105,14 @@ std_graphs_strg( Args ) :-
      absolute_file_name( bio_db_build_downloads(strg), Parent ),
      % absolute_file_name( baio_db_downloads(string/Bname), LocalFile ),
      % directory_file_path( Parent, _BnameAgain, LocalFile ),
-     directory_file_path( Parent, Bname, LocalFile ),
+     % directory_file_path( Parent, Bname, LocalFile ),
      os_make_path( Parent, debug(true) ),
-     std_graph_string_download_string( LocalFile, From, Self, Opts ),
+     % std_graph_string_download_string( LocalFile, From, Self, Opts ),
+     % std_graph_string_download_string( Parent, From, Self, Opts ),
+     debuc( Self, 'Downloading from: ~p', From ),
+     url_file_local_date_mirror( From, Parent, [iface(wget)|Opts] ),
      working_directory( Here, Parent ),
+     % here we don't double check that url_file_local_date_mirror/3 produces the right basename file (ie Bname)
      @ gunzip( -k, Bname ),  % keeps .gz file
      % @ gunzip( '9606.protein.links.v10.txt.gz' ),
      EnspPn = strg_homs_edge_ensp,
@@ -213,6 +217,7 @@ sort_four( X, Y, A, B ) :-
      A = Y, B = X.
 sort_four( A, B, A, B ).
 
+/*
 std_graph_string_download_string( LocalFile, _From, Self, _Opts ) :-
      exists_file( LocalFile ),
      debuc( Self, 'Using existing local string file: ~p', LocalFile ),
@@ -221,6 +226,7 @@ std_graph_string_download_string( Local, Remote, Self, Opts ) :-
      debuc( Self, 'Downloading from: ~p', Remote ),
      url_file_local_date_mirror( Remote, Local, [iface(wget)|Opts] ),
      debuc( Self, '... to local file: ~p', Local ).
+     */
 
 
 /*

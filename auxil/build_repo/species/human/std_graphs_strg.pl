@@ -36,6 +36,7 @@
 std_graphs_strg_defaults( Args, Defs ) :-
      Defs = [  db(strg),
                debug(true),
+               debug_url(false),
                iactive(true),
                relation(links),
                org(human)

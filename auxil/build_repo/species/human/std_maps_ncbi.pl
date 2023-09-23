@@ -96,6 +96,7 @@ maps_ncbi_rnuc_symb( Self ) :-
                  to_value_1(de_versionise),
                  to_value_2(is_a_symbol),
                  datetime(HsDnDt), source(HsUrl), header(row('RNA Nucleotide','HGNC Symbol'))
+                 | Opts
      ],
      RNAnucl = 'RNA_nucleotide_accession.version',
      debuc( Self, 'Csv Map for: ~w vs ~w', [RNAnucl,'Symbol'] ),
@@ -105,7 +106,7 @@ maps_ncbi_rnuc_symb( Self ) :-
      DNAOpts = [ cnm_transform(ncbi_gene2asseccion_cnms), prefix(ncbi),
                  to_value_1(de_versionise),
                  to_valuse_2(is_a_symbol),
-                 datetime(HsDnDt), source(HsUrl), header(row('DNA Nucleotide','HGNC Symbol'))
+                 datetime(HsDnDt), source(HsUrl), header(row('DNA Nucleotide','HGNC Symbol')) | Opts
      ],
      GENnucl = 'genomic_nucleotide_accession.version', 
      debuc( Self, 'Csv Map for: ~w vs ~w', [GENnucl,'Symbol'] ),
@@ -170,7 +171,8 @@ ncbi_gene2asseccion_cnms( 'genomic_nucleotide_accession.version', dnuc ).
 ncbi_gene2asseccion_cnms( 'Symbol', symb ).
 
 std_maps_ncbi_defaults( Defs ) :-
-                                   Defs = [ debug(true),
+                                   Defs = [ db(ncbi),
+                                            debug(true),
                                             debug_url(false),
                                             iactive(true),
                                             ncbi_base(ncbi),
@@ -239,15 +241,17 @@ std_maps_ncbi( Self, File, Url, DnDt ) :-
      % csv_filter_by_column( New, tax_id, =(9606), HS ),
      mtx_column_values_select( New, tax_id, 9606, HS, _, true ),
     debuc( Self, length, hs_len/HS ),
-     Lens = [prefix(ncbi),to_value_1(pos_integer),to_value_2(pfx_by('ENS')),datetime(DnDt),source(Url)],
-     Rens = [prefix(ncbi),to_value_2(pos_integer),to_value_1(pfx_by('ENS')),datetime(DnDt),source(Url)],
+     Lens = [prefix(ncbi),to_value_1(pos_integer),to_value_2(pfx_by('ENS')),datetime(DnDt),source(Url)|Opts],
+     Rens = [prefix(ncbi),to_value_2(pos_integer),to_value_1(pfx_by('ENS')),datetime(DnDt),source(Url)|Opts],
      csv_ids_map( File, ncbi, ensg, HS, GEnsGF, [header(row('Entrez ID','Ensembl Gene'))|Lens] ),
      csv_ids_map( File, ensg, ncbi, HS, EnsGGF, [header(row('Ensembl Gene','Entrez ID'))|Rens] ),
      % need to ensure prots are of ENSP  there are - in some entries
      Lenp = [prefix(ncbi),to_value_1(pos_integer),to_value_2(pfx_by_de_v('ENS')),datetime(DnDt),source(Url)],
-     csv_ids_map( File, ncbi, ensp, HS, GEnsPF, [header(row('Entrez ID','Ensembl Protein'))|Lenp] ),
+     append( Lenp, Opts, ALenp ),
+     csv_ids_map( File, ncbi, ensp, HS, GEnsPF, [header(row('Entrez ID','Ensembl Protein'))|ALenp] ),
      Renp = [prefix(ncbi),to_value_2(pos_integer),to_value_1(pfx_by_de_v('ENS')),datetime(DnDt),source(Url)],
-     csv_ids_map( File, ensp, ncbi, HS, EnsPGF, [header(row('Ensembl Protein','Entrez ID'))|Renp] ),
+     append( Renp, Opts, ARenp ),
+     csv_ids_map( File, ensp, ncbi, HS, EnsPGF, [header(row('Ensembl Protein','Entrez ID'))|ARenp] ),
      maplist( link_to_bio_sub(ncbi), [GEnsGF,EnsGGF,GEnsPF,EnsPGF] ).
 
 pos_integer( Numb, Numb ) :-

@@ -183,6 +183,9 @@ std_maps_ncbi_defaults( Defs ) :-
 
 Download latest NCBI gene to ensembl map file and convert it to a few standard maps.
 
+Opts
+  * db(Db)
+    source database
   * debug(Dbg=true)
     informational, progress messages
   * debug_url(Ubg=false)

@@ -6,18 +6,45 @@
 :- lib(by_unix).
 :- lib(stoics_lib:message_report/3).
 
+std_graphs_strg_auto_version_defaults([iactive(true)]).
+
 /**  std_graphs_strg_auto_version(-Vers, +Opts)
 
 Scrobes the current version off the STRING website.
 
+Opts
+  * iactive(Iact=true)
+    when =false= pass --no-verbose to the wget call
+
 ==
 ?- std_graphs_strg_auto_version( Vers, true ).
-Vers = '10.5'.
+ Sending, name: wget, args: [-O,/tmp/index.html,https://string-db.org], opts:[].
+--2023-09-23 23:14:10--  https://string-db.org/
+Resolving string-db.org (string-db.org)... 172.66.40.141, 172.66.43.115, 2606:4700:3108::ac42:288d, ...
+Connecting to string-db.org (string-db.org)|172.66.40.141|:443... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: unspecified [text/html]
+Saving to: ‘/tmp/index.html’
+
+/tmp/index.html                          [ <=>                                                                 ]  94.46K  --.-KB/s    in 0.06s   
+
+2023-09-23 23:14:11 (1.66 MB/s) - ‘/tmp/index.html’ saved [96722]
+
+% Auto detected version: 12.0
+Vers = '12.0'.
+
+
+?- std_graphs_strg_auto_version( Vers, iactive(false) ).
+% Sending, name: wget, args: [--no-verbose,-O,/tmp/index.html,https://string-db.org], opts:[].
+2023-09-23 23:14:33 URL:https://string-db.org/ [96722] -> "/tmp/index.html" [1]
+% Auto detected version: 12.0
+Vers = '12.0'.
+
 ==
 
 @author nicos angelopoulos
 @version  0.1 2018/11/09
-@version  0.2 2023/09/23
+@version  0.2 2023/09/23,  added options (iactive(Iact))
 
 */
 std_graphs_strg_auto_version( VerAtm, Args ) :-

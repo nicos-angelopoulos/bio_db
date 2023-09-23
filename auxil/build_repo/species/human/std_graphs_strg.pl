@@ -33,7 +33,7 @@
 :- debuc(std_graphs_strg).  % fixme: you probably don't need this. 
 % now there is an option...
 
-std_graphs_strg_defaults( Defs ) :-
+std_graphs_strg_defaults( Args, Defs ) :-
      Defs = [  db(strg),
                debug(true),
                iactive(true),
@@ -41,7 +41,7 @@ std_graphs_strg_defaults( Defs ) :-
                org(human)
                |T
             ],
-    ( std_graphs_strg_auto_version(Vers) -> % let options/2 do the erroring
+    ( std_graphs_strg_auto_version(Vers,Args) -> % let options/2 do the erroring
                                             % because user might provide it
         T = [string_version(Vers)]
         ;

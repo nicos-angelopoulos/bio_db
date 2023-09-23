@@ -28,7 +28,12 @@ cd ${PACKS_DIR}/bio_db
 git pull
 cd auxil/build_repo/species
 
-srun upsh std_repo iactive=false in_subs=true
+## run everything
+## srun upsh std_repo iactive=false in_subs=true
+
+## only run human:
+cd human
+srun upsh std_human iactive=false in_subs=true
 
 echo `date`
 sleep 10

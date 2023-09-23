@@ -26,6 +26,7 @@
 :- lib(csv_ids_map/6).
 :- lib(link_to_bio_sub/2).
 :- lib(bio_db_dnt_times/3).
+:- lib(bio_db_source_url/2).
 :- lib(url_file_local_date_mirror/3).
 :- lib(ens_fa_peptide_gene_rows/2).  % /2, fixme: should be more local
 

@@ -35,7 +35,7 @@ std_chicken_graphs_strg_defaults( Defs ) :-
                          debug(true),
                          iactive(true),
                          org(chicken),
-                         relation(Rel=links),
+                         relation(Rel=links)
                          |  T  
                       ],
      ( std_graphs_strg_auto_version(Vers) ->     % let options/2 do the erroring, cause user might provide it

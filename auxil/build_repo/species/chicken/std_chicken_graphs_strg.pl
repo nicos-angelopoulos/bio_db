@@ -93,20 +93,22 @@ std_chicken_graphs_strg( Args ) :-
     ( number(VersionPrv) -> atom_number(Version,VersionPrv); Version = VersionPrv ),
     debuc( Self, 'Version: ~w', Version ),
     bio_db_string_version_base_name( Version, Bname, Remote, Opts ),
-    bio_db_string_version_base_name( Version, InfoBname, InfoFrom, [relation(info)|Opts] ),
+    bio_db_string_version_base_name( Version, _InfoBnameVanilla, InfoFrom, [relation(info)|Opts] ),
     % std_graphs_string_version_base_name( Version, Bname, InfoBname, From, InfoFrom ),
     debuc( Self, 'Base name: ~w', Bname ),
     absolute_file_name( bio_db_build_downloads(strg), Parent ),
     % absolute_file_name( baio_db_downloads(string/Bname), LocalFile ),
     % directory_file_path( Parent, _BnameAgain, LocalFile ),
-    directory_file_path( Parent, Bname, LocalFile ),
+    % directory_file_path( Parent, Bname, LocalFile ),
     os_make_path( Parent, debug(true) ),
-    std_graph_string_download_string( LocalFile, From, Self, Opts ),
+    url_file_local_date_mirror( Remote, Parent, [file(DnF),dnt(true),iface(wget)|Opts] ),
+    % std_graph_string_download_string( LocalFile, From, Self, Opts ),
     working_directory( Here, Parent ),
-    @ gunzip( -k, Bname ),  % keeps .gz file
+    debuc( Self, 'Download name: ~w', DnF ),
+    @ gunzip( -k, DnF ),  % keeps .gz file
     % @ gunzip( '9606.protein.links.v10.txt.gz' ),
     EnspPn = strg_galg_edge_ensp,
-    file_name_extension( TxtF, gz, Bname ),
+    file_name_extension( TxtF, gz, DnF ),
     debuc( Self, 'Directory: ~p', [Parent] ),
     Mess1 = 'Converting string file: ~p, to Prolog',
     debuc( Self, Mess1, [TxtF] ),
@@ -124,8 +126,9 @@ std_chicken_graphs_strg( Args ) :-
     consult( EnspPn:EnspRel ),
      
     % info file connect protein to SYmbol
-    directory_file_path( Parent, InfoBname, LocalInfoFile ),
-    std_graph_string_download_string( LocalInfoFile, InfoFrom, Self, Opts ),
+    % directory_file_path( Parent, InfoBname, LocalInfoFile ),
+    % std_graph_string_download_string( LocalInfoFile, InfoFrom, Self, Opts ),
+    url_file_local_date_mirror( InfoFrom, Parent, [file(InfoBname),dnt(true),iface(wget)|Opts] ),
     @ gunzip( -k, InfoBname ),  % keeps .gz file
     % Map = map_strg_gallus_ensp_symb,
     Map = strg_galg_ensp_symb,
@@ -151,7 +154,7 @@ std_chicken_graphs_strg( Args ) :-
     length( SymbEdges, SymbEdgesLen ),
     debuc( Self, 'unique symbol edges (gallus): ~w', [SymbEdgesLen] ),
     EdgeSymbsF = 'graphs/strg_galg_edge_symb.pl',
-    bio_db_dnt_times( Bname, DnDt, _EndDt ),
+    bio_db_dnt_times( DnF, DnDt, _EndDt ),
     EdgeSymbsInfos = [ source-From,datetime-DnDt,header-header('Symbol','Symbol',weight),
                        data_types-data_types(atom,atom,integer)
                      ],
@@ -235,6 +238,7 @@ sort_four( X, Y, A, B ) :-
     A = Y, B = X.
 sort_four( A, B, A, B ).
 
+/*
 std_graph_string_download_string( LocalFile, _From, Self, _Opts ) :-
     exists_file( LocalFile ),
     debuc( Self, 'Using existing local string file: ~p', LocalFile ),
@@ -244,6 +248,7 @@ std_graph_string_download_string( Local, Remote, Self, Opts ) :-
     % url_file( Remote, Local, [dnt(true),iface(wget),verb(Verb)] ),
     url_file_local_date_mirror( Remote, Local, [dnt(true),iface(wget)|Opts] ),
     debuc( Self, '... to local file: ~p', Local ).
+    */
 
 std_graphs_string_version_base_name( VersionPrv, Bname, InfoBname, Remote, InfoRemote ) :-
     ( atom_concat(v,Version,VersionPrv)->true;Version=VersionPrv ),

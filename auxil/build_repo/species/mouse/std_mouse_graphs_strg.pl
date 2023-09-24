@@ -29,9 +29,10 @@
 % local libs & sources
 :- lib(link_to_bio_sub/3).
 :- lib(bio_db_dnt_times/3).
-:- lib(bio_db_add_infos/1).     % bio_db_add_infos_to/2.
-:- lib(std_graphs_strg_auto_version/1).
+:- lib(bio_db_add_infos/1).                  % bio_db_add_infos_to/2.
 :- lib(portray_informed_clauses/4).
+:- lib(std_graphs_strg_auto_version/1).
+:- lib(bio_db_string_version_base_name/4).
 
 :- debuc(by_unix).
 :- debuc(std_graphs_strg). % fixme:
@@ -39,7 +40,7 @@
 std_mouse_graphs_strg_defaults( Args, Defs ) :-
                Defs = [
                          db(strg),
-                         debug(true)
+                         debug(true),
                          debug_url(false),
                          iactive(true),
                          org(mouse),

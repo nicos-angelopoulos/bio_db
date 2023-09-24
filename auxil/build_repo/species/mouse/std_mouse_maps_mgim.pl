@@ -99,7 +99,6 @@ std_mouse_maps_mgim( Args ) :-
     Self = std_mouse_maps_mgim,
     options_append( Self, Args, Opts ),
     bio_db_build_aliases( Opts ),
-    trace,
     mgim_get_report( symb, Self, SymbUrl, DnDir, _SymbInF, SymbMtx, SymbDnt, Opts ),
     working_directory( Old, DnDir ),
     os_make_path( maps ),   % fixme: make sure it doesn't trip if dir exists already

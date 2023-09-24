@@ -9,6 +9,7 @@
 :- ensure_loaded('bio_db_build_aliases' ).  % /1, also sets the lib dir
 
 % local libs & sources
+:- lib(org_ense_dir/3).         
 :- lib(bio_db_build_messages/0).             % loads the error messages pretty printing
 :- lib(bio_db_source_base_url/2).
 
@@ -70,7 +71,8 @@ bio_db_source_url( Url, Args ) :-
      ),
      bio_db_source_url_base( BuTkn, BsUrl, Opts ),
      options( url_file(SrcFPrv),  Opts ),
-     bio_db_source_url_file( SrcFPrv, BsUrl, SrcF ),
+     options( org(Org), Opts ),
+     bio_db_source_url_file( SrcFPrv, BsUrl, Org, SrcF, Opts ),
      atom_concat( BsUrl, SrcF, Url ),
      options( url_type(Utype), Opts ),
      debuc( Self, '~w URL: ~p', [Utype,Url] ).
@@ -85,15 +87,28 @@ bio_db_source_url_base( Url, BaseUrl, _Opts ) :-
 bio_db_source_url_base( Url, _BaseUrl, Opts ) :-
      throw( url_base(not_a(Url)), [bio_db:bio_db_source_url/2|Opts] ). 
 
-bio_db_source_url_file( call(Goal), BsUrl, SrcF ) :-
+bio_db_source_url_file( call(Goal), BsUrl, Org, SrcF, Opts ) :-
      !,
-     call( Goal, BsUrl, SrcF ).
-bio_db_source_url_file( SrcF, _BsUrl, SrcF ).
+     call( Goal, BsUrl, Org, SrcF, [bio_db_build:bio_db_source_url/2|Opts] ).
+bio_db_source_url_file( SrcF, _BsUrl, _Org, SrcF, _Opts ).
+
+ense_url_file( Url, Org, SrcF, Opts ) :-
+     org_ense_dir( Org, Eir, Opts ),
+     Found @@ curl( -l, '--no-progress-meter', Url ),
+     findall( HsGtf-Amb-Rel, (member(HsGtf,Found),at_con([Eir,GRChTkn,RelAtm,gtf,gz],'.',HsGtf),
+                         atom_concat('GRCh',AmbAtm,GRChTkn),
+                         atom_number(AmbAtm,Amb), atom_number(RelAtm,Rel)
+                        ),
+                            HsGtfs ),
+     ( HsGtfs = [SrcF-_Amb-_Rel] ->
+          true
+          ;
+          throw( non_unique_auto_ided_ense_gtf_files(Url,HsGtfs) )
+     ).
 
 ense_homs_url_file( Url, SrcF ) :-
      Found @@ curl( -l, '--no-progress-meter', Url ),
      % Homo_sapiens.GRCh38.101.gtf.gz
-     write( found(Found) ), nl,
      findall( HsGtf-Amb-Rel, (member(HsGtf,Found),at_con(['Homo_sapiens',GRChTkn,RelAtm,gtf,gz],'.',HsGtf),
                          atom_concat('GRCh',AmbAtm,GRChTkn),
                          atom_number(AmbAtm,Amb), atom_number(RelAtm,Rel)

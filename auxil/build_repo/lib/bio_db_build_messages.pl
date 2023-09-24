@@ -1,6 +1,8 @@
 
 :- use_module(library(lib)).
 
+:- lib(pack_errors).
+
 /** bio_db_build_messages.
 
 Doc predicate, for pack(pack_errors) messages.
@@ -21,3 +23,6 @@ bio_db_build_messages.
 
 pack_errors:message( base_url(not_a(NaUrl)) ) -->
     ['Not a valid URL token (1st arg of bio_db_source_base_url/2) or Url. Got: ~w.'-[NaUrl]].
+
+pack_errors:message( org_ense_miss(Org,Eir) ) -->
+    ['Not a valid organism, for mapping to an Ensembl directory: ~w (2nd arg: ~w)'-[Org,Eir]].

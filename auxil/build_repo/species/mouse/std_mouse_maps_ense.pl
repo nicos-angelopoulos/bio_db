@@ -24,7 +24,15 @@
 
 :- debuc(std_mouse_maps_ense).
 
-std_maps_ense_defaults(debug(true)).
+std_maps_ense_defaults( Defs ) :-
+                                   Defs = [  db(ense),
+                                             debug(true),
+                                             debug_url(false),
+                                             debug_fetch(true),
+                                             ense_musm_base(ense_musm),
+                                             ense_musm_file(call(ense_url_file)),   % make this common to all ense's 
+                                             org(mouse)
+                                          ].
 
 /** std_mouse_maps_ense( +Opts ).
 
@@ -35,8 +43,25 @@ sequences.
 
   * ense: the database abbv.
 
-==
+Opts
+  * db(ense)
+    source database
+  * debug(Dbg=true)
+    informational, progress messages
+  * debug_url(Ubg=false)
+    whether to debug the concatenation of the url (via bio_db_source_url/2)
+  * debug_fetch(Ubg=true)
+    whether to debug the fetch of the URL
+  * ense_homs_base(Eoms=ense_homs)
+    Url or bio_db_source_base_url/2 token for download diretory
+  * ense_homs_file(Eile=call(ense_homs_url_file))
+    the file name  for the download (appended to Ufx@bio_db_source_base_url(gont_obo,Ufx))- or call that produces it
+  * iactive(Iact=true)
+    whether the session is interactive, otherwise wget gets --no-verbose
+  * release(Release)
+    release number
 
+==
 date ; pupsh std_mouse_maps_ense.pl ; date
 Tue 27 Dec 14:58:14 GMT 2022
 % Building at: '/home/nicos/.local/share/swi-prolog/pack/Downloads/bio_db_repo-22.12.27'
@@ -70,9 +95,9 @@ std_mouse_maps_ense( Args ) :-
     bio_db_build_aliases( Opts ),
     ensure_loaded(mgim:bio_db_build_downloads('mgim/maps/mgim_musm_mgim_symb')),
     ensure_loaded(mgim:bio_db_build_downloads('mgim/maps/mgim_musm_syno_mgim')),
-	absolute_file_name( bio_db_build_downloads(ense), DnDir ),
-	os_make_path( DnDir ),
-	debuc( Self, 'Downloads dir for ense: ~p', DnDir ),
+    absolute_file_name( bio_db_build_downloads(ense), DnDir ),
+    os_make_path( DnDir ),
+    debuc( Self, 'Downloads dir for ense: ~p', DnDir ),
     FtpDir = 'ftp://ftp.ensembl.org/pub/current_gtf/mus_musculus/',
     Found @@ curl( -l, '--no-progress-meter', FtpDir ),
     findall( MsGtf-Amb-Rel, (

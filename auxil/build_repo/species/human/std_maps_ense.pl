@@ -40,8 +40,9 @@ std_maps_ense_defaults( Defs ) :-
                                             debug(true),
                                             debug_url(false),
                                             ense_homs_base(ense_homs),
-                                            ense_homs_file(call(ense_homs_url_file)),
-                                            iactive(true)
+                                            ense_homs_file(call(ense_url_file)),
+                                            iactive(true),
+                                            org(human)
                                           ].
 
 /** std_maps_ense( +Opts ).

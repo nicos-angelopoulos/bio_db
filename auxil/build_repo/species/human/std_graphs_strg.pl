@@ -201,16 +201,6 @@ std_graph_string_download_string( Local, Remote, Self, Opts ) :-
      */
 
 
-/*
-bio_db_std_string :-
-     Opt = [ csv_read(separator(0' )), predicate_name(hs_strg_edge),
-             rows_transform(maplist(user:de_hs))
-           ],
-     mtx_prolog( bio_dn(strg/'protein.links.hs.txt'), File, Opt ),
-     debuc( _, 'Edges output: ~w', File ),
-     bio_db_std_string_link( File ).
-     */
-
 de_hs( row(HsEnsP1,HsEnsP2,WAtm), row(EnsP1,EnsP2,W) ) :-
      atom_concat( '9606.', EnsP1, HsEnsP1 ),
      atom_concat( '9606.', EnsP2, HsEnsP2 ),

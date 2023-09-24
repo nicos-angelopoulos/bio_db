@@ -10,6 +10,7 @@ std_chicken_maps_reac_defaults( Defs ) :-
 
 Spercialisation of reactome maps for chicken.
 
+==
 ορέστης;build_repo/chicken% date; !!; date 
 date ; pupsh std_chicken_maps_reac.pl ; date
 Tue 27 Dec 12:07:14 GMT 2022
@@ -44,6 +45,7 @@ Tue 27 Dec 12:12:18 GMT 2022
    28564 maps/reac_homs_reac_recn.pl
     2572 maps/reac_homs_reap_repn.pl
   565703 total
+==
 
 @author nicos angelopoulos
 @version  0:1 2022/12/24

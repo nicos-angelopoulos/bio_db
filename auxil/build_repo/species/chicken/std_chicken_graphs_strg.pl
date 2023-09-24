@@ -33,6 +33,7 @@
 std_chicken_graphs_strg_defaults( Args, Defs ) :-
                Defs = [  db(strg),
                          debug(true),
+                         debug_url(false),
                          iactive(true),
                          org(chicken),
                          relation(Rel=links)

@@ -93,16 +93,16 @@ std_mouse_maps_unip( Args ) :-
      os_make_path( maps, debug(true) ),
 
      debuc( Self, 'Dir location: ~p', DnDir ),
-     Rev = [uniprot('MOUSE_10090_idmapping.dat'),org(mouse),f_call(de_vers),interface(prolog),reverse(true)],
+     Rev = [id_map('MOUSE_10090_idmapping.dat'),org(mouse),f_call(de_vers),interface(prolog),reverse(true)],
      map_uniprot( 'Ensembl_PRO', Csv, [EnspF], Rev ),
 
      % Fgnc = [interface(prolog),f_call(de_semi('HGNC'))],
      % map_uniprot( 'HGNC', Csv, [FromHgncF], Fgnc ),
-     Sem = [interface(prolog),f_call(de_semi('MGI')),reverse(true),uniprot('MOUSE_10090_idmapping.dat'),org(mouse)],
+     Sem = [interface(prolog),f_call(de_semi('MGI')),reverse(true),id_map('MOUSE_10090_idmapping.dat'),org(mouse)],
      map_uniprot( 'MGI', Csv, [MgiF], Sem ),
 
-     Ifc = [uniprot('MOUSE_10090_idmapping.dat'),org(mouse),interface(prolog)],
-     Rfc = [uniprot('MOUSE_10090_idmapping.dat'),org(mouse),interface(prolog),reverse(true)],
+     Ifc = [id_map('MOUSE_10090_idmapping.dat'),org(mouse),interface(prolog)],
+     Rfc = [id_map('MOUSE_10090_idmapping.dat'),org(mouse),interface(prolog),reverse(true)],
 
      map_uniprot( 'GeneID', Csv, [EtzF], Ifc ),
      % map_uniprot( 'UniGene', Csv, [UniGF], Ifc ),

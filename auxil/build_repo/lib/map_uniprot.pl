@@ -104,8 +104,8 @@ uniprot_load( Partial, Rows ) :-
 	!,
 	uniprot_load( Partial, Rows ),
 	working_directory( _, Old ).
-uniprot_load( _Partial, _Rows ) :-
-	throw( could_not_locate_uniprot_id_mappings_file ). % fixme
+uniprot_load( Partial, _Rows ) :-
+	throw( could_not_locate_uniprot_id_mappings_file(Partial) ). % fixme
 
 uniprot_load_file( File, Rows ) :-
 	file_name_extension( Stem, gz, File ),

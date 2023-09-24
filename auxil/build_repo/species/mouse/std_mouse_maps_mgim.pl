@@ -23,8 +23,9 @@
 :- lib(csv_ids_map/6).
 :- lib(link_to_bio_sub/4).
 :- lib(bio_db_add_infos/1).  % bio_db_add_infos_file/2.
+:- lib(bio_db_source_url/2).
 
-mgim_url( 'http://www.informatics.jax.org/downloads/reports' ).
+% mgim_url( 'http://www.informatics.jax.org/downloads/reports' ).
 
 % mgim_report_seq('MRK_Sequence.rpt').
 mgim_report(symb, 'MRK_List1').   % List2  only included non-widrawn ones.
@@ -33,8 +34,11 @@ mgim_report(prot, 'MRK_SwissProt_TrEMBL').
 mgim_report(swiss_prot, 'MRK_SwissProt').
 mgim_report(ncbi, 'MGI_EntrezGene').
 
-std_mouse_maps_mgim_defaults( [  debug(true),
+std_mouse_maps_mgim_defaults( [  
+                                 db(mgim),
+                                 debug(true),
                                  iactive(true),
+                                 mgim_file(symb),
                                  org(mouse)
                               ] ).
 
@@ -43,8 +47,12 @@ std_mouse_maps_mgim_defaults( [  debug(true),
 Create bio_db map files from the Mouse Genome Informatics Marker datasets.
 
 Opts
+  * db(Db=mgim)
+    source database
   * debug(Dbg=true)
     informational, progress messages
+  * debug_url(Ubg=false)
+    whether to debug the concatenation of the url (via bio_db_source_url/2)
   * iactive(Iact=true)
     when false, wget reports less
   * org(Org=mouse)
@@ -90,8 +98,8 @@ std_mouse_maps_mgim( Args ) :-
     Self = std_mouse_maps_mgim,
     options_append( Self, Args, Opts ),
     bio_db_build_aliases( Opts ),
-    ( options(iactive(false),Opts) -> WgVerb=false; WgVerb=true ),
-    mgim_get_report( symb, Self, WgVerb, SymbUrl, DnDir, _SymbInF, SymbMtx, SymbDnt ),
+    trace,
+    mgim_get_report( symb, Self, SymbUrl, DnDir, _SymbInF, SymbMtx, SymbDnt, Opts ),
     working_directory( Old, DnDir ),
     os_make_path( maps ),   % fixme: make sure it doesn't trip if dir exists already
     working_directory( _, maps ),
@@ -117,7 +125,7 @@ std_mouse_maps_mgim( Args ) :-
     ChrlHdr =.. [hdr|ChrlHdrArgs],
     bio_db_add_infos_file( ChrlF, [source(SymbUrl),header(ChrlHdr),datetime(SymbDnt)] ),
     % here( DnDir, SymbInF, ChrlF ),
-    mgim_get_report( seq, Self, WgVerb, SeqUrl, DnDir, _SeqRelF, SeqMtx, SeqDnt ),
+    mgim_get_report( seq, Self, SeqUrl, DnDir, _SeqRelF, SeqMtx, SeqDnt, Opts ),
     mtx_column_values_select( SeqMtx, 'Marker Type', 'Gene', GenMtx, _, [] ),
     debuc( Self, dims, gene/GenMtx ),
     GenMtx = [_|GenRows],
@@ -125,13 +133,13 @@ std_mouse_maps_mgim( Args ) :-
     debuc( Self, length, uTs/UTs ),
 	% absolute_file_name( bio_db_downloads(mgim), MgimD ),
     Cims = [cnm_transform(mouse_cnm),to_value_1(pfx_by_num(true,'MGI:')),prefix(mgim),to_value_2(sep_by('|')),
-            source(SeqUrl), datetime(SeqDnt), org(mouse)
+            source(SeqUrl), datetime(SeqDnt) | Opts
            ],
     csv_ids_map( _, 'MGI Marker Accession ID', 'GenBank IDs', GenMtx, GenBMapF, Cims ),
     csv_ids_map( _, 'MGI Marker Accession ID', 'UniProt IDs', GenMtx, UnipMapF, Cims ),
 
     % entezid ( no header !)
-    mgim_get_report( ncbi, Self, WgVerb, NcbiUrl, DnDir, _NcbiRelF, NcbiMtx, NcbiDnt ),
+    mgim_get_report( ncbi, Self, NcbiUrl, DnDir, _NcbiRelF, NcbiMtx, NcbiDnt, Opts ),
     NcbiHdr = hdr('MGI Marker Accession ID','NCBI ID'),
     % EntzOpts = [cnm_transform(mgi_entrez_idx_header),to_value_1(pfx_by_num(true,'MGI:')),prefix(mgim_mouse),to_value_2(atom_number),
     NcbiOpts = [cnm_transform(mgi_ncbi_idx_header),to_value_1(pfx_by_num(true,'MGI:')),prefix(mgim),org(mouse),to_value_2(=),
@@ -173,24 +181,15 @@ std_mouse_maps_mgim( Args ) :-
 mgi_ncbi_idx_header( 1, mgim ).
 mgi_ncbi_idx_header( 9, ncbi ).
 
-/* atom_number/2 does the same, except for exception...
-mgi_entrez_id( '', _ ) :- !, fail.
-mgi_entrez_id( Atom, Number ) :- 
-    atom_number( Atom, Number ),
-    !.
-mgi_entrez_id( Atom, Number ) :- 
-    throw( cannot_entrez_id_this(Atom,Number) ).
-    */
-
-mgim_get_report( Which, Self, Verb, Url, DnDir, RelF, Mtx, DntStamp ) :-
-    mgim_url( Base ),
+mgim_get_report( Which, Self, Url, DnDir, BaseF, Mtx, DntStamp, Opts ) :-
     mgim_report( Which, Stem ),
-    % atomic_list_concat( [Base,'/MRK_',Stem,'.rpt'], Url ),
-    atomic_list_concat( [Base,'/',Stem,'.rpt'], Url ),
+    os_ext( rpt, Stem, Uname ),
+    options_rename( [url_file(Uname)|Opts], [db-url_base,debug_url-debug], Spts, true ),
+    bio_db_source_url( Url, Spts ),
     mgim_dnload_dir( DnDir ),
-    UrlOpts = [debug(true),interface(wget),file(RelF),dnt_stamp(DntStamp),verb(Verb)],
+    UrlOpts = [interface(wget),file(BaseF),dnt_stamp(DntStamp)|Opts],
     url_file_local_date_mirror( Url, DnDir, UrlOpts ),
-    os_path( DnDir, RelF, AbsF ),
+    os_path( DnDir, BaseF, AbsF ),
     mtx( AbsF, Mtx, sep(tab) ),
     debuc( Self, dims, Which/Mtx ).
 
@@ -204,7 +203,7 @@ mouse_cnm( 'Marker Synonyms (pipe-separated)', syno ).
 mgim_dnload_dir( Loc ) :-
     absolute_file_name( bio_db_build_downloads(mgim), Loc ),
     debuc( mouse, 'Loc: ~p', Loc ),
-	os_make_path( Loc, debug(true) ).
+    os_make_path( Loc, debug(true) ).
 
 sep_by( _, '', _ ) :- !, fail. % do not include empties
 sep_by( Sep, Atom, List ) :-

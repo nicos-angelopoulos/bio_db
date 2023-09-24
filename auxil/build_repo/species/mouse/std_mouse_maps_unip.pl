@@ -112,8 +112,6 @@ std_mouse_maps_unip( Args ) :-
      % Files = [HgncF,FromHgncF,EtzF,UniGF,EnspF],
      % Files = [MgiF,EtzF,UniGF,EnspF,SymbF,GynoF],
      Files = [MgiF,EtzF,EnspF,SymbF,GynoF],
-     % working_directory( _, maps ),
-     % maplist( link_to_map_sub(unip), Files ),
      Cpts = [org(mouse),type(maps)],
      map_list_options( link_to_bio_sub(unip), Files, call_options(Cpts) ),
 
@@ -123,7 +121,7 @@ std_mouse_maps_unip( Args ) :-
      bio_db_add_infos_to( [header(row('Uni_Protein','Entrez_ID'))|SwOpts], 'maps/unip_musm_unip_ncbi.pl' ),
      bio_db_add_infos_to( [header(row('Uni_Protein','MGI'))|SwOpts], 'maps/unip_musm_mgim_unip.pl' ),
      % bio_db_add_infos_to( [header(row('Uni Protein','HGNC ID'))|SwOpts], 'maps/map_unip_mouse_unip_hgnc.pl' ),
-    % Unigene has been discontinued
+     % Unigene has been discontinued
      %bio_db_add_infos_to( [header(row('Uni_Protein','Uni_Gene'))|SwOpts], 'maps/map_unip_mouse_unip_unig.pl' ),
      bio_db_add_infos_to( [header(row('Uni_Protein','Symbol'))|SwOpts], 'maps/unip_musm_unip_symb.pl' ),
      bio_db_add_infos_to( [header(row('Symbol','Uni_Protein'))|SwOpts], 'maps/unip_musm_gyno_unip.pl' ),
@@ -134,7 +132,6 @@ std_mouse_maps_unip( Args ) :-
      TrUrlOpts = [debug(true),interface(wget),file(TrFile)],
      url_file_local_date_mirror( TremUrl, DnDir, TrUrlOpts ),
      bio_db_dnt_times( TrFile, TrDnDt, _TrDnEn ),
-
      os_make_path( maps, afresh(false) ),
      os_make_path( trembl, afresh(true) ),
      directory_file_path( _, TremFile, TremUrl ),
@@ -147,9 +144,7 @@ std_mouse_maps_unip( Args ) :-
      debuc( Self, 'Gunzipping: ~p', TremFile ),
      shell( Gunzip ),
      csv_read_file( TremDatF, TremRows, [separator(0'\t)] ),
-     % length( TremRows, TremLen ), 
-     % write( trem_length(TremLen) ), nl,
-    debuc( Self, length, trem_rows/TremRows ),
+     debuc( Self, length, trem_rows/TremRows ),
      % 17/22
      findall( unip_musm_trem_nucs(TremId,Nucs), (
                        member(TremRow,TremRows), arg(1,TremRow,TremId), \+ empty(TremId), 
@@ -158,9 +153,7 @@ std_mouse_maps_unip( Args ) :-
                        member(Nucs,NucsList)
                                 ), 
                                       TNRows ),
-     % length(TNRows, TNLen), 
-     % write( tn_len(TNLen) ), nl,
-    debuc( Self, length, tn_len/TNRows ),
+     debuc( Self, length, tn_len/TNRows ),
      sort( TNRows, TNOrdRows ),
      open( '../maps/unip_musm_trem_nucs.pl', write, TNOut ),
      maplist( portray_clause(TNOut), TNOrdRows ),

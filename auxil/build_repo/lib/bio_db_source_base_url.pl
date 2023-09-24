@@ -11,6 +11,7 @@ bio_db_source_base_url(gont_goa, 'https://geneontology.org/gene-associations/').
 bio_db_source_base_url(gont_obo, 'https://purl.obolibrary.org/obo/').
 bio_db_source_base_url(hgnc, 'https://ftp.ebi.ac.uk/pub/databases/genenames/new/tsv/').
 bio_db_source_base_url(ncbi, 'https://ftp.ncbi.nih.gov/gene/DATA/').
+bio_db_source_base_url(mgim, 'http://www.informatics.jax.org/downloads/reports/').
 bio_db_source_base_url(pros, 'https://ftp.expasy.org/databases/prosite/').
 bio_db_source_base_url(reac, 'https://reactome.org/download/current/' ).
 bio_db_source_base_url(strg, 'https://stringdb-downloads.org/download/').

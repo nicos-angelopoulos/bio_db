@@ -1,5 +1,6 @@
 
 :- lib(bio_db_organism/2).
+:- lib(bio_db_source_url/2).
 
 bio_db_string_version_base_name( Defs ) :-
                                    Defs = [ 

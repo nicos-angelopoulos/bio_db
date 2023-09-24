@@ -103,8 +103,9 @@ std_mouse_maps_mgim( Args ) :-
     working_directory( Old, DnDir ),
     os_make_path( maps ),   % fixme: make sure it doesn't trip if dir exists already
     working_directory( _, maps ),
-    Sims = [    cnm_transform(mouse_cnm), to_value_1(pfx_by_num(true,'MGI:')),
-                prefix(mgim), org(mouse), datetime(SymbDnt) ],
+    Sims = [    cnm_transform(mouse_cnm), to_value_1(pfx_by_num(true,'MGI:')), datetime(SymbDnt)
+                | Opts
+           ],
     csv_ids_map( _, 'MGI Accession ID', 'Marker Symbol', SymbMtx, SymbMapF, Sims ),
     SymbMapFs = [SymbMapF],
     Cpts = call_options([org(mouse),type(maps)]),
@@ -142,23 +143,25 @@ std_mouse_maps_mgim( Args ) :-
     mgim_get_report( ncbi, Self, NcbiUrl, DnDir, _NcbiRelF, NcbiMtx, NcbiDnt, Opts ),
     NcbiHdr = hdr('MGI Marker Accession ID','NCBI ID'),
     % EntzOpts = [cnm_transform(mgi_entrez_idx_header),to_value_1(pfx_by_num(true,'MGI:')),prefix(mgim_mouse),to_value_2(atom_number),
-    NcbiOpts = [cnm_transform(mgi_ncbi_idx_header),to_value_1(pfx_by_num(true,'MGI:')),prefix(mgim),org(mouse),to_value_2(=),
-            source(NcbiUrl), datetime(NcbiDnt), has_header(false),header(NcbiHdr)
+    NcbiOpts = [ cnm_transform(mgi_ncbi_idx_header),
+                 to_value_1(pfx_by_num(true,'MGI:')),to_value_2(=),
+                 source(NcbiUrl), datetime(NcbiDnt), has_header(false), header(NcbiHdr)
+                 | Opts
            ],
     csv_ids_map( _, 1, 9, NcbiMtx, MapNcbiF, NcbiOpts ),
 
 
-    % symbol & synonyms:
-    findall( mgim_musm_mgim_symb(RMgi,RSymb), ( member(SymbRow,SymbRows),
+    % cnm_token('Marker Symbol', _, mrks ).  Succeeds.
+    findall( mgim_musm_mgim_mrks(RMgi,RSymb), ( member(SymbRow,SymbRows),
                                                     arg(1,SymbRow,RMgiFull),
                                                     atomic_list_concat(['MGI',RMgiAtm], ':', RMgiFull),
                                                     atom_number( RMgiAtm, RMgi ),
                                                     arg(7,SymbRow,RSymb)
                                                   ),
                                                     MapSymbRows ),
-    MapSymbF = 'mgim_musm_mgim_symb.pl',
+    MapSymbF = 'mgim_musm_mgim_mrks.pl',
     portray_clauses( MapSymbRows, file(MapSymbF) ),
-    MapSymbHdr = hdr('MGI Marker Accession ID','Symbol'), % fixme: use arg ?
+    MapSymbHdr = hdr('MGI Marker Accession ID','Marker Symbol'), % fixme: use arg ?
     bio_db_add_infos_file( MapSymbF, [source(SymbUrl),header(MapSymbHdr),datetime(SymbDnt)] ),
     SynoOpts = [cnm_transform(mouse_cnm),to_value_2(pfx_by_num(true,'MGI:')),prefix(mgim),org(mouse),to_value_1(sep_by('|')),
             source(SymbUrl), datetime(SymbDnt)

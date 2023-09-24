@@ -20,3 +20,4 @@ cnm_token(name, _, name).
 cnm_token(symbol, _, symb).
 cnm_token(taxon_id, _, taxo).
 cnm_token(vgnc_id, _, vgnc).
+cnm_token('Marker Symbol', _, mrks ).

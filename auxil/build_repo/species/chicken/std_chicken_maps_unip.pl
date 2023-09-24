@@ -96,16 +96,16 @@ std_chicken_maps_unip( Args ) :-
      os_make_path( maps, debug(true) ),
 
      debuc( Self, 'Dir location: ~p', DnDir ),
-     Rev = [uniprot('CHICK_9031_idmapping.dat'),f_call(de_pfx_dot),org(galg),interface(prolog),reverse(false)],
+     Rev = [id_map('CHICK_9031_idmapping.dat'),f_call(de_pfx_dot),org(galg),interface(prolog),reverse(false)],
      map_uniprot( 'Ensembl_PRO', Csv, [EnspF], Rev ),
 
      % Fgnc = [interface(prolog),f_call(de_semi('HGNC'))],
      % map_uniprot( 'HGNC', Csv, [FromHgncF], Fgnc ),
-     Sem = [interface(prolog),f_call(de_semi_dot('9031')),reverse(false),uniprot('CHICK_9031_idmapping.dat'),org(galg)],
+     Sem = [interface(prolog),f_call(de_semi_dot('9031')),reverse(false),id_map('CHICK_9031_idmapping.dat'),org(galg)],
      map_uniprot( 'STRING', Csv, [StrF], Sem ),
 
-     Ifc = [uniprot('CHICK_9031_idmapping.dat'),org(galg),interface(prolog)],
-     Rfc = [uniprot('CHICK_9031_idmapping.dat'),org(galg),interface(prolog),reverse(false)],
+     Ifc = [id_map('CHICK_9031_idmapping.dat'),org(galg),interface(prolog)],
+     Rfc = [id_map('CHICK_9031_idmapping.dat'),org(galg),interface(prolog),reverse(false)],
 
      map_uniprot( 'GeneID', Csv, [NcbF], Ifc ),
      % map_uniprot( 'UniGene', Csv, [UniGF], Ifc ),

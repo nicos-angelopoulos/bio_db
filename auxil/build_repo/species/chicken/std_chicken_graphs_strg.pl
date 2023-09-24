@@ -30,7 +30,7 @@
 
 :- debuc(by_unix).
 
-std_chicken_graphs_strg_defaults( Defs ) :-
+std_chicken_graphs_strg_defaults( Args, Defs ) :-
                Defs = [  db(strg),
                          debug(true),
                          iactive(true),
@@ -38,7 +38,7 @@ std_chicken_graphs_strg_defaults( Defs ) :-
                          relation(Rel=links)
                          |  T  
                       ],
-     ( std_graphs_strg_auto_version(Vers) ->     % let options/2 do the erroring, cause user might provide it
+     ( std_graphs_strg_auto_version(Vers,Args) ->     % let options/2 do the erroring, cause user might provide it
           T = [string_version(Vers)]
           ;
           T = []   

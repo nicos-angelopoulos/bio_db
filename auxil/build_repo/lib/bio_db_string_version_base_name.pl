@@ -8,9 +8,9 @@ bio_db_string_version_base_name( Defs ) :-
                                             org(human)
                                           ].
 
-/** bio_db_string_version_base_name(+Vers, -Bname, -Url, +Opts).
+/** bio_db_string_version_base_name(+Vers, -VersD, -Bname, -Url, +Opts).
 
-Generate remote base name and URL from string Version Vers and options Opts.
+Generate remote base name, remote version directory and URL from string Version Vers and options Opts.
 
 Opts
   * relation(links)
@@ -29,7 +29,7 @@ Opts
 @version  0:1 2023/09/22
 
 */
-bio_db_string_version_base_name( VersionPrv, Bname, Remote, Opts ) :-
+bio_db_string_version_base_name( VersionPrv, VersD, Bname, Remote, Opts ) :-
      ( atom_concat(v,Vers,VersionPrv)->true;Vers=VersionPrv ),
      options( [relation(Relt),debug_url(Dbg),org(KnownAs)], Opts ),
      bio_db_organism( KnownAs, Org ),

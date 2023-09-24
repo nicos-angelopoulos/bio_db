@@ -69,7 +69,7 @@ Opts
   * org(Org=human)
     organism
   * relation(Rel=links)
-    relation of STRING we are interested in (bio_db_string_version_base_name/4)
+    relation of STRING we are interested in (bio_db_string_version_base_name/5)
   * string_version(Vers)
     default is collected by visiting the STRING web-page
 
@@ -81,7 +81,7 @@ Opts
 @version 0.2  2018/11/05
 @version 0.3  2023/9/22, using bio_db_source_url/2 and move locations to options
 @tbd add information file or info terms/comments in edges file
-@see bio_db_string_version_base_name/4
+@see bio_db_string_version_base_name/5
 
 */
 
@@ -94,43 +94,32 @@ std_graphs_strg( Args ) :-
     % load necessary data that has already been generated
     ensure_loaded(ncbi:bio_db_build_downloads('ncbi/maps/ncbi_homs_ensp_ncbi')),
     ensure_loaded(hgnc:bio_db_build_downloads('hgnc/maps/hgnc_homs_ncbi_symb')),
-
-    % std_graphs_strg( VersionPrv ) :-
     options( string_version(VersionPrv), Opts ),
     ( number(VersionPrv) -> atom_number(Version,VersionPrv); Version = VersionPrv ),
      debuc( Self, 'Version: ~w', Version ),
      % std_graphs_string_version_base_name( Version, Bname, From, Opts ),
-     bio_db_string_version_base_name( Version, RelName, From, Opts ),
+     bio_db_string_version_base_name( Version, VersD, RelName, From, Opts ),
      debuc( Self, 'Rel name: ~w', RelName ),
      absolute_file_name( bio_db_build_downloads(strg), Parent ),
-     % absolute_file_name( baio_db_downloads(string/Bname), LocalFile ),
-     % directory_file_path( Parent, _BnameAgain, LocalFile ),
-     % directory_file_path( Parent, Bname, LocalFile ),
-     os_make_path( Parent, debug(true) ),
-     % std_graph_string_download_string( LocalFile, From, Self, Opts ),
-     % std_graph_string_download_string( Parent, From, Self, Opts ),
+     os_path( Parent, VersD, DnlD ),
+     os_make_path( DnlD, debug(true) ),
      debuc( Self, 'Downloading from: ~p', From ),
-     url_file_local_date_mirror( From, Parent, [file(Bname),iface(wget)|Opts] ),
-     working_directory( Here, Parent ),
-     % Bname above is a
+     url_file_local_date_mirror( From, DnlD, [file(Bname),iface(wget)|Opts] ),
+     working_directory( Here, DnlD ),
      @ gunzip( -k, Bname ),  % keeps .gz file
-     % @ gunzip( '9606.protein.links.v10.txt.gz' ),
      EnspPn = strg_homs_edge_ensp,
      Opt = [ csv_read(separator(0' )),predicate_name(EnspPn),
              rows_transform(maplist(user:de_hs)),header_remove(true),
             mtx_opt(convert(false))
            ],
      file_name_extension( TxtF, gz, Bname ),
+     debuc( Self, 'Directory: ~p', [DnlD] ),
      Mess1 = 'Converting string file: ~p, to Prolog',
-     % file_name_extension( Stem, txt, TxtF ),
-     % file_name_extension( Stem, pl, PlF ),
-     debuc( Self, 'Directory: ~p', [Parent] ),
      debuc( Self, Mess1, [TxtF] ),
      mtx_prolog( TxtF, File, Opt ),
      debuc( _, 'Edges output: ~w', File ),
      delete_file( TxtF ),
-     % @ rm( -rf, graphs ), % don't do this. there are now other organisms 
-    % puting stuff in graphs/ (eg mouse...)
+     % puting stuff in graphs/ (eg mouse...)
      os_make_path( graphs, debug(true) ),
      os_dir_stem_ext( graphs, EnspPn, pl, EnspRelF ),
      % Trg = 'graphs/edge_strg_hs.pl',
@@ -158,23 +147,6 @@ std_graphs_strg( Args ) :-
      link_to_bio_sub( strg, EnspRelF, [org(human),type(graphs)] ),
      link_to_bio_sub( strg, SymbRelF, [org(human),type(graphs)]  ),
      working_directory( _, Here ).
-
-/* old code: uses a findall
-strg_human_symbolise_edges( Self, EnspPn, EnspRelF, UnoSymbEdges ) :-
-     debuc( Self, task(start), human(symbolise(original)) ),
-     consult( EnspPn:EnspRelF ),
-     debuc( _, 'Consulted ensp: ~w', [EnspPn:EnspRelF] ),
-     EnspGoal =.. [EnspPn,EnsP1,EnsP2,W],
-     findall( strg_homs_edge_symb(SymbA,SymbB,W),
-                          ( EnspPn:EnspGoal,
-                                ensp_symb(EnsP1,Symb1),
-                                ensp_symb(EnsP2,Symb2),
-                                sort(Symb1,Symb2,SymbA,SymbB)
-                          ),
-               UnoSymbEdges
-            ),
-     debuc( Self, task(stop), human(symbolise(original)) ).
-*/
 
 strg_human_symbolise_edges( Self, EnspPn, EnspRelF, Edges ) :-
      % fixme:

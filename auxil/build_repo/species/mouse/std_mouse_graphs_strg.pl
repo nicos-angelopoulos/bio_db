@@ -36,9 +36,18 @@
 :- debuc(by_unix).
 :- debuc(std_graphs_strg). % fixme:
 
-std_mouse_graphs_strg_defaults( [debug(true)|T] ) :-
-    ( std_graphs_strg_auto_version(Vers) -> % let options/2 do the erroring
-                                            % because user might provide it
+std_mouse_graphs_strg_defaults( Args, Defs ) :-
+               Defs = [
+                         db(strg),
+                         debug(true)
+                         debug_url(false),
+                         iactive(true),
+                         org(mouse),
+                         relation(links)
+                         | T
+                      ],
+    ( std_graphs_strg_auto_version(Vers,Args) ->       % let options/2 do the erroring
+                                                       % because user might provide it
         T = [string_version(Vers)]
         ;
         T = []   
@@ -53,10 +62,26 @@ Mouse graphs for STRING protein protein interactions.
 
 Depends on std_maps_mgim std_maps_unip.
 
+Opts
+  * db(Db=strg)
+    source database
+  * debug(Dbg=true)
+    informational, progress messages
+  * debug_url(Ubg=false)
+    whether to debug the concatenation of the url (via bio_db_source_url/2)
+  * iactive(Iact=true)
+    whether the session is interactive, otherwise wget gets --no-verbose
+  * links_stem(Ltem='protein.links.v')
+    stem for the filename of the remote links file
+  * org(Org=mouse)
+    organism
+  * relation(Rel=links)
+    relation of STRING we are interested in (bio_db_string_version_base_name/4)
+  * string_version(Vers)
+    default is collected by visiting the STRING web-page
+
 ==
 ?- std_mouse_graphs_strg([]).
-
-
 ==
 
 @author nicos angelopoulos
@@ -78,26 +103,28 @@ std_mouse_graphs_strg( Args ) :-
     ( number(VersionPrv) -> atom_number(Version,VersionPrv); Version = VersionPrv ),
     % ensure_loaded( bio_db_build_aliases ),
     debuc( Self, 'Version: ~w', Version ),
-    std_graphs_string_version_base_name( Version, Bname, From ),
-    debuc( Self, 'Base name: ~w', Bname ),
+    % std_graphs_string_version_base_name( Version, Bname, From ),
+    bio_db_string_version_base_name( Version, VersD, RemBname, From, Opts ),
+    debuc( Self, 'Remote base name: ~w', RemBname ),
     absolute_file_name( bio_db_build_downloads(strg), Parent ),
-    % absolute_file_name( baio_db_downloads(string/Bname), LocalFile ),
-    % directory_file_path( Parent, _BnameAgain, LocalFile ),
-    directory_file_path( Parent, Bname, LocalFile ),
-    os_make_path( Parent, debug(true) ),
-    std_graph_string_download_string( LocalFile, From, Self ),
-    working_directory( Here, Parent ),
+    os_path( Parent, VersD, DnlD ),
+    os_make_path( DnlD, debug(true) ),
+    debuc( Self, 'Downloading from: ~p', From ),
+    url_file_local_date_mirror( From, DnlD, [file(Bname),iface(wget)|Opts] ),
+    debuc( Self, 'Basename to work on: ~p', [Bname] ),
+    working_directory( Here, DnlD ),
     @ gunzip( -k, Bname ),  % keeps .gz file
     % @ gunzip( '9606.protein.links.v10.txt.gz' ),
     % Edge = edge_strg_mouse,
     EnspPn = strg_musm_edge_ensp,
     file_name_extension( TxtF, gz, Bname ),
-    debuc( Self, 'Directory: ~p', [Parent] ),
+    debuc( Self, 'Directory: ~p', [DnlD] ),
     Mess1 = 'Converting string file: ~p, to Prolog',
     debuc( Self, Mess1, [TxtF] ),
-    Opt = [ csv_read(separator(0' )),predicate_name(EnspPn),
-            rows_transform(maplist(user:de_mouse)),header_remove(true) ],
-    mtx_prolog( TxtF, File, Opt ),
+    MtxOpts = [ csv_read(separator(0' )), predicate_name(EnspPn),
+                rows_transform(maplist(user:de_mouse)), header_remove(true) 
+              ],
+    mtx_prolog( TxtF, File, MtxOpts ),
     debuc( Self, 'Wrote on file: ~p', [File] ),
     delete_file( TxtF ),
     % @ rm( -rf, graphs ), don't do that ! there are now multiple downloads from string..
@@ -133,28 +160,6 @@ std_mouse_graphs_strg( Args ) :-
     link_to_bio_sub( strg, EnspRelF, [org(mouse),type(graphs)] ),
     link_to_bio_sub( strg, EdgeSymbsF, [org(mouse),type(graphs)] ),
     working_directory( _, Here ).
-
-/*
-% At 15:37:9 on 10th of Jun 2023 starting task: symbolise(original).
-% consulted edges from: strg_musm_edge_ensp:graphs/strg_musm_edge_ensp.pl
-% At 15:42:0 on 10th of Jun 2023 stop task: symbolise(original).
-
-mouse_strg_symbolise_edges( Self, EnspPn, EnspRelF, UnoSymbEdges ) :-
-    % This is the original ?slower? version ?
-    debuc( Self, task(start), symbolise(original) ),
-    consult( EnspPn:EnspRelF ),
-    debuc( Self, 'consulted edges from: ~w', [EnspPn:EnspRelF] ),
-    EnspGoal =.. [EnspPn,EnsP1,EnsP2,W],
-    findall( strg_musm_edge_symb(SymbA,SymbB,W),
-                         ( EnspPn:EnspGoal,
-                           ensp_mouse_symb(EnsP1,Symb1),
-                           ensp_mouse_symb(EnsP2,Symb2),
-                           sort_four(Symb1,Symb2,SymbA,SymbB)
-                         ),
-                              UnoSymbEdges
-           ),
-    debuc( Self, task(stop), symbolise(original) ).
-*/
 
 % At 13:34:57 on 10th of Jun 2023 starting task: symbolise(streamed).
 % At 13:37:29 on 10th of Jun 2023 stop task: symbolise(streamed).
@@ -203,24 +208,6 @@ sort_four( X, Y, A, B ) :-
     !,
     A = Y, B = X.
 sort_four( A, B, A, B ).
-
-std_graph_string_download_string( LocalFile, _From, Self ) :-
-    exists_file( LocalFile ),
-    debuc( Self, 'Using existing local string file: ~p', LocalFile ),
-    !.
-std_graph_string_download_string( Local, Remote, Self ) :-
-    debuc( Self, 'Downloading from: ~p', Remote ),
-    url_file( Remote, Local, [dnt(true),iface(wget)] ),
-    debuc( Self, '... to local file: ~p', Local ).
-
-std_graphs_string_version_base_name( VersionPrv, Bname, Remote ) :-
-    ( atom_concat(v,Version,VersionPrv)->true;Version=VersionPrv ),
-    atom_concat( v, Version, Vied ),
-    Pfx = 'https://string-db.org/download/protein.links.v',
-    atom_concat( Pfx, Version, RemoteDir ),
-    atomic_list_concat( [10090,protein,links,Vied,txt,gz], '.', Bname ),
-    directory_file_path( RemoteDir, Bname, Remote ).
-    % 10/9606.protein.links.v10.txt.gz
 
 de_mouse( row(MousEnsP1,MousEnsP2,WAtm), row(EnsP1,EnsP2,W) ) :-
     atom_concat( '10090.', EnsP1, MousEnsP1 ),

@@ -14,7 +14,6 @@
 :- lib(options).
 :- lib(stoics_lib:message_report/3).
 :- lib(stoics_lib:portray_clauses/2).
-:- lib(url_file_local_date_mirror/3).
 
 % also sets lib alias to that dir
 :- ensure_loaded( '../../lib/bio_db_build_aliases' ).  % /1.
@@ -23,9 +22,10 @@
 :- lib(link_to_bio_sub/3).
 :- lib(bio_db_dnt_times/3).
 :- lib(bio_db_add_infos/1).     % bio_db_add_infos_to/2.
-:- lib(std_graphs_strg_auto_version/1).
-:- lib(portray_informed_clauses/4).
 :- lib(bio_db_source_base_url/2).
+:- lib(portray_informed_clauses/4).
+:- lib(url_file_local_date_mirror/3).
+:- lib(std_graphs_strg_auto_version/1).
 :- lib(bio_db_string_version_base_name/4). % here: replace old call below with two calls to this, one with links and one with info
 
 :- debuc(by_unix).

@@ -37,6 +37,7 @@ mgim_report(ncbi, 'MGI_EntrezGene').
 std_mouse_maps_mgim_defaults( [  
                                  db(mgim),
                                  debug(true),
+                                 debug_url(false),
                                  iactive(true),
                                  mgim_file(symb),
                                  org(mouse)

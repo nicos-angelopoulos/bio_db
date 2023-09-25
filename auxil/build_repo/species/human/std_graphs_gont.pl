@@ -32,7 +32,8 @@ std_graphs_gont_defaults( [   db(gont),
                               debug_url(false),
                               iactive(true),
                               obo_base(gont_obo),
-                              obo_file('go.obo')
+                              obo_file('go.obo'),
+                              org(human)
                           ] ).
 
 /** std_graphs_gont(+Opts)
@@ -54,6 +55,8 @@ Opts
     the url base for the obo download
   * obo_file(OboF='go.obo')
     the file name for the obo download
+  * org(Org=human)
+    organism
 
 OboF is passed to url_file_local_date_mirror/3 as option =url_file()=, and OboB as url_
 

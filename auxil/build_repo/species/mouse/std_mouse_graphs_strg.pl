@@ -107,7 +107,7 @@ std_mouse_graphs_strg( Args ) :-
     % ensure_loaded( bio_db_build_aliases ),
     debuc( Self, 'Version: ~w', Version ),
     % std_graphs_string_version_base_name( Version, Bname, From ),
-    bio_db_string_version_base_name( Version, VersD, RemBname, SrcUrl, Opts ),
+    bio_db_string_version_base_name( Version, _VersD, RemBname, SrcUrl, Opts ),
     debuc( Self, 'Remote base name: ~w', RemBname ),
     % absolute_file_name( bio_db_build_downloads(strg), Parent ),
     % os_path( Parent, VersD, DnlD ),

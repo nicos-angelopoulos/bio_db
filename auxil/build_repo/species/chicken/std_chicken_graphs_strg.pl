@@ -251,6 +251,7 @@ std_graph_string_download_string( Local, Remote, Self, Opts ) :-
     debuc( Self, '... to local file: ~p', Local ).
     */
 
+/**
 std_graphs_string_version_base_name( VersionPrv, Bname, InfoBname, Remote, InfoRemote ) :-
     ( atom_concat(v,Version,VersionPrv)->true;Version=VersionPrv ),
     atom_concat( v, Version, Vied ),
@@ -265,6 +266,7 @@ std_graphs_string_version_base_name( VersionPrv, Bname, InfoBname, Remote, InfoR
     % atom_concat( InfoPfx, Version, InfoRemoteDir ),
     atomic_list_concat( [9031,protein,info,Vied,txt,gz], '.', InfoBname ),
     atomic_list_concat( [DnldBaseUrl,'protein.info.v',Version,'/',InfoBname], InfoRemote ).
+    */
 
 de_gallus( row(MousEnsP1,MousEnsP2,WAtm), row(EnsP1,EnsP2,W) ) :-
     atom_concat( '9031.', EnsP1, MousEnsP1 ),

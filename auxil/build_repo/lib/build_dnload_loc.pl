@@ -37,7 +37,7 @@ Loc = '/home/nicos/.local/share/swi-prolog/pack/Downloads/bio_db_repo-23.09.25/d
 @version  0:1 2023/9/25
 
 */
-build_dnloads_loc( Self, Loc, Opts ) :-
+build_dnload_loc( Self, Loc, Opts ) :-
      options( [db(Db),debug(Dbg)], Opts ),
      absolute_file_name( bio_db_build_downloads(Db), Loc ),
      debuc( Self, 'Db: ~w, dnload location: ~p', [Db,Loc] ),

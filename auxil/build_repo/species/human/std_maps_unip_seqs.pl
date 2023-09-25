@@ -89,7 +89,7 @@ std_maps_unip_seqs( Args ) :-
      bio_db_build_aliases( Opts ),
      build_dnload_loc( Self, DnDir, Opts ),
      std_bootstrap_tables,
-     SrcRnms = [useqs_base-url_base,useqs_file_sprot-url_file-debug_url-debug],
+     SrcRnms = [useqs_base-url_base,useqs_file_sprot-url_file,debug_url-debug],
      bio_db_source_url( SprotUrl, SrcRnms, Opts ),
 	unip_hs_seqs_file( SprotUrl, DnDir, row('Swiss Prot ID','Sequence'), Opts ),
      TrmRnms = [useqs_base-url_base,useqs_file_trembl-url_file-debug_url-debug],

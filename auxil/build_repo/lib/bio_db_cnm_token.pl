@@ -53,6 +53,9 @@ Symb = symb.
 
 */
 
+cnm_token( Cnm, Tkn ) :-
+     cnm_token( Cnm, _, Tkn ).
+
 cnm_token(name, _, name).
 cnm_token(symbol, _, symb).
 cnm_token(taxon_id, _, taxo).

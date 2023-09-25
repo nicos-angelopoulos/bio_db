@@ -57,12 +57,12 @@ cnm_token(name, _, name).
 cnm_token(symbol, _, symb).
 cnm_token(taxon_id, _, taxo).
 cnm_token(vgnc_id, _, vgnc).
-cnm_token('Marker Symbol', mgim, mrks ).
+cnm_token('Marker Symbol', mgim, symb ).            % maybe this should take another name: mrks ? it includes alot of MGI specific ids
 cnm_token( 'MGI Accession ID', mgim, mgim ).
 cnm_token( 'MGI Marker Accession ID', mgim, mgim ).
 cnm_token( 'GenBank IDs', mgim, genb ).
 cnm_token( 'UniProt IDs', mgim, unip ).
-cnm_token( 'Marker Symbol', mgim, symb ).
+cnm_token( 'Marker Symbol', mgim, mrks ).
 cnm_token( 'Marker Synonyms (pipe-separated)', syno ).
 
 

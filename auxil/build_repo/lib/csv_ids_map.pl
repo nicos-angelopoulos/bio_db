@@ -62,7 +62,7 @@ csv_ids_map_defaults( [ cnm_transform(bio_db_cnm_token),
 % @version  0.1 2014/7/2
 % @version  0.2 2015/3/19    added map_prefix(MapPfx), 
 % @version  0.2 2015/11/3    return values from tvs can now be lists (multiple clauses will be added)
-% @version  0.4 2023/9/25    removed MapPfx, changed to cnm_transform(bio_db_cnm_token),
+% @version  0.4 2023/9/25    removed MapPfx, changed to cnm_transform(bio_db_cnm_token)
 % @tbd odbc interface, sqlite + mysql,  and debug
 % @see map_predicate_name/4
 csv_ids_map( CsvF, Cid1, Cid2, Tbl, File, Args ) :-

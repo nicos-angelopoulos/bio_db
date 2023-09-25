@@ -32,7 +32,7 @@ bio_db_string_version_base_name( VersionPrv, VersD, Bname, Remote, Opts ) :-
      ( atom_concat(v,Vers,VersionPrv)->true;Vers=VersionPrv ),
      options( [relation(Relt),debug_url(Dbg),org(KnownAs)], Opts ),
      bio_db_organism( KnownAs, Org ),
-     ( bio_db_taxo(Org,Taxo) -> true; throw(check(bio_db_taxo(Org,Taxo))) )
+     ( bio_db_taxo(Org,Taxo) -> true; throw(check(bio_db_taxo(Org,Taxo))) ),
      % atomic_list_concat( ['protein.',Relt,'.v',Vers,'/',Taxo,'.protein.',Relt,'.v',Vers,'.txt.gz'], Bname ),
      atomic_list_concat( ['protein.',Relt,'.v',Vers], VersD ),
      atomic_list_concat( [Taxo,'.protein.',Relt,'.v',Vers,'.txt.gz'], Bname ),

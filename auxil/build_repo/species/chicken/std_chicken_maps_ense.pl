@@ -21,6 +21,7 @@
 :- lib(url_file_local_date_mirror/3).
 :- lib(bio_db_add_infos/1).   % bio_db_add_infos_to/2
 :- lib(link_to_bio_sub/3).
+% fixme: this needs to be modernised, check the code in ../human and ../mouse
 
 std_chicken_maps_ense_defaults( [ db(ense),
                                   debug(true),

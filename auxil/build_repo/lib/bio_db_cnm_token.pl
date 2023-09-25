@@ -57,9 +57,9 @@ cnm_token(name, _, name).
 cnm_token(symbol, _, symb).
 cnm_token(taxon_id, _, taxo).
 cnm_token(vgnc_id, _, vgnc).
-cnm_token( 'MGI Accession ID', mgim, mgim ).
-cnm_token( 'MGI Marker Accession ID', mgim, mgim ).
-cnm_token( 'GenBank IDs', mgim, genb ).
-cnm_token( 'UniProt IDs', mgim, unip ).
-cnm_token( 'Marker Symbol', mgim, mrks ).
-cnm_token( 'Marker Synonyms (pipe-separated)', syno ).
+cnm_token('MGI Accession ID', mgim, mgim).
+cnm_token('MGI Marker Accession ID', mgim, mgim).
+cnm_token('GenBank IDs', mgim, genb).
+cnm_token('UniProt IDs', mgim, unip).
+cnm_token('Marker Symbol', mgim, mrks).
+cnm_token('Marker Synonyms (pipe-separated)', mgim, msyn).

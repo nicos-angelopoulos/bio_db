@@ -41,9 +41,10 @@ std_maps_gont_defaults( Defs ) :-
                                             debug_url(false),
                                             goa_base(gont_goa),
                                             goa_file('goa_human.gaf.gz'),
+                                            iactive(true),
                                             obo_base(gont_obo),
                                             obo_file('go.obo'),
-                                            iactive(true)
+                                            org(human)
                                           ].
 
 % std_maps_gont( Opts ).

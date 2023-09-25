@@ -36,6 +36,7 @@
 std_graphs_strg_defaults( Args, Defs ) :-
      Defs = [  db(strg),
                debug(true),
+               debug_fetch(true),
                debug_url(false),
                iactive(true),
                relation(links),
@@ -60,6 +61,8 @@ Opts
     source database
   * debug(Dbg=true)
     informational, progress messages
+  * debug_fetch(Fbg=false)
+    whether to debug the fetching of the url
   * debug_url(Ubg=false)
     whether to debug the concatenation of the url
   * iactive(Iact=true)

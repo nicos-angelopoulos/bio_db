@@ -165,9 +165,10 @@ is_a_symbol( Symb, Symb ) :-
      hgnc:hgnc_homs_symb_hgnc( Symb, _ ),
      !.
 
-ncbi_gene2asseccion_cnms( 'RNA_nucleotide_accession.version', rnuc ).
-ncbi_gene2asseccion_cnms( 'genomic_nucleotide_accession.version', dnuc ).
-ncbi_gene2asseccion_cnms( 'Symbol', symb ).
+% fixme: move those to cnm_token/3
+ncbi_gene2asseccion_cnms( 'RNA_nucleotide_accession.version', _, rnuc ).
+ncbi_gene2asseccion_cnms( 'genomic_nucleotide_accession.version', _, dnuc ).
+ncbi_gene2asseccion_cnms( 'Symbol', _, symb ).
 
 std_maps_ncbi_defaults( Defs ) :-
                                    Defs = [ db(ncbi),

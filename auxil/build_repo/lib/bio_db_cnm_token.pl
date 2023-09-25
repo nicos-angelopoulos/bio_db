@@ -56,15 +56,18 @@ Symb = symb.
 cnm_token( Cnm, Tkn ) :-
      cnm_token( Cnm, _, Tkn ).
 
+% human
 cnm_token(name, _, name).
 cnm_token(symbol, _, symb).
+% multi
 cnm_token(taxon_id, _, taxo).
+% vgnc
 cnm_token(vgnc_id, _, vgnc).
+% mouse
+cnm_token('GenBank IDs', mgim, genb).
 cnm_token('MGI Accession ID', mgim, mgim).
 cnm_token('MGI Marker Accession ID', mgim, mgim).
-cnm_token('GenBank IDs', mgim, genb).
-cnm_token('UniProt IDs', mgim, unip).
+cnm_token('Marker Name', mgim, mnme ).
 cnm_token('Marker Symbol', mgim, mrks).
 cnm_token('Marker Synonyms (pipe-separated)', mgim, msyn).
-cnm_token('Marker Name', mgim, mnme ).
-
+cnm_token('UniProt IDs', mgim, unip).

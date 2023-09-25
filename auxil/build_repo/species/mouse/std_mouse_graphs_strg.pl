@@ -13,10 +13,10 @@
 :- lib(os_lib).
 :- lib(by_unix).
 :- lib(options).
+:- lib(build_dnload_loc/3).
+:- lib(stoics_lib:url_file/3).
 :- lib(stoics_lib:message_report/3).
 :- lib(stoics_lib:portray_clauses/2).
-:- lib(stoics_lib:url_file/3).
-
 % also sets lib alias to that dir
 :- ensure_loaded( '../../lib/bio_db_build_aliases' ).  % /1.
 
@@ -32,15 +32,15 @@
 :- lib(bio_db_add_infos/1).                  % bio_db_add_infos_to/2.
 :- lib(portray_informed_clauses/4).
 :- lib(std_graphs_strg_auto_version/1).
-:- lib(bio_db_string_version_base_name/4).
+:- lib(bio_db_string_version_base_name/5).   % uses bio_db_source_url/3
 
 :- debuc(by_unix).
 :- debuc(std_graphs_strg). % fixme:
 
 std_mouse_graphs_strg_defaults( Args, Defs ) :-
-               Defs = [
-                         db(strg),
+               Defs = [  db(strg),
                          debug(true),
+                         debug_fetch(true),
                          debug_url(false),
                          iactive(true),
                          org(mouse),
@@ -68,8 +68,10 @@ Opts
     source database
   * debug(Dbg=true)
     informational, progress messages
+  * debug_fetch(Fbg=false)
+    whether to debug the fetching of the url
   * debug_url(Ubg=false)
-    whether to debug the concatenation of the url (via bio_db_source_url/2)
+    whether to debug the concatenation of the url (via bio_db_source_url/3)
   * iactive(Iact=true)
     whether the session is interactive, otherwise wget gets --no-verbose
   * links_stem(Ltem='protein.links.v')
@@ -77,7 +79,7 @@ Opts
   * org(Org=mouse)
     organism
   * relation(Rel=links)
-    relation of STRING we are interested in (bio_db_string_version_base_name/4)
+    relation of STRING we are interested in (bio_db_string_version_base_name/5)
   * string_version(Vers)
     default is collected by visiting the STRING web-page
 
@@ -105,13 +107,14 @@ std_mouse_graphs_strg( Args ) :-
     % ensure_loaded( bio_db_build_aliases ),
     debuc( Self, 'Version: ~w', Version ),
     % std_graphs_string_version_base_name( Version, Bname, From ),
-    bio_db_string_version_base_name( Version, VersD, RemBname, From, Opts ),
+    bio_db_string_version_base_name( Version, VersD, RemBname, SrcUrl, Opts ),
     debuc( Self, 'Remote base name: ~w', RemBname ),
-    absolute_file_name( bio_db_build_downloads(strg), Parent ),
-    os_path( Parent, VersD, DnlD ),
-    os_make_path( DnlD, debug(true) ),
-    debuc( Self, 'Downloading from: ~p', From ),
-    url_file_local_date_mirror( From, DnlD, [file(Bname),iface(wget)|Opts] ),
+    % absolute_file_name( bio_db_build_downloads(strg), Parent ),
+    % os_path( Parent, VersD, DnlD ),
+    % os_make_path( DnlD, debug(true) ),
+    build_dnload_loc( Self, DnlD, Opts ),
+    debuc( Self, 'Downloading from: ~p', SrcUrl ),
+    url_file_local_date_mirror( SrcUrl, DnlD, [file(Bname),iface(wget)|Opts] ),
     debuc( Self, 'Basename to work on: ~p', [Bname] ),
     working_directory( Here, DnlD ),
     @ gunzip( -k, Bname ),  % keeps .gz file
@@ -143,7 +146,7 @@ std_mouse_graphs_strg( Args ) :-
     EdgeSymbsF = 'graphs/strg_musm_edge_symb.pl',
 
     bio_db_dnt_times( Bname, DnDt, _EndDt ),
-    EdgeSymbsInfos = [ source-From, datetime-DnDt, header-header('Symbol','Symbol',weight),
+    EdgeSymbsInfos = [ source-SrcUrl, datetime-DnDt, header-header('Symbol','Symbol',weight),
                        data_types-data_types(atom,atom,integer)
                      ],
     portray_informed_clauses( SymbEdges, EdgeSymbsInfos, EdgeSymbsF, [] ),
@@ -151,7 +154,7 @@ std_mouse_graphs_strg( Args ) :-
     % bio_db_add_infos_to( SymbOpts, EdgeSymbsF ),
     debuc( Self, wrote, EdgeSymbsF ),
 
-    MousOpts = [ source(From), datetime(DnDt),
+    MousOpts = [ source(SrcUrl), datetime(DnDt),
                   header(row('Ensembl_Protein','Ensembl_Protein',weight))
                 ],
     debuc( Self, task(stop), infosise(copy_stream(EnspRelF )) ),

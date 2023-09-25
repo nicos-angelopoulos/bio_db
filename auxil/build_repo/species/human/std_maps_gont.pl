@@ -41,7 +41,7 @@ std_maps_gont_defaults( Defs ) :-
                                             debug_url(false),
                                             goa_base(gont_goa),
                                             goa_file('goa_human.gaf.gz'),
-                                            obo_base('gont_obo'),
+                                            obo_base(gont_obo),
                                             obo_file('go.obo'),
                                             iactive(true)
                                           ].
@@ -93,7 +93,7 @@ std_maps_gont( Args ) :-
     ensure_loaded( hgnc:bio_db_build_downloads('hgnc/maps/hgnc_homs_symb_hgnc') ),
     build_dnload_loc( Self, DnDir, Opts ),
     working_directory( Here, DnDir ),
-    SrcRnms = [debug_url-debug,goa_base-url_base-goa_file-url_file], 
+    SrcRnms = [debug_url-debug,goa_base-url_base,goa_file-url_file], 
     bio_db_source_url( Url, SrcRnms, Opts ),
     options( debug_fetch(Fbg), Opts ),
     url_file_local_date_mirror( Url, DnDir, [debug(Fbg)|Opts] ),

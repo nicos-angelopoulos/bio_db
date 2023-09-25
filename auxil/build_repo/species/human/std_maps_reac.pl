@@ -97,7 +97,7 @@ std_maps_reac( Args ) :-
      url_file_local_date_mirror( Url, DnDir, [file(Local),date(prefix)|Opts] ),
      % os_path( _, Local, Url ),
      debuc( Self, 'Local: ~p', [Local] ),
-     os_path( Dir, Local, InP ),
+     os_path( DnDir, Local, InP ),
      mtx( InP, Mtx, sep(tab) ),
      debuc( Self, dims, mtx/Mtx ),
      % Forg = 'Homo sapiens', Org = hsp, 
@@ -110,7 +110,7 @@ std_maps_reac( Args ) :-
      debuc( Self, '~d records belonged to: ~w', [Cnt,Rorg] ),
 
      Maps = [Neac, Neap, Recp, Recn, Recl, Repn],
-     os_path( Dir, maps, MapsP ),
+     os_path( DnDir, maps, MapsP ),
      os_make_path( MapsP ),
      bio_db_dnt_times( InP, DnDt, _DnEn ),
      maplist( std_maps_reac_portray(Self,Otkn,MapsP,Url,DnDt), Stems, Maps, Files ),

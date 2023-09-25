@@ -97,9 +97,24 @@ cnm_token( Cnm, Tkn ) :-
      cnm_token( Cnm, _, Tkn ).
 
 % human
+cnm_token(alias_symbol, hgnc, syno).
+cnm_token('Approved Name', _, name).
+cnm_token('Approved Symbol', _, symb).
+cnm_token('CCDS IDs', _, ccds).
+cnm_token('ccds_id', _, ccds).
+cnm_token('Chromosome', _, chrb).      % chromosome base eg 2p24.1  % old
+cnm_token('ensembl_gene_id', _, ensg ).                   
+cnm_token('Ensembl ID + supplied by Ensembl', hgnc, ensg).
+cnm_token('Entrez Gene ID', hgnc, 'ncbi-appv').
+cnm_token('entrez_id', _, 'ncbi').
+cnm_token('HGNC ID', _, hgnc).
+cnm_token('hgnc_id', _, hgnc).
+cnm_token(location, _, chrb).          % chromosome base eg 2p24.1
 cnm_token(name, _, name).
+cnm_token(prev_symbol, hgnc, prev).
 cnm_token(symbol, _, symb).
 cnm_token('Symbol', _, symb).
+% hgnc_cname_known( 'Entrez Gene ID (supplied by NCBI)', 'entz-ncbi' ).
 % multi
 cnm_token(taxon_id, _, taxo).
 % vgnc
@@ -115,3 +130,4 @@ cnm_token('UniProt IDs', mgim, unip).
 % across multiple settings
 % this is used in mouse, any other ones ?
 cnm_token('Synonyms', ncbi, nsyn).
+

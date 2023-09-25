@@ -107,7 +107,8 @@ std_maps_hgnc( Args ) :-
     make_directory_path( SubDir ),
 
     options_propagate( map_prefix, Opts, StdOT, true ),
-    StdO= [dir(SubDir),cnm_transform(hgnc_cname)|StdOT],
+    % StdO= [dir(SubDir),cnm_transform(hgnc_cname)|StdOT],
+    StdO= [dir(SubDir)|StdOT],
     Entz = 'entrez_id',
     Ensg = 'ensembl_gene_id',
     Hgnc = 'hgnc_id',
@@ -211,30 +212,3 @@ pos_integer( Atom, Numb ) :-
 non_empty_atom( Other, NonEmpty ) :-
     Other \== '',
     NonEmpty = Other.
-
-hgnc_cname( A, B ) :-
-    hgnc_cname_known( A, B ),
-    !.
-hgnc_cname( A, A ).
-
-% cmpl = complement = both currated by HGNC and supplied by respective database.
-% 
-hgnc_cname_known( 'HGNC ID', hgnc ).
-hgnc_cname_known( 'hgnc_id', hgnc ).
-% hgnc_cname_known( 'Entrez Gene ID (supplied by NCBI)', 'entz-ncbi' ).
-hgnc_cname_known( 'Entrez Gene ID', 'ncbi-appv' ).
-hgnc_cname_known( 'entrez_id', 'ncbi' ).
-% hgnc_cname_known( 'Entrez Gene ID + supplied by NCBI', entz ).  % was entz_cmpl
-hgnc_cname_known( 'Ensembl ID + supplied by Ensembl', ensg ). % was ensg_cmpl
-hgnc_cname_known( 'ensembl_gene_id', ensg ). % was ensg_cmpl
-hgnc_cname_known( 'Approved Symbol', symb ).
-hgnc_cname_known( 'symbol', symb ).
-hgnc_cname_known( 'Approved Name', name ).
-hgnc_cname_known( 'name', name ).
-hgnc_cname_known( 'prev_symbol', prev ).
-hgnc_cname_known( 'alias_symbol', syno ).
-hgnc_cname_known( 'Chromosome', chrb ).  % chromosome base eg 2p24.1  % old
-hgnc_cname_known( 'location', chrb ).  % chromosome base eg 2p24.1
-hgnc_cname_known( 'CCDS IDs', ccds ).  % 
-hgnc_cname_known( 'ccds_id', ccds ).  % 
-

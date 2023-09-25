@@ -65,7 +65,7 @@ bio_db_source_url( Url, RnmS, Args ) :-
      Self = bio_db_source_url,
      options_append( Self, Args, OptsPrv ),
      ( is_list(RnmS) -> RnmS = Rnms; ( Rnms == true-> Rnms = []; Rnms = [RnmS] ) ),
-     ( Rnms == [] -> true
+     ( Rnms == [] -> OptsPrv = Opts
                   ;  options_rename( OptsPrv, Rnms, Opts, true )
      ),
      ( memberchk(url_base(BuTkn), Opts) ->

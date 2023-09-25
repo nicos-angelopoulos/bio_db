@@ -16,7 +16,7 @@
 % local libs & sources
 :- lib(csv_ids_map/6).
 :- lib(link_to_bio_sub/4).
-:- lib(bio_db_source_url/2).
+:- lib(bio_db_source_url/3).
 :- lib(build_dnload_loc/3).
 :- lib(url_file_local_date_mirror/3).
 
@@ -41,7 +41,7 @@ Opts
   * debug(Dbg=true)
     bio_db_cnm_token( cust, Tkn ).
   * debug_url(Ubg=false)
-    whether to debug the concatenation of the url (via bio_db_source_url/2)
+    whether to debug the concatenation of the url (via bio_db_source_url/3)
   * debug_fetch(Ubg=true)
     whether to debug the fetch of the URL
   * org(Org=mouse)
@@ -76,8 +76,7 @@ std_mouse_maps_ncbi( Args ) :-
      options_append( Self, Args, Opts ),
      bio_db_build_aliases( Opts ),
      build_dnload_loc( Self, DnDir, Opts ),
-     options_rename( Opts, [debug_url-debug,gene_info_file-url_file], Spts, true ),
-     bio_db_source_url( Url, Spts ),
+     bio_db_source_url( Url, [debug_url-debug,gene_info_file-url_file], Opts ),
      options_rename( [interface(wget),file(GzF),dnt_stamp(DntStamp)|Opts], debug_url-debug, Fpts, true ),
      url_file_local_date_mirror( Url, DnDir, Fpts ),
      working_directory( Old, DnDir ),

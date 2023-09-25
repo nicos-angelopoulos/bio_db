@@ -54,7 +54,7 @@ Opts
   * debug(Dbg=true)
     informational, progress messages
   * debug_url(Ubg=false)
-    whether to debug the concatenation of the url (via bio_db_source_url/2)
+    whether to debug the concatenation of the url (via bio_db_source_url/3)
   * iactive(Iact=true)
     when false, wget reports less
   * org(Org=mouse)

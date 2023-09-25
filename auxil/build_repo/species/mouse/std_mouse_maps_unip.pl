@@ -41,12 +41,23 @@ unip_dnload( Self, Loc ) :-
     debuc( Self, 'Loc: ~p', Loc ),
      os_make_path( Loc, debug(true) ).
 
-std_mouse_maps_unip_defaults(debug(true)).
+std_mouse_maps_unip_defaults( Defs ) :-
+                                        Defs = [ db(unip),
+                                                 debug(true),
+                                                 org(mouse)
+                                        ].
 
 /** maps_std_uniprot.
 
 Create some uniprot maps.
 
+Opts
+  * db(Db=unip)
+    source database
+  * debug(Dbg=true)
+    informational, progress messages
+  * org(Org=mouse)
+    organism
 ==
 ?- maps_std_uniprot.
 ?- shell( 'wc -l uniprot_*' ).

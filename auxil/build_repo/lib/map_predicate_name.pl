@@ -32,8 +32,10 @@ map_predicate_name_opts( _Cnm1, _Cnm2, Pname, Opts ) :-
 	memberchk( predicate(Pname), Opts ),
 	!.
 map_predicate_name_opts( Comp1, Comp2, Pname, Opts ) :-
-	map_predicate_name_token( Comp1, Tkn1 ),
-	map_predicate_name_token( Comp2, Tkn2 ),
+	% map_predicate_name_token( Comp1, Tkn1, Opts ),
+	% map_predicate_name_token( Comp2, Tkn2, Opts ),
+     bio_db_cnm_token( Opts, Comp1, Tkn1 ),
+     bio_db_cnm_token( Opts, Comp2, Tkn2 ),
      options( org(OrgIn), Opts ),
      bio_db_organism_known( OrgIn, Okn, _Org ),
      options( db(Db), Opts ),
@@ -48,8 +50,7 @@ map_predicate_map_prefix( map, Opts ) :-
 	!.
 map_predicate_map_prefix( '', _Opts ).
 
-map_predicate_name_token( Atom, Comp ) :-
-     bio_db_cnm_token( Atom, _, Comp ).
+% map_predicate_name_token( Atom, Comp, Opts ) :-
      % ( cnm_token(Atom,_,Comp) -> true; downcase_atom(Atom,Comp) ).
 	% replace_non_alphanums( Down, 0'_, CompCs ),
 	% atom_codes( Comp, CompCs ).

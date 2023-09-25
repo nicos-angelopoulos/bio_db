@@ -32,3 +32,6 @@ pack_errors:message( not_a_cnm(Cnm,Ctx) ) -->
 
 pack_errors:message( multi_option_miss(List) ) -->
    ['One of the following options should be give: ~w'-[List]].
+
+pack_errors:message( bio_db_pred_name_fail(Comp1,Comp2) ) -->
+   ['Failed to map fields: ~w and/or ~w, to bio_db predicate name tokens.-[Comp1,Comp2]].

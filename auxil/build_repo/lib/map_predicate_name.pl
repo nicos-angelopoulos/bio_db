@@ -37,7 +37,11 @@ map_predicate_name_opts( Comp1, Comp2, Pname, Opts ) :-
      options( org(OrgIn), Opts ),
      bio_db_organism_known( OrgIn, Okn, _Org ),
      options( db(Db), Opts ),
-	at_con( [Db,Okn,Tkn1,Tkn2], '_', Pname ).
+	at_con( [Db,Okn,Tkn1,Tkn2], '_', Pname ),
+     !.
+     % things should have already error, but to be steadfast: 
+map_predicate_name_opts( Comp1, Comp2, _Pname, Opts ) :-
+     throw( bio_db_pred_name_fail(Comp1,Comp2), Opts ).
 
 map_predicate_map_prefix( map, Opts ) :-
 	options( map_prefix(true), Opts ),

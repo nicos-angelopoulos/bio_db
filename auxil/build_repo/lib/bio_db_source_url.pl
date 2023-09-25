@@ -68,10 +68,14 @@ bio_db_source_url( Url, RnmS, Args ) :-
      ( Rnms == [] -> true
                   ;  options_rename( OptsPrv, Rnms, Opts, true )
      ),
-     ( memberchk(db(BuTkn),Opts) -> 
+     ( memberchk(url_base(BuTkn), Opts) ->
           true
           ;
-          options( url_base(BuTkn), Opts )
+          ( memberchk(db(BuTkn),Opts) ->
+                    true
+                    ;
+                    throw(multi_option_miss([url_base/1,db/1]), Opts)
+          )
      ),
      bio_db_source_url_base( BuTkn, BsUrl, Opts ),
      options( url_file(SrcFPrv),  Opts ),
@@ -89,7 +93,7 @@ bio_db_source_url_base( Url, BaseUrl, _Opts ) :-
      !,
      BaseUrl = Url.
 bio_db_source_url_base( Url, _BaseUrl, Opts ) :-
-     throw( url_base(not_a(Url)), [bio_db:bio_db_source_url/3|Opts] ). 
+     throw( base_url(not_a(Url)), [bio_db:bio_db_source_url/3|Opts] ). 
 
 bio_db_source_url_file( call(Goal), BsUrl, Org, SrcF, Opts ) :-
      !,

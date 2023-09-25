@@ -29,3 +29,6 @@ pack_errors:message( org_ense_miss(Org,Eir) ) -->
 
 pack_errors:message( not_a_cnm(Cnm,Ctx) ) -->
    ['Not a valid column name or db predicate token (len=4): ~w, (context: ~w).'-[Cnm,Ctx]].
+
+pack_errors:message( multi_option_miss(List) ) -->
+   ['One of the following options should be give: ~w'-[List]].

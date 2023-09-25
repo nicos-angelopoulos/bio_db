@@ -68,12 +68,12 @@ maps_ncbi_ncbi_gont :-
      % system( 'grep "^9606" gene2go | cat gene2go_hs' ),
      working_directory( _, Old ).
 
-maps_ncbi_rnuc_symb( Self, Opts ) :-
+maps_ncbi_rnuc_symb( Self, DnDir, Opts ) :-
      debuc( by_unix ),
-     ncbi_dnload( Dir ),
+     % ncbi_dnload( Dir ),
      % ncbi_repo( Repo ),
      bio_db_source_base_url( ncbi, NcbiRepo ),
-     ncbi_humanise_data( gene2accession, Dir, NcbiRepo, Old, HsStem, HsUrl, HsDnDt, Opts ),
+     ncbi_humanise_data( gene2accession, DnDir, NcbiRepo, Old, HsStem, HsUrl, HsDnDt, Opts ),
 
      file_name_extension( HsStem, tmp, TmpF ),
      @ mv( -f, HsStem, TmpF ),
@@ -230,7 +230,7 @@ std_maps_ncbi( Args ) :-
      file_name_extension( RemS, gz, GnsF ),
      std_maps_ncbi_1( Self, RemS, Url, DnDt, Opts ),
      delete_file( RemS ),
-     maps_ncbi_rnuc_symb( Self, Opts ),
+     maps_ncbi_rnuc_symb( Self, DnDir, Opts ),
      % maps_ncbi_unig_ncbi,  % unigene is no longer maintained as of Feb.2019
      working_directory( _, Old ).
 

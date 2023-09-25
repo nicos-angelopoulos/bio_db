@@ -99,7 +99,7 @@ cnm_token( Cnm, Tkn ) :-
 % human
 cnm_token(name, _, name).
 cnm_token(symbol, _, symb).
-cnm_token(symbol, _, symb).
+cnm_token('Symbol', _, symb).
 % multi
 cnm_token(taxon_id, _, taxo).
 % vgnc

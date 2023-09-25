@@ -1,4 +1,6 @@
+
 :- lib(options).
+:- lib(pack_errors).
 
 bio_db_cnm_token_defaults( [db(hgnc),org(human)] ).
 
@@ -35,8 +37,9 @@ bio_db_cnm_token( Cnm, Tkn ) :-
 bio_db_cnm_token( Opts, Cnm, Tkn ) :-
      bio_db_cnm_token( Cnm, _Ctx, Tkn, Opts ).
 
-bio_db_cnm_token( Cnm, Ctx, Tkn, Opts ) :-
-     % fixme: is it ok to assume Db and Org at all times ?
+bio_db_cnm_token( Cnm, Ctx, Tkn, Args ) :-
+     Self = bio_db_cnm_token,
+     options_append( Self, Args, Opts ),
      options( db(Db), Opts ),
      options( org(Org), Opts ),
      bio_db_cnm_token_opts( Org, Db, Cnm, Ctx, Tkn ),
@@ -64,6 +67,9 @@ bio_db_cnm_token_opts( _Org, Db, Cnm, Ctx, Tkn ) :-
      cnm_token( Cnm, Db, Tkn ),
      !,
      Ctx = Db.
+bio_db_cnm_token_opts( _Org, _Db, Cnm, Ctx, Tkn ) :-
+     cnm_token( Cnm, Ctx, Tkn ),
+     !.
 
 /** cnm_token(?Cnm, +Ctx, ?Tkn ).
 

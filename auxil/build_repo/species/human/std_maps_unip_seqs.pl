@@ -169,10 +169,11 @@ unip_hs_seqs_file( Url, DnDir, Hdr, Opts ) :-
 	working_directory( _, Old ),
 	@ rm( -f, HumF ).
 
-unip_seqs_stem_token( sprot, 'Protein', sprt ) :- !.
-unip_seqs_stem_token( sprot, 'Sequence', seqn ) :- !.
-unip_seqs_stem_token( trembl, 'Protein', trem ) :- !.
-unip_seqs_stem_token( trembl, 'Sequence', seqn ) :- !.
+% fixme: move this to bio_db_cnm_token/3
+unip_seqs_stem_token( sprot, _, 'Protein', sprt ) :- !.
+unip_seqs_stem_token( sprot, _, 'Sequence', seqn ) :- !.
+unip_seqs_stem_token( trembl, _, 'Protein', trem ) :- !.
+unip_seqs_stem_token( trembl, _, 'Sequence', seqn ) :- !.
 
 map_unip_human( UnipF ) :-
 	os_postfix( human, UnipF, HumF ),

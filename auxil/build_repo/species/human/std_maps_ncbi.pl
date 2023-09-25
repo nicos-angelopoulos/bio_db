@@ -91,10 +91,10 @@ maps_ncbi_rnuc_symb( Self, DnDir, Opts ) :-
      shell( Cat ),
      % @ mv( -f, HsStem, HsStem ),
 
-     CIMOpts = [ cnm_transform(ncbi_gene2asseccion_cnms), prefix(ncbi),
-                 to_value_1(de_versionise),
-                 to_value_2(is_a_symbol),
-                 datetime(HsDnDt), source(HsUrl), header(row('RNA Nucleotide','HGNC Symbol'))
+     CIMOpts = [ db(ncbi),
+                 to_value_1(de_versionise), to_value_2(is_a_symbol),
+                 datetime(HsDnDt), source(HsUrl), 
+                 header(row('RNA Nucleotide','HGNC Symbol'))
                  | Opts
      ],
      RNAnucl = 'RNA_nucleotide_accession.version',
@@ -164,11 +164,6 @@ de_versionise( ProductVersion, Product ) :-
 is_a_symbol( Symb, Symb ) :-
      hgnc:hgnc_homs_symb_hgnc( Symb, _ ),
      !.
-
-% fixme: move those to cnm_token/3
-ncbi_gene2asseccion_cnms( 'RNA_nucleotide_accession.version', _, rnuc ).
-ncbi_gene2asseccion_cnms( 'genomic_nucleotide_accession.version', _, dnuc ).
-ncbi_gene2asseccion_cnms( 'Symbol', _, symb ).
 
 std_maps_ncbi_defaults( Defs ) :-
                                    Defs = [ db(ncbi),

@@ -114,6 +114,9 @@ cnm_token(name, _, name).
 cnm_token(prev_symbol, hgnc, prev).
 cnm_token(symbol, _, symb).
 cnm_token('Symbol', _, symb).
+% human.ncbi
+cnm_token('RNA_nucleotide_accession.version',_,rnuc).
+cnm_token('genomic_nucleotide_accession.version', _, dnuc).
 % hgnc_cname_known( 'Entrez Gene ID (supplied by NCBI)', 'entz-ncbi' ).
 % multi
 cnm_token(taxon_id, _, taxo).

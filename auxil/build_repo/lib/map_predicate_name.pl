@@ -49,7 +49,8 @@ map_predicate_map_prefix( map, Opts ) :-
 map_predicate_map_prefix( '', _Opts ).
 
 map_predicate_name_token( Atom, Comp ) :-
-     ( cnm_token(Atom,_,Comp) -> true; downcase_atom(Atom,Comp) ).
+     bio_db_cnm_token( Atom, _, Comp ).
+     % ( cnm_token(Atom,_,Comp) -> true; downcase_atom(Atom,Comp) ).
 	% replace_non_alphanums( Down, 0'_, CompCs ),
 	% atom_codes( Comp, CompCs ).
 

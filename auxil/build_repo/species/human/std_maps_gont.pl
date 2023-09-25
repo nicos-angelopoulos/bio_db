@@ -23,18 +23,21 @@
 % :- ensure_loaded( hgnc:bio_db_build_downloads('hgnc/maps/map_hgnc_symb_hgnc') ).
 
 % local libs & sources
+:- lib(go_id/2).
 :- lib(go_obo/2).
 :- lib(link_to_bio_sub/2).
 :- lib(bio_db_dnt_times/3).
-:- lib(bio_db_source_url/2).
+:- lib(bio_db_add_infos/1).                  % bio_db_add_infos_to/2
+:- lib(build_dnload_loc/3).
+:- lib(bio_db_source_url/3).
 :- lib(url_file_local_date_mirror/3).
-:- lib(bio_db_add_infos/1).  % bio_db_add_infos_to/2
-:- lib(go_id/2).
 
 % :- debuc(std_maps_go).
 
 std_maps_gont_defaults( Defs ) :-
-                                   Defs = [ debug(true),
+                                   Defs = [ db(gont),
+                                            debug(true),
+                                            debug_fetch(true),
                                             debug_url(false),
                                             goa_base(gont_goa),
                                             goa_file('goa_human.gaf.gz'),
@@ -57,10 +60,14 @@ std_maps_gont_defaults( Defs ) :-
 %  * map_gont_gont_gonm( GOTERM, GONM ).
 %
 % Opts
+%  * db(Db=gont)
+%    source database
 %  * debug(Dbg=true)
 %    informational, progress messages
+%  * debug_fetch(Fbg=true)
+%    whether to debug the fetching of the url (via url_file_local_date_mirror/3)
 %  * debug_url(Ubg=false)
-%    whether to debug the concatenation of the url (via bio_db_source_url/2)
+%    whether to debug the concatenation of the url (via bio_db_source_url/3)
 %  * goa_base(GoaB=gont_goa)
 %    bio_db_source_base_url/2, token or url to download from
 %  * goa_file(GoaF='goa_human.gaf.gz')
@@ -75,7 +82,7 @@ std_maps_gont_defaults( Defs ) :-
 % @author  nicos angelopoulos
 % @version 0.1 2015/3/26
 % @version 0.2 2023/9/22, moved download location to options
-% @see bio_db_source_base_url/2, bio_db_source_url/2.
+% @see bio_db_source_base_url/2, bio_db_source_url/3.
 %
 std_maps_gont( Args ) :-
     Self = std_maps_gont,
@@ -84,13 +91,12 @@ std_maps_gont( Args ) :-
     % DnDir = '/usr/local/users/nicos/work/db/data/go',
     % load necessary data that has already been generated
     ensure_loaded( hgnc:bio_db_build_downloads('hgnc/maps/hgnc_homs_symb_hgnc') ),
-    absolute_file_name( bio_db_build_downloads(gont), DnDir ),
-    os_make_path( DnDir, debug(true) ),
+    build_dnload_loc( Self, DnDir, Opts ),
     working_directory( Here, DnDir ),
-    options( [goa_base(GoaB),goa_file(GoaF),debug_url(Ubg)], Opts ),
-    Upts = [url_base(GoaB),url_file(GoaF),debug(Ubg)],
-    bio_db_source_url( Url, Upts ),
-    url_file_local_date_mirror( Url, DnDir, Opts ),
+    SrcRnms = [debug_url-debug,goa_base-url_base-goa_file-url_file], 
+    bio_db_source_url( Url, SrcRnms, Opts ),
+    options( debug_fetch(Fbg), Opts ),
+    url_file_local_date_mirror( Url, DnDir, [debug(Fbg)|Opts] ),
 
     @ gunzip( --force, -k, GoaF ),
     file_name_extension( GoaHs, gz, GoaF ),
@@ -120,11 +126,10 @@ std_maps_gont( Args ) :-
     mtx_prolog( OrdSGRows, 'maps/gont_homs_symb_gont.pl', SGopts ),
     bio_db_add_infos_to( [header(row('HGNC Symbol','Evidence','GO Term'))|AddOpts], 'maps/gont_homs_symb_gont.pl' ),
     debuc( Self, 'Building term to name map', true ),
-    options( [obo_base(OboB),obo_file(OboF),debug_url(Ubg)], Opts ),
-    OUpts = [url_file(OboF),url_base(OboB),debug(Ubg)],
-    bio_db_source_url( OboUrl, OUpts ),
+    OboRnms = [debug_fetch-debug,obo_base-url_base,obo_file-url_file], 
+    bio_db_source_url( OboUrl, OboRnms, Opts ),
     absolute_file_name( bio_db_build_downloads(gont), DnDir ),
-    url_file_local_date_mirror( OboUrl, DnDir, Opts ),
+    url_file_local_date_mirror( OboUrl, DnDir, [debug(Fbg)|Opts] ),
     debuc( Self, 'Dnload done: ~w', [DnDir] ),
     go_obo( OboF, GoObo),
     go_obo_non_obs( GoObo, GoOboCurr ),

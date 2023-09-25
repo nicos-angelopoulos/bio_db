@@ -28,20 +28,16 @@
 :- lib(link_to_bio_sub/2).
 :- lib(bio_db_add_infos/1).             % bio_db_add_infos_to/2.
 :- lib(bio_db_dnt_times/3).
-:- lib(bio_db_source_url/2).
+:- lib(build_dnload_loc/3).
+:- lib(bio_db_source_url/3).
 :- lib(url_file_local_date_mirror/3).
 
-pros_dnload_dir( Old, Loc, Opts ) :-
-	absolute_file_name( bio_db_build_downloads(pros), Loc ),
-	os_make_path( Loc, Opts ),
-	debuc( maps_unip_seqs, 'Prosite build directory: ~p', Loc ),
-	working_directory( Old, Loc ).
-
 std_maps_pros_defaults( Defs ) :-
-                              Defs = [ debug(true),
+                              Defs = [ db(pros),
+                                       debug(true),
+                                       debug_fetch(true),
                                        debug_url(false),
                                        iactive(true),
-                                       pros_base(pros),
                                        pros_file('prosite_alignments.tar.gz')
                                      ].
 
@@ -50,14 +46,16 @@ std_maps_pros_defaults( Defs ) :-
 Support for prosite annotations of uniprot proteins.
 
 Opts
+  * db(Db=pros)
+    source database
   * debug(Dbg=true)
     informational, progress messages
+  * debug_fetch(Fbg=true)
+    whether to debug the fetching of the url (via url_file_local_date_mirror/3)
   * debug_url(Ubg=false)
-    whether to debug the concatenation of the url (via bio_db_source_url/2)
+    whether to debug the concatenation of the url (via bio_db_source_url/3)
   * iactive(Iact=true)
     whether the session is interactive, otherwise wget gets --no-verbose
-  * pros_base(ProsB=pros)
-    the url base for prosite download
   * pros_file(ProsF='prosite_alignments.tar.gz')
     the file name for prosite downlad
 
@@ -78,14 +76,12 @@ std_maps_pros( Args ) :-
      unip:ensure_loaded( bio_db_build_downloads('unip/maps/unip_homs_unip_hgnc') ),
      hgnc:ensure_loaded( bio_db_build_downloads('hgnc/maps/hgnc_homs_hgnc_symb') ),
 	debuc( std_maps_pros, 'Starting Prosite maps', true ),
-	pros_dnload_dir( Old, DnDir, Opts ),
-	% pros_alignments_url( Url ),
-     options( [pros_base(ProsB),pros_file(OptProsF),debug_url(Ubg)], Opts ),
-     Upts = [url_base(ProsB),url_file(OptProsF),debug(Ubg)],
-     bio_db_source_url( Url, Upts ),
-
-	UrlOpts = [debug(true),interface(wget),file(ProsF),ext('tar.gz')|Opts],
+     build_dnload_loc( Self, DnDir, Opts ),
+     bio_db_source_url( Url, [debug_url-debug,pros_file-url_file], Opts ),
+     options( debug_fetch(Fbg), Opts ),
+	UrlOpts = [debug(Fbg),interface(wget),file(ProsF),ext('tar.gz')|Opts],
 	url_file_local_date_mirror( Url, DnDir, UrlOpts ),
+     working_directory( Old, DnDir ),
 	bio_db_dnt_times( ProsF, DnSt, _DnEn ),
 	debuc( Self, 'Prosite local file: ~p', ProsF ),
 	( os_dir(prosite_alignments) ->

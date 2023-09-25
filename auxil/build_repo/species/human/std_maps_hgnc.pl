@@ -20,11 +20,12 @@
 :- lib(de_semi/3).
 :- lib(sep_split/3).
 :- lib(csv_ids_map/6).
-:- lib(bio_db_source_url/2).
 :- lib(link_to_bio_sub/2).
+:- lib(bio_db_add_infos/1).                  % bio_db_add_infos_to/2
 :- lib(bio_db_dnt_times/3).
+:- lib(build_dnload_loc/3).
+:- lib(bio_db_source_url/3).
 :- lib(url_file_local_date_mirror/3).
-:- lib(bio_db_add_infos/1).   % bio_db_add_infos_to/2
 
 true(_,_).
 
@@ -38,6 +39,7 @@ std_maps_hgnc_defaults( Defs ) :-
     % absolute_file_name( Exp, Dir ),
                               Defs = [  db(hgnc),
                                         debug(true), 
+                                        debug_fetch(true),
                                         debug_url(false),
                                         download(true),
                                         hgnc_file('hgnc_complete_set.txt'),
@@ -53,12 +55,14 @@ Opts
    the source database
  * debug(Dbg=true)
    whether the session is interactive, otherwise wget gets --no-verbose
+ * debug_fetch(Fbg=true)
+   wether to debug the fetching of the url (via url_file_local_date_mirror/3)
  * debug_url(Ubg=false)
-   whether to debug the concatenation of the url (via bio_db_source_url/2)
+   whether to debug the concatenation of the url (via bio_db_source_url/3)
  * dir(Dir=maps)
    sub-directory for creating the maps
  * hgnc_base(hgnc)
-   Url prefix for HGNC downlaods, token of bio_db_source_base_url/2 or Url prefix
+   Url prefix for HGNC downlaods, token of bio_db_source_base_url/3 or Url prefix
  * hgnc_file('hgnc_complete_set.txt')
    file for HGNC downloads
  * iactive(Iact=true)
@@ -88,12 +92,11 @@ std_maps_hgnc( Args ) :-
     Self = std_maps_hgnc,
     options_append( Self, Args, Opts ),
     bio_db_build_aliases( Opts ),
-    absolute_file_name( bio_db_build_downloads(hgnc), Dir ),
-    os_make_path( Dir, debug(true) ),
-    options_rename( Opts, [db-url_base, hgnc_file-url_file,debug_url-debug], Upts, true ),
-    bio_db_source_url( SrcUrl, Upts ),
-    url_file_local_date_mirror( SrcUrl, Dir, [debug(true),date(prefix),interface(wget)|Opts] ),
-    working_directory( Old, Dir ),
+    build_dnload_loc( Self, DnDir, Opts ),
+    bio_db_source_url( SrcUrl, [hgnc_file-url_file,debug_url-debug], Opts ),
+    options( debug_fetch(Fbg), Opts ),
+    url_file_local_date_mirror( SrcUrl, DnDir, [debug(Fbg),date(prefix),interface(wget)|Opts] ),
+    working_directory( Old, DnDir ),
     % HgncTxtF = 'hgnc_complete_set.txt',
     % GzF = 'hgnc_complete_set.txt.gz',
     % @ gunzip(-f,-k, GzF ),

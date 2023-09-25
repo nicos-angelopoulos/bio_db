@@ -21,11 +21,14 @@
 :- lib(go_obo/2).
 :- lib(link_to_bio_sub/3).
 :- lib(bio_db_dnt_times/3).
+:- lib(build_dnload_loc/3).
 :- lib(bio_db_source_url/3).
 :- lib(url_file_local_date_mirror/3).
 :- lib(bio_db_add_infos/1). % bio_db_add_infos_to/2
 
-std_graphs_gont_defaults( [   debug(true),
+std_graphs_gont_defaults( [   db(gont),
+                              debug(true),
+                              debug_fetch(true),
                               debug_url(false),
                               iactive(true),
                               obo_base(gont_obo),
@@ -37,8 +40,12 @@ std_graphs_gont_defaults( [   debug(true),
 Build data predicates for Gene Ontology graphs.
 
 Opts
+  * db(Db=gont)
+    source database
   * debug(Dbg=true)
     informational, progress messages
+  * debug_fetch(Fbg=true)
+    whether to debug the fetching of the url (via url_file_local_date_mirror/3)
   * debug_url(Ubg=false)
     whether to debug the concatenation of the url (via bio_db_source_url/3)
   * iactive(Iact=true)
@@ -60,35 +67,33 @@ std_graphs_gont( Args ) :-
     Self = std_graphs_gont,
     options_append( Self, Args, Opts ),
     bio_db_build_aliases( Opts ),
-    %
+    build_dnload_loc( Self, DnDir, Opts ),
     RnmOpts = [obo_file-url_file,obo_base-url_base,debug_url-debug],
     bio_db_source_url( Url, RnmOpts, Opts ),
-    %
-    absolute_file_name( bio_db_build_downloads(gont), DnDir ),
-    url_file_local_date_mirror( Url, DnDir, Opts ),
-    debuc( Self, 'Dnload done: ~w', [DnDir] ),
+    options( debug_fetch(Fbg), Opts ),
+    url_file_local_date_mirror( Url, DnDir, [debug(Fbg)|Opts] ),
     working_directory( Old, DnDir ),
     /* here new code */
+    bio_db_dnt_times( OboF, DnDt, _DnEnd ),
     go_obo( OboF, GoObo),
     go_obo_non_obs( GoObo, GoOboCurr ),
     os_make_path( graphs ),
-    go_obo_pl_relation( GoOboCurr, is_a, '', gont_homs_edge_gisa, Url ),
-    go_obo_pl_relation( GoOboCurr, relationship, regulates, gont_homs_edge_greg, Url ),
-    go_obo_pl_relation( GoOboCurr, relationship, part_of, gont_homs_edge_gpof, Url ),
-    go_obo_pl_relation( GoOboCurr, relationship, positively_regulates, gont_homs_edge_gprg, Url ),
-    go_obo_pl_relation( GoOboCurr, relationship, negatively_regulates, gont_homs_edge_gnrg, Url ),
+    go_obo_pl_relation( GoOboCurr, is_a, '', gont_homs_edge_gisa, Url, DnDt ),
+    go_obo_pl_relation( GoOboCurr, relationship, regulates, gont_homs_edge_greg, Url, DnDt ),
+    go_obo_pl_relation( GoOboCurr, relationship, part_of, gont_homs_edge_gpof, Url, DnDt ),
+    go_obo_pl_relation( GoOboCurr, relationship, positively_regulates, gont_homs_edge_gprg, Url, DnDt ),
+    go_obo_pl_relation( GoOboCurr, relationship, negatively_regulates, gont_homs_edge_gnrg, Url, DnDt ),
     working_directory( _, Old ).
 
 % assumes SubD = graphs
 % 
-go_obo_pl_relation( GoObo, OboRlt, Pfx, PlRlt, Url ) :-
+go_obo_pl_relation( GoObo, OboRlt, Pfx, PlRlt, Url, DnDt ) :-
     SubD = graphs,
     GoObo = obo(_,OboTerms),
     go_obo_terms_pl_relation( OboTerms, OboRlt, Pfx, PlRlt, PlTerms ),
     directory_file_path( SubD, PlRlt, Stem ),
     file_name_extension( Stem, pl, PlF ),
     sort( PlTerms, OrdPlTerms ),
-    bio_db_dnt_times( 'go.obo', DnDt, _DnEnd ),
     portray_clauses( OrdPlTerms, file(PlF) ),
     link_to_bio_sub( gont, PlF, [org(hs),type(graphs)] ),
     InfoOpts = [header(row('GO Term','GO Term')),source(Url),datetime(DnDt)],

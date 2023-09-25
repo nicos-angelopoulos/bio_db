@@ -24,22 +24,23 @@
 
 % local libs & sources
 :- lib(map_uniprot/4).
-:- lib(bio_db_add_infos/1). % bio_db_add_infos_to/2.
 :- lib(csv_ids_map/6).
 :- lib(link_to_bio_sub/3).
+:- lib(build_dnload_loc/3).
 :- lib(bio_db_dnt_times/3).
-:- lib(build_dnloads_loc/3).
+:- lib(bio_db_add_infos/1).             % bio_db_add_infos_to/2.
+:- lib(bio_db_source_url/3).
 :- lib(url_file_local_date_mirror/3).
 
-unip_mouse( 'ftp://ftp.ebi.ac.uk/pub/databases/uniprot/current_release/knowledgebase/idmapping/by_organism/MOUSE_10090_idmapping.dat.gz' ).
-trem_mouse( 'ftp://ftp.ebi.ac.uk/pub/databases/uniprot/current_release/knowledgebase/idmapping/by_organism/MOUSE_10090_idmapping_selected.tab.gz' ).
 % use this if from outside europe:
 % unip_hs( 'ftp://ftp.uniprot.org/pub/databases/uniprot/current_release/knowledgebase/idmapping/by_organism/HUMAN_9606_idmapping.dat.gz' ).
-%trem_hs( 'ftp://ftp.uniprot.org/pub/databases/uniprot/current_release/knowledgebase/idmapping/by_organism/HUMAN_9606_idmapping_selected.tab.gz' ).
+% trem_hs( 'ftp://ftp.uniprot.org/pub/databases/uniprot/current_release/knowledgebase/idmapping/by_organism/HUMAN_9606_idmapping_selected.tab.gz' ).
 
 std_mouse_maps_unip_defaults( Defs ) :-
                                         Defs = [ db(unip),
                                                  debug(true),
+                                                 debug_fetch(true),
+                                                 debug_url(false),
                                                  org(mouse),
                                                  unip_file_full('MOUSE_10090_idmapping.dat.gz'),
                                                  unip_file_sele('MOUSE_10090_idmapping_selected.dat.gz')
@@ -54,8 +55,16 @@ Opts
     source database
   * debug(Dbg=true)
     informational, progress messages
+  * debug_fetch(Ubg=true)
+    whether to debug the fetching of the url (via url_file_local_date_mirror/3)
+  * debug_url(Ubg=false)
+    whether to debug the concatenation of the url (via bio_db_source_url/3)
   * org(Org=mouse)
     organism
+  * unip_file_full(Uff='MOUSE_10090_idmapping.dat.gz'
+    remote file name for Unip protein downloads (all proteins)
+  * unip_file_sele(Ufs='MOUSE_10090_idmapping_selected.dat.gz')
+    remote file name for Unip downloads (selected, annotated proteins- subset of Uff)
 
 ==
 ?- maps_std_uniprot.
@@ -84,29 +93,26 @@ Tue 27 Dec 16:08:45 GMT 2022
 
 @author nicos angelopoulos
 @version  0.2 2015/4/27
+@version  0.3 2023/9/25 use more local libs and control via options
+
 */
 std_mouse_maps_unip( Args ) :-
      Self = std_mouse_maps_unip,
      options_append( Self, Args, Opts ),
      bio_db_build_aliases( Opts ),
-     build_dnloads_loc( Self, DnDir, Opts ),
+     build_dnload_loc( Self, DnDir, Opts ),
      /* double check unip part works with the nucl part // 15.05.15 */
      working_directory( Old, DnDir ),
-     unip_mouse( Url ),
-     bio_db_source_url( 
+     % unip_mouse( Url ),
+     bio_db_source_url( Url, [debug_url-debug,unip_file_full-url_file], Opts ),
      % url_file( Url, 
      UrlOpts = [debug(true),interface(wget),file(File)],
-     url_file_local_date_mirror( Url, DnDir, UrlOpts ),
-     % cd( bio_dn_root(uniprot) ),
-     % os_rm_rf( maps ), % don't do that human puts stuff there tooo ! 
+     options( debug_fetch(Fbg), Opts ),
+     url_file_local_date_mirror( Url, DnDir, [debug(Fbg)|UrlOpts] ),
      os_make_path( maps, debug(true) ),
-
      debuc( Self, 'Dir location: ~p', DnDir ),
      Rev = [id_map('MOUSE_10090_idmapping.dat'),org(mouse),f_call(de_vers),interface(prolog),reverse(true)],
      map_uniprot( 'Ensembl_PRO', Csv, [EnspF], Rev ),
-
-     % Fgnc = [interface(prolog),f_call(de_semi('HGNC'))],
-     % map_uniprot( 'HGNC', Csv, [FromHgncF], Fgnc ),
      Sem = [interface(prolog),f_call(de_semi('MGI')),reverse(true),id_map('MOUSE_10090_idmapping.dat'),org(mouse)],
      map_uniprot( 'MGI', Csv, [MgiF], Sem ),
 
@@ -134,9 +140,8 @@ std_mouse_maps_unip( Args ) :-
      %bio_db_add_infos_to( [header(row('Uni_Protein','Uni_Gene'))|SwOpts], 'maps/map_unip_mouse_unip_unig.pl' ),
      bio_db_add_infos_to( [header(row('Uni_Protein','Symbol'))|SwOpts], 'maps/unip_musm_unip_symb.pl' ),
      bio_db_add_infos_to( [header(row('Symbol','Uni_Protein'))|SwOpts], 'maps/unip_musm_gyno_unip.pl' ),
-
      working_directory( _, DnDir ),
-     trem_mouse( TremUrl ),
+     bio_db_source_url( TremUrl, [debug_url-debug,unip_file_sele-url_file], Opts ),
      % 15.05.14 adding support for treMBL, at least that 's what i think the selected file is all about
      TrUrlOpts = [debug(true),interface(wget),file(TrFile)],
      url_file_local_date_mirror( TremUrl, DnDir, TrUrlOpts ),
@@ -176,7 +181,6 @@ std_mouse_maps_unip( Args ) :-
      % uniprot_sprot.dat is 2.9 G
      % std_map_usyn_unip,
      %
-
      working_directory( _, Old ).
 
 empty( '' ).

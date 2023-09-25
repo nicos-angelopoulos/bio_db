@@ -26,17 +26,16 @@
 :- lib(csv_ids_map/6).
 :- lib(link_to_bio_sub/2).
 :- lib(bio_db_dnt_times/3).
-:- lib(bio_db_source_url/2).
-:- lib(url_file_local_date_mirror/3).
+:- lib(build_dnload_loc/3).
+:- lib(bio_db_source_url/3).
 :- lib(ens_fa_peptide_gene_rows/2).  % /2, fixme: should be more local
+:- lib(url_file_local_date_mirror/3).
 
-:- debuc(url_file).
-
-% ncbi_repo( 'ftp://ftp.ncbi.nih.gov/gene/DATA/' ).
-
+/*
 ncbi_dnload( Loc ) :-
      absolute_file_name( bio_db_build_downloads(ncbi), Loc ),
      os_make_path( Loc, debug(true) ).
+     */
 
 % maps_ncbi_ensp_ensg.
 %
@@ -173,9 +172,9 @@ ncbi_gene2asseccion_cnms( 'Symbol', symb ).
 std_maps_ncbi_defaults( Defs ) :-
                                    Defs = [ db(ncbi),
                                             debug(true),
+                                            debug_fetch(true),
                                             debug_url(false),
                                             iactive(true),
-                                            ncbi_base(ncbi),
                                             ncbi_genes_file('gene2ensembl.gz')
                                           ].
 
@@ -188,14 +187,14 @@ Opts
     source database
   * debug(Dbg=true)
     informational, progress messages
+  * debug_fetch(Fbg=true)
+    whether to debug the fetching of the url (via url_file_local_date_mirror/3)
   * debug_url(Ubg=false)
-    whether to debug the concatenation of the url (via bio_db_source_url/2)
+    whether to debug the concatenation of the url (via bio_db_source_url/3)
   * iactive(Iact=true)
     whether the session is interactive, otherwise wget gets --no-verbose
-  * obo_base(OboB=gont_obo)
-    the url base for the obo download
-  * obo_file(OboF='go.obo')
-    the file name for the obo download
+  * ncbi_genes_file(GnsF='')
+    the url base for the genes download
 
 ==
 ?- std_maps_ncbi([]).
@@ -212,15 +211,12 @@ std_maps_ncbi( Args ) :-
      bio_db_build_aliases( Opts ),
      % load necessary data that has already been generated
      ensure_loaded(hgnc:bio_db_build_downloads('hgnc/maps/hgnc_homs_symb_hgnc')),
-     ncbi_dnload( NcbiD ),
-
-     % Url = 'ftp://ftp.ncbi.nih.gov/gene/DATA/gene2ensembl.gz',
-     options( [ncbi_base(NcbiB),ncbi_genes_file(GnsF),debug_url(Ubg)], Opts ),
-     Upts = [url_base(NcbiB),url_file(GnsF),debug(Ubg)],
-     bio_db_source_url( Url, Upts ),
-     url_file_local_date_mirror( Url, NcbiD, [interface(wget)|Opts] ),
+     build_dnload_loc( Self, DnDir, Opts ),
+     bio_db_source_url( Url, [ncbi_genes_file-url_file,debug_url-debug], Opts ),
+     options( debug_fetch(Fbg), Opts ),
+     url_file_local_date_mirror( Url, DnDir, [debug(Fbg),interface(wget)|Opts] ),
      % file_base_name( Url, RemB ),
-     working_directory( Old, NcbiD ),
+     working_directory( Old, DnDir ),
      MapsD = maps,
      make_directory_path( MapsD ),
      directory_file_path( MapsD, GnsF, ToP ),

@@ -1,6 +1,5 @@
 % :- lib( replace_non_alphanums/3 ).
 :- lib(stoics_lib:at_con/3).
-:- lib(cnm_token/2).
 
 :- ensure_loaded(bio_db_build_organism).
 

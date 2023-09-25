@@ -3,9 +3,8 @@
 :- lib(bio_db_source_url/2).
 
 bio_db_string_version_base_name( Defs ) :-
-                                   Defs = [ 
-                                            relation(links),
-                                            org(human)
+                                   Defs = [ org(human),
+                                            relation(links)
                                           ].
 
 /** bio_db_string_version_base_name(+Vers, -VersD, -Bname, -Url, +Opts).
@@ -13,10 +12,10 @@ bio_db_string_version_base_name( Defs ) :-
 Generate remote base name, remote version directory and URL from string Version Vers and options Opts.
 
 Opts
-  * relation(links)
-    or =info=
   * org(Org=human)
     or =chicken=
+  * relation(links)
+    or =info=
 
 ==
 ?- bio_db_string_version_base_name( 12, Bname, Rem, [] ).

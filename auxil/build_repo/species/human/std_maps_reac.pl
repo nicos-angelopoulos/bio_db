@@ -15,21 +15,21 @@
 % bio_db loads
 :- ensure_loaded('../../lib/bio_db_build_aliases').  % /1.  also adds lib alias to that dir
 
-:- lib(bio_db_source_url/2).
 :- lib(link_to_bio_sub/3).
 :- lib(bio_db_dnt_times/3).
 :- lib(bio_db_add_infos/1).             % bio_db_add_infos_to/2
-:- lib(bio_db_build_organism/0).        % bio_db_organism/3.
+:- lib(build_dnload_loc/3).
+:- lib(bio_db_source_url/3).
+:- lib(bio_db_build_organism/3).
 :- lib(url_file_local_date_mirror/3).
 
 std_maps_reac_defaults( Def ) :-
-     Def = [ 
-             db(reac),
+     Def = [ db(reac),
              debug(true),
+             debug_fetch(true),
              debug_url(false),
              iactive(true),
              org(human),
-             reac_base(reac),
              reac_file('NCBI2Reactome_PE_All_Levels.txt')
      ].
 
@@ -41,20 +41,20 @@ The species is identified by 'Homo sapiens' at the last arg of each row.
 The PE file contains more detailed info that All_levels.txt .
 
 Opts
- * db(Db=reac)
-   database token, also rel dir name
- * debug(Dbg=true)
-   progress, informational message
- * debug_url(Ubg=false)
-   whether to debug the concatenation of the url (via bio_db_source_url/2)
- * iactive(Iact=true)
-   whether the session is interactive, otherwise wget gets --no-verbose
- * org(Org=human)
-   as recognised by db_organism. note here human maps are given hs token
- * reac_base(Base=reac)
-   the url base for the Reactome Url
- * reac_base(File='NCBI2Reactome_PE_All_Levels.txt')
-   the url base for the Reactome Url
+  * db(Db=reac)
+    database token, also rel dir name
+  * debug(Dbg=true)
+    progress, informational message
+  * debug_fetch(Fbg=true)
+    whether to debug the fetching of the url (via url_file_local_date_mirror/3)
+  * debug_url(Ubg=false)
+    whether to debug the concatenation of the url (via bio_db_source_url/3)
+  * iactive(Iact=true)
+    whether the session is interactive, otherwise wget gets --no-verbose
+  * org(Org=human)
+    as recognised by db_organism. note here human maps are given hs token
+  * reac_file(ReacF='NCBI2Reactome_PE_All_Levels.txt')
+    the url base for the Reactome Url
 
 Tokens
   * ncbi(Ncbi)
@@ -92,13 +92,9 @@ std_maps_reac( Args ) :-
      Self = std_maps_reac,
      options_append( Self, Args, Opts ),
      bio_db_build_aliases( Opts ),
-     options( [reac_base(Rb),reac_file(Rf),debug_url(Ubg)], Opts ),
-     Upts = [url_base(Rb),url_file(Rf),debug(Ubg)],
-     bio_db_source_url( Url, Upts ),
-     options( db(Db), Opts ),
-     absolute_file_name( bio_db_build_downloads(Db), Dir ),
-     url_file_local_date_mirror( Url, Dir, [date(prefix)|Opts] ),
-     debuc( Self, 'Dir: ~p', [Dir] ),
+     build_dnload_loc( Self, DnDir, Opts ),
+     bio_db_source_url( Url, [debug_url-debug,reac_file-url_file], Opts ),
+     url_file_local_date_mirror( Url, DnDir, [date(prefix)|Opts] ),
      os_path( _, Local, Url ),
      debuc( Self, 'Local: ~p', [Local] ),
      os_path( Dir, Local, InP ),

@@ -28,24 +28,24 @@
 % local libs & sources
 :- lib(csv_to_pl/2).
 :- lib(link_to_bio_sub/2).
+:- lib(bio_db_add_infos/1).                  % bio_db_add_infos_to/2
 :- lib(bio_db_dnt_times/3).
-:- lib(bio_db_source_url/2).
+:- lib(build_dnload_loc/3).
+:- lib(bio_db_source_url/3).
 :- lib(url_file_local_date_mirror/3).
-:- lib(bio_db_add_infos/1).   % bio_db_add_infos_to/2
-
-:- debuc(std_maps_ense).
 
 std_maps_ense_defaults( Defs ) :-
                                    Defs = [ db(ense),
                                             debug(true),
                                             debug_url(false),
+                                            debug_fetch(true),
                                             ense_homs_base(ense_homs),
                                             ense_homs_file(call(ense_url_file)),
                                             iactive(true),
                                             org(human)
                                           ].
 
-/** std_maps_ense( +Opts ).
+/** std_maps_ense(+Opts).
 
 Maps based on ensembl .gtf file. Including transcripts to genes, genes
 to hgncs and locations of transcipt and genes to chromosomome locations.
@@ -57,8 +57,10 @@ Opts
     source database
   * debug(Dbg=true)
     informational, progress messages
+  * debug_fetch(Ubg=true)
+    whether to debug the fetching of the url (via url_file_local_date_mirror/3)
   * debug_url(Ubg=false)
-    whether to debug the concatenation of the url (via bio_db_source_url/2)
+    whether to debug the concatenation of the url (via bio_db_source_url/3)
   * ense_homs_base(Eoms=ense_homs)
     Url or bio_db_source_base_url/2 token for download diretory
   * ense_homs_file(Eile=call(ense_homs_url_file))
@@ -98,13 +100,11 @@ std_maps_ense( Args ) :-
      ensure_loaded(hgnc:bio_db_build_downloads('hgnc/maps/hgnc_homs_hgnc_symb')),
      ensure_loaded(hgnc:bio_db_build_downloads('hgnc/maps/hgnc_homs_symb_hgnc')),
 	debuc( Self, 'Starting...', true ),
-	absolute_file_name( bio_db_build_downloads(ense), DnDir ),
-	os_make_path( DnDir ),
-	debuc( Self, 'Downloads dir for ense: ~p', DnDir ),
-     options( [ense_homs_base(EomsB),ense_homs_file(EomsF),debug_url(Ubg)], Opts ),
-     Epts = [url_base(EomsB),url_file(EomsF),debug(Ubg)],
-     bio_db_source_url( Url, Epts ),
-	url_file_local_date_mirror( Url, DnDir, [file(File),interface(wget)|Opts] ),
+     build_dnload_loc( Self, DnDir, Opts ),
+     SrcRnms = [ense_homs_base-url_base,ense_homs_file-url_file,debug_url-debug],
+     bio_db_source_url( Url, SrcRnms, Opts ),
+     options( debug_fetch(Fbg), Opts ),
+	url_file_local_date_mirror( Url, DnDir, [debug(Fbg),file(File),interface(wget)|Opts] ),
 	debuc( Self, 'Dnload done, file is: ~p', File ),
 	working_directory( Old, DnDir ),
 	bio_db_dnt_times( File, DnDt, _DnEn ),

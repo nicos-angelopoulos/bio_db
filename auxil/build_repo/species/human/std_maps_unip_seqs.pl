@@ -26,7 +26,8 @@
 :- lib(kv_decompose_vs/2).
 :- lib(link_to_bio_sub/2).
 :- lib(bio_db_dnt_times/3).
-:- lib(bio_db_source_url/2).
+:- lib(build_dnload_loc/3).
+:- lib(bio_db_source_url/3).
 :- lib(io_prefixed_lines/3).
 :- lib(break_list_on_list/4).
 :- lib(url_file_local_date_mirror/3).
@@ -35,15 +36,10 @@
 :- debug(lib).
 :- debug(std_maps_unip_seqs).
 
-unip_dnload_dir( Old, Loc, Opts ) :-
-	absolute_file_name( bio_db_build_downloads(unip), Loc ),
-	os_make_path( Loc, Opts ),
-	debug( std_maps_unip_seqs, 'Uniprot build directory: ~p', Loc ),
-	working_directory( Old, Loc ).
-
 std_maps_unip_seqs_defaults( Defs ) :-
                                         Defs = [ db(unip),
                                                  debug(true),
+                                                 debug_fetch(true),
                                                  debug_url(false),
                                                  iactive(true),
                                                  useqs_base(useqs),
@@ -64,8 +60,10 @@ Options
     the source database
   * debug(Dbg=true)
     produce debugging messages if Dbg==true
+  * debug_fetch(Ubg=true)
+    whether to debug the fetching of the url (via url_file_local_date_mirror/3)
   * debug_url(Ubg=false)
-    whether to debug the concatenation of the url (via bio_db_source_url/2)
+    whether to debug the concatenation of the url (via bio_db_source_url/3)
   * iactive(Iact=true)
     whether the session is interactive, otherwise wget gets --no-verbose
   * useqs_base(OboB=useqs)
@@ -89,17 +87,17 @@ std_maps_unip_seqs( Args ) :-
 	% cd( '/usr/local/users/nicos/work/2015/15.10.05-lmtk3_substrates/' ),
 	options_append( Self, Args, Opts ),
      bio_db_build_aliases( Opts ),
-	unip_dnload_dir( Old, DnDir, Opts ),
+     build_dnload_loc( Self, DnDir, Opts ),
      std_bootstrap_tables,
-     options( [useqs_base(Useqs),useqs_file_sprot(SprotF),debug_url(Ubg),useqs_file_trembl(TremblF)], Opts ),
-     Spts = [url_base(Useqs),url_file(SprotF),debug(Ubg)],
-     bio_db_source_url( SprotUrl, Spts ),
+     SrcRnms = [useqs_base-url_base,useqs_file_sprot-url_file-debug_url-debug],
+     bio_db_source_url( SprotUrl, SrcRnms, Opts ),
 	unip_hs_seqs_file( SprotUrl, DnDir, row('Swiss Prot ID','Sequence'), Opts ),
-     Tpts = [url_base(Useqs),url_file(TremblF),debug(Ubg)],
-     bio_db_source_url( TremblUrl, Tpts ),
+     TrmRnms = [useqs_base-url_base,useqs_file_trembl-url_file-debug_url-debug],
+     bio_db_source_url( TremblUrl, TrmRnms, Opts ),
 	unip_hs_seqs_file( TremblUrl, DnDir, row('TrEMBL Prot ID','Sequence'), Opts ),
      % ( catch(pack_remove(bio_db_repo),_,fail) -> true; true ),
-	working_directory( _, Old ).
+	% working_directory( _, Old ).
+     true.
 
 std_bootstrap_tables :-
     absolute_file_name( bio_db_build_downloads('unip/maps/unip_homs_unip_hgnc.pl'), UnipHgncF ),
@@ -112,7 +110,8 @@ std_path( Base, Dir, Path ) :-
     os_make_path( Path, debug(true) ).
 
 unip_hs_seqs_file( Url, DnDir, Hdr, Opts ) :-
-	UrlOpts = [debug(true),interface(wget),file(SprotF)|Opts],
+     options( debug_fetch(Fbg), Opts ),
+	UrlOpts = [debug(Fbg),interface(wget),file(SprotF)|Opts],
 	url_file_local_date_mirror( Url, DnDir, UrlOpts ),
 	debug( std_maps_unip_seqs, 'Uniprot local file: ~p', SprotF ),
 	file_base_name( Url, HumGzF ),

@@ -20,14 +20,14 @@
 % load necessary data that has already been generated
 
 % local libs & sources
-:- lib(bio_db_source_url/2).
 :- lib(link_to_bio_sub/3).
 :- lib(bio_db_dnt_times/3).
 :- lib(bio_db_add_infos/1).             % bio_db_add_infos_to/2, fixme:
+:- lib(build_dnload_loc/3).
 :- lib(portray_informed_clauses/4).
 :- lib(url_file_local_date_mirror/3).
 :- lib(std_graphs_strg_auto_version/1).
-:- lib(bio_db_string_version_base_name/4).
+:- lib(bio_db_string_version_base_name/5).    % uses bio_db_source_url/3
 
 :- debuc(by_unix).
 :- debuc(std_graphs_strg).  % fixme: you probably don't need this. 
@@ -61,7 +61,7 @@ Opts
   * debug(Dbg=true)
     informational, progress messages
   * debug_url(Ubg=false)
-    whether to debug the concatenation of the url (via bio_db_source_url/2)
+    whether to debug the concatenation of the url
   * iactive(Iact=true)
     whether the session is interactive, otherwise wget gets --no-verbose
   * links_stem(Ltem='protein.links.v')
@@ -79,7 +79,7 @@ Opts
 
 @author nicos angelopoulos
 @version 0.2  2018/11/05
-@version 0.3  2023/9/22, using bio_db_source_url/2 and move locations to options
+@version 0.3  2023/9/22,  move parameterised aspects to options
 @tbd add information file or info terms/comments in edges file
 @see bio_db_string_version_base_name/5
 
@@ -98,19 +98,18 @@ std_graphs_strg( Args ) :-
     ( number(VersionPrv) -> atom_number(Version,VersionPrv); Version = VersionPrv ),
      debuc( Self, 'Version: ~w', Version ),
      % std_graphs_string_version_base_name( Version, Bname, From, Opts ),
-     bio_db_string_version_base_name( Version, VersD, RelName, From, Opts ),
+     % fixme: 23.09.25 changed to not using VersD, make sure all is well
+     bio_db_string_version_base_name( Version, _VersD, RelName, SrcUrl, Opts ),
      debuc( Self, 'Rel name: ~w', RelName ),
-     absolute_file_name( bio_db_build_downloads(strg), Parent ),
-     os_path( Parent, VersD, DnlD ),
-     os_make_path( DnlD, debug(true) ),
-     debuc( Self, 'Downloading from: ~p', From ),
-     url_file_local_date_mirror( From, DnlD, [file(Bname),iface(wget)|Opts] ),
+     build_dnload_loc( Self, DnlD, Opts ),
+     options( debug_fetch(Fbg), Opts ),
+     url_file_local_date_mirror( SrcUrl, DnlD, [debug(Fbg),file(Bname),iface(wget)|Opts] ),
      working_directory( Here, DnlD ),
      @ gunzip( -k, Bname ),  % keeps .gz file
      EnspPn = strg_homs_edge_ensp,
-     Opt = [ csv_read(separator(0' )),predicate_name(EnspPn),
-             rows_transform(maplist(user:de_hs)),header_remove(true),
-            mtx_opt(convert(false))
+     Opt = [ csv_read(separator(0' )), predicate_name(EnspPn),
+             rows_transform(maplist(user:de_hs)), header_remove(true),
+             mtx_opt(convert(false))
            ],
      file_name_extension( TxtF, gz, Bname ),
      debuc( Self, 'Directory: ~p', [DnlD] ),

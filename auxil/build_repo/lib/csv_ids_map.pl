@@ -34,7 +34,7 @@ csv_ids_map_defaults( [ cnm_transform(bio_db_cnm_token),
 %   * db(Db)
 %     used by map_predicate_name/4 to produce the name
 %   * cnm_transform(Ctr=bio_db_cnm_token)  
-%     call which transforms column names
+%     call which transforms column names (Opts is add as its last partial argument)
 %   * datetime(DnDt)
 %     download datime
 %   * delim(Dlm='\t')
@@ -75,7 +75,8 @@ csv_ids_map( CsvF, Cid1, Cid2, Tbl, File, Args ) :-
     filter_columns( Opts, Tbl, Clm1, Clm2, Filt1, Filt2 ), % fixme: this is wasteful
     memberchk( interface(Fce), Opts ),
     memberchk( cnm_transform(CnmT), Opts ),
-    maplist( CnmT, [Cnm1,Cnm2], [Tnm1,Tnm2] ),
+    arg_add( -1, CnmT, Opts, CnmG ),
+    maplist( CnmG, [Cnm1,Cnm2], [Tnm1,Tnm2] ),
     map_predicate_name( Tnm1, Tnm2, Pname, Opts ),
     map_predicate_name_stem( Pname, Stem, Opts ),
     memberchk( dir(Dir), Opts ),
@@ -207,27 +208,6 @@ collect_map( [F|Fs], [T|Ts], Tv1, Tv2, Pname, Clauses ) :-
         TClauses = Clauses
     ),
     collect_map( Fs, Ts, Tv1, Tv2, Pname, TClauses ).
-
-/*
-collect_map_to_values( F, T, Seen, Tv1, Tv2, Pname, Clauses, Next, TClauses ) :-
-    call( Tv1, F, V1 ),
-    call( Tv2, T, V2 ),
-    !,
-    Clause =.. [Pname,V1,V2].
-    % old version:
-    % collect_map_un_seen( V1, V2, Pname, Seen, Next, Clauses, TClauses ).
-collect_map_to_values( _F, _T, Seen, _Tv1, _Tv2, _Pname, Clauses, Seen, Clauses ).
-
-collect_map_un_seen( V1, V2, _Pname, Seen, Next, Clauses, TClauses ) :-
-    ord_memberchk( V1-V2, Seen ),
-    !,
-    Next = Seen, Clauses = TClauses.
-collect_map_un_seen( V1, V2, Pname, Seen, Next, Clauses, TClauses ) :-
-    Clause =.. [Pname,V1,V2],
-    % portray_clause( Out, Clause ),
-    ord_add_element( Seen, V1-V2, Next ),
-    Clauses = [Clause|TClauses].
-*/
 
 csv_or_frame_column( Tbl, _HasH, Cid1, Clm1, Cnm1 ) :-
     memberchk( Cid1=Clm1, Tbl ), 

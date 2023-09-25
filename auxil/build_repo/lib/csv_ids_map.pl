@@ -75,7 +75,7 @@ csv_ids_map( CsvF, Cid1, Cid2, Tbl, File, Args ) :-
     filter_columns( Opts, Tbl, Clm1, Clm2, Filt1, Filt2 ), % fixme: this is wasteful
     memberchk( interface(Fce), Opts ),
     memberchk( cnm_transform(CnmT), Opts ),
-    arg_add( -1, CnmT, Opts, CnmG ),
+    arg_add( -1, CnmT, [Opts], CnmG ),
     maplist( CnmG, [Cnm1,Cnm2], [Tnm1,Tnm2] ),
     map_predicate_name( Tnm1, Tnm2, Pname, Opts ),
     map_predicate_name_stem( Pname, Stem, Opts ),

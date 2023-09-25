@@ -43,7 +43,8 @@ std_maps_hgnc_defaults( Defs ) :-
                                         debug_url(false),
                                         download(true),
                                         hgnc_file('hgnc_complete_set.txt'),
-                                        iactive(true)
+                                        iactive(true),
+                                        org(human)
                                      ].
 
 /** std_maps_hgnc( +Opts ).
@@ -56,7 +57,7 @@ Opts
  * debug(Dbg=true)
    whether the session is interactive, otherwise wget gets --no-verbose
  * debug_fetch(Fbg=true)
-   wether to debug the fetching of the url (via url_file_local_date_mirror/3)
+   whether to debug the fetching of the url (via url_file_local_date_mirror/3)
  * debug_url(Ubg=false)
    whether to debug the concatenation of the url (via bio_db_source_url/3)
  * dir(Dir=maps)
@@ -67,8 +68,8 @@ Opts
    file for HGNC downloads
  * iactive(Iact=true)
    informational, progress messages
- * map_prefix(Mfx)
-   if present is passed on csv_ids_map/6, else their default applies
+ * org(Org=human)
+   organism
 
 Opts are passed to url_file_local_date_mirror/3.
 

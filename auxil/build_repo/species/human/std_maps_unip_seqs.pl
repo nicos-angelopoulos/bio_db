@@ -96,7 +96,7 @@ std_maps_unip_seqs( Args ) :-
      bio_db_source_url( SprotUrl, SrcRnms, Opts ),
      working_directory( Old, DnDir ),
 	unip_hs_seqs_file( SprotUrl, DnDir, row('Swiss Prot ID','Sequence'), Opts ),
-     TrmRnms = [useqs_base-url_base,useqs_file_trembl-url_file-debug_url-debug],
+     TrmRnms = [useqs_base-url_base,useqs_file_trembl-url_file,debug_url-debug],
      bio_db_source_url( TremblUrl, TrmRnms, Opts ),
 	unip_hs_seqs_file( TremblUrl, DnDir, row('TrEMBL Prot ID','Sequence'), Opts ),
      % ( catch(pack_remove(bio_db_repo),_,fail) -> true; true ),

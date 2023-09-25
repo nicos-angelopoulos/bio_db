@@ -184,8 +184,8 @@ std_mouse_maps_mgim( Args ) :-
     % here( here(GenBMapF,DnDir,SeqRelF) ).
     debuc( Self, end, true ).
 
-mgi_ncbi_idx_header(1, _, mgim).
-mgi_ncbi_idx_header(9, _, ncbi).
+mgi_ncbi_idx_header(_, 1, mgim).
+mgi_ncbi_idx_header(_, 9,  ncbi).
 
 mgim_dnload_report( Which, Self, Url, DnDir, BaseF, Mtx, DntStamp, Opts ) :-
     mgim_report_stem( Which, Stem ),

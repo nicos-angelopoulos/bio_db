@@ -22,6 +22,7 @@
 :- lib(csv_ids_map/6).
 :- lib(link_to_bio_sub/2).
 :- lib(bio_db_dnt_times/3).
+:- lib(build_dnload_loc/3).
 :- lib(bio_db_add_infos/1).   % bio_db_add_infos_to/2
 :- lib(url_file_local_date_mirror/3).
 :- lib(map_list_options/3).
@@ -29,9 +30,12 @@
 true(_,_).
 
 std_chicken_maps_cgnc_defaults( Defs ) :-
-    Defs = [        db(cgnc),
+    Defs = [        cgnc_file('cgnc_complete_set.txt'),
+                    db(cgnc),
                     db_dir(cgnc),  % is this used ?
                     debug(true),
+                    debug_fetch(true),
+                    debug_url(false),
                     download(true),
                     iactive(true),
                     org(chicken),
@@ -73,6 +77,10 @@ Opts
     relative directory within downloads and data to work in
   * debug(Dbg=true)
     progress, informational messages
+  * debug_fetch(Fbg=true)
+    whether to debug the fetching of the url (via url_file_local_date_mirror/3)
+  * debug_url(Ubg=false)
+    whether to debug the concatenation of the url (via bio_db_source_url/3)
   * download(Dn=true)
     set to false to skip downloading a fresh copy of the CGNC file(s)
   * iactive(Iact=true)
@@ -99,16 +107,12 @@ std_chicken_maps_cgnc :-
 
 std_chicken_maps_cgnc( Args ) :-
     Self = std_chicken_maps_cgnc,
-    CsvF = 'cgnc_complete_set.txt',
     options_append( Self, Args, Opts ),
     bio_db_build_aliases( Opts ),
+    build_dnload_loc( Self, DnDir, Opts ),
     options( db_dir(RelDir), Opts ),
-    absolute_file_name( bio_db_build_downloads(RelDir), Dir ),
-    os_make_path( Dir, debug(true) ),
     options( download(Dnload), Opts ),
-    os_path( Dir, CsvF, CsvP ),
-    ( options(iactive(false),Opts) -> WgVerb=false; WgVerb=true ),
-    cgnc_download_file( Dnload, Self, WgVerb, SrcUrl, CsvP, [dir(Dir)|Opts] ),
+    cgnc_download_file( Dnload, DnDir, Self, SrcUrl, [file(CsvF)|Opts] ),
     working_directory( Old, Dir ),
     os_ext( dnt, CsvF, DntF ),
     bio_db_dnt_times( DntF, DnDt, _DnEnd ),
@@ -224,13 +228,15 @@ std_chicken_cgnc_mtx_fix( [H|Rs], [R|M] ) :-
      ),
      std_chicken_cgnc_mtx_fix( Rs, M ).
 
-cgnc_download_file( true, Self, Verb, Url, Dst, Opts ) :-
-     Url = 'http://birdgenenames.org/cgnc/downloads.jsp?file=standard',
-     options( dir(Dir), Opts ),
-     url_file_local_date_mirror( Url, Dir, [file(Dst),date(prefix),interface(wget),verb(Verb)|Opts] ),
+cgnc_download_file( true, DnDir, Self, Url, Opts ) :-
+     % Url = 'http://birdgenenames.org/cgnc/downloads.jsp?file=standard',
+     options( debug_fetch(Fbg), Opts ),
+     url_file_local_date_mirror( Url, DnDir, [date(prefix),debug(Fbg),interface(wget)|Opts] ),
      cgnc_download_file_fix( Self, Dst ).
-cgnc_download_file( false, Self, _Verb, Url, Dst, _Opts ) :-
-     debuc( Self, 'Asked not to download: ~p', [Dst] ),
+cgnc_download_file( false, _DnDir, Self, Url, Opts ) :-
+     memberchk( file(File), Opts ),
+     options( cgnc_file(File), Opts ),
+     debuc( Self, 'Asked not to download: ~p', [File] ),
      Url = 'http://birdgenenames.org/cgnc/downloads.jsp?file=standard'.
 
 cgnc_download_file_fix( Self, Dst ) :-

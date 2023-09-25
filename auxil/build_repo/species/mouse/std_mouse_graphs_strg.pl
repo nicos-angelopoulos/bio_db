@@ -31,6 +31,7 @@
 :- lib(bio_db_add_infos/1).                  % bio_db_add_infos_to/2.
 :- lib(build_dnload_loc/3).
 :- lib(portray_informed_clauses/4).
+:- lib(url_file_local_date_mirror/3).
 :- lib(std_graphs_strg_auto_version/1).
 :- lib(bio_db_string_version_base_name/5).   % uses bio_db_source_url/3
 

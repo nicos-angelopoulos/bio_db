@@ -16,6 +16,7 @@
 % local libs & sources
 :- lib(csv_ids_map/6).
 :- lib(link_to_bio_sub/4).
+:- lib(bio_db_source_url/2).
 :- lib(url_file_local_date_mirror/3).
 
 ncbi_dnload( Loc ) :-
@@ -74,24 +75,19 @@ Tue 27 Dec 15:31:28 GMT 2022
 
 */
 std_mouse_maps_ncbi( Args ) :-
-    Self = std_mouse_maps_ncbi,
-    options_append( Self, Args, Opts ),
-    bio_db_build_aliases( Opts ),
-     % Dir = '/usr/local/users/nicos/work/db/data/ncbi',
+     Self = std_mouse_maps_ncbi,
+     options_append( Self, Args, Opts ),
+     bio_db_build_aliases( Opts ),
      ncbi_dnload( DnDir ),
-     % ncbi_mouse_gene_info_url( Url ),
-    options_rename( Opts, [debug_url-debug,gene_info_file-url_file], Spts, true ),
-    bio_db_source_url( Url, Spts ),
-
-    options_rename( [interface(wget),file(GzF),dnt_stamp(DntStamp)|Opts], debug_url-debug, Fpts ),
-    url_file_local_date_mirror( Url, DnDir, Fpts ),
-
+     options_rename( Opts, [debug_url-debug,gene_info_file-url_file], Spts, true ),
+     bio_db_source_url( Url, Spts ),
+     options_rename( [interface(wget),file(GzF),dnt_stamp(DntStamp)|Opts], debug_url-debug, Fpts ),
+     url_file_local_date_mirror( Url, DnDir, Fpts ),
      working_directory( Old, DnDir ),
-    % os_base( Url, GzF ),  % GzF = Mus_musculus.gene_info.gz
      @ gunzip( -f, -k, GzF ),
-    os_ext( gz, GeneInfoF, GzF ),
-    mtx( GeneInfoF, Mtx, sep(tab) ),
-    MapOpts = [     
+     os_ext( gz, GeneInfoF, GzF ),
+     mtx( GeneInfoF, Mtx, sep(tab) ),
+     MapOpts = [     
                     to_value_1(non_dash_sep_by('|')),
                     to_value_2(=),
                     datetime(DntStamp),
@@ -99,14 +95,11 @@ std_mouse_maps_ncbi( Args ) :-
                     header(row('Entrez Synonym','Symbol'))
                     |Opts
         ],
-    os_make_path( maps ),
-    working_directory( _, maps ),
-    csv_ids_map( _, 'Synonyms', 'Symbol', Mtx, EntzSynoF, MapOpts ),
-    link_to_bio_sub( ncbi, EntzSynoF, [org(mouse),type(maps)] ),
-    working_directory( _, Old ).
-
-ncbi_cnm( 'Synonyms', syno ).
-ncbi_cnm( 'Symbol', symb ).
+     os_make_path( maps ),
+     working_directory( _, maps ),
+     csv_ids_map( _, 'Synonyms', 'Symbol', Mtx, EntzSynoF, MapOpts ),
+     link_to_bio_sub( ncbi, EntzSynoF, [org(mouse),type(maps)] ),
+     working_directory( _, Old ).
 
 non_dash_sep_by( _, '', _ ) :- !, fail. % do not include empties
 non_dash_sep_by( _, '-', _ ) :- !, fail. % do not include empties

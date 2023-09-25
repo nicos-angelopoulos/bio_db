@@ -42,6 +42,7 @@ std_maps_unip_seqs_defaults( Defs ) :-
                                                  debug_fetch(true),
                                                  debug_url(false),
                                                  iactive(true),
+                                                 org(human),
                                                  useqs_base(useqs),
                                                  useqs_file_sprot('uniprot_sprot_human.dat.gz'),
                                                  useqs_file_trembl('uniprot_trembl_human.dat.gz')
@@ -66,6 +67,8 @@ Options
     whether to debug the concatenation of the url (via bio_db_source_url/3)
   * iactive(Iact=true)
     whether the session is interactive, otherwise wget gets --no-verbose
+  * org(Org=human)
+    organism
   * useqs_base(OboB=useqs)
     the url base for the uniprot seqs download
   * useqs_file_sprot(OboF='go.obo')

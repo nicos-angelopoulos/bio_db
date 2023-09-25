@@ -27,6 +27,7 @@ std_mouse_maps_ncbi_defaults( Defs ) :-
                                                  debug(true),
                                                  debug_url(false),
                                                  debug_fetch(true),
+                                                 gene_info_file('Mammalia/Mus_musculus.gene_info.gz'),
                                                  org(mouse)
                                         ].
 
@@ -79,8 +80,8 @@ std_mouse_maps_ncbi( Args ) :-
      % Dir = '/usr/local/users/nicos/work/db/data/ncbi',
      ncbi_dnload( DnDir ),
      % ncbi_mouse_gene_info_url( Url ),
-    options_rename( Opts, debug_url-debug, Spts ),
-    bio_db_source_url( Url, [url_file('Mammalia/Mus_musculus.gene_info.gz')|Spts] ),
+    options_rename( Opts, [debug_url-debug,gene_info_file-url_file], Spts ),
+    bio_db_source_url( Url, Spts ),
 
     options_rename( [interface(wget),file(GzF),dnt_stamp(DntStamp)|Opts], debug_url-debug, Fpts ),
     url_file_local_date_mirror( Url, DnDir, Fpts ),

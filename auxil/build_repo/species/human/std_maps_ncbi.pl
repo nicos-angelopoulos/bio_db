@@ -175,7 +175,8 @@ std_maps_ncbi_defaults( Defs ) :-
                                             debug_fetch(true),
                                             debug_url(false),
                                             iactive(true),
-                                            ncbi_genes_file('gene2ensembl.gz')
+                                            ncbi_genes_file('gene2ensembl.gz'),
+                                            org(human)
                                           ].
 
 /** std_maps_ncbi(+Opts).
@@ -195,6 +196,8 @@ Opts
     whether the session is interactive, otherwise wget gets --no-verbose
   * ncbi_genes_file(GnsF='')
     the url base for the genes download
+  * org(Org=human)
+    organism
 
 ==
 ?- std_maps_ncbi([]).

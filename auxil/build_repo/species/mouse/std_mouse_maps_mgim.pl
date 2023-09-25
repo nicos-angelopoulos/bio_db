@@ -23,7 +23,7 @@
 :- lib(csv_ids_map/6).
 :- lib(link_to_bio_sub/4).
 :- lib(bio_db_add_infos/1).  % bio_db_add_infos_file/2.
-:- lib(bio_db_source_url/2).
+:- lib(bio_db_source_url/3).
 :- lib(build_dnload_loc/3).
 
 % mgim_url( 'http://www.informatics.jax.org/downloads/reports' ).
@@ -190,8 +190,7 @@ mgi_ncbi_idx_header( 9, ncbi ).
 mgim_dnload_report( Which, Self, Url, DnDir, BaseF, Mtx, DntStamp, Opts ) :-
     mgim_report_stem( Which, Stem ),
     os_ext( rpt, Stem, Uname ),
-    options_rename( [url_file(Uname)|Opts], [db-url_base,debug_url-debug], Spts, true ),
-    bio_db_source_url( Url, Spts ),
+    bio_db_source_url( Url, [debug_url-debug], [url_file(Uname)|Opts] ),
     build_dnload_loc( Self, DnDir, Opts ),
     UrlOpts = [interface(wget),file(BaseF),dnt_stamp(DntStamp)|Opts],
     url_file_local_date_mirror( Url, DnDir, UrlOpts ),

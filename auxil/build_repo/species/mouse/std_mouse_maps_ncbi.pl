@@ -80,7 +80,7 @@ std_mouse_maps_ncbi( Args ) :-
      % Dir = '/usr/local/users/nicos/work/db/data/ncbi',
      ncbi_dnload( DnDir ),
      % ncbi_mouse_gene_info_url( Url ),
-    options_rename( Opts, [debug_url-debug,gene_info_file-url_file], Spts ),
+    options_rename( Opts, [debug_url-debug,gene_info_file-url_file], Spts, true ),
     bio_db_source_url( Url, Spts ),
 
     options_rename( [interface(wget),file(GzF),dnt_stamp(DntStamp)|Opts], debug_url-debug, Fpts ),

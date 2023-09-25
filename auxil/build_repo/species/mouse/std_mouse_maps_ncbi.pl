@@ -19,8 +19,8 @@
 :- lib(url_file_local_date_mirror/3).
 
 ncbi_dnload( Loc ) :-
-	absolute_file_name( bio_db_build_downloads(ncbi), Loc ),
-	os_make_path( Loc, debug(true) ).
+     absolute_file_name( bio_db_build_downloads(ncbi), Loc ),
+     os_make_path( Loc, debug(true) ).
 
 std_mouse_maps_ncbi_defaults( Defs ) :-
                                         Defs = [ db(ncbi),
@@ -76,34 +76,33 @@ std_mouse_maps_ncbi( Args ) :-
     Self = std_mouse_maps_ncbi,
     options_append( Self, Args, Opts ),
     bio_db_build_aliases( Opts ),
-	% Dir = '/usr/local/users/nicos/work/db/data/ncbi',
-	ncbi_dnload( DnDir ),
-	% ncbi_mouse_gene_info_url( Url ),
+     % Dir = '/usr/local/users/nicos/work/db/data/ncbi',
+     ncbi_dnload( DnDir ),
+     % ncbi_mouse_gene_info_url( Url ),
     options_rename( Opts, debug_url-debug, Spts ),
     bio_db_source_url( Url, [url_file('Mammalia/Mus_musculus.gene_info.gz')|Spts] ),
 
     options_rename( [interface(wget),file(GzF),dnt_stamp(DntStamp)|Opts], debug_url-debug, Fpts ),
     url_file_local_date_mirror( Url, DnDir, Fpts ),
 
-	working_directory( Old, DnDir ),
+     working_directory( Old, DnDir ),
     % os_base( Url, GzF ),  % GzF = Mus_musculus.gene_info.gz
-	@ gunzip( -f, -k, GzF ),
+     @ gunzip( -f, -k, GzF ),
     os_ext( gz, GeneInfoF, GzF ),
     mtx( GeneInfoF, Mtx, sep(tab) ),
-    MapOpts = [     prefix(ncbi),
-                    org(mouse),
-                    cnm_transform(ncbi_cnm),
-                    to_value_2(=),
+    MapOpts = [     
                     to_value_1(non_dash_sep_by('|')),
+                    to_value_2(=),
                     datetime(DntStamp),
                     source(Url),
                     header(row('Entrez Synonym','Symbol'))
+                    |Opts
         ],
     os_make_path( maps ),
     working_directory( _, maps ),
-	csv_ids_map( _, 'Synonyms', 'Symbol', Mtx, EntzSynoF, MapOpts ),
+    csv_ids_map( _, 'Synonyms', 'Symbol', Mtx, EntzSynoF, MapOpts ),
     link_to_bio_sub( ncbi, EntzSynoF, [org(mouse),type(maps)] ),
-	working_directory( _, Old ).
+    working_directory( _, Old ).
 
 ncbi_cnm( 'Synonyms', syno ).
 ncbi_cnm( 'Symbol', symb ).

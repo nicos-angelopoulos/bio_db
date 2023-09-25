@@ -26,7 +26,7 @@ TBD:
                   BioDB:   vgnc, multi + pig
                   BioDB:   NCBI taxonomy
       23.09.16    FIXED:   auto fill for info headers was broken
-                  LIB:     added cnm_token/3, mapping db column names to bio_db tokens 
+                  LIB:     added [bio_db_]cnm_token/2,3,4, mapping db column names to bio_db tokens 
                   ADDED:   bio_db_organism_known/3 (internal for now)
       23.09.15    CELL:    mult/multi for preds across multiple species: ncbi_mult_taxo_scnm/2, ncbi_mult_taxo_gbnm/2
                   BUILD:   scripts for the multi predicates from NCBI: ncbi_mult_taxo_scnm/2, ncbi_mult_taxo_gbnm/2

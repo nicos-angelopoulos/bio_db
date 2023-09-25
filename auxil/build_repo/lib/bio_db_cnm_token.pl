@@ -1,5 +1,7 @@
 :- lib(options).
 
+bio_db_cnm_token_defaults( [db(hgnc),org(human)] ).
+
 /**  bio_db_cnm_token(+Cnm, -Tkn).
      bio_db_cnm_token(+Opts, +Cnm, -Tkn ).
      bio_db_cnm_token(+Cnm, ?Ctx, -Tkn, +Opts).

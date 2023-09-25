@@ -125,7 +125,7 @@ go_obo_value_id( Val, Pfx, Id ) :-
         ;
         Parts = [Pfx,GoId|_]
     ),
-    go_id( GoId, Id ).
+    go_obo_id( GoId, Id ).
 
 /*
     /* here old code */
@@ -268,7 +268,7 @@ go_obo_is_a_term( Codes, GoT, Pfx/Tname, In, Edges, Tdges ) :-
     atom_concat( Pfx, Psfx, Line ),
     !,
     atomic_list_concat( [Par|_], ' ', Psfx ),
-    maplist( go_id, [GoT,Par], [GoTint,Parint] ),
+    maplist( go_obo_id, [GoT,Par], [GoTint,Parint] ),
     Edge =.. [Tname,GoTint,Parint],
     Edges = [Edge|Mdges],
     % Edges = [edge_gont_isa(GoT,Par)|Mdges],

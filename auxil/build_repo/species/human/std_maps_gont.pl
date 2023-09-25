@@ -23,8 +23,8 @@
 % :- ensure_loaded( hgnc:bio_db_build_downloads('hgnc/maps/map_hgnc_symb_hgnc') ).
 
 % local libs & sources
-:- lib(go_id/2).
-:- lib(go_obo/2).
+% :- lib(go_id/2). -> go_obo_id/2 from below
+:- lib(go_obo/2).  % 
 :- lib(link_to_bio_sub/2).
 :- lib(bio_db_dnt_times/3).
 :- lib(bio_db_add_infos/1).                  % bio_db_add_infos_to/2
@@ -155,7 +155,7 @@ gaf_gont_symb( [], _Self, [], [], [] ).
 gaf_gont_symb( [Row|Rows], Self, NonSymbs, MultSymbs, NewRows ) :-
     arg( 5, Row, GoTermFull ),
     % go_term( GoTermFull, GoTerm ),
-    go_id( GoTermFull, GoTerm ),
+    go_obo_id( GoTermFull, GoTerm ),
     arg( 11, Row, Bared ),
     go_bared_symbol( Bared, Symb, Self, NonSymbs, MultSymbs, TNonSymbs, TMultSymbs ),
     arg( 7, Row, Evid ),

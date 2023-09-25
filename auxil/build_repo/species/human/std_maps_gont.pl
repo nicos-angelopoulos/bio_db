@@ -129,7 +129,7 @@ std_maps_gont( Args ) :-
     OboRnms = [debug_fetch-debug,obo_base-url_base,obo_file-url_file], 
     bio_db_source_url( OboUrl, OboRnms, Opts ),
     absolute_file_name( bio_db_build_downloads(gont), DnDir ),
-    url_file_local_date_mirror( OboUrl, DnDir, [debug(Fbg)|Opts] ),
+    url_file_local_date_mirror( OboUrl, DnDir, [file(OboF),debug(Fbg)|Opts] ),
     debuc( Self, 'Dnload done: ~w', [DnDir] ),
     go_obo( OboF, GoObo),
     go_obo_non_obs( GoObo, GoOboCurr ),

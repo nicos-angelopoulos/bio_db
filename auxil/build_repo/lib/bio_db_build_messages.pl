@@ -26,3 +26,6 @@ pack_errors:message( base_url(not_a(NaUrl)) ) -->
 
 pack_errors:message( org_ense_miss(Org,Eir) ) -->
     ['Not a valid organism, for mapping to an Ensembl directory: ~w (2nd arg: ~w)'-[Org,Eir]].
+
+pack_errors:message( not_a_cnm(Cnm,Ctx) ) -->
+   ['Not a valid column name or db predicate token (len=4): ~w, (context: ~w).'-[Cnm,Ctx]].

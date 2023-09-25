@@ -99,7 +99,7 @@ std_mouse_maps_mgim( Args ) :-
     Self = std_mouse_maps_mgim,
     options_append( Self, Args, Opts ),
     bio_db_build_aliases( Opts ),
-    mgim_get_report( symb, Self, SymbUrl, DnDir, _SymbInF, SymbMtx, SymbDnt, Opts ),
+    mgim_dnload_report( symb, Self, SymbUrl, DnDir, _SymbInF, SymbMtx, SymbDnt, Opts ),
     working_directory( Old, DnDir ),
     os_make_path( maps ),   % fixme: make sure it doesn't trip if dir exists already
     working_directory( _, maps ),
@@ -126,7 +126,7 @@ std_mouse_maps_mgim( Args ) :-
     ChrlHdr =.. [hdr|ChrlHdrArgs],
     bio_db_add_infos_file( ChrlF, [source(SymbUrl),header(ChrlHdr),datetime(SymbDnt)] ),
     % here( DnDir, SymbInF, ChrlF ),
-    mgim_get_report( seq, Self, SeqUrl, DnDir, _SeqRelF, SeqMtx, SeqDnt, Opts ),
+    mgim_dnload_report( seq, Self, SeqUrl, DnDir, _SeqRelF, SeqMtx, SeqDnt, Opts ),
     mtx_column_values_select( SeqMtx, 'Marker Type', 'Gene', GenMtx, _, [] ),
     debuc( Self, dims, gene/GenMtx ),
     GenMtx = [_|GenRows],
@@ -140,7 +140,7 @@ std_mouse_maps_mgim( Args ) :-
     csv_ids_map( _, 'MGI Marker Accession ID', 'UniProt IDs', GenMtx, UnipMapF, Cims ),
 
     % entezid ( no header !)
-    mgim_get_report( ncbi, Self, NcbiUrl, DnDir, _NcbiRelF, NcbiMtx, NcbiDnt, Opts ),
+    mgim_dnload_report( ncbi, Self, NcbiUrl, DnDir, _NcbiRelF, NcbiMtx, NcbiDnt, Opts ),
     NcbiHdr = hdr('MGI Marker Accession ID','NCBI ID'),
     % EntzOpts = [cnm_transform(mgi_entrez_idx_header),to_value_1(pfx_by_num(true,'MGI:')),prefix(mgim_mouse),to_value_2(atom_number),
     NcbiOpts = [ cnm_transform(mgi_ncbi_idx_header),
@@ -159,10 +159,10 @@ std_mouse_maps_mgim( Args ) :-
                                                     arg(7,SymbRow,RSymb)
                                                   ),
                                                     MapSymbRows ),
-    MapSymbF = 'mgim_musm_mgim_mrks.pl',
-    portray_clauses( MapSymbRows, file(MapSymbF) ),
+    MapMrksF = 'mgim_musm_mgim_mrks.pl',
+    portray_clauses( MapSymbRows, file(MapMrksF) ),
     MapSymbHdr = hdr('MGI Marker Accession ID','Marker Symbol'), % fixme: use arg ?
-    bio_db_add_infos_file( MapSymbF, [source(SymbUrl),header(MapSymbHdr),datetime(SymbDnt)] ),
+    bio_db_add_infos_file( MapMrksF, [source(SymbUrl),header(MapSymbHdr),datetime(SymbDnt)] ),
     SynoOpts = [cnm_transform(mouse_cnm),to_value_2(pfx_by_num(true,'MGI:')),prefix(mgim),org(mouse),to_value_1(sep_by('|')),
             source(SymbUrl), datetime(SymbDnt)
            ],
@@ -184,7 +184,7 @@ std_mouse_maps_mgim( Args ) :-
 mgi_ncbi_idx_header( 1, mgim ).
 mgi_ncbi_idx_header( 9, ncbi ).
 
-mgim_get_report( Which, Self, Url, DnDir, BaseF, Mtx, DntStamp, Opts ) :-
+mgim_dnload_report( Which, Self, Url, DnDir, BaseF, Mtx, DntStamp, Opts ) :-
     mgim_report( Which, Stem ),
     os_ext( rpt, Stem, Uname ),
     options_rename( [url_file(Uname)|Opts], [db-url_base,debug_url-debug], Spts, true ),

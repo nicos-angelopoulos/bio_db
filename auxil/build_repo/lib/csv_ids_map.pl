@@ -10,12 +10,14 @@
 :- lib(stoics_lib:holds/2).
 :- lib(stoics_lib:portray_clauses/2).
 
-:- ensure_loaded( bio_add_info_kvs_lengths_rel ).
-:- ensure_loaded( map_predicate_name ).     % /4.
+:- lib(bio_db_cnm_token/2).
+:- lib(map_predicate_name/4).
+:- lib(bio_add_info_kvs_lengths_rel/6).
 
-csv_ids_map_defaults( [ cnm_transform(=),dir('.'),
+csv_ids_map_defaults( [ cnm_transform(bio_db_cnm_token),
+                        dir('.'),
                         delim('\t'), has_header(true),
-                        interface(prolog),map_prefix(false),
+                        interface(prolog),
                         sort_by(1), 
                         to_value_1(=),to_value_2(=),
                         source('not_known')
@@ -31,11 +33,11 @@ csv_ids_map_defaults( [ cnm_transform(=),dir('.'),
 % Options
 %   * db(Db)
 %     used by map_predicate_name/4 to produce the name
-%   * cnm_transform(Ctr=true)  
+%   * cnm_transform(Ctr=bio_db_cnm_token)  
 %     call which transforms column names
 %   * datetime(DnDt)
 %     download datime
-%   * delim(Dlm='\t'
+%   * delim(Dlm='\t')
 %     separator for read.delim()
 %   * dir(Dir='.')
 %     directory for the result
@@ -47,8 +49,6 @@ csv_ids_map_defaults( [ cnm_transform(=),dir('.'),
 %     a header term, something line row(CnmDesc1,CnmDesc2)
 %   * interface(Ifc=prolog)
 %     also known is sqlite
-%   * map_prefix(MapPfx=true)
-%     shall map prefix be included 
 %   * source(Src='not_known'
 %     source info tag
 %   * sort_by(Sby=1)
@@ -62,6 +62,7 @@ csv_ids_map_defaults( [ cnm_transform(=),dir('.'),
 % @version  0.1 2014/7/2
 % @version  0.2 2015/3/19    added map_prefix(MapPfx), 
 % @version  0.2 2015/11/3    return values from tvs can now be lists (multiple clauses will be added)
+% @version  0.4 2023/9/25    removed MapPfx, changed to cnm_transform(bio_db_cnm_token),
 % @tbd odbc interface, sqlite + mysql,  and debug
 % @see map_predicate_name/4
 csv_ids_map( CsvF, Cid1, Cid2, Tbl, File, Args ) :-
@@ -71,10 +72,6 @@ csv_ids_map( CsvF, Cid1, Cid2, Tbl, File, Args ) :-
     options( has_header(HasH), Opts ),
     csv_or_frame_column( Tbl, HasH, Cid1, Clm1, Cnm1 ),
     csv_or_frame_column( Tbl, HasH, Cid2, Clm2, Cnm2 ),
-
-    % memberchk( Cid2=Clm2, Tbl ), Cnm2 = Cid2, % fixme
-    % csv_column( Csv, Cid1, Clm1, Cnm1, _Nhdr1 ),
-    % csv_column( Csv, Cid2, Clm2, Cnm2, _Nhdr2 ),
     filter_columns( Opts, Tbl, Clm1, Clm2, Filt1, Filt2 ), % fixme: this is wasteful
     memberchk( interface(Fce), Opts ),
     memberchk( cnm_transform(CnmT), Opts ),

@@ -15,6 +15,7 @@ TBD:
 
 
 4.3   
+      23.09.24    FIXED:   mgim Marker Symbols was tokenised to _symb
       23.09.22    BUILD:   create a optionised url constructor, that uses bio_db_source_base_url/2 (bio_db_source_url/2)
                   BUILD:   created file for pretty printing messages: auxil/build_repo/lib/bio_db_build_messages.pl
       23.09.21    BUILD:   begin gathering the base urls into auxil/build_repo/lib/bio_db_source_base_url/2

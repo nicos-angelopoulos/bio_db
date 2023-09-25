@@ -22,17 +22,18 @@
 :- lib(link_to_bio_sub/3).
 :- lib(bio_db_dnt_times/3).
 :- lib(bio_db_add_infos/1).     % bio_db_add_infos_to/2.
-:- lib(bio_db_source_base_url/2).
+:- lib(bio_db_source_base_url/3).
 :- lib(portray_informed_clauses/4).
 :- lib(url_file_local_date_mirror/3).
 :- lib(std_graphs_strg_auto_version/1).
-:- lib(bio_db_string_version_base_name/4). % here: replace old call below with two calls to this, one with links and one with info
+:- lib(bio_db_string_version_base_name/5).
 
 :- debuc(by_unix).
 
 std_chicken_graphs_strg_defaults( Args, Defs ) :-
                Defs = [  db(strg),
                          debug(true),
+                         debug_fetch(true),
                          debug_url(false),
                          iactive(true),
                          org(chicken),
@@ -57,6 +58,10 @@ Opts
     source database
   * debug(Dbg=true)
     informational, progress messages
+  * debug_fetch(Fbg=false)
+    whether to debug the fetching of the url
+  * debug_url(Ubg=false)
+    whether to debug the concatenation of the url (via bio_db_source_url/3)
   * iactive(Iact=true)
     whether the session is interactive, otherwise wget gets --no-verbose
   * org(Org=chicken)
@@ -92,8 +97,8 @@ std_chicken_graphs_strg( Args ) :-
     options( string_version(VersionPrv), Opts ),
     ( number(VersionPrv) -> atom_number(Version,VersionPrv); Version = VersionPrv ),
     debuc( Self, 'Version: ~w', Version ),
-    bio_db_string_version_base_name( Version, Bname, Remote, Opts ),
-    bio_db_string_version_base_name( Version, _InfoBnameVanilla, InfoFrom, [relation(info)|Opts] ),
+    bio_db_string_version_base_name( Version, _VersD, Bname, Remote, Opts ),
+    bio_db_string_version_base_name( Version, _TheVersD, _InfoBnameVanilla, InfoFrom, [relation(info)|Opts] ),
     debuc( Self, 'Base name: ~w', Bname ),
     absolute_file_name( bio_db_build_downloads(strg), Parent ),
     os_make_path( Parent, debug(true) ),
@@ -248,7 +253,8 @@ std_graphs_string_version_base_name( VersionPrv, Bname, InfoBname, Remote, InfoR
     ( atom_concat(v,Version,VersionPrv)->true;Version=VersionPrv ),
     atom_concat( v, Version, Vied ),
     % Pfx = 'https://string-db.org/download/protein.links.v',
-    bio_db_source_base_url( string, DnldBaseUrl ),
+    bio_db_source_base_url( strg, [], DnldBaseUrl ),
+    bio_db_string_version_base_name( Version, _VersD, RemBname, SrcUrl, Opts ),
     atomic_list_concat( [9031,protein,links,Vied,txt,gz], '.', Bname ),
     atomic_list_concat( [DnldBaseUrl,'protein.links.v',Version,'/',Bname], Remote ),
     % 10/9606.protein.links.v10.txt.gz

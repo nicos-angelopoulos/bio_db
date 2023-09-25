@@ -18,18 +18,35 @@
 :- lib(link_to_bio_sub/4).
 :- lib(url_file_local_date_mirror/3).
 
-ncbi_mouse_gene_info_url( 'ftp://ftp.ncbi.nih.gov/gene/DATA/GENE_INFO/Mammalia/Mus_musculus.gene_info.gz' ).
 ncbi_dnload( Loc ) :-
 	absolute_file_name( bio_db_build_downloads(ncbi), Loc ),
 	os_make_path( Loc, debug(true) ).
 
-std_mouse_maps_ncbi_defaults([]).
+std_mouse_maps_ncbi_defaults( Defs ) :-
+                                        Defs = [ db(ncbi),
+                                                 debug(true),
+                                                 debug_url(false),
+                                                 debug_fetch(true),
+                                                 org(mouse)
+                                        ].
 
-/** std_mouse_maps_ncb(Args) :-
+/** std_mouse_maps_ncb(+Args).
     
-    Create a map of synonms to symbols according to NCBI.
+Create a map of synonms to symbols according to NCBI.
 
-    map_ncbi_mouse_syno_symb( Syno, Symb ).
+    ncbi_musm_esyn_symb( Syno, Symb ).
+
+Opts
+  * db(ense)
+    source database
+  * debug(Dbg=true)
+    bio_db_cnm_token( cust, Tkn ).
+  * debug_url(Ubg=false)
+    whether to debug the concatenation of the url (via bio_db_source_url/2)
+  * debug_fetch(Ubg=true)
+    whether to debug the fetch of the URL
+  * org(Org=mouse)
+    organism
 
 ==
 ?- std_mouse_maps_ncbi([]).
@@ -61,10 +78,12 @@ std_mouse_maps_ncbi( Args ) :-
     bio_db_build_aliases( Opts ),
 	% Dir = '/usr/local/users/nicos/work/db/data/ncbi',
 	ncbi_dnload( DnDir ),
-	ncbi_mouse_gene_info_url( Url ),
+	% ncbi_mouse_gene_info_url( Url ),
+    options_rename( Opts, debug_url-debug, Spts ),
+    bio_db_source_url( Url, [url_file('Mammalia/Mus_musculus.gene_info.gz')|Spts] ),
 
-    UrlOpts = [debug(true),interface(wget),file(GzF),dnt_stamp(DntStamp)],
-    url_file_local_date_mirror( Url, DnDir, UrlOpts ),
+    options_rename( [interface(wget),file(GzF),dnt_stamp(DntStamp)|Opts], debug_url-debug, Fpts ),
+    url_file_local_date_mirror( Url, DnDir, Fpts ),
 
 	working_directory( Old, DnDir ),
     % os_base( Url, GzF ),  % GzF = Mus_musculus.gene_info.gz

@@ -58,6 +58,8 @@ Opts
     the file name  for the download (appended to Ufx@bio_db_source_base_url(gont_obo,Ufx))- or call that produces it
   * iactive(Iact=true)
     whether the session is interactive, otherwise wget gets --no-verbose
+  * org(Org=mouse)
+    organism
   * release(Release)
     release number
 

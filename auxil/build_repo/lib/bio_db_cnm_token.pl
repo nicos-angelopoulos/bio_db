@@ -1,11 +1,16 @@
-/**  bio_db_cnm_token(?Cnm, ?Tkn).
-     bio_db_cnm_token(?Cnm, ?Ctx, ?Tkn ).
+:- lib(options).
+
+/**  bio_db_cnm_token(+Cnm, -Tkn).
+     bio_db_cnm_token(+Opts, +Cnm, -Tkn ).
+     bio_db_cnm_token(+Cnm, ?Ctx, -Tkn, +Opts).
 
 Converts a column name to a predicate token. 
 
 If a table entry in cnm_token( Cnm, [Ctx], Tkn ) exists, it is returned.
 Else, Cnm is returned, but only if it is an atom of length 4. 
 Else, an error is invoked.
+
+cnm_token/3 is looked first, before cnm_token/2. Ctx tested against options: Org-Db, org(Org), db(Db) in that order.
 
 ==
 ?- bio_db_cnm_token( symbol, Tkn ).
@@ -23,17 +28,40 @@ Tkn = cust.
 
 */
 bio_db_cnm_token( Cnm, Tkn ) :-
-     bio_db_cnm_token( Cnm, _Ctx, Tkn ).
+     bio_db_cnm_token( Cnm, _Ctx, Tkn, [] ).
 
-bio_db_cnm_token( Cnm, Ctx, Tkn ) :-
-     cnm_token( Cnm, Ctx, Tkn ),
+bio_db_cnm_token( Opts, Cnm, Tkn ) :-
+     bio_db_cnm_token( Cnm, _Ctx, Tkn, Opts ).
+
+bio_db_cnm_token( Cnm, Ctx, Tkn, Opts ) :-
+     % fixme: is it ok to assume Db and Org at all times ?
+     options( db(Db), Opts ),
+     options( org(Org), Opts ),
+     bio_db_cnm_token_opts( Org, Db, Cnm, Ctx, Tkn ),
      !.
-bio_db_cnm_token( Cnm, _Ctx, Tkn ) :-
+bio_db_cnm_token( Cnm, _Ctx, Tkn, _Opts ) :-
      atom_length( Cnm, 4 ),
      !,
      Tkn = Cnm.
-bio_db_cnm_token( Cnm, Ctx, _Tkn ) :-
-     throw( not_a_cnm(Cnm,Ctx), [bio_db:bio_db_cnm_token/3] ).
+bio_db_cnm_token( Cnm, Ctx, _Tkn, Opts ) :-
+     throw( not_a_cnm(Cnm,Ctx), [bio_db:bio_db_cnm_token/3|Opts] ).
+
+bio_db_cnm_token_opts( _Org, _Db, Cnm, Ctx, Tkn ) :-
+     ground( Ctx ),
+     cnm_token( Cnm, Ctx, Tkn ),
+     !.
+bio_db_cnm_token_opts( Org, Db, Cnm, Ctx, Tkn ) :-
+     cnm_token( Cnm, Org-Db, Tkn ),
+     !,
+     Ctx = Org-Db.
+bio_db_cnm_token_opts( Org, _Db, Cnm, Ctx, Tkn ) :-
+     cnm_token( Cnm, Org, Tkn ),
+     !,
+     Ctx = Org.
+bio_db_cnm_token_opts( _Org, Db, Cnm, Ctx, Tkn ) :-
+     cnm_token( Cnm, Db, Tkn ),
+     !,
+     Ctx = Db.
 
 /** cnm_token(?Cnm, +Ctx, ?Tkn ).
 
@@ -59,6 +87,7 @@ cnm_token( Cnm, Tkn ) :-
 % human
 cnm_token(name, _, name).
 cnm_token(symbol, _, symb).
+cnm_token(symbol, _, symb).
 % multi
 cnm_token(taxon_id, _, taxo).
 % vgnc
@@ -71,3 +100,6 @@ cnm_token('Marker Name', mgim, mnme ).
 cnm_token('Marker Symbol', mgim, mrks).
 cnm_token('Marker Synonyms (pipe-separated)', mgim, msyn).
 cnm_token('UniProt IDs', mgim, unip).
+% across multiple settings
+% this is used in mouse, any other ones ?
+cnm_token('Synonym',ncbi,esyn).

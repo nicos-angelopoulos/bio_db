@@ -43,7 +43,7 @@ std_mouse_maps_unip_defaults( Defs ) :-
                                                  debug_url(false),
                                                  org(mouse),
                                                  unip_file_full('MOUSE_10090_idmapping.dat.gz'),
-                                                 unip_file_sele('MOUSE_10090_idmapping_selected.dat.gz')
+                                                 unip_file_sele('MOUSE_10090_idmapping_selected.tab.gz')
                                         ].
 
 /** std_mouse_maps_unip(+Opts).
@@ -63,7 +63,7 @@ Opts
     organism
   * unip_file_full(Uff='MOUSE_10090_idmapping.dat.gz'
     remote file name for Unip protein downloads (all proteins)
-  * unip_file_sele(Ufs='MOUSE_10090_idmapping_selected.dat.gz')
+  * unip_file_sele(Ufs='MOUSE_10090_idmapping_selected.tab.gz')
     remote file name for Unip downloads (selected, annotated proteins- subset of Uff)
 
 ==

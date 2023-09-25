@@ -25,7 +25,7 @@ std_mouse_maps_ncbi_defaults( Defs ) :-
                                                  debug(true),
                                                  debug_url(false),
                                                  debug_fetch(true),
-                                                 gene_info_file('Mammalia/Mus_musculus.gene_info.gz'),
+                                                 gene_info_file('GENE_INFO/Mammalia/Mus_musculus.gene_info.gz'),
                                                  org(mouse)
                                         ].
 

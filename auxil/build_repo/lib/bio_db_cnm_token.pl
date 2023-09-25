@@ -114,4 +114,4 @@ cnm_token('Marker Synonyms (pipe-separated)', mgim, msyn).
 cnm_token('UniProt IDs', mgim, unip).
 % across multiple settings
 % this is used in mouse, any other ones ?
-cnm_token('Synonyms', ncbi, esyn).
+cnm_token('Synonyms', ncbi, nsyn).

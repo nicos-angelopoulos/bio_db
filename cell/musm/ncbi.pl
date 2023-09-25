@@ -1,7 +1,7 @@
 :- module( bio_db_musm_ncbi, [
                 bio_db_musm_ncbi/0,
                 %       (mouse) NCBI (entrez synonyms only, for now)
-                ncbi_musm_syno_symb/2
+                ncbi_musm_nsyn_symb/2
                 ] ).
 
 :- use_module( library(lib) ).
@@ -24,18 +24,18 @@ Documentation predicate for mouse data from NCBI database.
 */
 bio_db_musm_ncbi.
 
-/**  ncbi_musm_syno_symb( +Syno, -Symb ).
+/**  ncbi_musm_nsyn_symb( +Syno, -Symb ).
 
 Map of symbol synonyms based on the NCBI (Entrez) data.
 
 == 
-?- ncbi_musm_syno_symb( 'Znf638', Symb ).
+?- ncbi_musm_nsyn_symb( 'Znf638', Symb ).
 Symb = 'Zfp638'.
 
-?- ncbi_musm_syno_symb( 'Stx5', Symb ).
+?- ncbi_musm_nsyn_symb( 'Stx5', Symb ).
 Symb = 'Stx5a'.
 ==
 
 */
-ncbi_musm_syno_symb( X, Y ) :-
+ncbi_musm_nsyn_symb( X, Y ) :-
     bio_db:bio_db_serve( ncbi_musm_syno_symb(X,Y) ).

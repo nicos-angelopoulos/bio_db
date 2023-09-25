@@ -97,8 +97,7 @@ std_maps_gont( Args ) :-
     SrcRnms = [debug_url-debug,goa_base-url_base,goa_file-url_file], 
     bio_db_source_url( Url, SrcRnms, Opts ),
     options( debug_fetch(Fbg), Opts ),
-    url_file_local_date_mirror( Url, DnDir, [debug(Fbg)|Opts] ),
-
+    url_file_local_date_mirror( Url, DnDir, [file(GoaF),debug(Fbg)|Opts] ),
     @ gunzip( --force, -k, GoaF ),
     file_name_extension( GoaHs, gz, GoaF ),
     % mtx( 'gene_association.goa_human.tsv', Mtx ),

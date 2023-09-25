@@ -173,9 +173,7 @@ std_mouse_maps_mgim( Args ) :-
     csv_ids_map( _, 'Marker Synonyms (pipe-separated)', 'MGI Accession ID', SymbMtx, MapSynoF, SynoOpts ),
 
     % withdrawn
-    WdraOpts = [cnm_transform(mouse_cnm_withdrawn),to_value_2(withdrawn),prefix(mgim),org(mouse),% to_value_1(sep_by('|')),
-            source(SymbUrl), datetime(SymbDnt)
-           ],
+    WdraOpts = [to_value_2(withdrawn), source(SymbUrl), datetime(SymbDnt) | Opts],
     csv_ids_map( _, 'Marker Symbol', 'Marker Name', SymbMtx, MapWdraF, WdraOpts ),
     MapFs = [GenBMapF,ChrlF,UnipMapF,MapSynoF,MapWdraF,MapNcbiF],
     Cpts = call_options([org(mouse),type(maps)]),
@@ -217,6 +215,3 @@ pfx_by_num( true, Pfx, Full, Rem ) :-
     ( atom_number(RemPrv,Rem) -> true; Rem=RemPrv ).
 pfx_by_num( false, Pfx, Full, Full ) :-
     atom_concat( Pfx, _, Full ).
-    
-mouse_cnm_withdrawn( 'Marker Symbol', symb ).
-mouse_cnm_withdrawn( 'Marker Name',  wdra ).

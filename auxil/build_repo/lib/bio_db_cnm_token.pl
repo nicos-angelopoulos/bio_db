@@ -66,3 +66,5 @@ cnm_token('GenBank IDs', mgim, genb).
 cnm_token('UniProt IDs', mgim, unip).
 cnm_token('Marker Symbol', mgim, mrks).
 cnm_token('Marker Synonyms (pipe-separated)', mgim, msyn).
+cnm_token('Marker Name', mgim, mnme ).
+

@@ -44,7 +44,7 @@ go_obo_terms( [[Sep|Sect]|Sects], OboTerms ) :-
                                      throw(cannot_map_to_pairs(SectAtms))
         ),
         ( select(is_obsolete-Obs,Pairs,Pairs1) -> true ; Obs = false, Pairs1 = Pairs ),
-        ( (select(id-IdPrv,Pairs1,Pairs2),go_id(IdPrv,Id)) -> true ; throw(no_id(Pairs)) ),
+        ( (select(id-IdPrv,Pairs1,Pairs2),go_obo_id(IdPrv,Id)) -> true ; throw(no_id(Pairs)) ),
         ( select(name-Name,Pairs2,Pairs3) -> true ; throw(no_name(Pairs)) ),
         ( (select(namespace-SpcPrv,Pairs3,Pairs4),go_obo_name_space(SpcPrv,Spc)) ->
                 true 
@@ -95,11 +95,11 @@ go_obo_non_obs_terms( [O|Os], Ps ) :-
 
 obo_separating_line( [0'[|_] ).
 
-go_id( GoT, InT ) :-
+go_obo_id( GoT, InT ) :-
     atomic_list_concat( ['GO',IntAtm], ':', GoT ),
     atom_number( IntAtm, InT ),
     !.
-go_id( GoT, InT ) :-
+go_obo_id( GoT, InT ) :-
     throw( not_a_go_id(GoT,InT) ).
 
 go_obo_name_space(biological_process, bp).

@@ -24,15 +24,15 @@
 :- lib(bio_db_dnt_times/3).
 :- lib(build_dnload_loc/3).
 :- lib(bio_db_add_infos/1).   % bio_db_add_infos_to/2
+:- lib(bio_db_source_url/3).
 :- lib(url_file_local_date_mirror/3).
 :- lib(map_list_options/3).
 
 true(_,_).
 
 std_chicken_maps_cgnc_defaults( Defs ) :-
-    Defs = [        cgnc_file('cgnc_complete_set.txt'),
+    Defs = [        cgnc_file(''),
                     db(cgnc),
-                    db_dir(cgnc),  % is this used ?
                     debug(true),
                     debug_fetch(true),
                     debug_url(false),
@@ -73,8 +73,6 @@ Tokens
 Opts
   * db(Db=cgnc)
     source database
-  * db_dir(DbDir=cgnc)
-    relative directory within downloads and data to work in
   * debug(Dbg=true)
     progress, informational messages
   * debug_fetch(Fbg=true)
@@ -110,17 +108,20 @@ std_chicken_maps_cgnc( Args ) :-
     options_append( Self, Args, Opts ),
     bio_db_build_aliases( Opts ),
     build_dnload_loc( Self, DnDir, Opts ),
-    options( db_dir(RelDir), Opts ),
     options( download(Dnload), Opts ),
+    CsvF = 'cgnc_complete_set.txt',
+    bio_db_source_url( SrcUrl, [cgnc_file-url_file,debug_url-debug], Opts ),
     cgnc_download_file( Dnload, DnDir, Self, SrcUrl, [file(CsvF)|Opts] ),
-    working_directory( Old, Dir ),
+    working_directory( Old, DnDir ),
     os_ext( dnt, CsvF, DntF ),
     bio_db_dnt_times( DntF, DnDt, _DnEnd ),
     options( sub(SubDir), Opts ),
     make_directory_path( SubDir ),
-    std_chicken_cgnc_mtx( CsvF, Mtx ),
     % 23.06.05, the cgnc file introduced a /9 (instead of /8 line in late May).
-    % mtx( CsvF, Mtx, sep(tab) ),
+    % std_chicken_cgnc_mtx( CsvF, Mtx ),
+    % 23.09.25, this seems fixed now
+    mtx( CsvF, Mtx, sep(tab) ),
+    debuc( Self, dims, mtx/Mtx ),
     StdO= [dir(SubDir),cnm_transform(cgnc_cname)|Opts],
     Cgnc = 'CGNC id',
     Symb = 'gene symbol',
@@ -141,7 +142,8 @@ std_chicken_maps_cgnc( Args ) :-
     debuc( Self, 'doing links...', [] ),
     Files = [SymbF,NcbiF,EnsgF,NameF,SynoF,CursF,EdatF],
     % maplist( link_to_bio_sub(RelDir), Files ),
-    map_list_options( link_to_bio_sub(RelDir), Files, call_options([org(chicken),type(maps)]) ),
+    options( db(Db), Opts ),
+    map_list_options( link_to_bio_sub(Db), Files, call_options([org(chicken),type(maps)]) ),
     % file_name_extension( TxtF, gz, GzF ),
     % delete_file( TxtF ),
     working_directory( _, Old ).
@@ -193,10 +195,10 @@ non_empty_atom( Other, NonEmpty ) :-
     Other \== '',
     NonEmpty = Other.
 
-cgnc_cname( A, B ) :-
+cgnc_cname( _, A, B ) :-
     cgnc_cname_known( A, B ),
     !.
-cgnc_cname( A, A ).
+cgnc_cname( _, A, A ).
 
 % cmpl = complement = both currated by HGNC and supplied by respective database.
 % 
@@ -214,7 +216,7 @@ cgnc_cname_known( 'last edit date', edat ).
 % in next version revert back to the mtx/3 call above
 std_chicken_cgnc_mtx( CsvF, Mtx ) :-
     mtx( CsvF, Csv, [match(false),sep(tab)] ),
-     std_chicken_cgnc_mtx_fix( Csv, Mtx ).
+    std_chicken_cgnc_mtx_fix( Csv, Mtx ).
 
 std_chicken_cgnc_mtx_fix( [], [] ).
 std_chicken_cgnc_mtx_fix( [H|Rs], [R|M] ) :-
@@ -232,6 +234,8 @@ cgnc_download_file( true, DnDir, Self, Url, Opts ) :-
      % Url = 'http://birdgenenames.org/cgnc/downloads.jsp?file=standard',
      options( debug_fetch(Fbg), Opts ),
      url_file_local_date_mirror( Url, DnDir, [date(prefix),debug(Fbg),interface(wget)|Opts] ),
+     memberchk( file(File), Opts ),
+     os_path( DnDir, File, Dst ),
      cgnc_download_file_fix( Self, Dst ).
 cgnc_download_file( false, _DnDir, Self, Url, Opts ) :-
      memberchk( file(File), Opts ),

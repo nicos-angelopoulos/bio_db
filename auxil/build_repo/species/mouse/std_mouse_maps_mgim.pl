@@ -155,7 +155,7 @@ std_mouse_maps_mgim( Args ) :-
     % cnm_token('Marker Symbol', _, mrks ).  Succeeds.
     % 23.9.25 this previously seems to have been re-doing 'Marker Symbol'
     findall( mgim_musm_mgim_symb(RMgi,RSymb), ( member(SymbRow,SymbRows),
-                                                    arg(10,SymbRow,'Gene')  % added 23.9.25
+                                                    arg(10,SymbRow,'Gene'),       % added 23.9.25
                                                     arg(1,SymbRow,RMgiFull),
                                                     atomic_list_concat(['MGI',RMgiAtm], ':', RMgiFull),
                                                     atom_number( RMgiAtm, RMgi ),

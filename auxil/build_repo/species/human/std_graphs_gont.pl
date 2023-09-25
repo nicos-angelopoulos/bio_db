@@ -21,7 +21,7 @@
 :- lib(go_obo/2).
 :- lib(link_to_bio_sub/3).
 :- lib(bio_db_dnt_times/3).
-:- lib(bio_db_source_url/2).
+:- lib(bio_db_source_url/3).
 :- lib(url_file_local_date_mirror/3).
 :- lib(bio_db_add_infos/1). % bio_db_add_infos_to/2
 
@@ -40,7 +40,7 @@ Opts
   * debug(Dbg=true)
     informational, progress messages
   * debug_url(Ubg=false)
-    whether to debug the concatenation of the url (via bio_db_source_url/2)
+    whether to debug the concatenation of the url (via bio_db_source_url/3)
   * iactive(Iact=true)
     whether the session is interactive, otherwise wget gets --no-verbose
   * obo_base(OboB=gont_obo)
@@ -61,9 +61,8 @@ std_graphs_gont( Args ) :-
     options_append( Self, Args, Opts ),
     bio_db_build_aliases( Opts ),
     %
-    options( [obo_file(OboF),obo_base(OboB),debug_url(Ubg)], Opts ),
-    UrlOpts = [url_file(OboF),url_base(OboB),debug(Ubg)],
-    bio_db_source_url( Url, UrlOpts ),
+    RnmOpts = [obo_file-url_file,obo_base-url_base,debug_url-debug],
+    bio_db_source_url( Url, RnmOpts, Opts ),
     %
     absolute_file_name( bio_db_build_downloads(gont), DnDir ),
     url_file_local_date_mirror( Url, DnDir, Opts ),

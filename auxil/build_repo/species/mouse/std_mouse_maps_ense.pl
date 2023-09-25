@@ -17,12 +17,11 @@
 
 % local
 :- lib(csv_to_pl/2).
-:- lib(bio_db_dnt_times/3).
-:- lib(url_file_local_date_mirror/3).
-:- lib(bio_db_add_infos/1).   % bio_db_add_infos_to/2
 :- lib(link_to_bio_sub/3).
-
-:- debuc(std_mouse_maps_ense).
+:- lib(bio_db_add_infos/1).             % bio_db_add_infos_to/2
+:- lib(bio_db_dnt_times/3).
+:- lib(build_dnloads_loc/3).
+:- lib(url_file_local_date_mirror/3).
 
 std_maps_ense_defaults( Defs ) :-
                                    Defs = [  db(ense),
@@ -97,8 +96,7 @@ std_mouse_maps_ense( Args ) :-
     bio_db_build_aliases( Opts ),
     ensure_loaded(mgim:bio_db_build_downloads('mgim/maps/mgim_musm_mgim_symb')),
     ensure_loaded(mgim:bio_db_build_downloads('mgim/maps/mgim_musm_msyn_mgim')),
-    absolute_file_name( bio_db_build_downloads(ense), DnDir ),
-    os_make_path( DnDir ),
+    build_dnloads_loc( Self, DnDir, Opts ),
     debuc( Self, 'Downloads dir for ense: ~p', DnDir ),
     FtpDir = 'ftp://ftp.ensembl.org/pub/current_gtf/mus_musculus/',
     Found @@ curl( -l, '--no-progress-meter', FtpDir ),

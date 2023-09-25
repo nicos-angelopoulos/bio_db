@@ -24,6 +24,7 @@
 :- lib(link_to_bio_sub/4).
 :- lib(bio_db_add_infos/1).  % bio_db_add_infos_file/2.
 :- lib(bio_db_source_url/2).
+:- lib(build_dnloads_loc/3).
 
 % mgim_url( 'http://www.informatics.jax.org/downloads/reports' ).
 
@@ -191,17 +192,12 @@ mgim_dnload_report( Which, Self, Url, DnDir, BaseF, Mtx, DntStamp, Opts ) :-
     os_ext( rpt, Stem, Uname ),
     options_rename( [url_file(Uname)|Opts], [db-url_base,debug_url-debug], Spts, true ),
     bio_db_source_url( Url, Spts ),
-    mgim_dnload_dir( DnDir ),
+    build_dnloads_loc( Self, DnDir, Opts ),
     UrlOpts = [interface(wget),file(BaseF),dnt_stamp(DntStamp)|Opts],
     url_file_local_date_mirror( Url, DnDir, UrlOpts ),
     os_path( DnDir, BaseF, AbsF ),
     mtx( AbsF, Mtx, sep(tab) ),
     debuc( Self, dims, Which/Mtx ).
-
-mgim_dnload_dir( Loc ) :-
-    absolute_file_name( bio_db_build_downloads(mgim), Loc ),
-    debuc( mouse, 'Loc: ~p', Loc ),
-    os_make_path( Loc, debug(true) ).
 
 sep_by( _, '', _ ) :- !, fail. % do not include empties
 sep_by( Sep, Atom, List ) :-

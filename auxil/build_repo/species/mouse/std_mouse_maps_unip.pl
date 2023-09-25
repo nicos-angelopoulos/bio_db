@@ -28,6 +28,7 @@
 :- lib(csv_ids_map/6).
 :- lib(link_to_bio_sub/3).
 :- lib(bio_db_dnt_times/3).
+:- lib(build_dnloads_loc/3).
 :- lib(url_file_local_date_mirror/3).
 
 unip_mouse( 'ftp://ftp.ebi.ac.uk/pub/databases/uniprot/current_release/knowledgebase/idmapping/by_organism/MOUSE_10090_idmapping.dat.gz' ).
@@ -36,18 +37,15 @@ trem_mouse( 'ftp://ftp.ebi.ac.uk/pub/databases/uniprot/current_release/knowledge
 % unip_hs( 'ftp://ftp.uniprot.org/pub/databases/uniprot/current_release/knowledgebase/idmapping/by_organism/HUMAN_9606_idmapping.dat.gz' ).
 %trem_hs( 'ftp://ftp.uniprot.org/pub/databases/uniprot/current_release/knowledgebase/idmapping/by_organism/HUMAN_9606_idmapping_selected.tab.gz' ).
 
-unip_dnload( Self, Loc ) :-
-     absolute_file_name( bio_db_build_downloads(unip), Loc ),
-    debuc( Self, 'Loc: ~p', Loc ),
-     os_make_path( Loc, debug(true) ).
-
 std_mouse_maps_unip_defaults( Defs ) :-
                                         Defs = [ db(unip),
                                                  debug(true),
-                                                 org(mouse)
+                                                 org(mouse),
+                                                 unip_file_full('MOUSE_10090_idmapping.dat.gz'),
+                                                 unip_file_sele('MOUSE_10090_idmapping_selected.dat.gz')
                                         ].
 
-/** maps_std_uniprot.
+/** std_mouse_maps_unip(+Opts).
 
 Create some uniprot maps.
 
@@ -58,6 +56,7 @@ Opts
     informational, progress messages
   * org(Org=mouse)
     organism
+
 ==
 ?- maps_std_uniprot.
 ?- shell( 'wc -l uniprot_*' ).
@@ -85,17 +84,16 @@ Tue 27 Dec 16:08:45 GMT 2022
 
 @author nicos angelopoulos
 @version  0.2 2015/4/27
-@tbd use hgnc as template to download from 
-@tbd ftp://ftp.uniprot.org/pub/databases/uniprot/current_release/knowledgebase/idmapping/by_organism/
 */
 std_mouse_maps_unip( Args ) :-
-    Self = std_mouse_maps_unip,
-    options_append( Self, Args, Opts ),
+     Self = std_mouse_maps_unip,
+     options_append( Self, Args, Opts ),
      bio_db_build_aliases( Opts ),
-     unip_dnload( Self, DnDir ),  %
+     build_dnloads_loc( Self, DnDir, Opts ),
      /* double check unip part works with the nucl part // 15.05.15 */
      working_directory( Old, DnDir ),
      unip_mouse( Url ),
+     bio_db_source_url( 
      % url_file( Url, 
      UrlOpts = [debug(true),interface(wget),file(File)],
      url_file_local_date_mirror( Url, DnDir, UrlOpts ),
@@ -183,6 +181,7 @@ std_mouse_maps_unip( Args ) :-
 
 empty( '' ).
      
+/*
 std_map_usyn_unip :-
      open( '/media/nicos/lmtk3/downloads/uniprot_sprot.dat', read, In ),
      read_line_to_codes( In, Line ),
@@ -197,6 +196,7 @@ std_map_usyn_unip :-
      os_path( MapsD, MapF, AbsMapF ),
      % link_to_map_sub( unip, AbsMapF ).
     link_to_bio_sub( unip, AbsMapF, [org(mouse),type(maps)] ).
+    */
 
 sprot_synonym_rows( end_of_file, _In, [] ) :- !.
 sprot_synonym_rows( Line, In, SynRs ) :-

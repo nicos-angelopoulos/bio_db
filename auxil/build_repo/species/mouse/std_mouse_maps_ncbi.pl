@@ -17,11 +17,8 @@
 :- lib(csv_ids_map/6).
 :- lib(link_to_bio_sub/4).
 :- lib(bio_db_source_url/2).
+:- lib(build_dnloads_loc/3).
 :- lib(url_file_local_date_mirror/3).
-
-ncbi_dnload( Loc ) :-
-     absolute_file_name( bio_db_build_downloads(ncbi), Loc ),
-     os_make_path( Loc, debug(true) ).
 
 std_mouse_maps_ncbi_defaults( Defs ) :-
                                         Defs = [ db(ncbi),
@@ -78,7 +75,7 @@ std_mouse_maps_ncbi( Args ) :-
      Self = std_mouse_maps_ncbi,
      options_append( Self, Args, Opts ),
      bio_db_build_aliases( Opts ),
-     ncbi_dnload( DnDir ),
+     build_dnloads_loc( Self, DnDir, Opts ),
      options_rename( Opts, [debug_url-debug,gene_info_file-url_file], Spts, true ),
      bio_db_source_url( Url, Spts ),
      options_rename( [interface(wget),file(GzF),dnt_stamp(DntStamp)|Opts], debug_url-debug, Fpts, true ),

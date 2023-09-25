@@ -2,18 +2,18 @@
                 bio_db_musm_mgim/0,
                 %       + MGI database: fixme: url
                 mgim_musm_mgim_chrl/5,
-                mgim_musm_mgim_ncbi/2,
                 mgim_musm_mgim_genb/2,
+                mgim_musm_mgim_mrks/2,
+                mgim_musm_mgim_ncbi/2,
                 mgim_musm_mgim_symb/2,
                 mgim_musm_mgim_unip/2,
                 mgim_musm_symb_wdra/2,
-                mgim_musm_syno_mgim/2
+                mgim_musm_mrks_mnme/2,   %fixme: ideally we should have mgim_mnme, instead, or in addition
+                mgim_musm_msyn_mgim/2
                 ] ).
 
 :- use_module( library(lib) ).
 :- lib(bio_db).
-
-% :- dynamic( mgim_musm_mgim_symb/2 ).
 
 /**  bio_db_musm_mgim.
 
@@ -93,9 +93,22 @@ Mgim = 3039582.
 mgim_musm_mgim_ncbi( X, Y ) :-
     bio_db:bio_db_serve( mgim_musm_mgim_ncbi(X,Y) ).
 
+/**  mgim_musm_mgim_mrks( +Mgim, -Symb ).
+
+Map predicate between MGI identifier and MGI Marker symbols.
+
+MGI uses symbols for many different constructs. This pred includes everything that is not withdrawn.
+This predicate is super-set of mgim_musm_mgim_symb/2.
+
+*/
+mgim_musm_mgim_mrks( X, Y ) :-
+    bio_db:bio_db_serve( mgim_musm_mgim_mrks(X,Y) ).
+
 /**  mgim_musm_mgim_symb( +Mgim, -Symb ).
 
 Map predicate between MGI marker and (MGI) symbols.
+
+This is a sub-set of mgim_musm_mgim_mrks/2, constraining to Genes only.
 
 ==
 ?- mgim_musm_mgim_symb( Mgim, 'Lmtk3' ).
@@ -104,6 +117,16 @@ Mgim = 3039582.
 */
 mgim_musm_mgim_symb( X, Y ) :-
     bio_db:bio_db_serve( mgim_musm_mgim_symb(X,Y) ).
+
+/** mgim_musm_mrks_mnme( X, Y ).
+
+Map predicate between MGI marker symbols and Marker names.
+
+@tbd should this be replaced by mgim_mnme/2 ? 
+
+*/
+mgim_musm_mrks_mnme( X, Y ) :-
+    bio_db:bio_db_serve( mgim_musm_mrks_mnme(X,Y) ).
 
 /**  mgim_musm_mgim_unip( +Mgim, -Unip ).
 
@@ -119,7 +142,7 @@ Unip = 'Q5XJV6'.
 */
 mgim_musm_mgim_unip( Sprt, Seqn ) :-
     bio_db:bio_db_serve( mgim_musm_mgim_unip(Sprt,Seqn) ).
-    
+
 /**  mgim_musm_symb_wdra( +Symb, -Wdra ).
 
 Map predicate from MGI symbols to withdrawn names.
@@ -134,13 +157,13 @@ W = 'H2-Q1' ;
 mgim_musm_symb_wdra( Symb, Wdra ) :-
     bio_db:bio_db_serve( mgim_musm_symb_wdra(Symb,Wdra) ).
 
-/*  mgim_musm_syno_mgim( +Syno, -Mgim ).
+/*  mgim_musm_msyn_mgim( +Syno, -Mgim ).
 
 Map predicate from Synonym to MGI marker ID.
 
 ==
 ?- mgim_musm_mgim_symb( Mgim, 'Lmtk3' ),
-|    mgim_musm_syno_mgim( Syno, Mgim ).
+|    mgim_musm_msyn_mgim( Syno, Mgim ).
 
 Mgim = 3039582,
 Syno = 'AATYK3' ;
@@ -149,5 +172,5 @@ Syno = 'Aatyk3'.
 ==
 
 */
-mgim_musm_syno_mgim( X, Y ) :-
-    bio_db:bio_db_serve( mgim_musm_syno_mgim(X,Y) ).
+mgim_musm_msyn_mgim( X, Y ) :-
+    bio_db:bio_db_serve( mgim_musm_msyn_mgim(X,Y) ).

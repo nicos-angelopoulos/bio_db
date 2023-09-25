@@ -6,7 +6,9 @@
 :- lib(options).
 :- lib(ansi_term).
 :- lib(debug_call).
-:- lib( stoics_lib:date_two_digit_dotted/1 ).
+:- lib(stoics_lib:date_two_digit_dotted/1).
+
+:- ensure_loaded(bio_db_build_messages).
 
 :- prolog_load_context(directory, Lib ),
    lib(Lib),

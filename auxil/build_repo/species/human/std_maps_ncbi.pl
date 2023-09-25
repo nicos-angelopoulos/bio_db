@@ -217,7 +217,7 @@ std_maps_ncbi( Args ) :-
      build_dnload_loc( Self, DnDir, Opts ),
      bio_db_source_url( Url, [ncbi_genes_file-url_file,debug_url-debug], Opts ),
      options( debug_fetch(Fbg), Opts ),
-     url_file_local_date_mirror( Url, DnDir, [debug(Fbg),interface(wget),file(RemB)|Opts] ),
+     url_file_local_date_mirror( Url, DnDir, [debug(Fbg),interface(wget),file(GnsF)|Opts] ),
      % file_base_name( Url, RemB ),
      working_directory( Old, DnDir ),
      MapsD = maps,

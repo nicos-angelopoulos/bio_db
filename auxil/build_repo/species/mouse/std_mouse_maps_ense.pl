@@ -94,7 +94,7 @@ std_mouse_maps_ense( Args ) :-
     options_append( Self, Args, Opts ),
     bio_db_build_aliases( Opts ),
     ensure_loaded(mgim:bio_db_build_downloads('mgim/maps/mgim_musm_mgim_symb')),
-    ensure_loaded(mgim:bio_db_build_downloads('mgim/maps/mgim_musm_syno_mgim')),
+    ensure_loaded(mgim:bio_db_build_downloads('mgim/maps/mgim_musm_msyn_mgim')),
     absolute_file_name( bio_db_build_downloads(ense), DnDir ),
     os_make_path( DnDir ),
     debuc( Self, 'Downloads dir for ense: ~p', DnDir ),
@@ -203,7 +203,7 @@ ense_genes( [RowG|Rows], Self, GMRows, [GSRow|TGSRows], [EnsGC|GCRows] ) :-
         Syno = Symb,
         GMRows = [row(EnsG,SynoGim)|TGMRows]
         ;
-        ( ( mgim:mgim_musm_syno_mgim(Syno,Mgim),
+        ( ( mgim:mgim_musm_msyn_mgim(Syno,Mgim),
             mgim:mgim_musm_mgim_symb(Mgim,Symb)
           ) -> 
             GMRows = [row(EnsG,Mgim)|TGMRows]

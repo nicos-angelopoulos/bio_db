@@ -25,6 +25,10 @@ ERROR: bio_db:bio_db_cnm_token/3: Not a valid column name or db predicate token 
 
 ?- bio_db_cnm_token( cust, Tkn ).
 Tkn = cust.
+
+?- bio_db_cnm_token( 'Synonym', Ctx, Tkn, true ).
+Ctx = ncbi,
+Tkn = esyn.
 ==
 
 @author nicos angelopoulos

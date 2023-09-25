@@ -219,6 +219,7 @@ std_maps_ncbi( Args ) :-
      options( debug_fetch(Fbg), Opts ),
      url_file_local_date_mirror( Url, DnDir, [debug(Fbg),interface(wget)|Opts] ),
      % file_base_name( Url, RemB ),
+     trace,
      working_directory( Old, DnDir ),
      MapsD = maps,
      make_directory_path( MapsD ),

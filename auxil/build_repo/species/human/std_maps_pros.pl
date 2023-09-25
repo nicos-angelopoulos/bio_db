@@ -38,6 +38,7 @@ std_maps_pros_defaults( Defs ) :-
                                        debug_fetch(true),
                                        debug_url(false),
                                        iactive(true),
+                                       org(human),
                                        pros_file('prosite_alignments.tar.gz')
                                      ].
 

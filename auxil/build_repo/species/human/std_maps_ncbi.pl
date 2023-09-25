@@ -102,10 +102,11 @@ maps_ncbi_rnuc_symb( Self, DnDir, Opts ) :-
      csv_ids_map( HsStem, RNAnucl, 'Symbol', _Csv1, OutF, CIMOpts ),
 
 
-     DNAOpts = [ cnm_transform(ncbi_gene2asseccion_cnms), prefix(ncbi),
-                 to_value_1(de_versionise),
-                 to_valuse_2(is_a_symbol),
-                 datetime(HsDnDt), source(HsUrl), header(row('DNA Nucleotide','HGNC Symbol')) | Opts
+     DNAOpts = [ db(ncbi),
+                 to_value_1(de_versionise), to_valuse_2(is_a_symbol),
+                 datetime(HsDnDt), source(HsUrl), 
+                 header(row('DNA Nucleotide','HGNC Symbol')) 
+                 | Opts
      ],
      GENnucl = 'genomic_nucleotide_accession.version', 
      debuc( Self, 'Csv Map for: ~w vs ~w', [GENnucl,'Symbol'] ),

@@ -22,6 +22,7 @@
 :- lib(link_to_bio_sub/3).
 :- lib(bio_db_dnt_times/3).
 :- lib(bio_db_add_infos/1).     % bio_db_add_infos_to/2.
+:- lib(build_dnload_loc/3).
 :- lib(bio_db_source_base_url/3).
 :- lib(portray_informed_clauses/4).
 :- lib(url_file_local_date_mirror/3).
@@ -100,15 +101,16 @@ std_chicken_graphs_strg( Args ) :-
     bio_db_string_version_base_name( Version, _VersD, Bname, Remote, Opts ),
     bio_db_string_version_base_name( Version, _TheVersD, _InfoBnameVanilla, InfoFrom, [relation(info)|Opts] ),
     debuc( Self, 'Base name: ~w', Bname ),
-    absolute_file_name( bio_db_build_downloads(strg), Parent ),
-    os_make_path( Parent, debug(true) ),
-    url_file_local_date_mirror( Remote, Parent, [file(DnF),dnt(true),iface(wget)|Opts] ),
-    working_directory( Here, Parent ),
+    % absolute_file_name( bio_db_build_downloads(strg), Parent ),
+    % os_make_path( Parent, debug(true) ),
+    build_dnload_loc( Self, DnlD, Opts ),
+    url_file_local_date_mirror( Remote, DnlD, [file(DnF),dnt(true),iface(wget)|Opts] ),
+    working_directory( Here, DnlD ),
     debuc( Self, 'Download name: ~w', DnF ),
     @ gunzip( -k, DnF ),  % keeps .gz file
     EnspPn = strg_galg_edge_ensp,
     file_name_extension( TxtF, gz, DnF ),
-    debuc( Self, 'Directory: ~p', [Parent] ),
+    debuc( Self, 'Directory: ~p', [DnlD] ),
     Mess1 = 'Converting string file: ~p, to Prolog',
     debuc( Self, Mess1, [TxtF] ),
     MtxOpts = [ csv_read(separator(0' )),predicate_name(EnspPn),
@@ -127,7 +129,7 @@ std_chicken_graphs_strg( Args ) :-
     % info file connect protein to SYmbol
     % directory_file_path( Parent, InfoBname, LocalInfoFile ),
     % std_graph_string_download_string( LocalInfoFile, InfoFrom, Self, Opts ),
-    url_file_local_date_mirror( InfoFrom, Parent, [file(InfoBname),dnt(true),iface(wget)|Opts] ),
+    url_file_local_date_mirror( InfoFrom, DnlD, [file(InfoBname),dnt(true),iface(wget)|Opts] ),
     @ gunzip( -k, InfoBname ),  % keeps .gz file
     % Map = map_strg_gallus_ensp_symb,
     Map = strg_galg_ensp_symb,

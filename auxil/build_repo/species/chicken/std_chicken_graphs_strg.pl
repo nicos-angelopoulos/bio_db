@@ -21,7 +21,7 @@
 % local libs & sources
 :- lib(link_to_bio_sub/3).
 :- lib(bio_db_dnt_times/3).
-:- lib(bio_db_add_infos/1).     % bio_db_add_infos_to/2.
+:- lib(bio_db_add_infos/1).                 % bio_db_add_infos_to/2.
 :- lib(build_dnload_loc/3).
 :- lib(bio_db_source_base_url/3).
 :- lib(portray_informed_clauses/4).
@@ -37,8 +37,8 @@ std_chicken_graphs_strg_defaults( Args, Defs ) :-
                          debug_fetch(true),
                          debug_url(false),
                          iactive(true),
-                         org(chicken),
-                         relation(links)
+                         relation(links),
+                         org(chicken)
                          |  T  
                       ],
      ( std_graphs_strg_auto_version(Vers,Args) ->     % let options/2 do the erroring, cause user might provide it
@@ -46,9 +46,6 @@ std_chicken_graphs_strg_defaults( Args, Defs ) :-
           ;
           T = []   
      ).
-
-% last good one: std_graphs_string( '10' ).  2016/09/08
-% last good one: std_graphs_string( '10.5' ).  2018/03/30
 
 /** std_chicken_graphs_strg(+Opts).
 

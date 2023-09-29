@@ -102,7 +102,7 @@ std_chicken_graphs_strg( Args ) :-
     url_file_local_date_mirror( Remote, DnlD, [dnld_file(DnF),dnt(true),iface(wget)|Opts] ),
     working_directory( Here, DnlD ),
     debuc( Self, 'Download name: ~w', DnF ),
-    @ gunzip( -k, DnF ),  % keeps .gz file
+    @ gunzip( -k, -f, DnF ),  % keeps .gz file
     EnspPn = strg_galg_edge_ensp,
     file_name_extension( TxtF, gz, DnF ),
     debuc( Self, 'Directory: ~p', [DnlD] ),
@@ -123,7 +123,7 @@ std_chicken_graphs_strg( Args ) :-
     % info file connect protein to SYmbol
     bio_db_string_version_base_name( Version, _TheVersD, _InfoVersF, InfoFrom, [relation(info)|Opts] ),
     url_file_local_date_mirror( InfoFrom, DnlD, [dnld_file(InfoDnF),dnt(true),iface(wget)|Opts] ),
-    @ gunzip( -k, InfoDnF ),  % keeps .gz file
+    @ gunzip( -k, -f, InfoDnF ),  % keeps .gz file
     Map = strg_galg_ensp_symb,
     file_name_extension( InfoTxtF, gz, InfoDnF ),
     InfoMess1 = 'Converting map string file: ~p, to Prolog',

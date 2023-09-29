@@ -8,7 +8,7 @@ std_chicken_maps_reac_defaults( Defs ) :-
                debug_url(false),
                iactive(true),
                org(chicken),
-               reac_file('NCBI2Reactome_PE_All_Levels.txt')
+               reac_file('NCBI2Reactome_PE_All_Levels.txt'),
                org(chicken)
      ].
 

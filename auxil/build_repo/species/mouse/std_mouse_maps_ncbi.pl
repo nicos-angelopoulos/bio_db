@@ -77,7 +77,7 @@ std_mouse_maps_ncbi( Args ) :-
      bio_db_build_aliases( Opts ),
      build_dnload_loc( Self, DnDir, Opts ),
      bio_db_source_url( Url, [debug_url-debug,gene_info_file-url_file], Opts ),
-     options_rename( [interface(wget),file(GzF),dnt_stamp(DntStamp)|Opts], debug_url-debug, Fpts, true ),
+     options_rename( [interface(wget),dnld_file(GzF),dnt_stamp(DntStamp)|Opts], debug_url-debug, Fpts, true ),
      url_file_local_date_mirror( Url, DnDir, Fpts ),
      working_directory( Old, DnDir ),
      @ gunzip( -f, -k, GzF ),

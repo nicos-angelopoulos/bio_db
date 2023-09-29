@@ -102,7 +102,9 @@ bio_db_source_url_file( SrcF, _BsUrl, _Org, SrcF, _Opts ).
 
 ense_url_file( Url, Org, SrcF, Opts ) :-
      org_ense_dir( Org, Eir, Opts ),
-     Found @@ curl( -l, '--no-progress-meter', Url ),
+     downcase_atom( Eir, Lir ),
+     atomic_list_concat( [Url,Lir,'/'], Orl ),  % organism specific sub-directory
+     Found @@ curl( -l, '--no-progress-meter', Orl ),
      findall( HsGtf-Amb-Rel, (member(HsGtf,Found),at_con([Eir,GRChTkn,RelAtm,gtf,gz],'.',HsGtf),
                          atom_concat('GRCh',AmbAtm,GRChTkn),
                          atom_number(AmbAtm,Amb), atom_number(RelAtm,Rel)
@@ -111,19 +113,5 @@ ense_url_file( Url, Org, SrcF, Opts ) :-
      ( HsGtfs = [SrcF-_Amb-_Rel] ->
           true
           ;
-          throw( non_unique_auto_ided_ense_gtf_files(Url,HsGtfs) )
-     ).
-
-ense_homs_url_file( Url, SrcF ) :-
-     Found @@ curl( -l, '--no-progress-meter', Url ),
-     % Homo_sapiens.GRCh38.101.gtf.gz
-     findall( HsGtf-Amb-Rel, (member(HsGtf,Found),at_con(['Homo_sapiens',GRChTkn,RelAtm,gtf,gz],'.',HsGtf),
-                         atom_concat('GRCh',AmbAtm,GRChTkn),
-                         atom_number(AmbAtm,Amb), atom_number(RelAtm,Rel)
-                        ),
-                            HsGtfs ),
-     ( HsGtfs = [SrcF-_Amb-_Rel] ->
-          true
-          ;
-          throw( non_unique_auto_ided_ense_gtf_files(Url,HsGtfs) )
+          throw( non_unique_auto_ided_ense_gtf_files(Orl,HsGtfs) )
      ).

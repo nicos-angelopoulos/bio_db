@@ -19,8 +19,9 @@
 :- lib(csv_to_pl/2).
 :- lib(link_to_bio_sub/3).
 :- lib(bio_db_dnt_times/3).
-:- lib(build_dnload_loc/3).
 :- lib(bio_db_add_infos/1).                  % bio_db_add_infos_to/2
+:- lib(build_dnload_loc/3).
+:- lib(bio_db_source_url/3).
 :- lib(url_file_local_date_mirror/3).
 % fixme: this needs to be modernised, check the code in ../human and ../mouse
 
@@ -85,21 +86,24 @@ std_chicken_maps_ense( Args ) :-
     std_chicken_maps_ense( galg, gallus_gallus, Args ),
     std_chicken_maps_ense( gg6a, gallus_gallus_gca000002315v5, Args ).
 
-std_chicken_maps_ense( Tkn, EnsDir, Args ) :-
+std_chicken_maps_ense( Tkn, _EnsDir, Args ) :-
     Self = std_chicken_maps_ense,
     options_append( Self, Args, Opts ),
     bio_db_build_aliases( Opts ),
     build_dnload_loc( Self, DnDir, Opts ),
     debuc( Self, 'Downloads dir for ense: ~p', DnDir ),
     % FtpDir = 'ftp://ftp.ensembl.org/pub/current_gtf/gallus_gallus/',
-    at_con( ['ftp://ftp.ensembl.org/pub/current_gtf/',EnsDir,'/'], '', FtpDir ),
+    % at_con( ['ftp://ftp.ensembl.org/pub/current_gtf/',EnsDir,'/'], '', FtpDir ),
     % FtpDir = 'https://ftp.ensembl.org/pub/current_gtf/gallus_gallus/',
+
+    SrcRnms = [ense_galg_file-url_file,debug_url-debug],
+    bio_db_source_url( Url, SrcRnms, [org(Tkn)|Opts] ),
     Found @@ curl( -l, '--no-progress-meter', FtpDir ),
     % Gallus_gallus.bGalGal1.mat.broiler.GRCg7b.108.gtf.gz
     % Mus_musculus.GRCm39.108.gtf.gz
     std_gallus_ense_gtf_file( Tkn, Found, MsGtfF ),
     atom_concat( FtpDir, MsGtfF, Url ),
-    url_file_local_date_mirror( Url, DnDir, [file(File),interface(wget)|Opts] ),
+    url_file_local_date_mirror( Url, DnDir, [dnld_file(File),interface(wget)|Opts] ),
     debuc( Self, 'Dnload done, file is: ~p', File ),
     working_directory( Old, DnDir ),
     bio_db_dnt_times( File, DnDt, _DnEn ),

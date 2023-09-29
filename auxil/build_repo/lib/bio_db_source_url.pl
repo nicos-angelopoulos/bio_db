@@ -101,11 +101,10 @@ bio_db_source_url_file( call(Goal), BsUrl, Org, SrcF, Opts ) :-
 bio_db_source_url_file( SrcF, _BsUrl, _Org, SrcF, _Opts ).
 
 ense_url_file( Url, Org, SrcF, Opts ) :-
-     org_ense_dir( Org, Eir, Opts ),
-     downcase_atom( Eir, Lir ),
-     atomic_list_concat( [Url,Lir,'/'], Orl ),  % organism specific sub-directory
+     org_ense_dir( Org, Eir, Stem, Opts ),
+     atomic_list_concat( [Url,Eir,'/'], Orl ),  % organism specific sub-directory
      Found @@ curl( -l, '--no-progress-meter', Orl ),
-     findall( HsGtfRel-Amb-Rel, (member(HsGtf,Found),at_con([Eir,GRChTkn,RelAtm,gtf,gz],'.',HsGtf),
+     findall( HsGtfRel-Amb-Rel, (member(HsGtf,Found),at_con([Stem,GRChTkn,RelAtm,gtf,gz],'.',HsGtf),
                          atom_concat('GRCh',AmbAtm,GRChTkn),
                          atom_number(AmbAtm,Amb), atom_number(RelAtm,Rel),
                          atomic_list_concat( [Lir,HsGtf], '/', HsGtfRel )

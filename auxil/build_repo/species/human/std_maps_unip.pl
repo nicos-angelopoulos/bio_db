@@ -60,6 +60,8 @@ std_maps_unip_defaults( Defs ) :-
 %    whether the session is interactive, otherwise wget gets --no-verbose
 %  * unip_file_full(UnipFF='HUMAN_9606_idmapping.dat.gz')
 %    the file name for the obo download
+%  * unip_file_sele(UnipFF='HUMAN_9606_idmapping.dat.gz')
+%    the file name for the selected ids mapping download (stricter than the above)
 %
 %==
 % ?- maps_std_uniprot.

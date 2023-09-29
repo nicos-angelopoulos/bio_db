@@ -27,11 +27,13 @@
 :- lib(csv_ids_map/6).
 :- lib(link_to_bio_sub/3).
 :- lib(bio_db_dnt_times/3).
+:- lib(build_dnload_loc/3).
+:- lib(bio_db_source_url/3).
 :- lib(url_file_local_date_mirror/3).
 :- lib(stoics_lib:map_list_options/3).
 
-unip_chicken( 'ftp://ftp.ebi.ac.uk/pub/databases/uniprot/current_release/knowledgebase/idmapping/by_organism/CHICK_9031_idmapping.dat.gz' ).
-trem_chicken( 'ftp://ftp.ebi.ac.uk/pub/databases/uniprot/current_release/knowledgebase/idmapping/by_organism/CHICK_9031_idmapping_selected.tab.gz' ).
+% unip_chicken( 'ftp://ftp.ebi.ac.uk/pub/databases/uniprot/current_release/knowledgebase/idmapping/by_organism/CHICK_9031_idmapping.dat.gz' ).
+% trem_chicken( 'ftp://ftp.ebi.ac.uk/pub/databases/uniprot/current_release/knowledgebase/idmapping/by_organism/CHICK_9031_idmapping_selected.tab.gz' ).
 % use this if from outside europe:
 % unip_hs( 'ftp://ftp.uniprot.org/pub/databases/uniprot/current_release/knowledgebase/idmapping/by_organism/HUMAN_9606_idmapping.dat.gz' ).
 %trem_hs( 'ftp://ftp.uniprot.org/pub/databases/uniprot/current_release/knowledgebase/idmapping/by_organism/HUMAN_9606_idmapping_selected.tab.gz' ).
@@ -43,8 +45,12 @@ unip_dnload( Self, Loc ) :-
 
 std_chicken_maps_unip_defaults( [ db(unip),
                                   debug(true),
+                                  debug_url(false),
+                                  debug_fetch(true),
                                   iactive(true),
-                                  org(chicken)
+                                  org(chicken),
+                                  unip_file_full('CHICK_9031_idmapping.dat.gz'),
+                                  unip_file_sele('HUMAN_9031_idmapping_selected.tab.gz')
                                 ]
                               ).
 
@@ -57,10 +63,18 @@ Opts
     source database
   * debug(Dbg=true)
     progress, informational messages
+  * debug_fetch(Ubg=true)
+    whether to debug the fetching of the url (via url_file_local_date_mirror/3)
+  * debug_url(Ubg=false)
+    whether to debug the concatenation of the url (via bio_db_source_url/3)
   * iactive(Iact=true)
     whether the session is interactive, otherwise wget gets --no-verbose
   * org(Org=chicken)
     organism
+  * unip_file_full(UnipFF='HUMAN_9606_idmapping.dat.gz')
+    the file name for the id mapping download
+  * unip_file_sele(UnipFF='HUMAN_9606_idmapping.dat.gz')
+    the file name for the selected ids mapping download (stricter than the above)
 
 ==
 ?- std_chicken_maps_unip([]).
@@ -85,16 +99,19 @@ std_chicken_maps_unip( Args ) :-
      Self = std_chicken_maps_unip,
      options_append( Self, Args, Opts ),
      bio_db_build_aliases( Opts ),
-     unip_dnload( Self, DnDir ),  %
+     % unip_dnload( Self, DnDir ),  %
      /* double check unip part works with the nucl part // 15.05.15 */
+     build_dnload_loc( Self, DnDir, Opts ),
      working_directory( Old, DnDir ),
-     unip_chicken( Url ),
-     UrlOpts = [debug(true),interface(wget),file(File)|Opts],
+
+     % unip_chicken( Url ),
+     bio_db_source_url( Url, [debug_url-debug,unip_file_full-url_file], Opts ),
+     options( debug_fetch(Fbg), Opts ),
+     UrlOpts = [debug(Fbg),dnld_file(File)|Opts],
      url_file_local_date_mirror( Url, DnDir, UrlOpts ),
      % cd( bio_dn_root(uniprot) ),
      % os_rm_rf( maps ), % don't do that human puts stuff there tooo ! 
      os_make_path( maps, debug(true) ),
-
      debuc( Self, 'Dir location: ~p', DnDir ),
      Rev = [id_map('CHICK_9031_idmapping.dat'),f_call(de_pfx_dot),org(galg),interface(prolog),reverse(false)],
      map_uniprot( 'Ensembl_PRO', Csv, [EnspF], Rev ),

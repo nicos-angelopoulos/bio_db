@@ -141,7 +141,6 @@ url_file_replace( _, Url, LocD, LocB, DatP, DatDt, Iface, Verb, Self, BefStamp )
     debug_chain( Self, os_repoint, RlPrior ),
     % os_ext( dnt, LnkP, LnkPDnt ),
     os_path( LocD, LocB, LocP ),
-
     os_ext( dnt, LocP, LocPDt ),
     os_repoint( LocPDt, DatDt ),
     os_repoint( LocP, DatP ),
@@ -165,6 +164,7 @@ url_file_local_date_mirror_local_file_name( LocB, Opts, RemB, Self, Ext, DatB, O
     debuc( Self, 'Creating dated local basename.', [] ),
     url_file_date_stamp( Date, Opts ),
     memberchk( date(DatePos), Opts ),
+    LocB = RemB,
     url_file_local_date_mirror_local_file_name_date( DatePos, RemB, Date, Ext, DatB ).
 url_file_local_date_mirror_local_file_name( LocB, _Opts, _RemB, Self, Ext, DatB, Opts ) :-
     atom( LocB ),

@@ -22,7 +22,7 @@
 % local libs & sources
 :- lib(link_to_bio_sub/3).
 :- lib(bio_db_dnt_times/3).
-:- lib(bio_db_add_infos/1).             % bio_db_add_infos_to/2, fixme:
+:- lib(bio_db_add_infos/1).                   % bio_db_add_infos_to/2, fixme:
 :- lib(build_dnload_loc/3).
 :- lib(portray_informed_clauses/4).
 :- lib(url_file_local_date_mirror/3).

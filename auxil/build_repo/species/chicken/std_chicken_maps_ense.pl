@@ -29,7 +29,7 @@ std_chicken_maps_ense_defaults( [ db(ense),
                                   debug(true),
                                   debug_url(false),
                                   debug_fetch(true),
-                                  ense_galg_file(call(ense_url_file))
+                                  ense_galg_file(call(ense_url_file)),
                                   iactive(true),
                                   org(chicken)
                                 ]

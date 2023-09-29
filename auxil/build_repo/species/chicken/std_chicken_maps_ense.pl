@@ -25,6 +25,9 @@
 
 std_chicken_maps_ense_defaults( [ db(ense),
                                   debug(true),
+                                  debug_url(false),
+                                  debug_fetch(true),
+                                  ense_galg_file(call(ense_url_file))
                                   iactive(true),
                                   org(chicken)
                                 ]
@@ -46,8 +49,15 @@ Opts
     source database
   * debug(Dbg=true)
     progress, informational messages
+  * debug_fetch(Ubg=true)
+    whether to debug the fetching of the url (via url_file_local_date_mirror/3)
+  * debug_url(Ubg=false)
+    whether to debug the concatenation of the url (via bio_db_source_url/3)
   * iactive(Iact=true)
     whether the session is interactive, otherwise wget gets --no-verbose
+  * ense_galg_file(Eile=call(ense_url_file))
+    the file name  for the download (appended to Ufx@bio_db_source_base_url(gont_obo,Ufx))- or call that produces it
+
   * org(Org=chicken)
     organism
 

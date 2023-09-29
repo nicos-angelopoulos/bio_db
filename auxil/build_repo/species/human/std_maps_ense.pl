@@ -60,7 +60,7 @@ Opts
     whether to debug the fetching of the url (via url_file_local_date_mirror/3)
   * debug_url(Ubg=false)
     whether to debug the concatenation of the url (via bio_db_source_url/3)
-  * ense_homs_file(Eile=call(ense_homs_url_file))
+  * ense_homs_file(Eile=call(ense_url_file))
     the file name  for the download (appended to Ufx@bio_db_source_base_url(gont_obo,Ufx))- or call that produces it
   * iactive(Iact=true)
     whether the session is interactive, otherwise wget gets --no-verbose

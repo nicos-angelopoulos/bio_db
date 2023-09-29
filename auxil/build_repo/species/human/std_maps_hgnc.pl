@@ -94,7 +94,7 @@ std_maps_hgnc( Args ) :-
     build_dnload_loc( Self, DnDir, Opts ),
     bio_db_source_url( SrcUrl, [hgnc_file-url_file,debug_url-debug], Opts ),
     options( debug_fetch(Fbg), Opts ),
-    url_file_local_date_mirror( SrcUrl, DnDir, [dnld_file(UrlF),debug(Fbg),date(prefix),interface(wget)|Opts] ),
+    url_file_local_date_mirror( SrcUrl, DnDir, [dnld_file(UrlF),debug(Fbg)|Opts] ),
     working_directory( Old, DnDir ),
     % HgncTxtF = 'hgnc_complete_set.txt',
     % GzF = 'hgnc_complete_set.txt.gz',

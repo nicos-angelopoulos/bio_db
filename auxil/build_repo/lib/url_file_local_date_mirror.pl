@@ -14,11 +14,11 @@
 
 url_file_local_date_mirror_defaults( Args, Defs ) :-
                                   (memberchk(iactive(false),Args) -> Verb=false; Verb=true),
-                                  Defs = [  date(postfix), 
+                                  Defs = [  date_pos(postfix), 
                                             debug(false),
                                             dnld_file(_), 
                                             iactive(true),
-                                            interface(prolog),
+                                            interface(wget),
                                             link_stem(true),
                                             make_path(true), 
                                             replace_todays(false), 
@@ -37,7 +37,7 @@ url_file_local_date_mirror_defaults( Args, Defs ) :-
 %  Predicate listens to debug( url_file_local_date_mirror ).
 % 
 %  Opts, a term or list of the following
-%  * date(postfix)    
+%  * date_pos(postfix)    
 %    or prefix if date stamp is prefered before the stem (then LocF = Date-Basename)
 %
 %  * dnt_stamp(DntStamp)
@@ -53,8 +53,8 @@ url_file_local_date_mirror_defaults( Args, Defs ) :-
 %  * iactive(Iact=true)
 %    if =false= is given, default value of Verb changes to =false=
 % 
-%  * interface(Iface=prolog)  
-%    alternatively you can use wget (works for anonymous ftps)
+%  * interface(Iface=wget)  
+%    alternatively you can use =prolog= (wget works for anonymous ftps)
 %    
 %  * link_stem(Link=true)  
 %    or false if LocF is to be linked to Basename.
@@ -163,13 +163,13 @@ url_file_local_date_mirror_local_file_name( LocB, Opts, RemB, Self, Ext, DatB, O
     !, 
     debuc( Self, 'Creating dated local basename.', [] ),
     url_file_date_stamp( Date, Opts ),
-    memberchk( date(DatePos), Opts ),
-    LocB = DatB,
+    memberchk( date_pos(DatePos), Opts ),
+    LocB = RemB,
     url_file_local_date_mirror_local_file_name_date( DatePos, RemB, Date, Ext, DatB ).
 url_file_local_date_mirror_local_file_name( LocB, _Opts, _RemB, Self, Ext, DatB, Opts ) :-
     atom( LocB ),
     url_file_date_stamp( Date, Opts ),
-    memberchk( date(DatePos), Opts ),
+    memberchk( date_pos(DatePos), Opts ),
     debuc( Self, 'Dating given local basename: ~p', [LocB] ),
     url_file_local_date_mirror_local_file_name_date( DatePos, LocB, Date, Ext, DatB ).
 

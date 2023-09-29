@@ -109,8 +109,8 @@ std_maps_ense( Args ) :-
 	working_directory( Old, DnDir ),
 	bio_db_dnt_times( File, DnDt, _DnEn ),
 	debuc( by_unix ),
-	os_un_zip( File, _, [keep(true),on_exists(skip),debug(true)] ),
-	% @ gunzip( -k, -f, File ),
+	% os_un_zip( File, _, [keep(true),on_exists(skip),debug(true)] ),
+	@ gunzip( -k, -f, File ),
 	os_ext( gz, Stem, File ),
 	os_ext( tab, Stem, TabF ),
 	% fixme: ???:

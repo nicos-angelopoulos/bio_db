@@ -80,7 +80,7 @@ std_maps_pros( Args ) :-
      build_dnload_loc( Self, DnDir, Opts ),
      bio_db_source_url( Url, [debug_url-debug,pros_file-url_file], Opts ),
      options( debug_fetch(Fbg), Opts ),
-	UrlOpts = [debug(Fbg),interface(wget),file(ProsF),ext('tar.gz')|Opts],
+	UrlOpts = [debug(Fbg),interface(wget),dnld_file(ProsF),ext('tar.gz')|Opts],
 	url_file_local_date_mirror( Url, DnDir, UrlOpts ),
      working_directory( Old, DnDir ),
 	bio_db_dnt_times( ProsF, DnSt, _DnEn ),

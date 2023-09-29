@@ -94,7 +94,7 @@ std_maps_reac( Args ) :-
      bio_db_build_aliases( Opts ),
      build_dnload_loc( Self, DnDir, Opts ),
      bio_db_source_url( Url, [debug_url-debug,reac_file-url_file], Opts ),
-     url_file_local_date_mirror( Url, DnDir, [file(Local),date(prefix)|Opts] ),
+     url_file_local_date_mirror( Url, DnDir, [dnld_file(Local),date(prefix)|Opts] ),
      % os_path( _, Local, Url ),
      debuc( Self, 'Local: ~p', [Local] ),
      os_path( DnDir, Local, InP ),

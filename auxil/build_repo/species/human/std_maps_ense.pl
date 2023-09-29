@@ -104,7 +104,7 @@ std_maps_ense( Args ) :-
      SrcRnms = [ense_homs_base-url_base,ense_homs_file-url_file,debug_url-debug],
      bio_db_source_url( Url, SrcRnms, Opts ),
      options( debug_fetch(Fbg), Opts ),
-	url_file_local_date_mirror( Url, DnDir, [debug(Fbg),file(File),interface(wget)|Opts] ),
+	url_file_local_date_mirror( Url, DnDir, [debug(Fbg),dnld_file(File),interface(wget)|Opts] ),
 	debuc( Self, 'Dnload done, file is: ~p', File ),
 	working_directory( Old, DnDir ),
 	bio_db_dnt_times( File, DnDt, _DnEn ),

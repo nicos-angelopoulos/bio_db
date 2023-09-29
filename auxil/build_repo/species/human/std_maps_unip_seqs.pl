@@ -114,7 +114,7 @@ std_path( Base, Dir, Path ) :-
 
 unip_hs_seqs_file( Url, DnDir, Hdr, Opts ) :-
      options( debug_fetch(Fbg), Opts ),
-	UrlOpts = [debug(Fbg),interface(wget),file(SprotF)|Opts],
+	UrlOpts = [debug(Fbg),interface(wget),dnld_file(SprotF)|Opts],
 	url_file_local_date_mirror( Url, DnDir, UrlOpts ),
 	debug( std_maps_unip_seqs, 'Uniprot local file: ~p', SprotF ),
 	file_base_name( Url, HumGzF ),

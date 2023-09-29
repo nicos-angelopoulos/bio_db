@@ -74,7 +74,7 @@ std_graphs_gont( Args ) :-
     RnmOpts = [obo_file-url_file,obo_base-url_base,debug_url-debug],
     bio_db_source_url( Url, RnmOpts, Opts ),
     options( debug_fetch(Fbg), Opts ),
-    url_file_local_date_mirror( Url, DnDir, [file(OboF),debug(Fbg)|Opts] ),
+    url_file_local_date_mirror( Url, DnDir, [dnld_file(OboF),debug(Fbg)|Opts] ),
     working_directory( Old, DnDir ),
     /* here new code */
     bio_db_dnt_times( OboF, DnDt, _DnEnd ),

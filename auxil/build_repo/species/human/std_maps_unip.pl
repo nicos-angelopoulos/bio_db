@@ -78,7 +78,7 @@ std_maps_unip( Args ) :-
 	working_directory( Old, DnDir ),
      bio_db_source_url( Url, [debug_url-debug,unip_file_full-url_file], Opts ),
      options( debug_fetch(Fbg), Opts ),
-	url_file_local_date_mirror( Url, DnDir, [file(Bname),debug(Fbg)|Opts] ),
+	url_file_local_date_mirror( Url, DnDir, [dnld_file(Bname),debug(Fbg)|Opts] ),
 	os_make_path( maps, debug(true) ),
      %
 	debuc( Self, 'Dir location: ~p', DnDir ),
@@ -103,7 +103,7 @@ std_maps_unip( Args ) :-
 	bio_db_add_infos_to( [header(row('Uni Protein','Entrez ID'))|SwOpts], 'maps/unip_homs_unip_entz.pl' ),
 	bio_db_add_infos_to( [header(row('Uni Protein','HGNC ID'))|SwOpts], 'maps/unip_homs_unip_hgnc.pl' ),
      bio_db_source_url( TremUrl, [debug_url-debug,unip_file_sele-url_file], Opts ),
-	TrUrlOpts = [debug(true),interface(wget),file(TremFile)|Opts],
+	TrUrlOpts = [debug(true),interface(wget),dnld_file(TremFile)|Opts],
 	url_file_local_date_mirror( TremUrl, DnDir, [debug(Fbg)|TrUrlOpts] ),
 	bio_db_dnt_times( TremFile, TrDnDt, _TrDnEn ),
      debuc( Self, 'File: ~w, dnt_start: ~w', [TremFile,TrDnDt] ),

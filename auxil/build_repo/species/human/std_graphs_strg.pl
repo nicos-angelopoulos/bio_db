@@ -106,7 +106,7 @@ std_graphs_strg( Args ) :-
      debuc( Self, 'Rel name: ~w', RelName ),
      build_dnload_loc( Self, DnlD, Opts ),
      options( debug_fetch(Fbg), Opts ),
-     url_file_local_date_mirror( SrcUrl, DnlD, [debug(Fbg),file(Bname),iface(wget)|Opts] ),
+     url_file_local_date_mirror( SrcUrl, DnlD, [debug(Fbg),dnld_file(Bname),iface(wget)|Opts] ),
      working_directory( Here, DnlD ),
      @ gunzip( -k, Bname ),  % keeps .gz file
      EnspPn = strg_homs_edge_ensp,

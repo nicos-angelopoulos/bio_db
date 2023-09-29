@@ -99,7 +99,7 @@ std_chicken_graphs_strg( Args ) :-
     % absolute_file_name( bio_db_build_downloads(strg), Parent ),
     % os_make_path( Parent, debug(true) ),
     build_dnload_loc( Self, DnlD, Opts ),
-    url_file_local_date_mirror( Remote, DnlD, [file(DnF),dnt(true),iface(wget)|Opts] ),
+    url_file_local_date_mirror( Remote, DnlD, [dnld_file(DnF),dnt(true),iface(wget)|Opts] ),
     working_directory( Here, DnlD ),
     debuc( Self, 'Download name: ~w', DnF ),
     @ gunzip( -k, DnF ),  % keeps .gz file
@@ -122,7 +122,7 @@ std_chicken_graphs_strg( Args ) :-
     consult( EnspPn:EnspRel ),
     % info file connect protein to SYmbol
     bio_db_string_version_base_name( Version, _TheVersD, _InfoVersF, InfoFrom, [relation(info)|Opts] ),
-    url_file_local_date_mirror( InfoFrom, DnlD, [file(InfoDnF),dnt(true),iface(wget)|Opts] ),
+    url_file_local_date_mirror( InfoFrom, DnlD, [dnld_file(InfoDnF),dnt(true),iface(wget)|Opts] ),
     @ gunzip( -k, InfoDnF ),  % keeps .gz file
     Map = strg_galg_ensp_symb,
     file_name_extension( InfoTxtF, gz, InfoDnF ),

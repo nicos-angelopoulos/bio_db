@@ -95,9 +95,7 @@ std_chicken_graphs_strg( Args ) :-
     options( string_version(VersionPrv), Opts ),
     ( number(VersionPrv) -> atom_number(Version,VersionPrv); Version = VersionPrv ),
     debuc( Self, 'Version: ~w', Version ),
-    bio_db_string_version_base_name( Version, _VersD, Bname, Remote, Opts ),
-    bio_db_string_version_base_name( Version, _TheVersD, _InfoBnameVanilla, InfoFrom, [relation(info)|Opts] ),
-    debuc( Self, 'Base name: ~w', Bname ),
+    bio_db_string_version_base_name( Version, _VersD, _VersF, Remote, Opts ),
     % absolute_file_name( bio_db_build_downloads(strg), Parent ),
     % os_make_path( Parent, debug(true) ),
     build_dnload_loc( Self, DnlD, Opts ),
@@ -122,22 +120,19 @@ std_chicken_graphs_strg( Args ) :-
     @ rm( -f, EnspRel ),
     @ mv( File, EnspRel ),
     consult( EnspPn:EnspRel ),
-     
     % info file connect protein to SYmbol
-    % directory_file_path( Parent, InfoBname, LocalInfoFile ),
-    % std_graph_string_download_string( LocalInfoFile, InfoFrom, Self, Opts ),
-    url_file_local_date_mirror( InfoFrom, DnlD, [file(InfoBname),dnt(true),iface(wget)|Opts] ),
-    @ gunzip( -k, InfoBname ),  % keeps .gz file
-    % Map = map_strg_gallus_ensp_symb,
+    bio_db_string_version_base_name( Version, _TheVersD, _InfoVersF, InfoFrom, [relation(info)|Opts] ),
+    url_file_local_date_mirror( InfoFrom, DnlD, [file(InfoDnF),dnt(true),iface(wget)|Opts] ),
+    @ gunzip( -k, InfoDnF ),  % keeps .gz file
     Map = strg_galg_ensp_symb,
-    file_name_extension( InfoTxtF, gz, InfoBname ),
+    file_name_extension( InfoTxtF, gz, InfoDnF ),
     InfoMess1 = 'Converting map string file: ~p, to Prolog',
     debuc( Self, InfoMess1, [InfoTxtF] ),
     mtx( InfoTxtF, InfoMtx, sep(tab) ),
     InfoMtx = [_|InfoRows],
     maplist( strg_map_row(Map), InfoRows, MapRows ),
     os_dir_stem_ext( MapPlF, [odir(maps),ext(pl),stem(Map)] ),
-    bio_db_dnt_times( InfoBname, InfoDnDt, _InfoEndDt ),
+    bio_db_dnt_times( InfoDnF, InfoDnDt, _InfoEndDt ),
     MapInfos = [ source-InfoFrom,datetime-InfoDnDt,header-header('Ensembl Protein ID','Symbol'),
                        data_types-data_types(atom,atom)
                ],

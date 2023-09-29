@@ -104,10 +104,17 @@ ense_url_file( Url, Org, SrcF, Opts ) :-
      org_ense_dir( Org, Eir, Stem, Opts ),
      atomic_list_concat( [Url,Eir,'/'], Orl ),  % organism specific sub-directory
      Found @@ curl( -l, '--no-progress-meter', Orl ),
-     findall( HsGtfRel-Amb-Rel, (member(HsGtf,Found),at_con([Stem,GRChTkn,RelAtm,gtf,gz],'.',HsGtf),
-                         atom_concat('GRCh',AmbAtm,GRChTkn),
-                         atom_number(AmbAtm,Amb), atom_number(RelAtm,Rel),
-                         atomic_list_concat( [Eir,HsGtf], '/', HsGtfRel )
+     at_con( Stemics, '.', Stem ),
+     findall( HsGtfRel-Amb-Rel, ( member(HsGtf,Found),
+                                  at_con(Parts,'.',HsGtf),
+                                  once(append(Stemics,[GRChTkn,RelAtm,gtf,gz],Parts)),
+                                  % at_con([Stem,GRChTkn,RelAtm,gtf,gz],'.',HsGtf),
+                                  % fixme: chicken get g6a and g7a not  hN (eg: 
+                                  % atom_concat('GRCh',AmbAtm,GRChTkn),
+                                  % atom_number(AmbAtm,Amb), 
+                                  atom_concat('GRC',Amb,GRChTkn),
+                                  atom_number(RelAtm,Rel),
+                                  atomic_list_concat( [Eir,HsGtf], '/', HsGtfRel )
                         ),
                             HsGtfs ),
      ( HsGtfs = [SrcF-_Amb-_Rel] ->

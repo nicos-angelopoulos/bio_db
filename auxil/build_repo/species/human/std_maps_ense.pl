@@ -39,7 +39,6 @@ std_maps_ense_defaults( Defs ) :-
                                             debug(true),
                                             debug_url(false),
                                             debug_fetch(true),
-                                            ense_homs_base(ense_homs),
                                             ense_homs_file(call(ense_url_file)),
                                             iactive(true),
                                             org(human)
@@ -61,8 +60,6 @@ Opts
     whether to debug the fetching of the url (via url_file_local_date_mirror/3)
   * debug_url(Ubg=false)
     whether to debug the concatenation of the url (via bio_db_source_url/3)
-  * ense_homs_base(Eoms=ense_homs)
-    Url or bio_db_source_base_url/2 token for download diretory
   * ense_homs_file(Eile=call(ense_homs_url_file))
     the file name  for the download (appended to Ufx@bio_db_source_base_url(gont_obo,Ufx))- or call that produces it
   * iactive(Iact=true)
@@ -101,7 +98,7 @@ std_maps_ense( Args ) :-
      ensure_loaded(hgnc:bio_db_build_downloads('hgnc/maps/hgnc_homs_symb_hgnc')),
 	debuc( Self, 'Starting...', true ),
      build_dnload_loc( Self, DnDir, Opts ),
-     SrcRnms = [ense_homs_base-url_base,ense_homs_file-url_file,debug_url-debug],
+     SrcRnms = [ense_homs_file-url_file,debug_url-debug],
      bio_db_source_url( Url, SrcRnms, Opts ),
      options( debug_fetch(Fbg), Opts ),
 	url_file_local_date_mirror( Url, DnDir, [debug(Fbg),dnld_file(File),interface(wget)|Opts] ),
@@ -133,34 +130,26 @@ std_maps_ense( Args ) :-
      debuc( Self, length, [tr_to_names_map,tr_locations]/[EnsTGRows,EnsTLRows] ),
 	mtx( 'ense_homs_enst_ensg.csv', EnsTGRows ),
 	mtx( 'ense_homs_enst_chrl.csv', EnsTLRows ),
-
 	ense_genes( Rows, EnsGHRows, EnsGSRows, EnsGCRows, Disagreed, NotInHgnc ),
      debuc( Self, length, ense_to_hgnc_symbol_disagreements/Disagreed ),
      debuc( Self, length, ense_has_no_hgnc/NotInHgnc ),
 	mtx( 'ense_homs_ensg_hgnc.csv', EnsGHRows ),
 	mtx( 'ense_homs_ensg_symb.csv', EnsGSRows ),
 	mtx( 'ense_homs_ensg_chrl.csv', EnsGCRows ),
-
 	Csvs = [ 'ense_homs_enst_ensg.csv', 'ense_homs_enst_chrl.csv',
 		    'ense_homs_ensg_hgnc.csv', 'ense_homs_ensg_symb.csv',
               'ense_homs_ensg_chrl.csv'
 	       ],
 	debuc( Self, 'mapping: ~w', [Csvs] ),
 	maplist( csv_to_pl(Self), Csvs ),
-
 	/*
-
 	RowG = row(ChrG,_Db,gene,SrtG,EndG,_,DirG,_,
 	findall( row(EnsG,ChrG,SrtG,EndG,DirG),  (
 										member(RowG,Rows),
-
-
 	*/
 	maplist( new_ext(pl), Csvs, Pls ),
 	% fixme: do the headers :( 
 	AddOpts = [source(Url),datetime(DnDt)],
-	% maplist( bio_db_add_infos_to( [header(row('GO Term','HGNC Symbol'))|AddOpts], 'maps/map_gont_gont_symb.pl' ),
-	% maplist( bio_db_add_infos_to(AddOpts), Pls ),
 	Headers = [	
 		row('Ensembl Transcript','Ensembl Gene'),
 		row('Ensembl Transcript','Chromosome', 'Start', 'End', 'Direction'),

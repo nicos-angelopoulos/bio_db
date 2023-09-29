@@ -8,8 +8,9 @@ Url is the base Url of the database identified by Db.
 */
 % bio_db_source_base_url(     cgnc, 'http://birdgenenames.org/cgnc/downloads.jsp?file=standard').
 bio_db_source_base_url(     cgnc, 'http://birdgenenames.org/cgnc/downloads.jsp?file=').
-bio_db_source_base_url(ense_homs, 'ftp://ftp.ensembl.org/pub/current_gtf/homo_sapiens/').
-bio_db_source_base_url(ense_musm, 'ftp://ftp.ensembl.org/pub/current_gtf/mus_musculus/').
+bio_db_source_base_url(ense, 'ftp://ftp.ensembl.org/pub/current_gtf/').
+% bio_db_source_base_url(ense_homs, 'ftp://ftp.ensembl.org/pub/current_gtf/homo_sapiens/').
+% bio_db_source_base_url(ense_musm, 'ftp://ftp.ensembl.org/pub/current_gtf/mus_musculus/').
 bio_db_source_base_url( gont_goa, 'https://geneontology.org/gene-associations/').
 bio_db_source_base_url( gont_obo, 'https://purl.obolibrary.org/obo/').
 bio_db_source_base_url(     hgnc, 'https://ftp.ebi.ac.uk/pub/databases/genenames/new/tsv/').

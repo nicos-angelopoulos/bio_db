@@ -189,8 +189,8 @@ mgi_ncbi_idx_header(_, 9,  ncbi).
 
 mgim_dnload_report( Which, Self, Url, DnDir, BaseF, Mtx, DntStamp, Opts ) :-
     mgim_report_stem( Which, Stem ),
-    os_ext( rpt, Stem, Uname ),
-    bio_db_source_url( Url, [debug_url-debug], [url_file(Uname)|Opts] ),
+    os_ext( rpt, Stem, BaseF ),
+    bio_db_source_url( Url, [debug_url-debug], [url_file(BaseF)|Opts] ),
     build_dnload_loc( Self, DnDir, Opts ),
     UrlOpts = [interface(wget),file(BaseF),dnt_stamp(DntStamp)|Opts],
     url_file_local_date_mirror( Url, DnDir, UrlOpts ),

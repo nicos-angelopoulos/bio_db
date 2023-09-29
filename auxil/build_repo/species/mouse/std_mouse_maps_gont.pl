@@ -23,13 +23,38 @@
 :- lib(bio_db_add_infos/1). % bio_db_add_infos_to/2.
 
 % gont_mouse_url('http://geneontology.org/gene-associations/gene_association.mgi.gz').
-gont_mouse_url('http://geneontology.org/gene-associations/mgi.gaf.gz').
+% gont_mouse_url('http://geneontology.org/gene-associations/mgi.gaf.gz').
 
-std_mouse_maps_gont_defaults([]).
+std_mouse_maps_gont_defaults( Defs ) :-
+                                   Defs = [ db(gont),
+                                            debug(true),
+                                            debug_fetch(true),
+                                            debug_url(false),
+                                            goa_base(gont_goa),
+                                            goa_file('mgi.gaf.gz'),
+                                            iactive(true),
+                                            org(mouse)
+                                   ].
 
 /**  std_mouse_maps_gont.
 
 Build maps from gene ontology data.
+
+Opts
+  * db(Db=gont)
+    source database
+  * debug(Dbg=true)
+    informational, progress messages
+  * debug_fetch(Fbg=true)
+    whether to debug the fetching of the url (via url_file_local_date_mirror/3)
+  * debug_url(Ubg=false)
+    whether to debug the concatenation of the url (via bio_db_source_url/3)
+  * goa_base(GoaB=gont_goa)
+    bio_db_source_base_url/2, token or url to download from
+  * goa_file(GoaF='mgi.gaf.gz')
+    the file name for the download (appended to Ufx@bio_db_source_base_url(gont_goa,Ufx))
+  * iactive(Iact=true)
+    whether the session is interactive, otherwise wget gets --no-verbose
 
 ==
 ?- std_mouse_maps_gont([]).
@@ -58,24 +83,24 @@ Tue 27 Dec 16:17:19 GMT 2022
 
 @author nicos angelopoulos
 @version  0.1 2018/11/12
+@version  0.2 2023/9/29,  options and move Url naming and fetching to helpers
 
 */
 std_mouse_maps_gont( Args ) :-
-    Self = std_mouse_maps_gont,
-    options_append( Self, Args, Opts ),
-    bio_db_build_aliases( Opts ),
-    gont_mouse_url( Url ),
-    absolute_file_name( bio_db_build_downloads(gont), Loc ),
-	os_make_path( Loc ),  % fixme: ensure it complains not...
-	debuc( Self, 'build directory: ~p', Loc ),
-	working_directory( Old, Loc ),
-	UrlOpts = [debug(true),interface(wget),dnld_file(GzGontF)|Opts],
-    url_file_local_date_mirror( Url, Loc, UrlOpts ),
-    @ gunzip( -k, GzGontF ),
-    os_ext( gz, GontF, GzGontF ),
-    mtx( GontF, GAs, [skip_heading('!'),sep(tab)] ),
-    debuc( Self, dims, gas/GAs ),
-    findall( gont_musm_mgim_gont(Mgim,Rel,Evid,Gont),
+     Self = std_mouse_maps_gont,
+     options_append( Self, Args, Opts ),
+     bio_db_build_aliases( Opts ),
+     build_dnload_loc( Self, DnDir, Opts ),
+	working_directory( Old, DnDir ),
+     UrlOpts = [debug(true),interface(wget),dnld_file(GzGontF)|Opts],
+     SrcRnms = [debug_url-debug,goa_base-url_base,goa_file-url_file], 
+     bio_db_source_url( Url, SrcRnms, Opts ),
+     url_file_local_date_mirror( Url, DnDir, UrlOpts ),
+     @ gunzip( -k, -f, GzGontF ),
+     os_ext( gz, GontF, GzGontF ),
+     mtx( GontF, GAs, [skip_heading('!'),sep(tab)] ),
+     debuc( Self, dims, gas/GAs ),
+     findall( gont_musm_mgim_gont(Mgim,Rel,Evid,Gont),
                     ( member(Row,GAs),
                       arg(2,Row,MgimPrv), at_con([_,MgimAtm],':',MgimPrv), atom_number(MgimAtm,Mgim),
                       arg(4,Row,Rel),

@@ -108,7 +108,7 @@ std_graphs_strg( Args ) :-
      options( debug_fetch(Fbg), Opts ),
      url_file_local_date_mirror( SrcUrl, DnlD, [debug(Fbg),dnld_file(Bname),iface(wget)|Opts] ),
      working_directory( Here, DnlD ),
-     @ gunzip( -k, Bname ),  % keeps .gz file
+     @ gunzip( -k, -f, Bname ),  % keeps .gz file
      EnspPn = strg_homs_edge_ensp,
      Opt = [ csv_read(separator(0' )), predicate_name(EnspPn),
              rows_transform(maplist(user:de_hs)), header_remove(true),

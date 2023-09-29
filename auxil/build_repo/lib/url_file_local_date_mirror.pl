@@ -164,7 +164,7 @@ url_file_local_date_mirror_local_file_name( LocB, Opts, RemB, Self, Ext, DatB, O
     debuc( Self, 'Creating dated local basename.', [] ),
     url_file_date_stamp( Date, Opts ),
     memberchk( date(DatePos), Opts ),
-    LocB = RemB,
+    LocB = DatB,
     url_file_local_date_mirror_local_file_name_date( DatePos, RemB, Date, Ext, DatB ).
 url_file_local_date_mirror_local_file_name( LocB, _Opts, _RemB, Self, Ext, DatB, Opts ) :-
     atom( LocB ),

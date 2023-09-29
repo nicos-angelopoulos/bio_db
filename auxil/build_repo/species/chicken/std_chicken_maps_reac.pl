@@ -2,13 +2,35 @@
 :- ensure_loaded('../human/std_maps_reac').
 
 std_chicken_maps_reac_defaults( Defs ) :-
-     Defs = [
+     Defs = [  db(reac),
+               debug(true),
+               debug_fetch(true),
+               debug_url(false),
+               iactive(true),
+               org(chicken),
+               reac_file('NCBI2Reactome_PE_All_Levels.txt')
                org(chicken)
      ].
 
 /** std_chicken_maps_reac( Args ).
 
-Spercialisation of reactome maps for chicken.
+Specialisation of reactome maps for chicken.
+
+Opts
+  * db(Db=reac)
+    database token, also rel dir name
+  * debug(Dbg=true)
+    progress, informational message
+  * debug_fetch(Fbg=true)
+    whether to debug the fetching of the url (via url_file_local_date_mirror/3)
+  * debug_url(Ubg=false)
+    whether to debug the concatenation of the url (via bio_db_source_url/3)
+  * iactive(Iact=true)
+    whether the session is interactive, otherwise wget gets --no-verbose
+  * org(Org=chicken)
+    as recognised by db_organism. note here human maps are given hs token
+  * reac_file(ReacF='NCBI2Reactome_PE_All_Levels.txt')
+    the url base for the Reactome Url
 
 ==
 ορέστης;build_repo/chicken% date; !!; date 

@@ -17,10 +17,11 @@
 
 % local
 :- lib(csv_to_pl/2).
-:- lib(bio_db_dnt_times/3).
-:- lib(url_file_local_date_mirror/3).
-:- lib(bio_db_add_infos/1).   % bio_db_add_infos_to/2
 :- lib(link_to_bio_sub/3).
+:- lib(bio_db_dnt_times/3).
+:- lib(build_dnload_loc/3).
+:- lib(bio_db_add_infos/1).                  % bio_db_add_infos_to/2
+:- lib(url_file_local_date_mirror/3).
 % fixme: this needs to be modernised, check the code in ../human and ../mouse
 
 std_chicken_maps_ense_defaults( [ db(ense),
@@ -88,8 +89,7 @@ std_chicken_maps_ense( Tkn, EnsDir, Args ) :-
     Self = std_chicken_maps_ense,
     options_append( Self, Args, Opts ),
     bio_db_build_aliases( Opts ),
-    absolute_file_name( bio_db_build_downloads(ense), DnDir ),
-    os_make_path( DnDir ),
+    build_dnload_loc( Self, DnDir, Opts ),
     debuc( Self, 'Downloads dir for ense: ~p', DnDir ),
     % FtpDir = 'ftp://ftp.ensembl.org/pub/current_gtf/gallus_gallus/',
     at_con( ['ftp://ftp.ensembl.org/pub/current_gtf/',EnsDir,'/'], '', FtpDir ),

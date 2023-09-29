@@ -102,7 +102,7 @@ std_maps_ense( Args ) :-
      bio_db_source_url( Url, SrcRnms, Opts ),
      debuc( Self, 'Source Url: ~w', [Url] ),
      options( debug_fetch(Fbg), Opts ),
-	url_file_local_date_mirror( Url, DnDir, [debug(Fbg),dnld_file(File),interface(wget)|Opts] ),
+	url_file_local_date_mirror( Url, DnDir, [debug(Fbg),dnld_file(File)|Opts] ),
 	debuc( Self, 'Dnload done, file is: ~p', File ),
 	working_directory( Old, DnDir ),
 	bio_db_dnt_times( File, DnDt, _DnEn ),

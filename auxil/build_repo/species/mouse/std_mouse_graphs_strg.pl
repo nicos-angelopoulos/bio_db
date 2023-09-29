@@ -115,10 +115,10 @@ std_mouse_graphs_strg( Args ) :-
     % os_make_path( DnlD, debug(true) ),
     build_dnload_loc( Self, DnlD, Opts ),
     debuc( Self, 'Downloading from: ~p', SrcUrl ),
-    url_file_local_date_mirror( SrcUrl, DnlD, [file(Bname),iface(wget)|Opts] ),
+    url_file_local_date_mirror( SrcUrl, DnlD, [dnld_file(Bname),iface(wget)|Opts] ),
     debuc( Self, 'Basename to work on: ~p', [Bname] ),
     working_directory( Here, DnlD ),
-    @ gunzip( -k, Bname ),  % keeps .gz file
+    @ gunzip( -k, -f, Bname ),  % keeps .gz file
     % @ gunzip( '9606.protein.links.v10.txt.gz' ),
     % Edge = edge_strg_mouse,
     EnspPn = strg_musm_edge_ensp,

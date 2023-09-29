@@ -113,7 +113,7 @@ std_mouse_maps_ense( Args ) :-
         throw( non_unique_auto_ided_ense_gtf_file(MsGtfs) )
     ),
     atom_concat( FtpDir, MsGtfF, Url ),
-	url_file_local_date_mirror( Url, DnDir, [file(File),interface(wget)] ),
+	url_file_local_date_mirror( Url, DnDir, [dnld_file(File)|Opts] ),
 	debuc( Self, 'Dnload done, file is: ~p', File ),
 	working_directory( Old, DnDir ),
 	bio_db_dnt_times( File, DnDt, _DnEn ),

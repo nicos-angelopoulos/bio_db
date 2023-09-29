@@ -69,7 +69,7 @@ std_mouse_maps_gont( Args ) :-
 	os_make_path( Loc ),  % fixme: ensure it complains not...
 	debuc( Self, 'build directory: ~p', Loc ),
 	working_directory( Old, Loc ),
-	UrlOpts = [debug(true),interface(wget),file(GzGontF)],
+	UrlOpts = [debug(true),interface(wget),dnld_file(GzGontF)|Opts],
     url_file_local_date_mirror( Url, Loc, UrlOpts ),
     @ gunzip( -k, GzGontF ),
     os_ext( gz, GontF, GzGontF ),

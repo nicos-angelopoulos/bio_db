@@ -140,9 +140,7 @@ std_chicken_graphs_strg( Args ) :-
     % mtx( InfoBname, MapRows ),
     debuc( Self, 'wrote, and consulting: ~p', [MapPlF] ),
     Map:consult(MapPlF),
-
-     strg_chicken_symbolise_edges( Self, EnspPn, EnspRel, Map, UnoSymbEdges ),
-
+    strg_chicken_symbolise_edges( Self, EnspPn, EnspRel, Map, UnoSymbEdges ),
     sort( UnoSymbEdges, SymbEdges ),
     length( SymbEdges, SymbEdgesLen ),
     debuc( Self, 'unique symbol edges (gallus): ~w', [SymbEdgesLen] ),
@@ -153,7 +151,6 @@ std_chicken_graphs_strg( Args ) :-
                      ],
     portray_informed_clauses( SymbEdges, EdgeSymbsInfos, EdgeSymbsF, [] ),
     debuc( Self, 'Portrayed onto: ~p', [EdgeSymbsF] ),
-
     BaseOpts = [ source(From), datetime(DnDt),
                   header(row('Ensembl_Protein','Ensembl_Protein',weight))
                 ],
@@ -164,18 +161,6 @@ std_chicken_graphs_strg( Args ) :-
     link_to_bio_sub( strg, MapPlF, [org(gallus),type(maps)] ),
     delete_file( InfoTxtF ),
     working_directory( _, Here ).
-
-/* this is the old implementation:
-strg_chicken_symbolise_edges( Self, EnspPn, EnspRel, Map, UnoSymbEdges ) :-
-    findall( strg_galg_edge_symb(SymbA,SymbB,W),
-                         ( EnspPn:strg_galg_edge_ensp(EnsP1,EnsP2,W),
-                           Map:strg_galg_ensp_symb(EnsP1,Symb1),
-                           Map:strg_galg_ensp_symb(EnsP2,Symb2),
-                           sort_four(Symb1,Symb2,SymbA,SymbB)
-                     ),
-            UnoSymbEdges
-          ).
-*/
 
 /* new implementation
 */

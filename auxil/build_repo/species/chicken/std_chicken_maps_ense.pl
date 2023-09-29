@@ -98,8 +98,8 @@ std_chicken_maps_ense( Tkn, _EnsDir, Args ) :-
 
     SrcRnms = [ense_galg_file-url_file,debug_url-debug],
     bio_db_source_url( Url, SrcRnms, [org(Tkn)|Opts] ),
-    std_gallus_ense_gtf_file( Tkn, Found, MsGtfF ),
-    atom_concat( FtpDir, MsGtfF, Url ),
+    % std_gallus_ense_gtf_file( Tkn, Found, MsGtfF ),
+    % atom_concat( FtpDir, MsGtfF, Url ),
     url_file_local_date_mirror( Url, DnDir, [dnld_file(File),interface(wget)|Opts] ),
     debuc( Self, 'Dnload done, file is: ~p', File ),
     working_directory( Old, DnDir ),

@@ -31,7 +31,7 @@
 true(_,_).
 
 std_chicken_maps_cgnc_defaults( Defs ) :-
-    Defs = [        cgnc_file(''),
+    Defs = [        cgnc_file('cgnc_complete_set.txt'),
                     db(cgnc),
                     debug(true),
                     debug_fetch(true),
@@ -54,7 +54,7 @@ In the interest of completeness we create a map for each column based on CGNC ID
 
 Tokens
   * cgnc('CGNC id')
-    chicken gene nomenclature consortium
+    chicken gene nomenclature consortium id
   * ncbi('Entrez')
     Ncbi/Entrez gene ids 
   * ensg('Gene id')
@@ -71,6 +71,8 @@ Tokens
     should be a date data type
 
 Opts
+  * cgnc_file(CgncF='cgnc_complete_set.txt')
+    file for the CGNC download
   * db(Db=cgnc)
     source database
   * debug(Dbg=true)
@@ -107,8 +109,8 @@ std_chicken_maps_cgnc( Args ) :-
     Self = std_chicken_maps_cgnc,
     options_append( Self, Args, Opts ),
     bio_db_build_aliases( Opts ),
-    build_dnload_loc( Self, DnDir, Opts ),
     options( download(Dnload), Opts ),
+    build_dnload_loc( Self, DnDir, Opts ),
     CsvF = 'cgnc_complete_set.txt',
     bio_db_source_url( SrcUrl, [cgnc_file-url_file,debug_url-debug], Opts ),
     cgnc_download_file( Dnload, DnDir, Self, SrcUrl, [file(CsvF)|Opts] ),

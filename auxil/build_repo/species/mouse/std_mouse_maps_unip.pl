@@ -106,7 +106,7 @@ std_mouse_maps_unip( Args ) :-
      % unip_mouse( Url ),
      bio_db_source_url( Url, [debug_url-debug,unip_file_full-url_file], Opts ),
      % url_file( Url, 
-     UrlOpts = [debug(true),interface(wget),file(File)],
+     UrlOpts = [debug(true),interface(wget),dnld_file(File)],
      options( debug_fetch(Fbg), Opts ),
      url_file_local_date_mirror( Url, DnDir, [debug(Fbg)|UrlOpts] ),
      os_make_path( maps, debug(true) ),
@@ -143,7 +143,7 @@ std_mouse_maps_unip( Args ) :-
      working_directory( _, DnDir ),
      bio_db_source_url( TremUrl, [debug_url-debug,unip_file_sele-url_file], Opts ),
      % 15.05.14 adding support for treMBL, at least that 's what i think the selected file is all about
-     TrUrlOpts = [debug(true),interface(wget),file(TrFile)],
+     TrUrlOpts = [debug(true),interface(wget),dnld_file(TrFile)],
      url_file_local_date_mirror( TremUrl, DnDir, TrUrlOpts ),
      bio_db_dnt_times( TrFile, TrDnDt, _TrDnEn ),
      os_make_path( maps, afresh(false) ),

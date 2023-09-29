@@ -62,8 +62,6 @@ Opts
    whether to debug the concatenation of the url (via bio_db_source_url/3)
  * dir(Dir=maps)
    sub-directory for creating the maps
- * hgnc_base(hgnc)
-   Url prefix for HGNC downlaods, token of bio_db_source_base_url/3 or Url prefix
  * hgnc_file('hgnc_complete_set.txt')
    file for HGNC downloads
  * iactive(Iact=true)

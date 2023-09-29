@@ -99,7 +99,6 @@ Opts
 
 @author nicos angelopoulos
 @version  0.1 2022/12/17,  from hgnc
-@tbd convert to url_..._mirror.pl
 @see http://birdgenenames.org/cgnc/downloads.jsp?file=standard
 */
 std_chicken_maps_cgnc :-
@@ -111,18 +110,19 @@ std_chicken_maps_cgnc( Args ) :-
     bio_db_build_aliases( Opts ),
     options( download(Dnload), Opts ),
     build_dnload_loc( Self, DnDir, Opts ),
-    CsvF = 'cgnc_complete_set.txt',
     bio_db_source_url( SrcUrl, [cgnc_file-url_file,debug_url-debug], Opts ),
-    cgnc_download_file( Dnload, DnDir, Self, SrcUrl, [file(CsvF)|Opts] ),
+    options( debug_fetch(Fbg), Opts ),
+    url_file_local_date_mirror( Url, DnDir, [file(DnlF),date(prefix),debug(Fbg),interface(wget)|Opts] ),
+    % cgnc_download_file( Dnload, DnDir, Self, SrcUrl, [file(DnlF)|Opts] ),
     working_directory( Old, DnDir ),
-    os_ext( dnt, CsvF, DntF ),
+    os_ext( dnt, DnlF, DntF ),
     bio_db_dnt_times( DntF, DnDt, _DnEnd ),
     options( sub(SubDir), Opts ),
     make_directory_path( SubDir ),
     % 23.06.05, the cgnc file introduced a /9 (instead of /8 line in late May).
     % std_chicken_cgnc_mtx( CsvF, Mtx ),
     % 23.09.25, this seems fixed now
-    mtx( CsvF, Mtx, sep(tab) ),
+    mtx( DnlF, Mtx, sep(tab) ),
     debuc( Self, dims, mtx/Mtx ),
     StdO= [dir(SubDir),cnm_transform(cgnc_cname)|Opts],
     Cgnc = 'CGNC id',
@@ -134,13 +134,13 @@ std_chicken_maps_cgnc( Args ) :-
     Curs = 'curation status',
     Edat = 'last edit date',
 
-    cgnc_std_map( Cgnc, Symb, CsvF, Mtx, Self, StdO, SrcUrl/DnDt, SymbF ),    % cgnc_symb
-    cgnc_std_map( Cgnc, Ncbi, CsvF, Mtx, Self, StdO, SrcUrl/DnDt, NcbiF ),    % cgnc_ncbi
-    cgnc_std_map( Cgnc, Ensg, CsvF, Mtx, Self, StdO, SrcUrl/DnDt, EnsgF ),    % cgnc_ensg
-    cgnc_std_map( Cgnc, Name, CsvF, Mtx, Self, StdO, SrcUrl/DnDt, NameF ),    % cgnc_name
-    cgnc_std_map( Cgnc, Syno, CsvF, Mtx, Self, StdO, SrcUrl/DnDt, SynoF ),    % cgnc_syno
-    cgnc_std_map( Cgnc, Curs, CsvF, Mtx, Self, StdO, SrcUrl/DnDt, CursF ),    % cgnc_curs
-    cgnc_std_map( Cgnc, Edat, CsvF, Mtx, Self, StdO, SrcUrl/DnDt, EdatF ),    % cgnc_edat
+    cgnc_std_map( Cgnc, Symb, DnlF, Mtx, Self, StdO, SrcUrl/DnDt, SymbF ),    % cgnc_symb
+    cgnc_std_map( Cgnc, Ncbi, DnlF, Mtx, Self, StdO, SrcUrl/DnDt, NcbiF ),    % cgnc_ncbi
+    cgnc_std_map( Cgnc, Ensg, DnlF, Mtx, Self, StdO, SrcUrl/DnDt, EnsgF ),    % cgnc_ensg
+    cgnc_std_map( Cgnc, Name, DnlF, Mtx, Self, StdO, SrcUrl/DnDt, NameF ),    % cgnc_name
+    cgnc_std_map( Cgnc, Syno, DnlF, Mtx, Self, StdO, SrcUrl/DnDt, SynoF ),    % cgnc_syno
+    cgnc_std_map( Cgnc, Curs, DnlF, Mtx, Self, StdO, SrcUrl/DnDt, CursF ),    % cgnc_curs
+    cgnc_std_map( Cgnc, Edat, DnlF, Mtx, Self, StdO, SrcUrl/DnDt, EdatF ),    % cgnc_edat
     debuc( Self, 'doing links...', [] ),
     Files = [SymbF,NcbiF,EnsgF,NameF,SynoF,CursF,EdatF],
     % maplist( link_to_bio_sub(RelDir), Files ),
@@ -150,12 +150,12 @@ std_chicken_maps_cgnc( Args ) :-
     % delete_file( TxtF ),
     working_directory( _, Old ).
 
-cgnc_std_map( Cid1, Cid2, CsvF, Csv, Self, StdO, SrcUrl/DnDt, OutF ) :-
+cgnc_std_map( Cid1, Cid2, DnlF, Csv, Self, StdO, SrcUrl/DnDt, OutF ) :-
     cgnc_std_column_to_value_call( Cid1, Call1 ),
     cgnc_std_column_to_value_call( Cid2, Call2 ),
     Opts = [to_value_1(Call1),to_value_2(Call2)|StdO],
     % debuc( std_maps_hgnc, 'doing file for columns: ~w, ~w', [Cid1, Cid2] ),
-    csv_ids_map( CsvF, Cid1, Cid2, Csv, OutF, [source(SrcUrl),datetime(DnDt)|Opts] ),
+    csv_ids_map( DnlF, Cid1, Cid2, Csv, OutF, [source(SrcUrl),datetime(DnDt)|Opts] ),
     debuc( Self, 'deposited on: ~w (columns: ~w, ~w)', [OutF,Cid1,Cid2] ).
 
 cgnc_std_column_to_value_call( 'CGNC id', pos_integer ). % check they are unique and present (key) % de_semi('CGNC') ).

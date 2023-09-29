@@ -100,6 +100,7 @@ std_maps_ense( Args ) :-
      build_dnload_loc( Self, DnDir, Opts ),
      SrcRnms = [ense_homs_file-url_file,debug_url-debug],
      bio_db_source_url( Url, SrcRnms, Opts ),
+     debuc( Self, 'Source Url: ~w', [Url] ),
      options( debug_fetch(Fbg), Opts ),
 	url_file_local_date_mirror( Url, DnDir, [debug(Fbg),dnld_file(File),interface(wget)|Opts] ),
 	debuc( Self, 'Dnload done, file is: ~p', File ),

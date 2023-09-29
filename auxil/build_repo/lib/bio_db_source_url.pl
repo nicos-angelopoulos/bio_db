@@ -105,9 +105,10 @@ ense_url_file( Url, Org, SrcF, Opts ) :-
      downcase_atom( Eir, Lir ),
      atomic_list_concat( [Url,Lir,'/'], Orl ),  % organism specific sub-directory
      Found @@ curl( -l, '--no-progress-meter', Orl ),
-     findall( HsGtf-Amb-Rel, (member(HsGtf,Found),at_con([Eir,GRChTkn,RelAtm,gtf,gz],'.',HsGtf),
+     findall( HsGtfRel-Amb-Rel, (member(HsGtf,Found),at_con([Eir,GRChTkn,RelAtm,gtf,gz],'.',HsGtf),
                          atom_concat('GRCh',AmbAtm,GRChTkn),
-                         atom_number(AmbAtm,Amb), atom_number(RelAtm,Rel)
+                         atom_number(AmbAtm,Amb), atom_number(RelAtm,Rel),
+                         atomic_list_concat( [Lir,HsGtf], '/', HsGtfRel )
                         ),
                             HsGtfs ),
      ( HsGtfs = [SrcF-_Amb-_Rel] ->

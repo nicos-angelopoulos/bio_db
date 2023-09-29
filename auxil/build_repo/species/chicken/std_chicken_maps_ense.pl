@@ -98,9 +98,6 @@ std_chicken_maps_ense( Tkn, _EnsDir, Args ) :-
 
     SrcRnms = [ense_galg_file-url_file,debug_url-debug],
     bio_db_source_url( Url, SrcRnms, [org(Tkn)|Opts] ),
-    Found @@ curl( -l, '--no-progress-meter', FtpDir ),
-    % Gallus_gallus.bGalGal1.mat.broiler.GRCg7b.108.gtf.gz
-    % Mus_musculus.GRCm39.108.gtf.gz
     std_gallus_ense_gtf_file( Tkn, Found, MsGtfF ),
     atom_concat( FtpDir, MsGtfF, Url ),
     url_file_local_date_mirror( Url, DnDir, [dnld_file(File),interface(wget)|Opts] ),

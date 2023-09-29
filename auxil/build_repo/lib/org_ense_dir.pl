@@ -26,8 +26,11 @@ org_ense_dir( Org, Dir, Stem, Opts ) :-
      (  (bio_db_organism(Org,Canon),org_ense_dir_known(Canon,Eir)) -> 
                         true
                         ; 
-                        ( org_ense_dir_known(Org,Eir)
-                        throw(org_ense_miss(Org,Eir), [bio_db:org_ense_dir/3|Opts]) 
+                        ( org_ense_dir_known(Org,Dir,Stem) ->
+                              true
+                              ; 
+                              throw(org_ense_miss(Org,Eir), [bio_db:org_ense_dir/3|Opts]) 
+                        )
      ).
      
 % gaallus_gallus/Gallus_gallus.bGalGal1.mat.broiler.GRCg7b.110.abinitio.gtf.gz

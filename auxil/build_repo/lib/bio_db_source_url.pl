@@ -9,7 +9,7 @@
 :- ensure_loaded('bio_db_build_aliases' ).  % /1, also sets the lib dir
 
 % local libs & sources
-:- lib(org_ense_dir/3).         
+:- lib(org_ense_dir/4).         
 :- lib(bio_db_build_messages/0).             % loads the error messages pretty printing
 :- lib(bio_db_source_base_url/2).
 

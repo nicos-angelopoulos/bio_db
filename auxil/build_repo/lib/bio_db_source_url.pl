@@ -107,7 +107,7 @@ ense_url_file( Url, Org, SrcF, Opts ) :-
      findall( HsGtfRel-Amb-Rel, (member(HsGtf,Found),at_con([Stem,GRChTkn,RelAtm,gtf,gz],'.',HsGtf),
                          atom_concat('GRCh',AmbAtm,GRChTkn),
                          atom_number(AmbAtm,Amb), atom_number(RelAtm,Rel),
-                         atomic_list_concat( [Lir,HsGtf], '/', HsGtfRel )
+                         atomic_list_concat( [Eir,HsGtf], '/', HsGtfRel )
                         ),
                             HsGtfs ),
      ( HsGtfs = [SrcF-_Amb-_Rel] ->

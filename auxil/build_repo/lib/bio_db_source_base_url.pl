@@ -6,7 +6,8 @@ Url is the base Url of the database identified by Db.
 @version  0:1 2023/09/21
 
 */
-bio_db_source_base_url(     cgnc, 'http://birdgenenames.org/cgnc/downloads.jsp?file=standard').
+% bio_db_source_base_url(     cgnc, 'http://birdgenenames.org/cgnc/downloads.jsp?file=standard').
+bio_db_source_base_url(     cgnc, 'http://birdgenenames.org/cgnc/downloads.jsp?file=').
 bio_db_source_base_url(ense_homs, 'ftp://ftp.ensembl.org/pub/current_gtf/homo_sapiens/').
 bio_db_source_base_url(ense_musm, 'ftp://ftp.ensembl.org/pub/current_gtf/mus_musculus/').
 bio_db_source_base_url( gont_goa, 'https://geneontology.org/gene-associations/').

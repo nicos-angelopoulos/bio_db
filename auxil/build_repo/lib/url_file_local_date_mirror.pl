@@ -16,7 +16,7 @@ url_file_local_date_mirror_defaults( Args, Defs ) :-
                                   (memberchk(iactive(false),Args) -> Verb=false; Verb=true),
                                   Defs = [  date(postfix), 
                                             debug(false),
-                                            file(_), 
+                                            dnld_file(_), 
                                             iactive(true),
                                             interface(prolog),
                                             link_stem(true),
@@ -47,7 +47,7 @@ url_file_local_date_mirror_defaults( Args, Defs ) :-
 %    insist Ext is the extension of the file. that allows you to strip tar.gz as an extension, but make sure
 %    your extension is the correct one, else the whole thing will fail
 %
-%  * file(LocF)    
+%  * dnld_file(LocF)    
 %    if free variable, returns the local file name (basename only). if ground it is taken as the local output file.
 %  
 %  * iactive(Iact=true)
@@ -101,44 +101,50 @@ url_file_local_date_mirror( Url, LocalD, Args ) :-
     Self = url_file_local_date_mirror,
     options:options_append( Self, Args, Opts ),
     os_make_path( LocalD, Opts ),
-    memberchk( file(LocB), Opts ),
+    memberchk( dnld_file(LocB), Opts ),
     file_base_name( Url, RemB ),
     options( ext(Ext), Opts ),
-    url_file_local_date_mirror_local_file_name( LocB, Opts, RemB, Self, Ext ),
+    url_file_local_date_mirror_local_file_name( LocB, Opts, RemB, Self, Ext, DatB, Opts ),
+    % LocB is ground and is the "target",  DatB is the dated target where the output will be actually placed
     expand_file_name( LocalD, [LocD|_] ),
     debuc( Self, 'Using local directory: ~p', [LocD] ), % pacify debug/3
-    directory_file_path( LocD, LocB, LocP ),
-    os_ext( dnt, LocP, LocDt ),
+    directory_file_path( LocD, DatB, DatP ),
+    % os_ext( dnt, LocP, LocDt ),
     options( replace_todays(Repl), Opts ),
     options( interface(Iface), Opts ),
     options( verb(Verb), Opts ),
-    url_file_replace( Repl, Url, LocD, LocP, LocDt, Iface, Verb, RemB, Self, DntStamp ),
+    % url_file_replace( Repl, Url, LocD, LocP, LocDt, Iface, Verb, RemB, Self, DntStamp ),
+    os_ext( dnt, DatP, DatDt ),
+    url_file_replace( Repl, Url, LocD, LocB, DatP, DatDt, Iface, Verb, Self, DntStamp ),
     ( memberchk(dnt_stamp(DntStamp),Opts) -> true; true ).
 
-url_file_replace( false, Url, _LocD, LocP, LocDt, _Iface, _Verb, _RemB, _Self, DtStamp ) :-
-    exists_file( LocP ),
+url_file_replace( false, Url, _LocD, _LocB, DatP, DatDt, _Iface, _Verb, _Self, DtStamp ) :-
+    exists_file( DatP ),
     !,
-    open( LocDt, read, DtStream ),
+    open( DatDt, read, DtStream ),
     read( DtStream, DtStamp ),
     close( DtStream ),
     % fixme: non debug
-    debuc( _, 'File with today\'s date exists: ~p, so skipping download of:~p.', [LocP,Url] ).
-url_file_replace( _, Url, LocD, LocP, LocDt, Iface, Verb, RemB, Self, BefStamp ) :-
+    debuc( _, 'File with today\'s date exists: ~p, so skipping download of:~p.', [DatP,Url] ).
+url_file_replace( _, Url, LocD, LocB, DatP, DatDt, Iface, Verb, Self, BefStamp ) :-
     debug_chain( Self, url_file, UfPrior ),
     get_datetime( BefStamp ),
-    url_interface_file( Iface, Url, Verb, LocP ),
+    url_interface_file( Iface, Url, Verb, DatP ),
     get_datetime( AftStamp ),
     debug_set( UfPrior, url_file ),
-    debuc( Self, 'Downloaded url: ~p, to local: ~p', [Url,LocP] ),
-    open( LocDt, write, DtOut ),
+    debuc( Self, 'Downloaded url: ~p, to local: ~p', [Url,DatP] ),
+    open( DatDt, write, DtOut ),
     portray_clause( DtOut, BefStamp ),
     portray_clause( DtOut, AftStamp ),
     close( DtOut ),
-    directory_file_path( LocD, RemB, LnkP ),
+    % directory_file_path( LocD, RemB, LnkP ),
     debug_chain( Self, os_repoint, RlPrior ),
-    os_ext( dnt, LnkP, LnkPDnt ),
-    os_repoint( LnkPDnt, LocDt ),
-    os_repoint( LnkP, LocP ),
+    % os_ext( dnt, LnkP, LnkPDnt ),
+    os_path( LocD, LocB, LocP ),
+
+    os_ext( dnt, LocP, LocPDt ),
+    os_repoint( LocPDt, DatDt ),
+    os_repoint( LocP, DatP ),
     % repoint_link( LnkP, LocP ),
     debug_set( RlPrior, os_repoint ).
 
@@ -153,16 +159,19 @@ url_interface_file_wget_verbosity( false, '--no-verbose' ).
 url_interface_file_wget_verbosity( no, '--no-verbose' ).
 url_interface_file_wget_verbosity( quiet, '--quiet' ).
 
-url_file_local_date_mirror_local_file_name( LocB, Opts, RemB, Self, Ext ) :-
+url_file_local_date_mirror_local_file_name( LocB, Opts, RemB, Self, Ext, DatB, Opts ) :-
     var( LocB ),
     !, 
     debuc( Self, 'Creating dated local basename.', [] ),
     url_file_date_stamp( Date, Opts ),
     memberchk( date(DatePos), Opts ),
-    url_file_local_date_mirror_local_file_name_date( DatePos, RemB, Date, Ext, LocB ).
-url_file_local_date_mirror_local_file_name( LocB, _Opts, _RemB, Self, _Ext ) :-
+    url_file_local_date_mirror_local_file_name_date( DatePos, RemB, Date, Ext, DatB ).
+url_file_local_date_mirror_local_file_name( LocB, _Opts, _RemB, Self, Ext, DatB, Opts ) :-
     atom( LocB ),
-    debuc( Self, 'Using given local basename: ~p', [LocB] ).
+    url_file_date_stamp( Date, Opts ),
+    memberchk( date(DatePos), Opts ),
+    debuc( Self, 'Dating given local basename: ~p', [LocB] ),
+    url_file_local_date_mirror_local_file_name_date( DatePos, LocB, Date, Ext, DatB ).
 
 url_file_local_date_mirror_local_file_name_date( prefix, RemB, Date, _Ext, LocB ) :-
     atomic_list_concat( [Date,RemB], '-', LocB ).

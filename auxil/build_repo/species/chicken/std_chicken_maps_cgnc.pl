@@ -23,15 +23,16 @@
 :- lib(link_to_bio_sub/2).
 :- lib(bio_db_dnt_times/3).
 :- lib(build_dnload_loc/3).
-:- lib(bio_db_add_infos/1).   % bio_db_add_infos_to/2
+:- lib(bio_db_add_infos/1).             % bio_db_add_infos_to/2
+:- lib(map_list_options/3).
 :- lib(bio_db_source_url/3).
 :- lib(url_file_local_date_mirror/3).
-:- lib(map_list_options/3).
 
 true(_,_).
 
 std_chicken_maps_cgnc_defaults( Defs ) :-
-    Defs = [        cgnc_file('cgnc_complete_set.txt'),
+    Defs = [        cgnc_file('standard'),
+                    dnld_file('cgnc_complete_set.txt'),
                     db(cgnc),
                     debug(true),
                     debug_fetch(true),
@@ -90,6 +91,10 @@ Opts
   * sub(Dir=maps)
     sub-directory for creating the maps
 
+The download of CGNC is non standard as the full url is 
+=|http://birdgenenames.org/cgnc/downloads.jsp?file=standard|=
+
+
 ==
 ?- std_chicken_maps_cgnc.
 ?- cd( '$HOME/.local/share/swi-prolog/pack/Downloads/bio_db-22.12.17/maps/cgnc' ).
@@ -111,8 +116,7 @@ std_chicken_maps_cgnc( Args ) :-
     options( download(Dnload), Opts ),
     build_dnload_loc( Self, DnDir, Opts ),
     bio_db_source_url( SrcUrl, [cgnc_file-url_file,debug_url-debug], Opts ),
-    options( debug_fetch(Fbg), Opts ),
-    cgnc_download_file( Dnload, DnDir, Self, SrcUrl, [file(DnlF)|Opts] ),
+    cgnc_download_file( Dnload, DnDir, Self, SrcUrl, DnlF, Opts ),
     working_directory( Old, DnDir ),
     os_ext( dnt, DnlF, DntF ),
     bio_db_dnt_times( DntF, DnDt, _DnEnd ),
@@ -231,17 +235,17 @@ std_chicken_cgnc_mtx_fix( [H|Rs], [R|M] ) :-
      ),
      std_chicken_cgnc_mtx_fix( Rs, M ).
 
-cgnc_download_file( true, DnDir, Self, Url, Opts ) :-
+cgnc_download_file( true, DnDir, Self, Url, DnlF, Opts ) :-
      % Url = 'http://birdgenenames.org/cgnc/downloads.jsp?file=standard',
      options( debug_fetch(Fbg), Opts ),
      url_file_local_date_mirror( Url, DnDir, [date(prefix),debug(Fbg),interface(wget)|Opts] ),
-     memberchk( file(File), Opts ),
-     os_path( DnDir, File, Dst ),
+     memberchk( dnld_file(DnlF), Opts ),
+     os_path( DnDir, DnlF, Dst ),
      cgnc_download_file_fix( Self, Dst ).
-cgnc_download_file( false, _DnDir, Self, Url, Opts ) :-
-     memberchk( file(File), Opts ),
-     options( cgnc_file(File), Opts ),
-     debuc( Self, 'Asked not to download: ~p', [File] ),
+cgnc_download_file( false, _DnDir, Self, Url, DnlF, Opts ) :-
+     memberchk( dnld_file(DnlF), Opts ),
+     % options( cgnc_file(File), Opts ),
+     debuc( Self, 'Asked not to download: ~p', [DnlF] ),
      Url = 'http://birdgenenames.org/cgnc/downloads.jsp?file=standard'.
 
 cgnc_download_file_fix( Self, Dst ) :-

@@ -24,41 +24,73 @@
 :- lib(csv_ids_map/6).
 :- lib(link_to_bio_sub/2).
 :- lib(bio_db_dnt_times/3).
-:- lib(url_file_local_date_mirror/3).
 :- lib(bio_db_add_infos/1).
+:- lib(build_dnload_loc/3).
+:- lib(bio_db_source_url/3).
+:- lib(url_file_local_date_mirror/3).
 
-:- debuc(url_file).
+% ncbi_taxonomy_repo('https://ftp.ncbi.nih.gov/pub/taxonomy/', 'taxdmp.zip', 'names.dmp'). % the first is the download the second is the local name we unzip to
 
-ncbi_taxonomy_repo('https://ftp.ncbi.nih.gov/pub/taxonomy/', 'taxdmp.zip', 'names.dmp').
+std_multi_maps_ncbi_defaults( Defs ) :-
+                                   Defs = [ db(vgnc),
+                                            debug(true),
+                                            debug_fetch(true),
+                                            debug_url(false),
+                                            iactive(true),
+                                            download(true),
+                                            ncbi_taxo_base(ncbi_taxo),
+                                            ncbi_taxo_file('taxdmp.zip'),
+                                            ncbi_uzip_file('names.dmp'),
+                                            maps_sub_dir(maps),
+                                            org(pig)
+                                          ].
 
-ncbi_dnload( Loc ) :-
-     absolute_file_name( bio_db_build_downloads(ncbi), Loc ),
-     os_make_path( Loc, debug(true) ).
+/** std_multi_maps_ncbi(+Opts).
 
-std_multi_maps_ncbi_defaults(debug(true)).
+Download latest NCBI taxonomy map file and convert it to two standard maps.
 
-%% std_multi_maps_ncbi(+Opts).
-%
-% Download latest NCBI taxonomy map file and convert it to two standard maps.
-%
-%==
-% std_multi_maps_ncbi([]).
-%==
-% @author nicos angelopoulos
-% @version  0.1 2023/9/15
-%
+Opts
+  * db(Db=vgnc)
+    source database
+  * debug(Dbg=true)
+    debugging, informational messages
+  * debug_fetch(Fbg=true)
+    whether to debug the fetching of the url (via url_file_local_date_mirror/3)
+  * debug_url(Ubg=false)
+    whether to debug the concatenation of the url (via bio_db_source_url/3)
+  * download(Dn=true)
+    set to false to skip downloading a fresh copy of the HGNC file(s)
+  * iactive(Iact=true)
+    whether the session is interactive, otherwise wget gets --no-verbose
+  * maps_sub_dir(MsubD=maps)
+    relative name for generated maps within downloads directory
+  * ncbi_taxo_base(TxB=ncbi_taxo),
+    token identifying the Dir Url prefix for the remote URL (defined in bio_db_source_base_url/2)
+  * ncbi_taxo_file(TxF='taxdmp.zip'),
+    file name of the remote URL 
+  * ncbi_uzip_file(TxU='names.dmp'),
+    local filename for the unzip download
+  * org(Org=pig)
+    organism
+  * vgnc_genes_file(VgncF='vgnc_gene_set_All.txt.gz')
+    the file name for the URL download
+==
+  ?- std_multi_maps_ncbi([]).
+==
+@author nicos angelopoulos
+@version  0.1 2023/9/15
+*/
 std_multi_maps_ncbi( Args ) :-
      Self = std_multi_maps_ncbi,
      options_append( Self, Args, Opts ),
      bio_db_build_aliases( Opts ),
-     % load necessary data that has already been generated
-     % ensure_loaded(hgnc:bio_db_build_downloads('hgnc/maps/hgnc_homs_symb_hgnc')),
-     ncbi_taxonomy_repo( TaxD, ZipF, DmpF ),
-     atom_concat( TaxD, ZipF, Url ),
-     ncbi_dnload( NcbiD ),
-     url_file_local_date_mirror( Url, NcbiD, interface(wget) ),
-     working_directory( Old, NcbiD ),
-     @unzip( '-o', ZipF, DmpF ),
+     build_dnload_loc( Self, DnlD, Opts ),
+     SrcRnms = [ncbi_taxo_base-url_base,ncbi_taxo_file-url_file,debug_url-debug],
+     bio_db_source_url( SrcUrl, SrcRnms, Opts ),
+     options( [debug_fetch(Fbg),ncbi_uzip_file(DmpF)], Opts ),
+     url_file_local_date_mirror( SrcUrl, DnlD, [debug(Fbg),dnld_file(ZipF)|Opts] ),
+     working_directory( Old, DnlD ),
+     @unzip( '-o', ZipF, DmpF),
      mtx( DmpF, Ntx, sep(0'|) ),
      debuc( Self, dims, names_dump/Ntx ),
      maplist( taxon_names_args, Ntx, Atx ),
@@ -77,7 +109,7 @@ std_multi_maps_ncbi( Args ) :-
      debuc( Self, wrote, ScnmF ),
      portray_clauses( OGnms, file(GbnmF) ),
      debuc( Self, wrote, GbnmF ),
-     bio_db_add_infos( [ScnmF,GbnmF,source(Url),datetime(DnDt)] ),
+     bio_db_add_infos( [ScnmF,GbnmF,source(SrcUrl),datetime(DnDt)] ),
      debuc( Self, 'Done: ~w', [bio_db_add_infos/1] ),
      link_to_bio_sub( ncbi, ScnmF, org(multi) ),
      link_to_bio_sub( ncbi, GbnmF, org(multi) ),

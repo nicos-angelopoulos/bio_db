@@ -26,8 +26,10 @@
 :- lib(csv_ids_map/6).
 :- lib(link_to_bio_sub/2).
 :- lib(bio_db_dnt_times/3).
+:- lib(build_dnload_loc/3).
+:- lib(bio_db_source_url/3).
+:- lib(ens_fa_peptide_gene_rows/2).     % /2, fixme: should be more local
 :- lib(url_file_local_date_mirror/3).
-:- lib(ens_fa_peptide_gene_rows/2).  % /2, fixme: should be more local
 
 :- debuc(url_file).
 
@@ -164,38 +166,64 @@ ncbi_gene2asseccion_cnms( 'RNA_nucleotide_accession.version', rnuc ).
 ncbi_gene2asseccion_cnms( 'genomic_nucleotide_accession.version', dnuc ).
 ncbi_gene2asseccion_cnms( 'Symbol', symb ).
 
-std_pig_maps_ncbi_defaults(debug(true)).
+std_pig_maps_ncbi_defaults( Defs ) :-
+                               Defs = [ db(ncbi),
+                                        debug(true),
+                                        debug_fetch(true),
+                                        debug_url(false),
+                                        iactive(true),
+                                        ncbi_genes_file('gene2ensembl.gz'),
+                                        org(pig)
+                               ].
 
-%% std_pig_maps_ncbi(+Opts).
-%
-% Download latest NCBI gene to ensembl map file and convert it to 
-% a few standard maps.
-%==
-% std_maps_ncbi([]).
-%==
-% @author nicos angelopoulos
-% @version  0.1 2014/7/23
-% @version  0.1 2022/12/26, entz-> ncbi, url via wget, csv without R
-%
+/** std_pig_maps_ncbi(+Opts).
+
+Download latest NCBI gene to ensembl map file and convert it to 
+a few standard maps.
+
+Opts
+  * db(Db)
+    source database
+  * debug(Dbg=true)
+    informational, progress messages
+  * debug_fetch(Fbg=true)
+    whether to debug the fetching of the url (via url_file_local_date_mirror/3)
+  * debug_url(Ubg=false)
+    whether to debug the concatenation of the url (via bio_db_source_url/3)
+  * iactive(Iact=true)
+    whether the session is interactive, otherwise wget gets --no-verbose
+  * ncbi_genes_file(GnsF='')
+    the url base for the genes download
+  * org(Org=human)
+    organism
+
+==
+?- std_maps_ncbi([]).
+==
+
+@author nicos angelopoulos
+@version  0.1 2014/7/23
+@version  0.2 2022/12/26, entz-> ncbi, url via wget, csv without R
+@version  0.3 2023/9/30,  new style opts and helpers
+
+*/
 std_pig_maps_ncbi( Args ) :-
      Self = std_pig_maps_ncbi,
      options_append( Self, Args, Opts ),
      bio_db_build_aliases( Opts ),
-     % load necessary data that has already been generated
-     % ensure_loaded(hgnc:bio_db_build_downloads('hgnc/maps/hgnc_homs_symb_hgnc')),
-     ncbi_dnload( NcbiD ),
-     Url = 'ftp://ftp.ncbi.nih.gov/gene/DATA/gene2ensembl.gz',
-     url_file_local_date_mirror( Url, NcbiD, interface(wget) ),
-     file_base_name( Url, RemB ),
-     working_directory( Old, NcbiD ),
+     build_dnload_loc( Self, DnDir, Opts ),
+     bio_db_source_url( Url, [ncbi_genes_file-url_file,debug_url-debug], Opts ),
+     options( debug_fetch(Fbg), Opts ),
+     url_file_local_date_mirror( Url, DnDir, [debug(Fbg),dnld_file(GnsF)|Opts] ),
+     working_directory( Old, DnDir ),
      MapsD = maps,
      make_directory_path( MapsD ),
-     directory_file_path( MapsD, RemB, ToP ),
-     copy_file( RemB, ToP ),
-     bio_db_dnt_times( RemB, DnDt, _DnEn ),
+     directory_file_path( MapsD, GnsF, ToP ),
+     copy_file( GnsF, ToP ),
+     bio_db_dnt_times( GnsF, DnDt, _DnEn ),
      working_directory( _ParentD, MapsD ),
-     @ gunzip( RemB ),
-     file_name_extension( RemS, gz, RemB ),
+     @ gunzip( -k, -f, GnsF ),
+     file_name_extension( RemS, gz, GnsF ),
      at_con( [RemS,pig], '_', PigG2NF ),
      grep( RemS, '^9823', PigG2NF ),
      debuc( Self, 'Grepped pig gene2ensembl into: ~p', [PigG2NF] ),

@@ -97,26 +97,8 @@ std_mouse_maps_ense( Args ) :-
      ensure_loaded(mgim:bio_db_build_downloads('mgim/maps/mgim_musm_msyn_mgim')),
      build_dnload_loc( Self, DnDir, Opts ),
      debuc( Self, 'Downloads dir for ense: ~p', DnDir ),
+     SrcRnms = [ense_musm_file-url_file,debug_url-debug],
      bio_db_source_url( Url, SrcRnms, Opts ),
-     /*
-     FtpDir = 'ftp://ftp.ensembl.org/pub/current_gtf/mus_musculus/',
-     Found @@ curl( -l, '--no-progress-meter', FtpDir ),
-     findall( MsGtf-Amb-Rel, (
-                         member(MsGtf,Found),
-                         at_con(['Mus_musculus',GRChTkn,RelAtm,gtf,gz],'.',MsGtf),
-                         atom_concat('GRCm',AmbAtm,GRChTkn),
-                         atom_number(AmbAtm,Amb), atom_number(RelAtm,Rel)
-                        ),
-                            MsGtfs ),
-     ( MsGtfs = [MsGtfF-_Amb-_Rel] ->
-          true
-          ;
-          throw( non_unique_auto_ided_ense_gtf_file(MsGtfs) )
-     ),
-     */
-     trace,
-     build_dnload_loc( Self, DnDir, Opts ),
-     atom_concat( FtpDir, MsGtfF, Url ),
      url_file_local_date_mirror( Url, DnDir, [dnld_file(File)|Opts] ),
      debuc( Self, 'Dnload done, file is: ~p', File ),
      working_directory( Old, DnDir ),

@@ -99,7 +99,8 @@ std_chicken_graphs_strg( Args ) :-
     % absolute_file_name( bio_db_build_downloads(strg), Parent ),
     % os_make_path( Parent, debug(true) ),
     build_dnload_loc( Self, DnlD, Opts ),
-    url_file_local_date_mirror( Remote, DnlD, [dnld_file(DnF),dnt(true),iface(wget)|Opts] ),
+    options( debug_fetch(Fbg), Opts ),
+    url_file_local_date_mirror( Remote, DnlD, [dnld_file(DnF),debug(Fbg))|Opts] ),
     working_directory( Here, DnlD ),
     debuc( Self, 'Download name: ~w', DnF ),
     @ gunzip( -k, -f, DnF ),  % keeps .gz file

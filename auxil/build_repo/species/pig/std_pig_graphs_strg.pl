@@ -23,20 +23,33 @@
 % local libs & sources
 :- lib(link_to_bio_sub/3).
 :- lib(bio_db_dnt_times/3).
-:- lib(bio_db_add_infos/1).     % bio_db_add_infos_to/2.
-:- lib(std_graphs_strg_auto_version/1).
+:- lib(bio_db_add_infos/1).             % bio_db_add_infos_to/2.
+:- lib(build_dnload_loc/3).
 :- lib(portray_informed_clauses/4).
+:- lib(url_file_local_date_mirror/3).
+:- lib(std_graphs_strg_auto_version/1).
+:- lib(bio_db_string_version_base_name/5).
 
 :- debuc(by_unix).
 :- debuc(std_graphs_strg). % fixme:
 
-std_pig_graphs_strg_defaults( [debug(true)|T] ) :-
-    ( std_graphs_strg_auto_version(Vers) -> % let options/2 do the erroring
-                                            % because user might provide it
-        T = [string_version(Vers)]
-        ;
-        T = []   
-    ).
+std_pig_graphs_strg_defaults( Args, Defs ) :- 
+                    Defs = [  db(strg),
+                              debug(true),
+                              debug_fetch(true),
+                              debug_url(false),
+                              iactive(true),
+                              relation(links),
+                              org(human)
+                              | T
+                         ],
+          trace,
+          ( std_graphs_strg_auto_version(Vers,Args) -> % let options/2 do the erroring
+                                                       % because user might provide it
+                    T = [string_version(Vers)]
+                    ;
+                    T = []   
+          ).
 
 % last good one: std_graphs_string( '10' ).  2016/09/08
 % last good one: std_graphs_string( '10.5' ).  2018/03/30
@@ -44,6 +57,26 @@ std_pig_graphs_strg_defaults( [debug(true)|T] ) :-
 /** std_pig_graphs_strg(+Opts).
 
 String graphs and a map for pig products.
+
+Opts
+  * db(Db=strg)
+    source database
+  * debug(Dbg=true)
+    informational, progress messages
+  * debug_fetch(Fbg=false)
+    whether to debug the fetching of the url
+  * debug_url(Ubg=false)
+    whether to debug the concatenation of the url
+  * iactive(Iact=true)
+    whether the session is interactive, otherwise wget gets --no-verbose
+  * links_stem(Ltem='protein.links.v')
+    stem for the filename of the remote links file
+  * org(Org=pig)
+    organism
+  * relation(Rel=links)
+    relation of STRING we are interested in (bio_db_string_version_base_name/5)
+  * string_version(Vers)
+    default is collected by visiting the STRING web-page
 
 ==
 ?- std_pig_graphs_str([]).
@@ -71,20 +104,15 @@ std_pig_graphs_strg( Args ) :-
     options( string_version(VersionPrv), Opts ),
     ( number(VersionPrv) -> atom_number(Version,VersionPrv); Version = VersionPrv ),
     debuc( Self, 'Version: ~w', Version ),
-    std_graphs_string_version_base_name( Version, Bname, InfoBname, From, InfoFrom ),
-    debuc( Self, 'Base name: ~w', Bname ),
-    absolute_file_name( bio_db_build_downloads(strg), Parent ),
-    % absolute_file_name( baio_db_downloads(string/Bname), LocalFile ),
-    % directory_file_path( Parent, _BnameAgain, LocalFile ),
-    directory_file_path( Parent, Bname, LocalFile ),
-    os_make_path( Parent, debug(true) ),
-    std_graph_string_download_string( LocalFile, From, Self ),
-    working_directory( Here, Parent ),
-    @ gunzip( -k, Bname ),  % keeps .gz file
-    % @ gunzip( '9606.protein.links.v10.txt.gz' ),
+    bio_db_string_version_base_name( Version, _VersD, RelName, SrcUrl, Opts ),
+    debuc( Self, 'Rel file name: ~w', RelName ),
+    build_dnload_loc( Self, DnlD, Opts ),
+    options( debug_fetch(Fbg), Opts ),
+    url_file_local_date_mirror( SrcUrl, DnlD, [debug(Fbg),dnld_file(Bname)|Opts] ),
+    working_directory( Here, DnlD ),
+    @ gunzip( -k, -f, Bname ),  % keeps .gz file
     EnspPn = strg_suss_edge_ensp,
     file_name_extension( TxtF, gz, Bname ),
-    debuc( Self, 'Directory: ~p', [Parent] ),
     Mess1 = 'Converting string file: ~p, to Prolog',
     debuc( Self, Mess1, [TxtF] ),
     MtxOpts = [ csv_read(separator(0' )),predicate_name(EnspPn),
@@ -98,12 +126,13 @@ std_pig_graphs_strg( Args ) :-
     os_dir_stem_ext( graphs, EnspPn, pl, EnspRelF ),
     @ rm( -f, EnspRelF ),
     @ mv( File, EnspRelF ),
-
-     
     % info file connect protein to SYmbol
-    directory_file_path( Parent, InfoBname, LocalInfoFile ),
-    std_graph_string_download_string( LocalInfoFile, InfoFrom, Self ),
-    @ gunzip( -k, InfoBname ),  % keeps .gz file
+    % directory_file_path( DnlD, InfoBname, LocalInfoFile ),
+    % std_graph_string_download_string( LocalInfoFile, InfoFrom, Self ),
+    % url_file_local_date_mirror( SrcUrl, DnlD, [debug(Fbg),dnld_file(Bname),iface(wget)|Opts] ),
+    bio_db_string_version_base_name( Version, _TheVersD, _VersF, InfoSrcUrl, [relation(info)|Opts] ),
+    url_file_local_date_mirror( InfoSrcUrl, DnlD, [dnld_file(InfoBname),dnt(true)|Opts] ),
+    @ gunzip( -k, -f, InfoBname ),  % keeps .gz file
     % Map = map_strg_gallus_ensp_symb,
     Map = strg_suss_ensp_symb,
     file_name_extension( InfoTxtF, gz, InfoBname ),
@@ -114,7 +143,7 @@ std_pig_graphs_strg( Args ) :-
     maplist( strg_map_row(Map), InfoRows, MapRows ),
     os_dir_stem_ext( MapPlF, [odir(maps),ext(pl),stem(Map)] ),
     bio_db_dnt_times( InfoBname, InfoDnDt, _InfoEndDt ),
-    MapInfos = [ source-InfoFrom,datetime-InfoDnDt,header-header('Ensembl Protein ID','Symbol'),
+    MapInfos = [ source-InfoSrcUrl,datetime-InfoDnDt,header-header('Ensembl Protein ID','Symbol'),
                        data_types-data_types(atom,atom)
                ],
     portray_informed_clauses( MapRows, MapInfos, MapPlF, [] ),
@@ -220,21 +249,6 @@ std_graph_string_download_string( Local, Remote, Self ) :-
     debuc( Self, 'Downloading from: ~p', Remote ),
     url_file( Remote, Local, [dnt(true),iface(wget)] ),
     debuc( Self, '... to local file: ~p', Local ).
-
-std_graphs_string_version_base_name( VersionPrv, Bname, InfoBname, Remote, InfoRemote ) :-
-    ( atom_concat(v,Version,VersionPrv)->true;Version=VersionPrv ),
-    atom_concat( v, Version, Vied ),
-    % Pfx = 'http://string-db.org/newstring_download/protein.links.v',
-    Pfx = 'https://string-db.org/download/protein.links.v',
-    atom_concat( Pfx, Version, RemoteDir ),
-    atomic_list_concat( [9823,protein,links,Vied,txt,gz], '.', Bname ),
-    directory_file_path( RemoteDir, Bname, Remote ),
-    % 10/9606.protein.links.v10.txt.gz
-    % 9031.protein.info.v11.5.txt
-    InfoPfx = 'https://stringdb-static.org/download/protein.info.v',
-    atom_concat( InfoPfx, Version, InfoRemoteDir ),
-    atomic_list_concat( [9823,protein,info,Vied,txt,gz], '.', InfoBname ),
-    directory_file_path( InfoRemoteDir, InfoBname, InfoRemote ).
 
 de_pig( row(MousEnsP1,MousEnsP2,WAtm), row(EnsP1,EnsP2,W) ) :-
     atom_concat( '9823.', EnsP1, MousEnsP1 ),

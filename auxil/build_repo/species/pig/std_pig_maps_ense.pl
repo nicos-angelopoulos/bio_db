@@ -29,7 +29,7 @@ std_pig_maps_ense_defaults( Defs ) :-
                                         debug(true),
                                         debug_url(false),
                                         debug_fetch(true),
-                                        ense_homs_file(call(ense_url_file)),
+                                        ense_suss_file(call(ense_url_file)),
                                         iactive(true),
                                         org(pig)
                                ].
@@ -51,7 +51,7 @@ Opts
     whether to debug the fetching of the url (via url_file_local_date_mirror/3)
   * debug_url(Ubg=false)
     whether to debug the concatenation of the url (via bio_db_source_url/3)
-  * ense_homs_file(Eile=call(ense_url_file))
+  * ense_suss_file(Eile=call(ense_url_file))
     the file name  for the download (appended to Ufx@bio_db_source_base_url(gont_obo,Ufx))
     -or call that produces it
   * iactive(Iact=true)
@@ -85,10 +85,10 @@ std_pig_maps_ense( Args ) :-
 
 std_pig_maps_ense( _Tkn, _EnsDir, Args ) :-
     Self = std_pig_maps_ense,
-    options_append( _Self, Args, Opts ),
+    options_append( Self, Args, Opts ),
     bio_db_build_aliases( Opts ),
     build_dnload_loc( Self, DnDir, Opts ),
-    SrcRnms = [ense_galg_file-url_file,debug_url-debug],
+    SrcRnms = [ense_suss_file-url_file,debug_url-debug],
     bio_db_source_url( Url, SrcRnms, Opts ),
     url_file_local_date_mirror( Url, DnDir, [dnld_file(File)|Opts] ),
     debuc( Self, 'Dnload done, file is: ~p', File ),
@@ -148,14 +148,9 @@ std_pig_maps_ense( _Tkn, _EnsDir, Args ) :-
     debuc( Self, '...Done', true ).
 
 std_pig_ense_gtf_file( suss, Found, MsGtfF ) :-
-    % findall( MsGtf-Amb-Rel, (
     findall( MsGtf-Rel, (
                          member(MsGtf,Found),
                          at_con(['Sus_scrofa','Sscrofa11','1',RelAtm,gtf,gz],'.',MsGtf),
-                         % at_con(['Gallus_gallus','bGalGal1',mat,broiler,GRChTkn,RelAtm,gtf,gz],'.',MsGtf),
-                         % atom_concat('GRCg',AmbAtm,GRChTkn),
-                         % atom_concat('GRCg',Amb,GRChTkn),
-                         % atom_number(AmbAtm,Amb),
                          atom_number(RelAtm,Rel),
                          write( mar(MsGtf,Rel) ), nl
                         ),
@@ -165,27 +160,6 @@ std_pig_ense_gtf_file( suss, Found, MsGtfF ) :-
         ;
         throw( non_unique_auto_ided_ense_gtf_file(MsGtfs) )
     ).
-
-    /* from chicken:
-std_pig_ense_gtf_file( gg6a, Found, MsGtfF ) :-
-    write( found(Found) ), nl,
-    % Gallus_gallus_gca000002315v5.GRCg6a.108.gtf.gz
-    findall( MsGtf-Amb-Rel, (
-                         member(MsGtf,Found),
-                         at_con(['Gallus_gallus_gca000002315v5',GRChTkn,RelAtm,gtf,gz],'.',MsGtf),
-                         % atom_concat('GRCg',AmbAtm,GRChTkn),
-                         atom_concat('GRCg',Amb,GRChTkn),
-                         % atom_number(AmbAtm,Amb),
-                         atom_number(RelAtm,Rel),
-                         write( mar(MsGtf,Amb,Rel) ), nl
-                        ),
-                            MsGtfs ),
-    ( MsGtfs = [MsGtfF-_Amb-_Rel] ->
-        true
-        ;
-        throw( non_unique_auto_ided_ense_gtf_file(MsGtfs) )
-    ).
-*/
 
 mv_to_sub( Sub, File ) :-
      os_path( Sub, File, Rel ),

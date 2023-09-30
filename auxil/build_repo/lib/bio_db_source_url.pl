@@ -107,13 +107,7 @@ ense_url_file( Url, Org, SrcF, Opts ) :-
      at_con( Stemics, '.', Stem ),
      findall( HsGtfRel-Amb-Rel, ( member(HsGtf,Found),
                                   at_con(Parts,'.',HsGtf),
-                                  once(append(Stemics,[GRChTkn,RelAtm,gtf,gz],Parts)),
-                                  % at_con([Stem,GRChTkn,RelAtm,gtf,gz],'.',HsGtf),
-                                  % fixme: chicken get g6a and g7a not  hN (eg: 
-                                  % atom_concat('GRCh',AmbAtm,GRChTkn),
-                                  % atom_number(AmbAtm,Amb), 
-                                  atom_concat('GRC',Amb,GRChTkn),
-                                  atom_number(RelAtm,Rel),
+                                  ense_url_file_parts( Org, Stemics, Parts, Amb, Rel ),
                                   atomic_list_concat( [Eir,HsGtf], '/', HsGtfRel )
                         ),
                             HsGtfs ),
@@ -122,3 +116,15 @@ ense_url_file( Url, Org, SrcF, Opts ) :-
           ;
           throw( non_unique_auto_ided_ense_gtf_files(Orl,HsGtfs) )
      ).
+
+ense_url_file_parts( _Org, Stemics, Parts, Amb, Rel ) :-
+     once( append(Stemics,[GRChTkn,RelAtm,gtf,gz],Parts) ),
+     atom_concat('GRC',Amb,GRChTkn),
+     atom_number(RelAtm,Rel),
+     !.
+ense_url_file_parts( pig, Stemics, Parts, Amb, Rel ) :-
+     once( append(Stemics,[Scrofa,Edit,RelAtm,gtf,gz],Parts) ),
+     atom_concat( 'Sscrofa', Vers, Scrofa ), 
+     atomic_list_concat( [Vers,Edit], '.', Amb ),
+     atom_number(RelAtm,Rel),
+     !.

@@ -39,3 +39,4 @@ org_ense_dir_known(galg,'gallus_gallus','Gallus_gallus.bGalGal1.mat.broiler').
 org_ense_dir_known(gg6a,'gallus_gallus_gca000002315v5','Gallus_gallus_gca000002315v5').
 org_ense_dir_known(human,homo_sapiens,'Homo_sapiens').
 org_ense_dir_known(mouse,mus_musculus,'Mus_musculus').
+org_ense_dir_known(pig,sus_scrofa,'Sus_scrofa').

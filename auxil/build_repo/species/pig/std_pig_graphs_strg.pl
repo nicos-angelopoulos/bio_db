@@ -43,7 +43,6 @@ std_pig_graphs_strg_defaults( Args, Defs ) :-
                               org(human)
                               | T
                          ],
-          trace,
           ( std_graphs_strg_auto_version(Vers,Args) -> % let options/2 do the erroring
                                                        % because user might provide it
                     T = [string_version(Vers)]

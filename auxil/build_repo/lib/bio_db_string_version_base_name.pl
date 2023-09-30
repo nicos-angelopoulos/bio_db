@@ -41,6 +41,7 @@ bio_db_string_version_base_name( VersionPrv, VersD, Bname, Remote, Opts ) :-
      bio_db_source_url( Remote, [], Upts ).
 
 % fixme: ideally we want to hook this to NCBI taxonomy (see organism=multi)
+bio_db_taxo(chicken, 9031).
 bio_db_taxo(human, 9606).
 bio_db_taxo(mouse, 10090).
-bio_db_taxo(chicken, 9031).
+bio_db_taxo(pig, 9823).

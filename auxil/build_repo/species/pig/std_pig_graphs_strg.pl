@@ -40,7 +40,7 @@ std_pig_graphs_strg_defaults( Args, Defs ) :-
                               debug_url(false),
                               iactive(true),
                               relation(links),
-                              org(human)
+                              org(pig)
                               | T
                          ],
           ( std_graphs_strg_auto_version(Vers,Args) -> % let options/2 do the erroring

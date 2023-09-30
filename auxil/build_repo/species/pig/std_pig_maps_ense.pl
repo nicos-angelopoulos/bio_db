@@ -83,74 +83,52 @@ Tue 27 Dec 13:09:40 GMT 2022
 std_pig_maps_ense( Args ) :-
     std_pig_maps_ense( suss, sus_scrofa, Args ).
 
-std_pig_maps_ense( Tkn, EnsDir, Args ) :-
+std_pig_maps_ense( _Tkn, _EnsDir, Args ) :-
     Self = std_pig_maps_ense,
-    options_append( Self, Args, Opts ),
+    options_append( _Self, Args, Opts ),
     bio_db_build_aliases( Opts ),
     build_dnload_loc( Self, DnDir, Opts ),
-    at_con( ['ftp://ftp.ensembl.org/pub/current_gtf/',EnsDir,'/'], '', FtpDir ),
-    % FtpDir = 'https://ftp.ensembl.org/pub/current_gtf/gallus_gallus/',
-    Found @@ curl( -l, '--no-progress-meter', FtpDir ),
-    % Sus_scrofa.Sscrofa11.1.109.gtf.gz
-    % Gallus_gallus.bGalGal1.mat.broiler.GRCg7b.108.gtf.gz
-    % Mus_musculus.GRCm39.108.gtf.gz
-    std_pig_ense_gtf_file( Tkn, Found, MsGtfF ),
-    atom_concat( FtpDir, MsGtfF, Url ),
-    url_file_local_date_mirror( Url, DnDir, [file(File),interface(wget)] ),
+    SrcRnms = [ense_galg_file-url_file,debug_url-debug],
+    bio_db_source_url( Url, SrcRnms, Opts ),
+    url_file_local_date_mirror( Url, DnDir, [dnld_file(File)|Opts] ),
     debuc( Self, 'Dnload done, file is: ~p', File ),
     working_directory( Old, DnDir ),
     bio_db_dnt_times( File, DnDt, _DnEn ),
     debuc( by_unix ),
-    os_un_zip( File, _, [keep(true),on_exists(skip),debug(true)] ),
+    @ gunzip(-k,-f,File),
     os_ext( gz, Stem, File ),
     debuc( Self, 'Reading from: ~p', [Stem] ),
     mtx( Stem, Rows, [sep(tab),csv_read(skip_header('#'))] ),
     debuc( Self, length, rows/Rows ),
-    % ense_genes( Rows, EnsGHRows, EnsGSRows, EnsGCRows ),
     ense_transcripts( Rows, EnsTGRows, EnsTLRows ),
     debuc( Self, length, tg_rows/EnsTGRows ),
     debuc( Self, length, tl_rows/EnsTLRows ),
     at_con( [ense,Tkn,enst,'ensg.csv'], '_', EnsTGF ),
-    % mtx( 'map_ense_gallus_enst_ensg.csv', EnsTGRows ),
     mtx( EnsTGF, EnsTGRows ),
     at_con( [ense,Tkn,enst,'chrl.csv'], '_', EnsTLF ),
     mtx( EnsTLF, EnsTLRows ),
-    % mtx( 'map_ense_gallus_enst_chrl.csv', EnsTLRows ),
-
     ense_genes( Rows, Self, _EnsGMRows, EnsGSRows, EnsGCRows ),
     Lbls = [gtfRows,ensGM,ensGS,ensGC],
-    % ERws = [Rows,EnsGMRows, EnsGSRows, EnsGCRows],
     ERws = [Rows, EnsGSRows, EnsGCRows],
     debuc( Self, length, Lbls/ERws ),
-    %
     sort( EnsGSRows, EnsGSRowsSet ),
-
-     at_con( [ense,Tkn,ensg,'symb.csv'], '_', EnsGSF ),
-     % mtx( 'map_ense_gallus_ensg_symb.csv', EnsGSRowsSet ),
-     mtx( EnsGSF, EnsGSRowsSet ),
-     at_con( [ense,Tkn,ensg,'chrl.csv'], '_', EnsGLF ),
-     mtx( EnsGLF, EnsGCRows  ),
-     % mtx( 'map_ense_gallus_ensg_chrl.csv', EnsGCRows ),
-
-     Csvs = [ 
+    at_con( [ense,Tkn,ensg,'symb.csv'], '_', EnsGSF ),
+    mtx( EnsGSF, EnsGSRowsSet ),
+    at_con( [ense,Tkn,ensg,'chrl.csv'], '_', EnsGLF ),
+    mtx( EnsGLF, EnsGCRows  ),
+    Csvs = [ 
                  EnsTGF,
-                 % 'map_ense_gallus_enst_ensg.csv', 
                  EnsTLF,
-                 % 'map_ense_gallus_enst_chrl.csv',
-                 % % 'map_ense_gallus_ensg_mgim.csv',
                  EnsGSF,
-                 % 'map_ense_gallus_ensg_symb.csv',
                  EnsGLF
-                 % 'map_ense_gallus_ensg_chrl.csv'
             ],
-     debuc( Self, 'mapping: ~w', [Csvs] ),
-     maplist( csv_to_pl(Self), Csvs ),
-     maplist( new_ext(pl), Csvs, Pls ),
-     AddOpts = [source(Url),datetime(DnDt)],
-     Headers = [    
+    debuc( Self, 'mapping: ~w', [Csvs] ),
+    maplist( csv_to_pl(Self), Csvs ),
+    maplist( new_ext(pl), Csvs, Pls ),
+    AddOpts = [source(Url),datetime(DnDt)],
+    Headers = [    
           row('Ensembl Transcript','Ensembl Gene'),
           row('Ensembl Transcript','Chromosome', 'Start', 'End', 'Direction'),
-          % row('Ensembl ID','MGIM ID'),
           row('Ensembl Gene ID','Symbol'),
           row('Ensembl Gene ID','Chromosome', 'Start', 'End', 'Direction')
         ],
@@ -160,14 +138,14 @@ std_pig_maps_ense( Tkn, EnsDir, Args ) :-
                          bio_db_add_infos_to([header(Header)|AddOpts], PlF)
                          ),
                          _PlFs ),
-     os_make_path( maps ),
-     maplist( mv_to_sub(maps), Pls ),
+    os_make_path( maps ),
+    maplist( mv_to_sub(maps), Pls ),
     @ rm( -f, Stem ),
-     working_directory( _, maps ),
+    working_directory( _, maps ),
     Cpts = call_options([org(pig)]),
-     map_list_options( link_to_bio_sub(ense), Pls, Cpts ),
-     working_directory( _, Old ),
-     debuc( Self, '...Done', true ).
+    map_list_options( link_to_bio_sub(ense), Pls, Cpts ),
+    working_directory( _, Old ),
+    debuc( Self, '...Done', true ).
 
 std_pig_ense_gtf_file( suss, Found, MsGtfF ) :-
     % findall( MsGtf-Amb-Rel, (

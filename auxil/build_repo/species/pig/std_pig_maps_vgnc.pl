@@ -21,16 +21,21 @@
 % local libs & sources
 :- lib(de_semi/3).
 :- lib(mtx_map/4).
-:- lib(bio_db_dnt_times/3).
-:- lib(url_file_local_date_mirror/3).
 :- lib(link_to_bio_sub/2).
-
-vgnc_repo( 'https://ftp.ebi.ac.uk/pub/databases/genenames/vgnc/tsv/', 'vgnc_gene_set_All.txt.gz' ).
+:- lib(bio_db_dnt_times/3).
+:- lib(build_dnload_loc/3).
+:- lib(url_file_local_date_mirror/3).
 
 std_pig_maps_vgnc_defaults( Defs ) :-
-                                   Defs = [ debug(true),
+                                   Defs = [ db(vgnc),
+                                            debug(true),
+                                            debug_fetch(true),
+                                            debug_url(false),
+                                            iactive(true),
                                             download(true),
-                                            maps_sub_dir(maps) 
+                                            vgnc_genes_file('vgnc_gene_set_All.txt.gz'),
+                                            maps_sub_dir(maps),
+                                            org(pig)
                                           ].
 /** std_pig_maps_vgnc(+Opts).
 
@@ -39,10 +44,20 @@ Create some maps from HGNC's "complete" data file.
 Opts
   * debug(Dbg=true)
     debugging, informational messages
+  * debug_fetch(Fbg=true)
+    whether to debug the fetching of the url (via url_file_local_date_mirror/3)
+  * debug_url(Ubg=false)
+    whether to debug the concatenation of the url (via bio_db_source_url/3)
   * download(Dn=true)
     set to false to skip downloading a fresh copy of the HGNC file(s)
+  * iactive(Iact=true)
+    whether the session is interactive, otherwise wget gets --no-verbose
   * maps_sub_dir(MsubD=maps)
     relative name for generated maps within downloads directory
+  * org(Org=pig)
+    organism
+  * vgnc_genes_file(VgncF='vgnc_gene_set_All.txt.gz')
+    the file name for the URL download
 
 ==
 ?- std_pig_maps_vgnc.
@@ -59,12 +74,11 @@ std_pig_maps_vgnc( Args ) :-
      Self = std_pig_maps_vgnc,
      options_append( Self, Args, Opts ),
      bio_db_build_aliases( Opts ),
-     vgnc_repo( VgncUrlDir, GzF ),
-     atom_concat( VgncUrlDir, GzF, SrcUrl ),
-     absolute_file_name( bio_db_build_downloads(vgnc), VgncDnlD ),
-     os_make_path( VgncDnlD ),
-     url_file_local_date_mirror( SrcUrl, VgncDnlD, interface(wget) ),
-     working_directory( Old, VgncDnlD ),
+     build_dnload_loc( Self, DnlD, Opts ),
+     bio_db_source_url( SrcUrl, [vgnc_genes_file-url_file,debug_url-debug], Opts ),
+     options( debug_fetch(Fbg), Opts ),
+     url_file_local_date_mirror( SrcUrl, DnlD, [debug(Fbg),dnld_file(GzF)|Opts] ),
+     working_directory( Old, DnlD ),
      @ gunzip( -f, -k, GzF ),
      bio_db_dnt_times( GzF, DnDt, _DnEnd ),
      options( maps_sub_dir(MapsD), Opts ),

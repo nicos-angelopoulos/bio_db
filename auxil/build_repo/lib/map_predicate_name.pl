@@ -2,6 +2,7 @@
 :- lib(stoics_lib:at_con/3).
 
 :- ensure_loaded(bio_db_build_organism).
+:- ensure_loaded(bio_db_cnm_token).
 
 map_predicate_name_defaults( [db(hgnc),org(homs)] ).
 

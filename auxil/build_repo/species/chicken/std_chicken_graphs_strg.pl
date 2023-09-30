@@ -100,7 +100,7 @@ std_chicken_graphs_strg( Args ) :-
     % os_make_path( Parent, debug(true) ),
     build_dnload_loc( Self, DnlD, Opts ),
     options( debug_fetch(Fbg), Opts ),
-    url_file_local_date_mirror( Remote, DnlD, [dnld_file(DnF),debug(Fbg))|Opts] ),
+    url_file_local_date_mirror( Remote, DnlD, [dnld_file(DnF),debug(Fbg)|Opts] ),
     working_directory( Here, DnlD ),
     debuc( Self, 'Download name: ~w', DnF ),
     @ gunzip( -k, -f, DnF ),  % keeps .gz file

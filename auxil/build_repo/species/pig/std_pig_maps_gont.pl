@@ -18,18 +18,42 @@
 % local libs & sources
 :- lib(link_to_bio_sub/3).
 :- lib(bio_db_dnt_times/3).
-:- lib(url_file_local_date_mirror/3).
 :- lib(bio_db_add_infos/1). % bio_db_add_infos_to/2.
+:- lib(build_dnload_loc/3).
+:- lib(bio_db_source_url/3).
+:- lib(url_file_local_date_mirror/3).
 
-% gont_gallus_url('http://geneontology.org/gene-associations/mgi.gaf.gz').
-% gont_gallus_url('http://current.geneontology.org/annotations/goa_chicken.gaf.gz').
-gont_pig_url('http://current.geneontology.org/annotations/goa_pig.gaf.gz').
-
-std_pig_maps_gont_defaults(debug(true)).
+std_pig_maps_gont_defaults( Defs ) :-
+                               Defs = [
+                                   db(gont),
+                                   debug(true),
+                                   debug_fetch(true),
+                                   debug_url(false),
+                                   goa_base(gont_goa),
+                                   goa_file('goa_pig.gaf.gz'),
+                                   iactive(true),
+                                   org(pig)
+                               ].
 
 /**  std_pig_maps_gont.
 
 Build maps from gene ontology data.
+
+Opts
+  * db(Db=gont)
+    source database
+  * debug(Dbg=true)
+    informational, progress messages
+  * debug_fetch(Fbg=true)
+    whether to debug the fetching of the url (via url_file_local_date_mirror/3)
+  * debug_url(Ubg=false)
+    whether to debug the concatenation of the url (via bio_db_source_url/3)
+  * goa_base(GoaB=gont_goa)
+    bio_db_source_base_url/2, token or url to download from
+  * goa_file(GoaF='goa_human.gaf.gz')
+    the file name for the download (appended to Ufx@bio_db_source_base_url(gont_goa,Ufx))
+  * iactive(Iact=true)
+    whether the session is interactive, otherwise wget gets --no-verbose
 
 ==
 ?- std_pig_maps_gont([]).
@@ -49,21 +73,22 @@ Tue 27 Dec 12:04:28 GMT 2022
 ==
 
 @author nicos angelopoulos
-@version  0.1 2023/05/31
+@version  0.1 2023/5/31
+@version  0.2 2023/9/30,  new style options and helpers
 
 */
 std_pig_maps_gont( Args ) :-
     Self = std_pig_maps_gont,
     options_append( Self, Args, Opts ),
     bio_db_build_aliases( Opts ),
-    gont_pig_url( Url ),
-    absolute_file_name( bio_db_build_downloads(gont), Loc ),
-    os_make_path( Loc ),  % fixme: ensure it complains not...
-    debuc( Self, 'build directory: ~p', Loc ),
+    build_dnload_loc( Self, DnDir, Opts ),
     working_directory( Old, Loc ),
-    UrlOpts = [debug(true),interface(wget),file(GzGontF)],
+    SrcRnms = [debug_url-debug,goa_base-url_base,goa_file-url_file], 
+    bio_db_source_url( Url, SrcRnms, Opts ),
+    options( debug_fetch(Fbg), Opts ),
+    UrlOpts = [debug(Fbg),dnld_file(GzGontF)|Opts],
     url_file_local_date_mirror( Url, Loc, UrlOpts ),
-    @ gunzip( -k, GzGontF ),
+    @ gunzip( -k, -f, GzGontF ),
     os_ext( gz, GontF, GzGontF ),
     mtx( GontF, GAs, [skip_heading('!'),sep(tab)] ),
     debuc( Self, dims, gaf/GAs ),

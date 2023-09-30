@@ -28,9 +28,15 @@
 vgnc_repo( 'https://ftp.ebi.ac.uk/pub/databases/genenames/vgnc/tsv/', 'vgnc_gene_set_All.txt.gz' ).
 
 std_multi_maps_vgnc_defaults( Defs ) :-
-                                   Defs = [ debug(true),
+                                   Defs = [ db(vgnc),
+                                            debug(true),
+                                            debug_fetch(true),
+                                            debug_url(false),
                                             download(true),
-                                            maps_sub_dir(maps) 
+                                            iactive(true),
+                                            vgnc_genes_file('vgnc_gene_set_All.txt.gz'),
+                                            maps_sub_dir(maps),
+                                            org(multi)
                                           ].
 /** std_multi_maps_vgnc(+Opts).
 

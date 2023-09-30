@@ -43,6 +43,8 @@ std_pig_maps_vgnc_defaults( Defs ) :-
 Create some maps from HGNC's "complete" data file.
 
 Opts
+  * db(Db=vgnc)
+    source database
   * debug(Dbg=true)
     debugging, informational messages
   * debug_fetch(Fbg=true)

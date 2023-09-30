@@ -37,8 +37,8 @@
 std_maps_ense_defaults( Defs ) :-
                                    Defs = [ db(ense),
                                             debug(true),
-                                            debug_url(false),
                                             debug_fetch(true),
+                                            debug_url(false),
                                             ense_homs_file(call(ense_url_file)),
                                             iactive(true),
                                             org(human)
@@ -64,6 +64,8 @@ Opts
     the file name  for the download (appended to Ufx@bio_db_source_base_url(gont_obo,Ufx))- or call that produces it
   * iactive(Iact=true)
     whether the session is interactive, otherwise wget gets --no-verbose
+  * org(Org=human)
+    organism
   * release(Release)
     release number
 

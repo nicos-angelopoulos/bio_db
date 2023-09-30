@@ -83,7 +83,7 @@ Tue 27 Dec 13:09:40 GMT 2022
 std_pig_maps_ense( Args ) :-
     std_pig_maps_ense( suss, sus_scrofa, Args ).
 
-std_pig_maps_ense( _Tkn, _EnsDir, Args ) :-
+std_pig_maps_ense( Tkn, _EnsDir, Args ) :-
     Self = std_pig_maps_ense,
     options_append( Self, Args, Opts ),
     bio_db_build_aliases( Opts ),

@@ -22,10 +22,10 @@
 :- lib(de_semi/3).
 :- lib(mtx_map/4).
 :- lib(bio_db_dnt_times/3).
-:- lib(url_file_local_date_mirror/3).
 :- lib(link_to_bio_sub/2).
-
-vgnc_repo( 'https://ftp.ebi.ac.uk/pub/databases/genenames/vgnc/tsv/', 'vgnc_gene_set_All.txt.gz' ).
+:- lib(build_dnload_loc/3).
+:- lib(bio_db_source_url/3).
+:- lib(url_file_local_date_mirror/3).
 
 std_multi_maps_vgnc_defaults( Defs ) :-
                                    Defs = [ db(vgnc),
@@ -43,12 +43,24 @@ std_multi_maps_vgnc_defaults( Defs ) :-
 Create some maps from HGNC's "complete" data file.
 
 Opts
+  * db(Db=vgnc)
+    source database
   * debug(Dbg=true)
     debugging, informational messages
+  * debug_fetch(Fbg=true)
+    whether to debug the fetching of the url (via url_file_local_date_mirror/3)
+  * debug_url(Ubg=false)
+    whether to debug the concatenation of the url (via bio_db_source_url/3)
   * download(Dn=true)
     set to false to skip downloading a fresh copy of the HGNC file(s)
+  * iactive(Iact=true)
+    whether the session is interactive, otherwise wget gets --no-verbose
   * maps_sub_dir(MsubD=maps)
     relative name for generated maps within downloads directory
+  * org(Org=multi)
+    organism, multi covers the case of relations over multiple organisms
+  * vgnc_genes_file(VgncF='vgnc_gene_set_All.txt.gz')
+    the file name for the URL download
 
 ==
 ?- std_multi_maps_vgnc.
@@ -65,11 +77,10 @@ std_multi_maps_vgnc( Args ) :-
      Self = std_multi_maps_vgnc,
      options_append( Self, Args, Opts ),
      bio_db_build_aliases( Opts ),
-     vgnc_repo( VgncUrlDir, GzF ),
-     atom_concat( VgncUrlDir, GzF, SrcUrl ),
-     absolute_file_name( bio_db_build_downloads(vgnc), VgncDnlD ),
-     os_make_path( VgncDnlD ),
-     url_file_local_date_mirror( SrcUrl, VgncDnlD, interface(wget) ),
+     build_dnload_loc( Self, DnlD, Opts ),
+     bio_db_source_url( SrcUrl, [vgnc_genes_file-url_file,debug_url-debug], Opts ),
+     options( debug_fetch(Fbg), Opts ),
+     url_file_local_date_mirror( SrcUrl, VgncDnlD, [debug(Fbg),dnld_file(GzF)|Opts] ),
      working_directory( Old, VgncDnlD ),
      @ gunzip( -f, -k, GzF ),
      bio_db_dnt_times( GzF, DnDt, _DnEnd ),

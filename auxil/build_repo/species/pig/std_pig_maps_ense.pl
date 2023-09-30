@@ -17,12 +17,22 @@
 
 % local
 :- lib(csv_to_pl/2).
-:- lib(bio_db_dnt_times/3).
-:- lib(url_file_local_date_mirror/3).
-:- lib(bio_db_add_infos/1).   % bio_db_add_infos_to/2
 :- lib(link_to_bio_sub/3).
+:- lib(bio_db_dnt_times/3).
+:- lib(bio_db_add_infos/1).             % bio_db_add_infos_to/2
+:- lib(build_dnload_loc/3).
+:- lib(bio_db_source_url/3).
+:- lib(url_file_local_date_mirror/3).
 
-std_pig_maps_ense_defaults(debug(true)).
+std_pig_maps_ense_defaults( Defs ) :-
+                               Defs = [ db(ense),
+                                        debug(true),
+                                        debug_url(false),
+                                        debug_fetch(true),
+                                        ense_homs_file(call(ense_url_file)),
+                                        iactive(true),
+                                        org(pig)
+                               ].
 
 /** std_pig_maps_ense( +Opts ).
 
@@ -30,7 +40,26 @@ Maps based on ensembl .gtf file.
 
 Currently only gene symbols, but as per human it should be trivial to do sequences.
 
-  * ense: the database abbv.
+Opts
+  * assembly(Assembly)
+    assembly number (just the number)
+  * db(ense)
+    source database
+  * debug(Dbg=true)
+    informational, progress messages
+  * debug_fetch(Ubg=true)
+    whether to debug the fetching of the url (via url_file_local_date_mirror/3)
+  * debug_url(Ubg=false)
+    whether to debug the concatenation of the url (via bio_db_source_url/3)
+  * ense_homs_file(Eile=call(ense_url_file))
+    the file name  for the download (appended to Ufx@bio_db_source_base_url(gont_obo,Ufx))
+    -or call that produces it
+  * iactive(Iact=true)
+    whether the session is interactive, otherwise wget gets --no-verbose
+  * org(Org=pig)
+    organism
+  * release(Release)
+    release number
 
 ==
 ?- std_pig_maps_ense([]).
@@ -46,22 +75,19 @@ Tue 27 Dec 13:09:40 GMT 2022
 
 @author nicos angelopoulos
 @version  0:1 2020/9/10
+@version  0:2 2030/9/30,   added standard options and use of helpers
 @tbd transcripts (see ../human/std_maps_ense.pl).
 
 */
 
 std_pig_maps_ense( Args ) :-
     std_pig_maps_ense( suss, sus_scrofa, Args ).
-    % std_pig_maps_ense( gg6a, gallus_gallus_gca000002315v5, Args ).
 
 std_pig_maps_ense( Tkn, EnsDir, Args ) :-
     Self = std_pig_maps_ense,
     options_append( Self, Args, Opts ),
     bio_db_build_aliases( Opts ),
-    absolute_file_name( bio_db_build_downloads(ense), DnDir ),
-    os_make_path( DnDir ),
-    debuc( Self, 'Downloads dir for ense: ~p', DnDir ),
-    % FtpDir = 'ftp://ftp.ensembl.org/pub/current_gtf/gallus_gallus/',
+    build_dnload_loc( Self, DnDir, Opts ),
     at_con( ['ftp://ftp.ensembl.org/pub/current_gtf/',EnsDir,'/'], '', FtpDir ),
     % FtpDir = 'https://ftp.ensembl.org/pub/current_gtf/gallus_gallus/',
     Found @@ curl( -l, '--no-progress-meter', FtpDir ),

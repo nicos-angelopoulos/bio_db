@@ -140,7 +140,7 @@ std_graphs_strg( Args ) :-
      SymbsPn  = strg_homs_edge_symb,
      os_dir_stem_ext( graphs, SymbsPn, pl, SymbRelF ),
      EdgeSymbsInfos = [ source-From, datetime-DnDt, header-header('Symbol','Symbol',weight),
-                       data_types-data_types(atom,atom,integer)
+                        data_types-data_types(atom,atom,integer)
                      ],
      portray_informed_clauses( SymbEdges, EdgeSymbsInfos, SymbRelF, [] ),
      % portray_clauses( SymbEdges, file(SymbsRel) ),

@@ -1,10 +1,11 @@
 #!/bin/bash
 
-## an attemt to build the bio_db_repo(sitory) on the cluster
-## run this with: sbatch build_bio_db_repo
+## this script can be used to build the bio_db data repo on a SLURM cluster
+## simple run: sbatch build_bio_db_repo
 ## check queue with squeue
 ##
 ## this script builds bio_db_repo at $HOME/.local/share/swi-prolog/pack/Downloads/<repo>
+## complex output run: sbatch --output="${CLUST_OUTS}/%x-%j-outs-`fstamp`.txt" build_bio_db_repo
 
 ## Resource Request
 #SBATCH --job-name=build_bio_db_repo_slurm

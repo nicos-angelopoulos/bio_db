@@ -42,4 +42,4 @@ std_multi_debug( Org ) :-
 % std(pig, maps, gont).
 std(multi, maps, ncbi).
 % std(pig, maps, reac).
-% std(pig, maps, unip).  % this is not avaiable at: https://ftp.ebi.ac.uk/pub/databases/uniprot/current_release/knowledgebase/idmapping/by_organism/
+std(pig, maps, vgnc).

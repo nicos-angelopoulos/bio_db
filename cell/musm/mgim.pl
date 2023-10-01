@@ -5,10 +5,9 @@
                 mgim_musm_mgim_genb/2,
                 mgim_musm_mgim_mrks/2,
                 mgim_musm_mgim_ncbi/2,
-                mgim_musm_mgim_symb/2,
                 mgim_musm_mgim_unip/2,
-                mgim_musm_symb_wdra/2,
-                mgim_musm_mrks_mnme/2,   %fixme: ideally we should have mgim_mnme, instead, or in addition
+                % mgim_musm_mrks_wdra/2,  % i don't think this is built ay more, maybe it was previous token for mnme ?
+                mgim_musm_mrks_mnme/2,    % fixme: ideally we should have mgim_mnme, instead, or in addition
                 mgim_musm_msyn_mgim/2
                 ] ).
 
@@ -29,6 +28,7 @@ mgim is the 4 letter code for the database and its unique ids.
 @author nicos angelopoulos
 @version  0.1 2018/11/3
 @version  0.2 2022/12/25
+@version  0.3 2023/10/1
 
 */
 bio_db_musm_mgim.
@@ -38,7 +38,7 @@ bio_db_musm_mgim.
 MGI marker to chromosomal location.
 
 == 
-?- mgim_musm_mgim_symb(Mgim,'Lmtk3'), 
+?- mgim_musm_mgim_mrks(Mgim,'Lmtk3'), 
    mgim_musm_mgim_chrl( Mgim, Chr, Start, End, Strand ).
 
 Mgim = 3039582,
@@ -58,7 +58,7 @@ mgim_musm_mgim_chrl( Mgi, Chr, Sta, End, Sgn ) :-
 Map predicate from MGI marker to Gene Bank ids.
 
 ==
-?- mgim_musm_mgim_symb( Mgim, 'Lmtk3' ), 
+?- mgim_musm_mgim_mrks( Mgim, 'Lmtk3' ), 
    mgim_musm_mgim_genb( Mgim, GenB ), write( GenB ), nl, fail.
 
 AB288873
@@ -82,7 +82,7 @@ mgim_musm_mgim_genb( X, Y ) :-
 Map predicate from MGI marker to NCBI, Entrez ids.
 
 ==
-?-  mgim_musm_mgim_symb( Mgim, 'Lmtk3' ),
+?-  mgim_musm_mgim_mrks( Mgim, 'Lmtk3' ),
     mgim_musm_mgim_ncbi( Mgim, Ncbi ).
 
 Ncbi = 381983,
@@ -93,34 +93,34 @@ Mgim = 3039582.
 mgim_musm_mgim_ncbi( X, Y ) :-
     bio_db:bio_db_serve( mgim_musm_mgim_ncbi(X,Y) ).
 
-/**  mgim_musm_mgim_mrks( +Mgim, -Symb ).
+/**  mgim_musm_mgim_mrks( +Mgim, -mrks ).
 
-Map predicate between MGI identifier and MGI Marker symbols.
+Map predicate between MGI identifier and MGI Marker mrksols.
 
-MGI uses symbols for many different constructs. This pred includes everything that is not withdrawn.
-This predicate is super-set of mgim_musm_mgim_symb/2.
+MGI uses mrksols for many different constructs. This pred includes everything that is not withdrawn.
+This predicate is super-set of mgim_musm_mgim_mrks/2.
 
 */
 mgim_musm_mgim_mrks( X, Y ) :-
     bio_db:bio_db_serve( mgim_musm_mgim_mrks(X,Y) ).
 
-/**  mgim_musm_mgim_symb( +Mgim, -Symb ).
+/**  mgim_musm_mgim_mrks( +Mgim, -mrks ).
 
-Map predicate between MGI marker and (MGI) symbols.
+Map predicate between MGI marker and (MGI) mrksols.
 
 This is a sub-set of mgim_musm_mgim_mrks/2, constraining to Genes only.
 
 ==
-?- mgim_musm_mgim_symb( Mgim, 'Lmtk3' ).
+?- mgim_musm_mgim_mrks( Mgim, 'Lmtk3' ).
 Mgim = 3039582.
 ==
 */
-mgim_musm_mgim_symb( X, Y ) :-
-    bio_db:bio_db_serve( mgim_musm_mgim_symb(X,Y) ).
+mgim_musm_mgim_mrks( X, Y ) :-
+    bio_db:bio_db_serve( mgim_musm_mgim_mrks(X,Y) ).
 
 /** mgim_musm_mrks_mnme( X, Y ).
 
-Map predicate between MGI marker symbols and Marker names.
+Map predicate between MGI marker mrksols and Marker names.
 
 @tbd should this be replaced by mgim_mnme/2 ? 
 
@@ -133,7 +133,7 @@ mgim_musm_mrks_mnme( X, Y ) :-
 Map predicate from MGI markder ids to Uniprot ids.
 
 ==
-?- mgim_musm_mgim_symb( Mgim, 'Lmtk3' ),
+?- mgim_musm_mgim_mrks( Mgim, 'Lmtk3' ),
    mgim_musm_mgim_unip( Mgim, Unip ).
 
 Mgim = 3039582,
@@ -143,26 +143,26 @@ Unip = 'Q5XJV6'.
 mgim_musm_mgim_unip( Sprt, Seqn ) :-
     bio_db:bio_db_serve( mgim_musm_mgim_unip(Sprt,Seqn) ).
 
-/**  mgim_musm_symb_wdra( +Symb, -Wdra ).
+/**  mgim_musm_mrks_wdra( +mrks, -Wdra ).
 
-Map predicate from MGI symbols to withdrawn names.
+Map predicate from MGI mrksols to withdrawn names.
 
 ==
-?- mgim_musm_symb_wdra( S, W ).
+?- mgim_musm_mrks_wdra( S, W ).
 S = 15006,
 W = 'H2-Q1' ;
 ...
 ==
 */
-mgim_musm_symb_wdra( Symb, Wdra ) :-
-    bio_db:bio_db_serve( mgim_musm_symb_wdra(Symb,Wdra) ).
+mgim_musm_mrks_wdra( mrks, Wdra ) :-
+    bio_db:bio_db_serve( mgim_musm_mrks_wdra(mrks,Wdra) ).
 
 /*  mgim_musm_msyn_mgim( +Syno, -Mgim ).
 
 Map predicate from Synonym to MGI marker ID.
 
 ==
-?- mgim_musm_mgim_symb( Mgim, 'Lmtk3' ),
+?- mgim_musm_mgim_mrks( Mgim, 'Lmtk3' ),
 |    mgim_musm_msyn_mgim( Syno, Mgim ).
 
 Mgim = 3039582,

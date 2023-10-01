@@ -32,7 +32,7 @@
 % ncbi_taxonomy_repo('https://ftp.ncbi.nih.gov/pub/taxonomy/', 'taxdmp.zip', 'names.dmp'). % the first is the download the second is the local name we unzip to
 
 std_multi_maps_ncbi_defaults( Defs ) :-
-                                   Defs = [ db(vgnc),
+                                   Defs = [ db(ncbi),
                                             debug(true),
                                             debug_fetch(true),
                                             debug_url(false),

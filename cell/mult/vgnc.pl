@@ -63,8 +63,6 @@ vgnc_mult_vgnc_symb( X, Y, Z ) :-
 
 Map predicate from VGNC unique integer identifier to unique gene symbol.
 
-*/
-
 ==
 ?- vgnc_mult_vgnc_symb( Vgnc, 'LMTK3' ), vgnc_mult_vgnc_name(19295, Name).
 Name = 'lemur tyrosine kinase 3'.
@@ -74,6 +72,6 @@ Name = 'lemur tyrosine kinase 3'.
 vgnc_mult_vgnc_name( X, Y ) :-
     bio_db:bio_db_serve( vgnc_mult_vgnc_name(X,Y) ).
 
-vgnc_mult_vgnc_name( X, Y ) :-
-    bio_db:bio_db_serve( vgnc_mult_vgnc_name(X,Y) ).
+vgnc_mult_vgnc_name( X, Y, Z ) :-
+    bio_db:bio_db_serve( vgnc_mult_vgnc_name(X,Y,Z) ).
 

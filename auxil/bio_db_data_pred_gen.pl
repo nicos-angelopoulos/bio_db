@@ -49,6 +49,7 @@ bio_db_data_pred_gen :-
 
 bio_db_data_pred_gen_doc( Out, Os, Org-OrgPreds) :-
     write( doing(Out,Os,Org,OrgPreds) ), nl,
+    % ( Os == 'multi.pl' -> trace; true ),
     os_ext( pl, Org, Os ),
     bio_db_data_org_token( Org, Okn ),
     os_files( Subs, dir(Okn) ),
@@ -80,5 +81,6 @@ bio_db_data_pred_gen_prefix( Out ) :-
 
 bio_db_data_org_token( chicken, galg ).
 bio_db_data_org_token( human, homs ).
+bio_db_data_org_token( multi, mult ).
 bio_db_data_org_token( mouse, musm ).
 bio_db_data_org_token( pig, suss ).

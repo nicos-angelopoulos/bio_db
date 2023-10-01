@@ -136,7 +136,7 @@ taxon_names_arg( Arg1, Arg2 ) :-
 taxon_names_map( [], [], [] ).
 taxon_names_map( [row(I,Sec,_Thr,Frt,_Fif)|T], Snms, Gnms ) :-
      ( Frt == 'scientific name' -> 
-          Snms = [ncbi_mult_taxo_gbnm(I,Sec)|TSnms],
+          Snms = [ncbi_mult_taxo_scnm(I,Sec)|TSnms],
           Gnms = TGnms
           ;
           Snms = TSnms,

@@ -165,10 +165,10 @@ bio_db_organism_known( A, T, O ) :-
      
 
 bio_db_organism_token(chicken, galg).
-bio_db_organism_token(human,   homs).
-bio_db_organism_token(mouse,   musm).
-bio_db_organism_token(multi,   mult).
-bio_db_organism_token(pig,     suss).
+bio_db_organism_token(  human, homs).
+bio_db_organism_token(  mouse, musm).
+bio_db_organism_token(  multi, mult).
+bio_db_organism_token(    pig, suss).
 
 /** bio_db_organism_alias( ?Alias, -Org ).
 

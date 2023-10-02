@@ -29,8 +29,7 @@ Predicates defined:
 */
 bio_db_mult_vgnc.
 
-/** vgnc_mult_vgnc_symb(?Vgnc, ?Symb).
-    vgnc_mult_vgnc_symb(?Vgnc, ?Taxo, ?Symb).
+/** vgnc_mult_vgnc_symb(?Vgnc, ?Taxo, ?Symb).
 
 Map predicate from VGNC unique integer identifier to unique gene symbol.
 
@@ -52,14 +51,10 @@ fixme:
 ==
 
 */
-vgnc_mult_vgnc_symb( X, Y ) :-
-    bio_db:bio_db_serve( vgnc_mult_vgnc_symb(X,Y) ).
-
 vgnc_mult_vgnc_symb( X, Y, Z ) :-
     bio_db:bio_db_serve( vgnc_mult_vgnc_symb(X,Y,Z) ).
 
-/** vgnc_mult_vgnc_name(?Vgnc, ?Name).
-    vgnc_mult_vgnc_name(?Vgnc, ?Taxo, ?Name).
+/** vgnc_mult_vgnc_name(?Vgnc, ?Taxo, ?Name).
 
 Map predicate from VGNC unique integer identifier to unique gene symbol.
 
@@ -69,9 +64,6 @@ Name = 'lemur tyrosine kinase 3'.
 ==
 
 */
-vgnc_mult_vgnc_name( X, Y ) :-
-    bio_db:bio_db_serve( vgnc_mult_vgnc_name(X,Y) ).
-
 vgnc_mult_vgnc_name( X, Y, Z ) :-
     bio_db:bio_db_serve( vgnc_mult_vgnc_name(X,Y,Z) ).
 

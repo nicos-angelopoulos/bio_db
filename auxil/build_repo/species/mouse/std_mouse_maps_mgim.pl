@@ -90,6 +90,20 @@ Tue 27 Dec 14:45:59 GMT 2022
    256471 mgim_musm_syno_mgim.pl
 ==
 
+23.10.02
+==
+   677850 mgim_musm_mgim_chrl.pl
+   277346 mgim_musm_mgim_genb.pl
+   677849 mgim_musm_mgim_mnme.pl
+   677849 mgim_musm_mgim_mrks.pl
+   720569 mgim_musm_mgim_ncbi.pl
+    63730 mgim_musm_mgim_symb.pl
+    17005 mgim_musm_mgim_unip.pl
+    59139 mgim_musm_mrks_wdra.pl
+   257377 mgim_musm_msyn_mgim.pl
+
+==
+
 @author nicos angelopoulos
 @version  0.1 2018/11/2
 @version  0.2 2018/2/11, added: map_mouse_mgim_mgim_entz/2.

@@ -151,9 +151,9 @@ cnm_token('Symbol', _, symb).
 cnm_token('RNA_nucleotide_accession.version',_,rnuc).
 cnm_token('genomic_nucleotide_accession.version', _, dnuc).
 % ncbi (probably not used)
-cnm_token('Uni Gene', unig).
-cnm_token('RNA Nucleotide', rnuc).
-cnm_token('DNA Nucleotide', dnuc).
+cnm_token('Uni Gene', _, unig).
+cnm_token('RNA Nucleotide', _, rnuc).
+cnm_token('DNA Nucleotide', _, dnuc).
 % hgnc_cname_known( 'Entrez Gene ID (supplied by NCBI)', 'entz-ncbi' ).
 % multi
 cnm_token(taxon_id, _, taxo).

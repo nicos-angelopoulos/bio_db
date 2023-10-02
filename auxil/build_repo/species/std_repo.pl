@@ -61,8 +61,8 @@ Thu 10 Sep 19:34:38 BST 2020
 @version  0.2 2018/11/12
 @version  0.2 2018/11/12, added pass() option
 @tbd replace csv_ids_rows/3, with Prolog code, that is currently going through R ?
-@tbd on rerunning fails runs, the check for subdirs should be 
-     leaning more to re-generating... ?
+@tbd 23.10.02: need to harmonize the sub_dir() which is in few scripts and type() options (link_to_bio_sub/4). all scripts should have the same option
+@tbd on rerunning fails runs, the check for subdirs should be leaning more towards re-generating... ?
 @see http://stoics.org.uk/~nicos/sware/upsh
 
 */

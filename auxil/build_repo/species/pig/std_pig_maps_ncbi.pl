@@ -24,7 +24,7 @@
 % local libs & sources
 :- lib(de_semi/3).
 :- lib(csv_ids_map/6).
-:- lib(link_to_bio_sub/2).
+:- lib(link_to_bio_sub/4).
 :- lib(bio_db_dnt_times/3).
 :- lib(build_dnload_loc/3).
 :- lib(bio_db_source_url/3).
@@ -93,13 +93,13 @@ std_pig_maps_ncbi( Args ) :-
      at_con( [RemS,pig], '_', PigG2NF ),
      grep( RemS, '^9823', PigG2NF ),
      debuc( Self, 'Grepped pig gene2ensembl into: ~p', [PigG2NF] ),
-     std_pig_maps_ncbi( Self, PigG2NF, Url, DnDt ),
+     std_pig_maps_ncbi( Self, PigG2NF, Url, DnDt, Opts ),
      delete_file( RemS ),
      %pig?: maps_ncbi_rnuc_symb( Self ),
      % maps_ncbi_unig_ncbi,  % unigene is no longer maintained as of Feb.2019
      working_directory( _, Old ).
 
-std_pig_maps_ncbi( Self, PigF, Url, DnDt ) :-
+std_pig_maps_ncbi( Self, PigF, Url, DnDt, Opts ) :-
      TsvOpts = [match_arity(false),separator(0'\t)],
      csv_read_file( PigF, Mtx, TsvOpts ),
      Mtx = [_Comment|Rows],
@@ -117,7 +117,7 @@ std_pig_maps_ncbi( Self, PigF, Url, DnDt ) :-
      csv_ids_map( PigF, ncbi, ensp, Pig, GEnsPF, [header(row('Entrez ID','Ensembl Protein'))|Lenp] ),
      Renp = [to_value_2(pos_integer),to_value_1(pfx_by_de_v('ENS')),datetime(DnDt),source(Url)|Opts],
      csv_ids_map( PigF, ensp, ncbi, Pig, EnsPGF, [header(row('Ensembl Protein','Entrez ID'))|Renp] ),
-     maplist( link_to_bio_sub(ncbi), [GEnsGF,EnsGGF,GEnsPF,EnsPGF] ).
+     maplist( link_to_bio_sub(ncbi), [GEnsGF,EnsGGF,GEnsPF,EnsPGF], [type(maps)|Opts] ).
 
 pos_integer( Numb, Numb ) :-
      integer( Numb ),

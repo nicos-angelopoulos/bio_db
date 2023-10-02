@@ -117,6 +117,7 @@ std_pig_maps_ncbi( Self, PigF, Url, DnDt, Opts ) :-
      csv_ids_map( PigF, ncbi, ensp, Pig, GEnsPF, [header(row('Entrez ID','Ensembl Protein'))|Lenp] ),
      Renp = [to_value_2(pos_integer),to_value_1(pfx_by_de_v('ENS')),datetime(DnDt),source(Url)|Opts],
      csv_ids_map( PigF, ensp, ncbi, Pig, EnsPGF, [header(row('Ensembl Protein','Entrez ID'))|Renp] ),
+     trace,
      maplist( link_to_bio_sub(ncbi), [GEnsGF,EnsGGF,GEnsPF,EnsPGF], [type(maps)|Opts] ).
 
 pos_integer( Numb, Numb ) :-

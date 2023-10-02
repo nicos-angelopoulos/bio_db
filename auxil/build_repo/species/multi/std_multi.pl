@@ -16,11 +16,23 @@
 % local libs & sources
 % :- lib(debug_colours/1).
 
-std_multi_defaults([debug(true),org(multi)]).
+std_multi_defaults( Defs ) :-
+                       Defs = [ debug(true),
+                                iactive(true),
+                                org(multi)
+                              ].
 
 /** std_multi.
 
 Build all the standard bio_db datasets that hold data for multiple organisms.
+
+Opts
+  * debug(Dbg=true)
+    debug this level
+  * iactive(Iact=true)
+    whether the session is interactive, otherwise wget gets --no-verbose
+  * org(multi)
+    organism, multi stands for multiple organisms
 
 @author nicos angelopoulos
 @version  0.1 2023/09/15

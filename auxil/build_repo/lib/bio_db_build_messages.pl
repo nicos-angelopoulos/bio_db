@@ -35,3 +35,6 @@ pack_errors:message( multi_option_miss(List) ) -->
 
 pack_errors:message( bio_db_pred_name_fail(Comp1,Comp2) ) -->
    ['Failed to map fields: ~w and/or ~w, to bio_db predicate name tokens.'-[Comp1,Comp2]].
+
+pack_errors:message( linking_failed(File,Sub,Org,Type) ) -->
+   ['Failed to link file: ~p in db:~w, org: ~w and of type:~w.'-[File,Sub,Org,Type]].

@@ -173,6 +173,10 @@ std_mouse_maps_mgim( Args ) :-
                ],
     csv_ids_map( _, 'Marker Synonyms (pipe-separated)', 'MGI Accession ID', SymbMtx, MapSynoF, SynoOpts ),
 
+    % mgim_musm_mgim_mnme
+    MnmeOpts = [to_value_1(pfx_by_num(true,'MGI:')),source(SymbUrl),datetime(SymbDnt)|Opts],
+    csv_ids_map( _, 'MGI Accession ID', 'Marker Name', SymbMtx, MapWdraF, MnmeOpts ),
+
     % withdrawn, elements, these are under 'Marker Name', so we need to pass cnm_transform()
     WdraOpts = [cnm_ctx(withdrawn),to_value_2(withdrawn),source(SymbUrl),datetime(SymbDnt) | Opts],
     csv_ids_map( _, 'Marker Symbol', 'Marker Name', SymbMtx, MapWdraF, WdraOpts ),

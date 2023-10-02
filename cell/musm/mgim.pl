@@ -7,7 +7,7 @@
                 mgim_musm_mgim_ncbi/2,
                 mgim_musm_mgim_unip/2,
                 mgim_musm_mrks_wdra/2,
-                mgim_musm_mrks_mnme/2,
+                mgim_musm_mgim_mnme/2,
                 mgim_musm_msyn_mgim/2
                 ] ).
 
@@ -118,15 +118,15 @@ Mgim = 3039582.
 mgim_musm_mgim_symb( X, Y ) :-
     bio_db:bio_db_serve( mgim_musm_mgim_symb(X,Y) ).
 
-/** mgim_musm_mrks_mnme( X, Y ).
+/** mgim_musm_mgim_mnme( X, Y ).
 
 Map predicate between MGI marker mrksols and Marker names.
 
 @tbd should this be replaced by mgim_mnme/2 ? 
 
 */
-mgim_musm_mrks_mnme( X, Y ) :-
-    bio_db:bio_db_serve( mgim_musm_mrks_mnme(X,Y) ).
+mgim_musm_mgim_mnme( X, Y ) :-
+    bio_db:bio_db_serve( mgim_musm_mgim_mnme(X,Y) ).
 
 /**  mgim_musm_mgim_unip( +Mgim, -Unip ).
 

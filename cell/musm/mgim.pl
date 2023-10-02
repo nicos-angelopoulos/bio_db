@@ -3,11 +3,12 @@
                 %       + MGI database: fixme: url
                 mgim_musm_mgim_chrl/5,
                 mgim_musm_mgim_genb/2,
+                mgim_musm_mgim_mnme/2,
                 mgim_musm_mgim_mrks/2,
                 mgim_musm_mgim_ncbi/2,
+                mgim_musm_mgim_symb/2,
                 mgim_musm_mgim_unip/2,
                 mgim_musm_mrks_wdra/2,
-                mgim_musm_mgim_mnme/2,
                 mgim_musm_msyn_mgim/2
                 ] ).
 
@@ -77,6 +78,27 @@ false.
 mgim_musm_mgim_genb( X, Y ) :-
     bio_db:bio_db_serve( mgim_musm_mgim_genb(X,Y) ).
 
+/** mgim_musm_mgim_mnme( X, Y ).
+
+Map predicate between MGI marker mrksols and Marker names.
+
+@tbd should this be replaced by mgim_mnme/2 ? 
+
+*/
+mgim_musm_mgim_mnme( X, Y ) :-
+    bio_db:bio_db_serve( mgim_musm_mgim_mnme(X,Y) ).
+
+/**  mgim_musm_mgim_mrks( +Mgim, -Mrks ).
+
+Map predicate between MGI identifier and MGI Marker Symbols.
+
+MGI uses marker symbols for many different constructs.
+This is a super-set of mgim_musm_mgim_symb/2, which constrains to Genes only.
+
+*/
+mgim_musm_mgim_mrks( X, Y ) :-
+    bio_db:bio_db_serve( mgim_musm_mgim_mrks(X,Y) ).
+
 /**  mgim_musm_mgim_ncbi( +Mgim, -Ncbi ).
 
 Map predicate from MGI marker to NCBI, Entrez ids.
@@ -93,18 +115,7 @@ Mgim = 3039582.
 mgim_musm_mgim_ncbi( X, Y ) :-
     bio_db:bio_db_serve( mgim_musm_mgim_ncbi(X,Y) ).
 
-/**  mgim_musm_mgim_mrks( +Mgim, -Mrks ).
-
-Map predicate between MGI identifier and MGI Marker Symbols.
-
-MGI uses marker symbols for many different constructs.
-This is a super-set of mgim_musm_mgim_symb/2, which constrains to Genes only.
-
-*/
-mgim_musm_mgim_mrks( X, Y ) :-
-    bio_db:bio_db_serve( mgim_musm_mgim_mrks(X,Y) ).
-
-/**  mgim_musm_mgim_symb( +Mgim, -mrks ).
+/**  mgim_musm_mgim_symb( +Mgim, -Mrks ).
 
 Map predicate between MGI marker and (MGI) mrksols.
 
@@ -117,16 +128,6 @@ Mgim = 3039582.
 */
 mgim_musm_mgim_symb( X, Y ) :-
     bio_db:bio_db_serve( mgim_musm_mgim_symb(X,Y) ).
-
-/** mgim_musm_mgim_mnme( X, Y ).
-
-Map predicate between MGI marker mrksols and Marker names.
-
-@tbd should this be replaced by mgim_mnme/2 ? 
-
-*/
-mgim_musm_mgim_mnme( X, Y ) :-
-    bio_db:bio_db_serve( mgim_musm_mgim_mnme(X,Y) ).
 
 /**  mgim_musm_mgim_unip( +Mgim, -Unip ).
 

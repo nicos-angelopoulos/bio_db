@@ -131,7 +131,6 @@ std_mouse_maps_mgim( Args ) :-
     bio_db_add_infos_file( ChrlF, [source(SymbUrl),header(ChrlHdr),datetime(SymbDnt)] ),
     % here( DnDir, SymbInF, ChrlF ),
     mgim_dnload_report( seq, Self, SeqUrl, DnDir, _SeqRelF, SeqMtx, SeqDnt, Opts ),
-    % select only entries that have 'Gene' @ 'Marker Type' column
     mtx_column_values_select( SeqMtx, 'Marker Type', 'Gene', GenMtx, _, [] ),
     debuc( Self, dims, gene/GenMtx ),
     GenMtx = [_|GenRows],
@@ -175,7 +174,7 @@ std_mouse_maps_mgim( Args ) :-
     csv_ids_map( _, 'Marker Synonyms (pipe-separated)', 'MGI Accession ID', SymbMtx, MapSynoF, SynoOpts ),
 
     % withdrawn, elements, these are under 'Marker Name', so we need to pass cnm_transform()
-    WdraOpts = [cnm_transform(mouse_cnm_withdrawn),to_value_2(withdrawn), source(SymbUrl), datetime(SymbDnt) | Opts],
+    WdraOpts = [cnm_ctx(withdrawn),to_value_2(withdrawn),source(SymbUrl),datetime(SymbDnt) | Opts],
     csv_ids_map( _, 'Marker Symbol', 'Marker Name', SymbMtx, MapWdraF, WdraOpts ),
     MapFs = [GenBMapF,ChrlF,UnipMapF,MapSynoF,MapWdraF,MapNcbiF],
     Cpts = call_options([org(mouse),type(maps)]),
@@ -202,9 +201,6 @@ mgim_dnload_report( Which, Self, Url, DnDir, BaseF, Mtx, DntStamp, Opts ) :-
 sep_by( _, '', _ ) :- !, fail. % do not include empties
 sep_by( Sep, Atom, List ) :-
     atomic_list_concat(  List, Sep, Atom ).
-
-mouse_cnm_withdrawn( 'Marker Symbol', symb ).
-mouse_cnm_withdrawn( 'Marker Name',  wdra ).
 
 withdrawn( Full, Rem ) :-
     atom_concat( 'withdrawn, = ', Rem, Full ).

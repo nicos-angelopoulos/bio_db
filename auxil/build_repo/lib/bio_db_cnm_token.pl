@@ -134,9 +134,12 @@ cnm_token('CCDS IDs', _, ccds).
 cnm_token('ccds_id', _, ccds).
 cnm_token('Chromosome', _, chrb).      % chromosome base eg 2p24.1  % old
 cnm_token('ensembl_gene_id', _, ensg ).                   
+cnm_token('Ensembl gene', _, ensg ).                   
 cnm_token('Ensembl ID + supplied by Ensembl', hgnc, ensg).
-cnm_token('Entrez Gene ID', hgnc, 'ncbi-appv').
-cnm_token('entrez_id', _, 'ncbi').
+cnm_token('Ensembl Protein', _, ensp).                   
+cnm_token('Entrez Gene ID', hgnc, 'ncbi-appv').   % fixme: check this is not ncbi, and if not give it something like ncba
+cnm_token('Entrez ID', _, ncbi).
+cnm_token('entrez_id', _, ncbi).
 cnm_token('HGNC ID', _, hgnc).
 cnm_token('hgnc_id', _, hgnc).
 cnm_token(location, _, chrb).          % chromosome base eg 2p24.1
@@ -147,6 +150,10 @@ cnm_token('Symbol', _, symb).
 % human.ncbi
 cnm_token('RNA_nucleotide_accession.version',_,rnuc).
 cnm_token('genomic_nucleotide_accession.version', _, dnuc).
+% ncbi (probably not used)
+cnm_token('Uni Gene', unig).
+cnm_token('RNA Nucleotide', rnuc).
+cnm_token('DNA Nucleotide', dnuc).
 % hgnc_cname_known( 'Entrez Gene ID (supplied by NCBI)', 'entz-ncbi' ).
 % multi
 cnm_token(taxon_id, _, taxo).

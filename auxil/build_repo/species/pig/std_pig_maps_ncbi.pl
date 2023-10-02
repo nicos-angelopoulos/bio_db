@@ -31,141 +31,6 @@
 :- lib(ens_fa_peptide_gene_rows/2).     % /2, fixme: should be more local
 :- lib(url_file_local_date_mirror/3).
 
-:- debuc(url_file).
-
-ncbi_repo( 'ftp://ftp.ncbi.nih.gov/gene/DATA/' ).
-ncbi_dnload( Loc ) :-
-     absolute_file_name( bio_db_build_downloads(ncbi), Loc ),
-     os_make_path( Loc, debug(true) ).
-
-% maps_ncbi_ensp_ensg.
-%
-% This is a later addition.
-% See ens_fa_peptide_gene_rows..pl
-%
-maps_ncbi_ensp_ensg :-
-     % Dir = '/usr/local/users/nicos/work/db/data/ncbi',
-     fixme,
-     ncbi_dnload( Dir ),
-     EnsF= 'Homo_sapiens.GRCh38.pep.all.fa',
-     working_directory( Old, Dir ),
-     ens_fa_peptide_gene_rows( EnsF, EnsRows ),
-     csv_ids_map( _CsvF, ensp, ensg, EnsRows, OutF, [prefix(ncbi),header(row('Ensembl Protein','Ensembl Gene'))] ),
-     link_to_bio_sub(ncbi, OutF ),
-     working_directory( _, Old ).
-
-maps_ncbi_ncbi_gont :-
-     % Dir = '/usr/local/users/nicos/work/db/data/ncbi',
-     ncbi_dnload( Dir ),
-     ncbi_repo( Repo ),
-     os_path( Repo, 'gene2go.gz', Url ),
-     url_file_local_date_mirror( Url, Dir, [debug(true),interface(wget)] ),
-     working_directory( Old, Dir ),
-     @ rm( -f, gene2go_pig ),
-     @ rm( -f, gene2go ),
-     @ gunzip( -f, -k, 'gene2go.gz' ),
-     % debuc( by_unix ),
-     grep(gene2go, '^9823', gene2go_pig),
-     % system( 'grep "^9606" gene2go | cat gene2go_hs' ),
-     working_directory( _, Old ).
-
-maps_ncbi_rnuc_symb( Self ) :-
-     debuc( by_unix ),
-     ncbi_dnload( Dir ),
-     ncbi_repo( Repo ),
-     ncbi_humanise_data( gene2accession, Dir, Repo, Old, HsStem, HsUrl, HsDnDt ),
-
-     file_name_extension( HsStem, tmp, TmpF ),
-     @ mv( -f, HsStem, TmpF ),
-     open( HsStem, write, HsOut ),
-
-     Cnms = [ 'tax_id','GeneID','status','RNA_nucleotide_accession.version','RNA_nucleotide_gi','protein_accession.version','protein_gi',
-              'genomic_nucleotide_accession.version','genomic_nucleotide_gi','start_position_on_the_genomic_accession','end_position_on_the_genomic_accession',
-               'orientation','assembly','mature_peptide_accession.version','mature_peptide_gi','Symbol'],
-     at_con( Cnms, '\t', HdrLn ),
-     write( HsOut, HdrLn ),
-     nl( HsOut ),
-     close( HsOut ),
-     atomic_list_concat( [cat,TmpF,'>>',HsStem], ' ', Cat ),
-     debuc( Self, 'Shelling: ~w', [Cat] ),
-     shell( Cat ),
-     % @ mv( -f, HsStem, HsStem ),
-
-     CIMOpts = [ cnm_transform(ncbi_gene2asseccion_cnms), prefix(ncbi),
-                 to_value_1(de_versionise),
-                 to_value_2(is_a_symbol),
-                 datetime(HsDnDt), source(HsUrl), header(row('RNA Nucleotide','HGNC Symbol'))
-     ],
-     RNAnucl = 'RNA_nucleotide_accession.version',
-     debuc( Self, 'Csv Map for: ~w vs ~w', [RNAnucl,'Symbol'] ),
-     csv_ids_map( HsStem, RNAnucl, 'Symbol', _Csv1, OutF, CIMOpts ),
-
-
-     DNAOpts = [ cnm_transform(ncbi_gene2asseccion_cnms), prefix(ncbi),
-                 to_value_1(de_versionise),
-                 to_valuse_2(is_a_symbol),
-                 datetime(HsDnDt), source(HsUrl), header(row('DNA Nucleotide','HGNC Symbol'))
-     ],
-     GENnucl = 'genomic_nucleotide_accession.version', 
-     debuc( Self, 'Csv Map for: ~w vs ~w', [GENnucl,'Symbol'] ),
-     csv_ids_map( HsStem, GENnucl, 'Symbol', _Csv2, DNAF, DNAOpts ),
-     delete_file( TmpF ),
-     os_make_path( maps ),
-     @ mv( -f, OutF, maps ),
-     @ mv( -f, DNAF, maps ),
-     working_directory( _, maps ),
-     link_to_bio_sub(ncbi, OutF ),
-     link_to_bio_sub(ncbi, DNAF ),
-     working_directory( _, Old ).
-
-maps_ncbi_unig_ncbi :-
-     ncbi_dnload( Dir ),
-     ncbi_repo( Repo ),
-     os_path( Repo, 'gene2unigene', Url ),
-     url_file_local_date_mirror( Url, Dir, [debug(true),interface(wget)] ),
-     working_directory( Old, Dir ),
-     bio_db_dnt_times( 'gene2unigene', UgDnDt, _DnEn ),
-
-     csv_read_file( gene2unigene, [_|Csv], [separator(0'\t),match_arity(false)] ),
-     Hdr = row(ncbi,unig),
-     MOpts = [prefix(ncbi),to_value_1(hs_unig),datetime(UgDnDt),source(Url),header(row('Uni Gene','Entrez ID'))], 
-     csv_ids_map( _, 'unig', 'ncbi', [Hdr|Csv], OutF, MOpts ),
-     os_make_path( maps ),
-     @ mv( -f, OutF, maps ),
-     working_directory( _, maps ),
-     link_to_bio_sub( ncbi, OutF ), 
-     working_directory( _, Old ).
-
-ncbi_humanise_data( Stem, Dir, Repo, Old, HsStem, Url, DnDt ) :-
-     file_name_extension( Stem, gz, GzF ),
-     os_path( Repo, GzF, Url ),
-     url_file_local_date_mirror( Url, Dir, [debug(true),interface(wget)] ),
-     os_path( Dir, GzF, DnlF ),
-     bio_db_dnt_times( DnlF, DnDt, _DnEn ),
-
-     working_directory( Old, Dir ),
-     atomic_list_concat( [Stem,pig], '_', PgStem ),
-     @ rm( -f, HsStem ),
-     @ rm( -f, Stem ),
-     @ gunzip( -f, -k, GzF ),
-     grep( Stem, '^9823', PgStem ),
-    @ rm( -f, Stem ). % fixme: untested
-
-hs_unig( In, In ) :-
-     atom_concat( 'Hs.', _, In ).
-
-de_versionise( ProductVersion, Product ) :-
-     atomic_list_concat( [Product,_Version], '.', ProductVersion ),
-     !.
-
-is_a_symbol( Symb, Symb ) :-
-     hgnc:hgnc_homs_symb_hgnc( Symb, _ ),
-     !.
-
-ncbi_gene2asseccion_cnms( 'RNA_nucleotide_accession.version', rnuc ).
-ncbi_gene2asseccion_cnms( 'genomic_nucleotide_accession.version', dnuc ).
-ncbi_gene2asseccion_cnms( 'Symbol', symb ).
-
 std_pig_maps_ncbi_defaults( Defs ) :-
                                Defs = [ db(ncbi),
                                         debug(true),
@@ -205,6 +70,7 @@ Opts
 @version  0.1 2014/7/23
 @version  0.2 2022/12/26, entz-> ncbi, url via wget, csv without R
 @version  0.3 2023/9/30,  new style opts and helpers
+@tbd  can we implement for pig maps_ncbi_rnuc_symb/3, maps_ncbi_ensp_ensg/0 and maps_ncbi_ncbi_gont/0 from human ?
 
 */
 std_pig_maps_ncbi( Args ) :-
@@ -227,13 +93,13 @@ std_pig_maps_ncbi( Args ) :-
      at_con( [RemS,pig], '_', PigG2NF ),
      grep( RemS, '^9823', PigG2NF ),
      debuc( Self, 'Grepped pig gene2ensembl into: ~p', [PigG2NF] ),
-     std_maps_ncbi( Self, PigG2NF, Url, DnDt ),
+     std_pig_maps_ncbi( Self, PigG2NF, Url, DnDt ),
      delete_file( RemS ),
      %pig?: maps_ncbi_rnuc_symb( Self ),
      % maps_ncbi_unig_ncbi,  % unigene is no longer maintained as of Feb.2019
      working_directory( _, Old ).
 
-std_maps_ncbi( Self, PigF, Url, DnDt ) :-
+std_pig_maps_ncbi( Self, PigF, Url, DnDt ) :-
      TsvOpts = [match_arity(false),separator(0'\t)],
      csv_read_file( PigF, Mtx, TsvOpts ),
      Mtx = [_Comment|Rows],
@@ -241,20 +107,17 @@ std_maps_ncbi( Self, PigF, Url, DnDt ) :-
      % GEnsGF = entrez_gene_id_ensg.pl,
      % csv_filter_by_column( New, tax_id, =(9606), HS ),
      % mtx_column_values_select( New, tax_id, 9823, Pig, _, true ),
-    debuc( Self, length, hs_len/Pig ),
-     Lens = [prefix(ncbi),to_value_1(pos_integer),to_value_2(pfx_by('ENS')),datetime(DnDt),source(Url),org(pig)],
-     Rens = [prefix(ncbi),to_value_2(pos_integer),to_value_1(pfx_by('ENS')),datetime(DnDt),source(Url),org(pig)],
+     debuc( Self, length, hs_len/Pig ),
+     Lens = [to_value_1(pos_integer),to_value_2(pfx_by('ENS')),datetime(DnDt),source(Url)|Opts],
+     Rens = [to_value_2(pos_integer),to_value_1(pfx_by('ENS')),datetime(DnDt),source(Url)|Opts],
      csv_ids_map( PigF, ncbi, ensg, Pig, GEnsGF, [header(row('Entrez ID','Ensembl Gene'))|Lens] ),
      csv_ids_map( PigF, ensg, ncbi, Pig, EnsGGF, [header(row('Ensembl Gene','Entrez ID'))|Rens] ),
      % need to ensure prots are of ENSP  there are - in some entries
-     Lenp = [prefix(ncbi),to_value_1(pos_integer),to_value_2(pfx_by_de_v('ENS')),datetime(DnDt),source(Url),org(pig)],
+     Lenp = [to_value_1(pos_integer),to_value_2(pfx_by_de_v('ENS')),datetime(DnDt),source(Url)|Opts],
      csv_ids_map( PigF, ncbi, ensp, Pig, GEnsPF, [header(row('Entrez ID','Ensembl Protein'))|Lenp] ),
-     Renp = [prefix(ncbi),to_value_2(pos_integer),to_value_1(pfx_by_de_v('ENS')),datetime(DnDt),source(Url),org(pig)],
+     Renp = [to_value_2(pos_integer),to_value_1(pfx_by_de_v('ENS')),datetime(DnDt),source(Url)|Opts],
      csv_ids_map( PigF, ensp, ncbi, Pig, EnsPGF, [header(row('Ensembl Protein','Entrez ID'))|Renp] ),
-     maplist( link_to_bio_sub_pig(ncbi), [GEnsGF,EnsGGF,GEnsPF,EnsPGF] ).
-
-link_to_bio_sub_pig( Db, File ) :-
-     link_to_bio_sub( Db, File, org(pig) ).
+     maplist( link_to_bio_sub(ncbi), [GEnsGF,EnsGGF,GEnsPF,EnsPGF] ).
 
 pos_integer( Numb, Numb ) :-
      integer( Numb ),
@@ -296,11 +159,3 @@ write_lines(Codes, Out, Write) :-
         write( Write, Line ), nl( Write ),
         read_line_to_codes(Out, Line2),
         write_lines(Line2, Out, Write).
-
-ncbi_cname_known( 'HGNC Symbol', symb ).
-ncbi_cname_known( 'Ensembl Gene', ensg ).
-ncbi_cname_known( 'Ensembl Protein', ensp ).
-ncbi_cname_known( 'Entrez ID', ncbi ).
-ncbi_cname_known( 'Uni Gene', unig ).
-ncbi_cname_known( 'RNA Nucleotide', rnuc ).
-ncbi_cname_known( 'DNA Nucleotide', dnuc ).

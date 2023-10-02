@@ -54,4 +54,4 @@ std_multi_debug( Org ) :-
 % std(pig, maps, gont).
 std(multi, maps, ncbi).
 % std(pig, maps, reac).
-std(pig, maps, vgnc).
+std(multi, maps, vgnc).

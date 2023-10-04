@@ -124,8 +124,6 @@ std_mouse_maps_mgim( Args ) :-
     % 23.09.25: Marker Symbol was mapping to symb, this is not specific enough, there are 677692 lines, 
     %           renamed it to mrks (at bio_db_cnm_token/2,3 and cnm_token/2,3).
     %
-    SymbMapFs = [SymbMapF],
-    link_to_bio_sub( mgim, SymbMapFs, [org(mouse),type(maps)] ),
     SymbMtx = [SymbHdr|SymbRows],
     % mgim_musm_mgim_chr/5 @ 677720
     findall( mgim_musm_mgim_chrl(RMgi,RChr,RStart,REnd,RSign), (  member(SymbRow,SymbRows),
@@ -191,8 +189,8 @@ std_mouse_maps_mgim( Args ) :-
     % withdrawn, elements, these are under 'Marker Name', so we need to pass cnm_transform()
     WdraOpts = [cnm_ctx(withdrawn),to_value_2(withdrawn),source(SymbUrl),datetime(SymbDnt) | Opts],
     csv_ids_map( _, 'Marker Symbol', 'Marker Name', SymbMtx, MapWdraF, WdraOpts ),
-    MapFs = [GenBMapF,ChrlF,UnipMapF,MapSynoF,MapMnmeF,MapWdraF,MapNcbiF],
-    link_to_bio_sub(mgim), MapFs, [org(mouse),type(maps)] ),
+    MapFs = [SymbMapF,GenBMapF,ChrlF,UnipMapF,MapSynoF,MapMnmeF,MapWdraF,MapNcbiF],
+    link_to_bio_sub( mgim, MapFs, [org(mouse),type(maps)] ),
     working_directory( _, Old ),
     % here( here(GenBMapF,DnDir,SeqRelF) ).
     debuc( Self, end, true ).

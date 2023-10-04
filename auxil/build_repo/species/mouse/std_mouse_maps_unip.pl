@@ -127,9 +127,7 @@ std_mouse_maps_unip( Args ) :-
      % Files = [HgncF,FromHgncF,EtzF,UniGF,EnspF],
      % Files = [MgiF,EtzF,UniGF,EnspF,SymbF,GynoF],
      Files = [MgiF,EtzF,EnspF,SymbF,GynoF],
-     Cpts = [org(mouse),type(maps)],
-     map_list_options( link_to_bio_sub(unip), Files, call_options(Cpts) ),
-
+     link_to_bio_sub( unip, Files, [org(mouse),type(maps)] ),
      bio_db_dnt_times( File, SwDnDt, _SwDnEn ),
      SwOpts = [source(Url),datetime(SwDnDt)],
      bio_db_add_infos_to( [header(row('Ensembl_Protein','UniProt'))|SwOpts], 'maps/unip_musm_ensp_unip.pl' ),

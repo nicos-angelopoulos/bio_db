@@ -15,7 +15,7 @@
 
 % local libs & sources
 :- lib(csv_ids_map/6).
-:- lib(link_to_bio_sub/4).
+:- lib(link_to_bio_sub/3).
 :- lib(bio_db_source_url/3).
 :- lib(build_dnload_loc/3).
 :- lib(url_file_local_date_mirror/3).

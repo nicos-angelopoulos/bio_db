@@ -163,6 +163,7 @@ std_mouse_maps_ense( Args ) :-
     os_make_path( maps ),
     maplist( mv_to_sub(maps), Pls ),
     @ rm( -f, Stem ),
+    working_directory( _, maps ),
     link_to_bio_sub( ense, Pls, [org(mouse),type(maps)] ),
     working_directory( _, Old ),
     debuc( Self, '...Done', true ).

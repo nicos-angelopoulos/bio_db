@@ -160,15 +160,12 @@ std_mouse_maps_ense( Args ) :-
                          bio_db_add_infos_to([header(Header)|AddOpts], PlF)
                          ),
                          _PlFs ),
-     os_make_path( maps ),
-     maplist( mv_to_sub(maps), Pls ),
+    os_make_path( maps ),
+    maplist( mv_to_sub(maps), Pls ),
     @ rm( -f, Stem ),
-     working_directory( _, maps ),
-    Cpts = call_options([org(mouse)]),
-     map_list_options( link_to_bio_sub(ense), Pls, Cpts ),
-     working_directory( _, Old ),
-     debuc( Self, '...Done', true ).
-
+    link_to_bio_sub( ense, Pls, [org(mouse),type(maps)] ),
+    working_directory( _, Old ),
+    debuc( Self, '...Done', true ).
 
 mv_to_sub( Sub, File ) :-
      os_path( Sub, File, Rel ),

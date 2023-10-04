@@ -134,18 +134,15 @@ std_mouse_graphs_strg( Args ) :-
     delete_file( TxtF ),
     % @ rm( -rf, graphs ), don't do that ! there are now multiple downloads from string..
     os_make_path( graphs, debug(true) ),
-
     % Trg = 'graphs/edge_strg_mouse.pl',
     os_dir_stem_ext( graphs, EnspPn, pl, EnspRelF ),
     @ rm( -f, EnspRelF ),
     @ mv( File, EnspRelF ),
-
     mouse_strg_symbolise_edges( Self, EnspPn, EnspRelF, UnoSymbEdges ),
     sort( UnoSymbEdges, SymbEdges ),
     length( SymbEdges, SymbEdgesLen ),
     debuc( Self, 'unique symbol edges (mouse): ~w', [SymbEdgesLen] ),
     EdgeSymbsF = 'graphs/strg_musm_edge_symb.pl',
-
     bio_db_dnt_times( Bname, DnDt, _EndDt ),
     EdgeSymbsInfos = [ source-SrcUrl, datetime-DnDt, header-header('Symbol','Symbol',weight),
                        data_types-data_types(atom,atom,integer)
@@ -154,16 +151,13 @@ std_mouse_graphs_strg( Args ) :-
     % SymbOpts = [source(From),datetime(DnDt),header(row('MGI_Symbol','MGI_Symbol',weight))],
     % bio_db_add_infos_to( SymbOpts, EdgeSymbsF ),
     debuc( Self, wrote, EdgeSymbsF ),
-
     MousOpts = [ source(SrcUrl), datetime(DnDt),
                   header(row('Ensembl_Protein','Ensembl_Protein',weight))
                 ],
     debuc( Self, task(stop), infosise(copy_stream(EnspRelF )) ),
     bio_db_add_infos_to( MousOpts, EnspRelF ),
     debuc( Self, task(stop), infosise(copy_stream) ),
-
-    link_to_bio_sub( strg, EnspRelF, [org(mouse),type(graphs)] ),
-    link_to_bio_sub( strg, EdgeSymbsF, [org(mouse),type(graphs)] ),
+    link_to_bio_sub( strg, [EnspRelF,EdgeSymbsF], [org(mouse),type(graphs)] ),
     working_directory( _, Here ).
 
 % At 13:34:57 on 10th of Jun 2023 starting task: symbolise(streamed).

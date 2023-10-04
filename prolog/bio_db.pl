@@ -822,17 +822,19 @@ bio_db_citation( Atom, bibtex(Type,Key,Pairs) ) :-
    * string
    * unip 
 
+@tbd  fixme: this gets out of synch for new dbs, maybe have it in other location or throw a message if it fails ?
 */
-bio_db_source( maps, hgnc ).
-bio_db_source( maps, gont ).
-bio_db_source( maps, unip ).
-bio_db_source( maps, ncbi ).
-bio_db_source( graphs, string ).
+bio_db_source(maps, hgnc).
+bio_db_source(maps, gont).
+bio_db_source(maps, ncbi).
+bio_db_source(maps, unip).
+bio_db_source(maps, vgnc).
+bio_db_source(graphs, string ).
 % bio_db_source( graphs, gont ). % these are used for aliases, so gont already exists
 bio_db_source( graphs, reactome ).
 
-bio_db_sub( graphs ).
-bio_db_sub( maps ).
+bio_db_sub(graphs).
+bio_db_sub(maps).
 
 bio_db_setting_default( 'bio_db_root', BioDbRoot ) :-
     absolute_file_name( pack(bio_db), BioDb ),

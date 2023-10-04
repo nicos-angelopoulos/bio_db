@@ -21,10 +21,10 @@
 :- lib(url_file_local_date_mirror/3).
 :- lib(pfx_by/4).
 :- lib(csv_ids_map/6).
-:- lib(link_to_bio_sub/4).
+:- lib(link_to_bio_sub/3).
+:- lib(build_dnload_loc/3).
 :- lib(bio_db_add_infos/1).  % bio_db_add_infos_file/2.
 :- lib(bio_db_source_url/3).
-:- lib(build_dnload_loc/3).
 
 % mgim_url( 'http://www.informatics.jax.org/downloads/reports' ).
 
@@ -125,8 +125,7 @@ std_mouse_maps_mgim( Args ) :-
     %           renamed it to mrks (at bio_db_cnm_token/2,3 and cnm_token/2,3).
     %
     SymbMapFs = [SymbMapF],
-    Cpts = call_options([org(mouse),type(maps)]),
-    map_list_options( link_to_bio_sub(mgim), SymbMapFs, Cpts ),
+    link_to_bio_sub( mgim, SymbMapFs, [org(mouse),type(maps)] ),
     SymbMtx = [SymbHdr|SymbRows],
     % mgim_musm_mgim_chr/5 @ 677720
     findall( mgim_musm_mgim_chrl(RMgi,RChr,RStart,REnd,RSign), (  member(SymbRow,SymbRows),
@@ -186,18 +185,14 @@ std_mouse_maps_mgim( Args ) :-
                  | Opts
                ],
     csv_ids_map( _, 'Marker Synonyms (pipe-separated)', 'MGI Accession ID', SymbMtx, MapSynoF, SynoOpts ),
-
     % mgim_musm_mgim_mnme
     MnmeOpts = [to_value_1(pfx_by_num(true,'MGI:')),source(SymbUrl),datetime(SymbDnt)|Opts],
     csv_ids_map( _, 'MGI Accession ID', 'Marker Name', SymbMtx, MapMnmeF, MnmeOpts ),
-
     % withdrawn, elements, these are under 'Marker Name', so we need to pass cnm_transform()
     WdraOpts = [cnm_ctx(withdrawn),to_value_2(withdrawn),source(SymbUrl),datetime(SymbDnt) | Opts],
     csv_ids_map( _, 'Marker Symbol', 'Marker Name', SymbMtx, MapWdraF, WdraOpts ),
     MapFs = [GenBMapF,ChrlF,UnipMapF,MapSynoF,MapMnmeF,MapWdraF,MapNcbiF],
-    Cpts = call_options([org(mouse),type(maps)]),
-    map_list_options( link_to_bio_sub(mgim), MapFs, Cpts ),
-
+    link_to_bio_sub(mgim), MapFs, [org(mouse),type(maps)] ),
     working_directory( _, Old ),
     % here( here(GenBMapF,DnDir,SeqRelF) ).
     debuc( Self, end, true ).

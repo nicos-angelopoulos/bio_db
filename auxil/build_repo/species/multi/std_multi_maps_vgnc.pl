@@ -95,7 +95,7 @@ std_multi_maps_vgnc( Args ) :-
      mtx_map( TxtF, [vgnc_id:vgnc:de_semi('VGNC'),taxon_id,name], VgncNameF, MOpts ),
      % debuc( Self, 'doing links...', [] ),
      Files = [VgncSymbF,VgncNameF],
-     link_to_bio_sub( multi, Files, [org(multi),type(maps)] ),
+     link_to_bio_sub( vgnc, Files, [org(multi),type(maps)] ),
      % file_name_extension( TxtF, gz, GzF ),
      % delete_file( TxtF ),
      working_directory( _, Old ).

@@ -132,7 +132,6 @@ std_mouse_maps_gont( Args ) :-
     GShdr = header(row('GO_Term','Evidence','MGI Marker Accession ID')),
 	bio_db_add_infos_to( [GShdr|GSopts], GsF ),
     % maplist( link_to_map_sub(gont), OutFs ),  % does this work ?
-    link_to_bio_sub( gont, GsF, [org(mouse),type(maps)]  ),
-    link_to_bio_sub( gont, MapF, [org(mouse),type(maps)] ),
+    link_to_bio_sub( gont, [GsF,MapF], [org(mouse),type(maps)]  ),
     @ rm( -f, GontF ),
     working_directory( _, Old ).

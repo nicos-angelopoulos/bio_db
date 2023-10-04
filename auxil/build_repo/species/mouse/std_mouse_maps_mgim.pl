@@ -189,7 +189,8 @@ std_mouse_maps_mgim( Args ) :-
     % withdrawn, elements, these are under 'Marker Name', so we need to pass cnm_transform()
     WdraOpts = [cnm_ctx(withdrawn),to_value_2(withdrawn),source(SymbUrl),datetime(SymbDnt) | Opts],
     csv_ids_map( _, 'Marker Symbol', 'Marker Name', SymbMtx, MapWdraF, WdraOpts ),
-    MapFs = [SymbMapF,GenBMapF,ChrlF,UnipMapF,MapSynoF,MapMnmeF,MapWdraF,MapNcbiF],
+    % Careful ! MapMarksF is the symbols file, and SymbMapF is the marks file...
+    MapFs = [SymbMapF,GenBMapF,ChrlF,UnipMapF,MapSynoF,MapMnmeF,MapWdraF,MapNcbiF,MapMrksF],
     link_to_bio_sub( mgim, MapFs, [org(mouse),type(maps)] ),
     working_directory( _, Old ),
     % here( here(GenBMapF,DnDir,SeqRelF) ).

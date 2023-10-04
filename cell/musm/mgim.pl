@@ -155,8 +155,8 @@ W = 'H2-Q1' ;
 ...
 ==
 */
-mgim_musm_mrks_wdra( mrks, Wdra ) :-
-    bio_db:bio_db_serve( mgim_musm_mrks_wdra(mrks,Wdra) ).
+mgim_musm_mrks_wdra( Mrks, Wdra ) :-
+    bio_db:bio_db_serve( mgim_musm_mrks_wdra(Mrks,Wdra) ).
 
 /*  mgim_musm_msyn_mgim( +Syno, -Mgim ).
 

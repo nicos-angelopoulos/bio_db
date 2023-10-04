@@ -144,7 +144,7 @@ Unip = 'Q5XJV6'.
 mgim_musm_mgim_unip( Sprt, Seqn ) :-
     bio_db:bio_db_serve( mgim_musm_mgim_unip(Sprt,Seqn) ).
 
-/**  mgim_musm_mrks_wdra( +mrks, -Wdra ).
+/**  mgim_musm_mrks_wdra( +Mrks, -Wdra ).
 
 Map predicate from MGI mrksols to withdrawn names.
 

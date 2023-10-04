@@ -38,4 +38,4 @@ Symb = 'Stx5a'.
 
 */
 ncbi_musm_nsyn_symb( X, Y ) :-
-    bio_db:bio_db_serve( ncbi_musm_syno_symb(X,Y) ).
+    bio_db:bio_db_serve( ncbi_musm_nsyn_symb(X,Y) ).

@@ -557,7 +557,7 @@ Thanks to Jan Wielemaker for a retractall fix and for code for fast loading of p
 @version  3:6 2021/12/04,  fixed pack_errors and map_ense_mouse_enst_chrl/5; bio_db_stats.pl version  0.2
 @version  4:1 2022/12/29,  huge re-config of data predicate names + reac-tome (maps) + chicken
 @version  4:2 2023/06/06,  support for pig
-@version  4:3 2023/09/22,  mult for multi organisms; vgnc database; ncbi taxonomy db
+@version  4:3 2023/09/22,  mult for multi organisms; vgnc database; ncbi taxonomy db; build-reorganisation
 @see doc/Releases.txt      for version details
 @see bio_db_data_predicate/4 for a way to enumerate all data predicates
 @see cell/ for the definitions of the data predicates
@@ -747,18 +747,18 @@ Version Mj:Mn:Fx, and release date date(Y,M,D).
 
 ==
 ?- bio_db_version( V, D ).
-V = 4:2:0,
-D = date(2023, 6, 6).
+V = 4:3:0,
+D = date(2023, 10, 5).
 ==
 
 @author Nicos Angelopoulos
-@version  4:2 2023/6/6,   support for pig data
+@version  4:3 2023/10/5,  imported first vgnc predicates, multi-organism preds support, & restructure of build preds
 @see bio_db_data_predicate/4  (which should be generated for each new version)
 @see doc/Releases.txt for more detail on change log
 @see module documentation for brief comments on versioning history of this pack
 
 */
-bio_db_version( 4:2:0, date(2023,6,6) ).   
+bio_db_version( 4:3:0, date(2023,10,5) ).   
 
 %% bio_db_citation( -Atom, -Bibterm ).
 %

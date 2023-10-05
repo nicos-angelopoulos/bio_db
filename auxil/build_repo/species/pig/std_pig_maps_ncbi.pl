@@ -24,7 +24,7 @@
 % local libs & sources
 :- lib(de_semi/3).
 :- lib(csv_ids_map/6).
-:- lib(link_to_bio_sub/4).
+:- lib(link_to_bio_sub/3).
 :- lib(bio_db_dnt_times/3).
 :- lib(build_dnload_loc/3).
 :- lib(bio_db_source_url/3).

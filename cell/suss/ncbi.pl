@@ -1,4 +1,4 @@
-:- module( bio_db_galg_ncbi, [
+:- module( bio_db_suss_ncbi, [
                 bio_db_suss_ncbi/0,
                 ncbi_suss_ensg_ncbi/2,
                 ncbi_suss_ensp_ncbi/2,

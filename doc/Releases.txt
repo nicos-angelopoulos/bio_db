@@ -14,6 +14,8 @@ TBD:
 
 
 
+4.4   
+      23.10.17    FIXED:   pig cell errors (ncbi module name), and vgnc ncbi predicates
 4.3               @ 23.10.05
       23.09.03    BUILD:   major rewrite of Opts and helpers + new version of link_to_bio_sub/3
       23.09.29    OPTS:    renamed url_file_local_date_mirror:file() to dnld_file()

@@ -9,6 +9,7 @@
 :- lib( &(bio_db(suss(gont))) ).
 :- lib( &(bio_db(suss(ncbi))) ).
 :- lib( &(bio_db(suss(strg))) ).
+:- lib( &(bio_db(suss(vgnc))) ).
 % :- lib( &(bio_db(suss(unip))) ).
 
 /**  bio_db_suss.
@@ -38,7 +39,7 @@ Databases
 @tbd uniprot does not have protein files for pig similar to the ones for the other organisms
 @tbd pig nonmeclature standard ? (similar to human HGNC or chicken CGNC)
 @tbd ense also provides gont files
-@see bio_db_suss_ense/0, bio_db_suss_gont/0, bio_db_suss_ncbi/0, bio_db_suss_strg/0.
+@see bio_db_suss_ense/0, bio_db_suss_gont/0, bio_db_suss_ncbi/0, bio_db_suss_strg/0, bio_db_suss_vgnc/0.
 */
 
 bio_db_suss.

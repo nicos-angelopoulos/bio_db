@@ -1,72 +1,51 @@
-:- module( bio_db_galg_ncbi, [
-                bio_db_suss_ncbi/0,
+:- module( bio_db_suss_vgnc, [
+                bio_db_suss_vgnc/0,
                 vgnc_suss_vgnc_name/2,
-                vgnc_suss_vgnc_symb/2,
-                ncbi_suss_ncbi_ensg/2,
-                ncbi_suss_ncbi_ensp/2
+                vgnc_suss_vgnc_symb/2
              ]
          ).
 
 
-/**  bio_db_suss_ncbi.
+/**  bio_db_suss_vgnc.
 
-Documentation predicate for pig (sus scrofa) data from NCBI databases.
+Documentation predicate for pig (sus scrofa) data from VGNC databases.
 
-Defined predicates:
-  * ncbi_suss_ensg_ncbi/2
-  * ncbi_suss_ensp_ncbi/2
-  * ncbi_suss_ncbi_ensg/2
-  * ncbi_suss_ncbi_ensp/2
+Defined db predicates:
+  * vgnc_suss_vgnc_name/2
+  * vgnc_suss_vgnc_symb/2
 
 @author nicos angelopoulos
 @version  0.1 2023/6/2
 @see bio_db_suss/0
 
 */
-bio_db_suss_ncbi.
+bio_db_suss_vgnc.
 
-/**  ncbi_suss_ensg_ncbi( ?EnsG, ?Ncbi ).
+/**  vgnc_suss_vgnc_name( ?Vgnc, ?Name ).
 
-Ensembl gene id (atom) to NCBI number.
-
-==
-?- ncbi_suss_ensg_ncbi( A, B ).
-==
-*/
-ncbi_suss_ensg_ncbi( EnsG, Symb ) :-
-    bio_db:bio_db_serve( ncbi_suss_ensg_ncbi(EnsG,Symb) ).
-
-/**  ncbi_suss_ensp_ncbi(?EnsP, ?Ncbi).
-
-Ensembl protein (atom) to Ncbi number.
+Vgnc to gene name.
 
 ==
-?- ncbi_suss_ensp_ncbi(EnsP, Ncbi).
-==
+?-  vgnc_suss_vgnc_symb(V, 'LMTK3' ),
+    vgnc_suss_vgnc_name(V, N).
 
-*/
-ncbi_suss_ensp_ncbi( EnsP, Ncbi ) :-
-    bio_db:bio_db_serve( ncbi_suss_ensp_ncbi(EnsP,Ncbi) ).
-
-
-/*  ncbi_suss_ncbi_ensg(?Ncbi, ?EnsG).
-
-Ncbi accession number to Ensembl gene id (atom).
-
-==
-?- ncbi_suss_ncbi_ensg(Ncbi, EnsG).
+V = 89769,
+N = 'lemur tyrosine kinase 3'.
 ==
 */
-ncbi_suss_ncbi_ensg( Ncbi, EnsG ) :-
-    bio_db:bio_db_serve( ncbi_suss_ncbi_ensg(Ncbi,EnsG) ).
+vgnc_suss_vgnc_name( EnsG, Symb ) :-
+    bio_db:bio_db_serve( vgnc_suss_vgnc_name(EnsG,Symb) ).
 
-/**  ncbi_suss_ncbi_ensp(+Ncbi, -EnsG).
+/**  vgnc_suss_vgnc_symb(?Vgnc, ?Symb).
 
-Ncbi accession number to Ensembl proteing id (atom).
+Vgnc to gene symbol.
 
 ==
-?- ncbi_suss_ncbi_ensp(Ncbi, EnsP).
+?- vgnc_suss_vgnc_symb(V,'LMTK3').
+V = 89769.
 ==
+
 */
-ncbi_suss_ncbi_ensp( Ncbi, EnsP ) :-
-    bio_db:bio_db_serve( ncbi_suss_ncbi_ensp(Ncbi,EnsP) ).
+vgnc_suss_vgnc_symb( Vgnc, Symb ) :-
+    bio_db:bio_db_serve( vgnc_suss_vgnc_symb(Vgnc,Symb) ).
+

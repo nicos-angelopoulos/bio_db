@@ -15,6 +15,7 @@ TBD:
 
 
 4.4   
+      24.03.07    BioDB:   ncbi for chicken (ensg <-> ncbi + ensp <-> ncbi) - also in cell/
       23.10.17    FIXED:   pig cell errors (ncbi module name), and vgnc ncbi predicates
 4.3               @ 23.10.05
       23.09.03    BUILD:   major rewrite of Opts and helpers + new version of link_to_bio_sub/3

@@ -7,6 +7,7 @@
 :- lib( &(bio_db(galg(cgnc))) ).
 :- lib( &(bio_db(galg(ense))) ).
 :- lib( &(bio_db(galg(gont))) ).
+:- lib( &(bio_db(galg(ncbi))) ).
 :- lib( &(bio_db(galg(strg))) ).
 :- lib( &(bio_db(galg(unip))) ).
 
@@ -25,6 +26,8 @@ Databases
     embl's ensembl
   * gont
     gene ontology
+  * ncbi
+    NCBI (Entrez)
   * strg
     String PPIs db
   * unip
@@ -37,6 +40,7 @@ Databases
 
 @author nicos angelopoulos
 @version  0.1 2022/12/19
+@version  0.2 2024/03/07, db(ncbi)
 
 */
 

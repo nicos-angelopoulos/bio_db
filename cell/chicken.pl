@@ -8,6 +8,7 @@
 :- lib( &(bio_db(galg(ense))) ).
 :- lib( &(bio_db(galg(gont))) ).
 :- lib( &(bio_db(galg(ncbi))) ).
+:- lib( &(bio_db(galg(reac))) ).
 :- lib( &(bio_db(galg(strg))) ).
 :- lib( &(bio_db(galg(unip))) ).
 

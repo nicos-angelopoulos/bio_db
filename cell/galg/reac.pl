@@ -2,10 +2,10 @@
                     bio_db_galg_reac/0,
                     %       + Reactome
                     reac_galg_ncbi_reac/2,
-                    reac_galg_ncbi_reap/2,
+                    reac_galg_ncbi_reap/3,
                     reac_galg_reac_reap/3,
                     reac_galg_reac_recl/2,
-                    reac_galg_reac_recn/2,
+                    reac_galg_reac_recn/3,
                     reac_galg_reap_repn/2
                 ] ).
 
@@ -49,7 +49,7 @@ Evidence is the type of evidence supporting the pathway membership.
 ?- reac_galg_reac_reap(191429, Evi, Reac), write(Evi-Reac), nl, fail.
 ==
 */
-reac_galg_ncbi_reap( X, Y, Z ) :-
+reac_galg_reac_reap( X, Y, Z ) :-
     bio_db:bio_db_serve( reac_galg_reac_reap(X,Y,Z) ).
 
 /**  reac_galg_ncbi_reap( ?Ncbi, -Evidence, ?Reap ).

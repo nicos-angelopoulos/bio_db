@@ -113,14 +113,14 @@ std_maps_reac( Args ) :-
      os_path( DnDir, maps, MapsP ),
      os_make_path( MapsP ),
      bio_db_dnt_times( InP, DnDt, _DnEn ),
-     maplist( std_maps_reac_portray(Self,Otkn,MapsP,Url,DnDt), Stems, Maps, Files ),
+     maplist( std_maps_reac_portray(Self,OrgIn,Otkn,MapsP,Url,DnDt), Stems, Maps, Files ),
      debuc( Self, enum, files/Files ),
      debuc( Self, end, true ).
 
 std_maps_reac_postfix_pname( Dorg, Psfx, Stem ) :-
      at_con( [reac,Dorg,Psfx], '_', Stem ).
 
-std_maps_reac_portray( Self, Dorg, Dir, Url, DnDt, Psfx, Map, File ) :-
+std_maps_reac_portray( Self, Org, Dorg, Dir, Url, DnDt, Psfx, Map, File ) :-
      at_con( [reac,Dorg,Psfx], '_', Stem ),
      os_dir_stem_ext( File, [ext(pl),odir(Dir),stem(Stem)] ),
      debuc( Self, 'Output: ~p', [File] ),
@@ -128,7 +128,7 @@ std_maps_reac_portray( Self, Dorg, Dir, Url, DnDt, Psfx, Map, File ) :-
      portray_clauses( Ord, file(File) ),
      std_maps_react_header( Psfx, Hdr ),
      bio_db_add_infos_to( [header(Hdr),source(Url),datetime(DnDt)], File ),
-     link_to_bio_sub( reac, File, [org(hs),type(maps)] ).
+     link_to_bio_sub( reac, File, [org(Org),type(maps)] ).
 
 std_maps_react_header( ncbi_reac, hdr('NCBI gene id','Reactome product id') ).
 std_maps_react_header( ncbi_reap, hdr('NCBI gene id','Evidence','Reactome pathway id') ).

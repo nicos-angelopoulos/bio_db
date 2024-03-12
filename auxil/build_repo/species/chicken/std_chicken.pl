@@ -55,6 +55,7 @@ std(chicken, graphs, strg).
 %
 std(chicken, maps, cgnc).
 std(chicken, maps, ense).
+std(chicken, maps, ncbi).
 std(chicken, maps, gont).
 std(chicken, maps, reac).
 std(chicken, maps, unip).

@@ -1,7 +1,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %    Authors:       Nicos Angelopoulos
 %    E-mail:        Nicos Angelopoulos http://stoics.org.uk/~nicos/sware/contact.html
-%    Copyright (C): Nicos Angelopoulos, 2015-2023
+%    Copyright (C): Nicos Angelopoulos, 2015-2024
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 /*
    This program is free software; you can redistribute it and/or
@@ -102,14 +102,16 @@ bio_db_organism(multi).      % 2023/9/15
 bio_db_organism(pig).        % 2023/6/2
 
 /** bio_db_organism(?KnownAs, ?Canon).
-    bio_db_organism(?Known, ?Token, ?Canon).
+    bio_db_organism(?KnownAs, ?Token, ?Canon).
 
-Canon is the canonical, colloquial, representation of Known which is either 
-a known bio_db_organism/1, an alias to one or a organism token.
+Canon is the canonical, colloquial, representation of organism KnownAs and Token is a 4 letter bio_db representation of
+that organism. 
+
+KnownAs is either a known colloquial name tabled in bio_db_organism/1, an alias to one or a organism token.
 Token is the token used in bio_db predicate, file and directory names for this organism.
 
 ==
-?- bio_db_organism(Known,Org), write(Known:Org), nl, fail.
+?- bio_db_organism(KnownAs,Org), write(KnownAs:Org), nl, fail.
 hs:human
 gallus:chicken
 gallus_gallus:chicken
@@ -123,13 +125,18 @@ musm:mouse
 suss:pig
 mult:multi
 
-?- bio_db_organism(human, Org).
-Org = hs.
+?- bio_db_organism(hs, Org).
+Org = human.
 
-?- bio_db_organism(KnownAs, hs).
-KnownAs = human ;
-KnownAs = hs ;
-false.
+?- bio_db_organism(KnownAs, Token, human).
+KnownAs = hs,
+Token = homs ;
+KnownAs = human,
+Token = homs ;
+KnownAs = Token, Token = homs.
+
+?- hgnc_homs_symb_hgnc( 'LMTK3', Hgnc ).
+Hgnc = 19295.
 ==
 
 @author nicos angelopoulos

@@ -28,6 +28,7 @@
                 bio_db_install/2, bio_db_install/3,
                 bio_db_organism/1, bio_db_organism/2, bio_db_organism/3,
                 bio_db_organism_alias/2,
+                bio_db_org_in_opts/2,
                 bio_db_paths/0,
                 bio_db_source/2,
                 bio_db_version/2,
@@ -67,7 +68,7 @@
 :- lib(is_symbol/2).
 :- lib(ncbi_symb/3).
 :- lib(org_edge_strg_symb/4).
-
+:- lib(bio_db_org_in_opts/2).
 :- lib(end(bio_db)).
 
 % :- initialization( lib(& bio_db, load_main(false)), after_load ).

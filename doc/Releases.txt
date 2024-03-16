@@ -13,8 +13,8 @@ TBD:
                   (map_ense_mouse_enst_chrl/5 was opening map_ense_enst_chrl/5).
 
 
-
 4.4   
+      24.03.16    IFACE:   added bio_db_org_in_opts/2
       24.03.16    DOC:     errors in doc of bio_db_organims/1,2,3 + improved text
       24.03.11    BioDB:   activated reactome for chicken build & cell
       24.03.07    BioDB:   ncbi for chicken (ensg <-> ncbi + ensp <-> ncbi) - also in cell/

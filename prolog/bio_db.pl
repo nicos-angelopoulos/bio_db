@@ -107,7 +107,7 @@ bio_db_organism(pig).        % 2023/6/2
 Canon is the canonical, colloquial, representation of organism KnownAs and Token is a 4 letter bio_db representation of
 that organism. 
 
-KnownAs is either a known colloquial name tabled in bio_db_organism/1, an alias to one or a organism token.
+KnownAs is either a known colloquial name tabled in bio_db_organism/1, an alias an organism or a organism token.
 Token is the token used in bio_db predicate, file and directory names for this organism.
 
 ==

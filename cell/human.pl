@@ -12,6 +12,7 @@
 :- lib( &(bio_db(homs(unip))) ).
 :- lib( &(bio_db(homs(pros))) ).
 :- lib( &(bio_db(homs(strg))) ).
+:- lib( &(bio_db(homs(reac))) ).
 
 %   4. derived
 % :- lib( source(bio_db(homs)), homonyms(true) ).

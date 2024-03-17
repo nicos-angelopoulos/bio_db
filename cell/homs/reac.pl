@@ -2,7 +2,7 @@
                     bio_db_homs_reac/0,
                     %       + Reactome
                     reac_homs_ncbi_reac/2,
-                    reac_homs_ncbi_reap/2,
+                    reac_homs_ncbi_reap/3,
                     reac_homs_reac_reap/3,
                     reac_homs_reac_recl/2,
                     reac_homs_reac_recn/2,
@@ -64,7 +64,7 @@ TAS-418990
 ...
 ==
 */
-reac_homs_ncbi_reap( X, Y, Z ) :-
+reac_homs_reac_reap( X, Y, Z ) :-
     bio_db:bio_db_serve( reac_homs_reac_reap(X,Y,Z) ).
 
 /**  reac_homs_ncbi_reap( ?Ncbi, -Evidence, ?Reap ).
@@ -108,8 +108,8 @@ Map Reactome product identifiers to product names.
 Recn = 'CDH2'.
 ==
 */
-reac_homs_reac_recn( X, Y, Z ) :-
-    bio_db:bio_db_serve( reac_homs_reac_recn(X,Y,Z) ).
+reac_homs_reac_recn( X, Z ) :-
+    bio_db:bio_db_serve( reac_homs_reac_recn(X,Z) ).
 
 /**  reac_homs_reap_repn( ?Reap, ?Repn ).
 

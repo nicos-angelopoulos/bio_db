@@ -83,6 +83,14 @@ TAS-418990
 ...
 ==
 
+==
+?- 
+     findall(Ncbi, (reac_homs_reap_repn(Reap,'Signal Transduction'),reac_homs_ncbi_reap(Ncbi,_,Reap)),Ncbis),length(Ncbis,Len).
+
+Ncbis = [14, 19, 25, 27, 29, 59, 60, 60, 70|...],
+Len = 3215.
+==
+
 */
 reac_homs_ncbi_reap( X, Y, Z ) :-
     bio_db:bio_db_serve( reac_homs_ncbi_reap(X,Y,Z) ).

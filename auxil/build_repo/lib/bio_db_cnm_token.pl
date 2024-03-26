@@ -144,6 +144,7 @@ cnm_token('HGNC ID', _, hgnc).
 cnm_token('hgnc_id', _, hgnc).
 cnm_token(location, _, chrb).          % chromosome base eg 2p24.1
 cnm_token(name, _, name).
+cnm_token(ncbi_id, _, ncbi).
 cnm_token(prev_symbol, hgnc, prev).
 cnm_token(symbol, _, symb).
 cnm_token('Symbol', _, symb).

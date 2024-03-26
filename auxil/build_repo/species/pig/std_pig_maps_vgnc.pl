@@ -97,14 +97,16 @@ std_pig_maps_vgnc( Args ) :-
      % here:
      % spy( mtx_map_rows/3 ),
      % trace,
-     mtx_map( TxtF, [vgnc_id:vgnc:de_semi('VGNC'),ncbi_id:ncbi:false], VgncNcbiF, MOpts ),
      mtx_map( TxtF, [vgnc_id:vgnc:de_semi('VGNC'),symbol], VgncSymbF, MOpts ),
      mtx_map( TxtF, [vgnc_id:vgnc:de_semi('VGNC'),name], VgncNameF, MOpts ),
+     mtx_map( TxtF, [vgnc_id:vgnc:de_semi('VGNC'),ncbi_id:ncbi:false], VgncNcbiF, MOpts ),
+     mtx_map( TxtF, [vgnc_id:vgnc:de_semi('VGNC'),ensembl_gene_id:ensg:false], VgncEnsgF, MOpts ),
      % debuc( Self, 'doing links...', [] ),
      % Files = [VgncSymbF,VgncNameF],
      link_to_bio_sub( vgnc, VgncSymbF, org(pig) ),
      link_to_bio_sub( vgnc, VgncNameF, org(pig) ),
      link_to_bio_sub( vgnc, VgncNcbiF, org(pig) ),
+     link_to_bio_sub( vgnc, VgncEnsgF, org(pig) ),
      % file_name_extension( TxtF, gz, GzF ),
      % delete_file( TxtF ),
      working_directory( _, Old ).

@@ -22,7 +22,6 @@
 
 % local libs & sources
 :- lib(de_semi/3).
-:- lib(os_grep_mtx/4).
 :- lib(csv_ids_map/6).
 :- lib(link_to_bio_sub/2).
 :- lib(bio_db_dnt_times/3).
@@ -54,6 +53,7 @@ maps_ncbi_ensp_ensg :-
      link_to_bio_sub(ncbi, OutF ),
      working_directory( _, Old ).
 
+% fixme: this is not in the loop ? either fix or remove
 maps_ncbi_ncbi_gont :-
      % Dir = '/usr/local/users/nicos/work/db/data/ncbi',
      ncbi_dnload( Dir ),
@@ -65,7 +65,8 @@ maps_ncbi_ncbi_gont :-
      @ rm( -f, gene2go ),
      @ gunzip( -f, -k, 'gene2go.gz' ),
      % debuc( by_unix ),
-     os_grep_mtx(gene2go, '^9606', gene2go_hs, true ),
+     ncbi_species_grep( gene2go, _HsStem, Opts ),
+     % os_grep_mtx(gene2go, '^9606', gene2go_hs, true ),
      % system( 'grep "^9606" gene2go | cat gene2go_hs' ),
      working_directory( _, Old ).
 
@@ -144,7 +145,6 @@ ncbi_humanise_data( Stem, Dir, Repo, Old, HsStem, Url, DnDt, Opts ) :-
      url_file_local_date_mirror( Url, Dir, [debug(true),interface(wget)|Opts] ),
      os_path( Dir, GzF, DnlF ),
      bio_db_dnt_times( DnlF, DnDt, _DnEn ),
-
      working_directory( Old, Dir ),
      atomic_list_concat( [Stem,hs], '_', HsStem ),
      @ rm( -f, HsStem ),
@@ -223,35 +223,29 @@ std_maps_ncbi( Args ) :-
      working_directory( _ParentD, MapsD ),
      @ gunzip( GnsF ),
      file_name_extension( RemS, gz, GnsF ),
-     std_maps_ncbi_1( Self, RemS, Url, DnDt, Opts ),
+     ncbi_species_grep( RemS, HsStem, [hdr(row(tax_id,ncbi,ensg,nucl_acc,ensr,prot_acc,ensp)),sep(tab)|Opts] ),
+     std_maps_ncbi_1( Self, HsStem, Url, DnDt, Opts ),
      delete_file( RemS ),
      maps_ncbi_rnuc_symb( Self, DnDir, Opts ),
      % maps_ncbi_unig_ncbi,  % unigene is no longer maintained as of Feb.2019
      working_directory( _, Old ).
 
 std_maps_ncbi_1( Self, File, Url, DnDt, Opts ) :-
-     TsvOpts = [match_arity(false),separator(0'\t)],
-     csv_read_file( File, Csv, TsvOpts ),
-     Csv = [_Comment|Rows],
-     HsMtx = [row(tax_id,ncbi,ensg,nucl_acc,ensr,prot_acc,ensp)|Rows],
-     % New = [row(tax_id,ncbi,ensg,nucl_acc,ensr,prot_acc,ensp)|Rows],
-     % GEnsGF = entrez_gene_id_ensg.pl,
-     % csv_filter_by_column( New, tax_id, =(9606), HS ),
-     % mtx_column_values_select( New, tax_id, 9606, HS, _, true ),
-     debuc( Self, length, hs_len/HsMtx ),
+     csv_read_file( File, Mtx, sep(tab) ),
+     debuc( Self, length, hs_len/Mtx ),
      Lens = [prefix(ncbi),to_value_1(pos_integer),to_value_2(pfx_by('ENS')),datetime(DnDt),source(Url)|Opts],
      Rens = [prefix(ncbi),to_value_2(pos_integer),to_value_1(pfx_by('ENS')),datetime(DnDt),source(Url)|Opts],
-     csv_ids_map( File, ncbi, ensg, HsMtx, GEnsGF, [header(row('Entrez ID','Ensembl Gene'))|Lens] ),
-     csv_ids_map( File, ensg, ncbi, HsMtx, EnsGGF, [header(row('Ensembl Gene','Entrez ID'))|Rens] ),
+     csv_ids_map( File, ncbi, ensg, Mtx, GEnsGF, [header(row('Entrez ID','Ensembl Gene'))|Lens] ),
+     csv_ids_map( File, ensg, ncbi, Mtx, EnsGGF, [header(row('Ensembl Gene','Entrez ID'))|Rens] ),
      % need to ensure prots are of ENSP  there are - in some entries
      Lenp = [prefix(ncbi),to_value_1(pos_integer),to_value_2(pfx_by_de_v('ENS')),datetime(DnDt),source(Url)],
      append( Lenp, Opts, ALenp ),
-     csv_ids_map( File, ncbi, ensp, HsMtx, GEnsPF, [header(row('Entrez ID','Ensembl Protein'))|ALenp] ),
+     csv_ids_map( File, ncbi, ensp, Mtx, GEnsPF, [header(row('Entrez ID','Ensembl Protein'))|ALenp] ),
      Renp = [prefix(ncbi),to_value_2(pos_integer),to_value_1(pfx_by_de_v('ENS')),datetime(DnDt),source(Url)],
      append( Renp, Opts, ARenp ),
-     csv_ids_map( File, ensp, ncbi, HsMtx, EnsPGF, [header(row('Ensembl Protein','Entrez ID'))|ARenp] ),
+     csv_ids_map( File, ensp, ncbi, Mtx, EnsPGF, [header(row('Ensembl Protein','Entrez ID'))|ARenp] ),
      Nens = [to_value_1(pos_integer),datetime(DnDt),source(Url)|Opts],
-     csv_ids_map( File, ncbi, 'Symbol', HsMtx, NcbiSymbF, [header(row(ncbi,symbol))|Nens] ),
+     csv_ids_map( File, ncbi, 'Symbol', Mtx, NcbiSymbF, [header(row(ncbi,symbol))|Nens] ),
      maplist( link_to_bio_sub(ncbi), [GEnsGF,EnsGGF,GEnsPF,EnsPGF,NcbiSymbF] ).
 
 pos_integer( Numb, Numb ) :-

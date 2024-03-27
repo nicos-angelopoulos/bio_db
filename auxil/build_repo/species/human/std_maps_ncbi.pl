@@ -13,7 +13,7 @@
 :- ensure_loaded('../../lib/bio_db_build_aliases').  % /1.
 
 % local
-:- lib(ncbi_std_maps).
+:- lib(ncbi_std_maps/1).
 
 std_human_maps_ncbi_defaults( [org(human)] ).
 

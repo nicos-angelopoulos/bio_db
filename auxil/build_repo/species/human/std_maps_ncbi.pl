@@ -22,6 +22,7 @@
 
 % local libs & sources
 :- lib(de_semi/3).
+:- lib(os_grep_mtx/4).
 :- lib(csv_ids_map/6).
 :- lib(link_to_bio_sub/2).
 :- lib(bio_db_dnt_times/3).
@@ -63,7 +64,7 @@ maps_ncbi_ncbi_gont :-
      @ rm( -f, gene2go ),
      @ gunzip( -f, -k, 'gene2go.gz' ),
      % debuc( by_unix ),
-     os_grep(gene2go, '^9606', gene2go_hs, true ),
+     os_grep_mtx(gene2go, '^9606', gene2go_hs, true ),
      % system( 'grep "^9606" gene2go | cat gene2go_hs' ),
      working_directory( _, Old ).
 
@@ -78,10 +79,10 @@ maps_ncbi_rnuc_symb( Self, DnDir, Opts ) :-
      @ mv( -f, HsStem, TmpF ),
      open( HsStem, write, HsOut ),
 
-     Cnms = [ 'tax_id','GeneID','status','RNA_nucleotide_accession.version','RNA_nucleotide_gi','protein_accession.version','protein_gi',
-              'genomic_nucleotide_accession.version','genomic_nucleotide_gi','start_position_on_the_genomic_accession','end_position_on_the_genomic_accession',
-               'orientation','assembly','mature_peptide_accession.version','mature_peptide_gi','Symbol'],
-     at_con( Cnms, '\t', HdrLn ),
+     % Cnms = [ 'tax_id','GeneID','status','RNA_nucleotide_accession.version','RNA_nucleotide_gi','protein_accession.version','protein_gi',
+              % 'genomic_nucleotide_accession.version','genomic_nucleotide_gi','start_position_on_the_genomic_accession','end_position_on_the_genomic_accession',
+               % 'orientation','assembly','mature_peptide_accession.version','mature_peptide_gi','Symbol'],
+     % at_con( Cnms, '\t', HdrLn ),
      write( HsOut, HdrLn ),
      nl( HsOut ),
      close( HsOut ),
@@ -151,7 +152,7 @@ ncbi_humanise_data( Stem, Dir, Repo, Old, HsStem, Url, DnDt, Opts ) :-
      @ rm( -f, HsStem ),
      @ rm( -f, Stem ),
      @ gunzip( -f, -k, GzF ),
-     os_grep( Stem, '^9606', HsStem, true ),
+     os_grep_mtx( Stem, '^9606', HsStem, true ),
      @ rm( -f, Stem ). % fixme: untested
 
 hs_unig( In, In ) :-

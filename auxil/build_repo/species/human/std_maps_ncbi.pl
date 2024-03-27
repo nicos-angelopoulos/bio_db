@@ -66,7 +66,7 @@ maps_ncbi_ncbi_gont( Opts ) :-
      @ rm( -f, gene2go ),
      @ gunzip( -f, -k, 'gene2go.gz' ),
      % debuc( by_unix ),
-     ncbi_species_grep( gene2go, _HsStem, Opts ),
+     ncbi_species_grep( gene2go, _HsStem, Opts ),  % pass sep(tab)
      % os_grep_mtx(gene2go, '^9606', gene2go_hs, true ),
      % system( 'grep "^9606" gene2go | cat gene2go_hs' ),
      working_directory( _, Old ).
@@ -156,7 +156,8 @@ std_maps_ncbi_defaults( Defs ) :-
                                             debug_url(false),
                                             iactive(true),
                                             ncbi_genes_file('gene2ensembl.gz'),
-                                            org(human)
+                                            org(human),
+                                            sep(tab)
                                           ].
 
 /** std_maps_ncbi(+Opts).
@@ -178,6 +179,8 @@ Opts
     the url base for the genes download
   * org(Org=human)
     organism
+  * sep(tab)
+    the download files are in tsv format
 
 ==
 ?- std_maps_ncbi([]).

@@ -38,7 +38,7 @@ std_maps_ncbi_defaults( Defs ) :-
                                             debug_fetch(true),
                                             debug_url(false),
                                             iactive(true),
-                                            ncbi_genes_file('gene2ensembl.gz'),
+                                            ncbi_to_ensembl('gene2ensembl.gz'),
                                             org(human),
                                             sep(tab)
                                           ].
@@ -58,7 +58,7 @@ Opts
     whether to debug the concatenation of the url (via bio_db_source_url/3)
   * iactive(Iact=true)
     whether the session is interactive, otherwise wget gets --no-verbose
-  * ncbi_genes_file(GnsF='')
+  * ncbi_to_ensembl(GnsF='')
     the url base for the genes download
   * org(Org=human)
     organism
@@ -78,12 +78,15 @@ std_maps_ncbi( Args ) :-
      Self = std_maps_ncbi,
      options_append( Self, Args, Opts ),
      bio_db_build_aliases( Opts ),
-     % load necessary data that has already been generated
      build_dnload_loc( Self, DnDir, Opts ),
-     bio_db_source_url( Url, [ncbi_genes_file-url_file,debug_url-debug], Opts ),
+     ncbi_ensembl( Self, DnDir, Opts ),
+     ncbi_
+     maps_ncbi_rnuc_symb( Self, DnDir, Opts ),
+
+ncbi_ensembl( Self, DnDir, Opts ) :-
+     bio_db_source_url( Url, [ncbi_to_ensembl-url_file,debug_url-debug], Opts ),
      options( debug_fetch(Fbg), Opts ),
      url_file_local_date_mirror( Url, DnDir, [debug(Fbg),interface(wget),dnld_file(GnsF)|Opts] ),
-     % file_base_name( Url, RemB ),
      working_directory( Old, DnDir ),
      MapsD = maps,
      make_directory_path( MapsD ),
@@ -96,7 +99,6 @@ std_maps_ncbi( Args ) :-
      ncbi_species_grep( RemS, HsStem, [hdr(row(tax_id,ncbi,ensg,nucl_acc,ensr,prot_acc,ensp)),sep(tab)|Opts] ),
      std_maps_ncbi_1( Self, HsStem, Url, DnDt, Opts ),
      delete_file( RemS ),
-     maps_ncbi_rnuc_symb( Self, DnDir, Opts ),
      % maps_ncbi_unig_ncbi,  % unigene is no longer maintained as of Feb.2019
      working_directory( _, Old ).
 
@@ -107,15 +109,12 @@ std_maps_ncbi_1( Self, File, Url, DnDt, Opts ) :-
      Rens = [prefix(ncbi),to_value_2(pos_integer),to_value_1(pfx_by('ENS')),datetime(DnDt),source(Url)|Opts],
      csv_ids_map( File, ncbi, ensg, Mtx, GEnsGF, [header(row('Entrez ID','Ensembl Gene'))|Lens] ),
      csv_ids_map( File, ensg, ncbi, Mtx, EnsGGF, [header(row('Ensembl Gene','Entrez ID'))|Rens] ),
-     % need to ensure prots are of ENSP  there are - in some entries
      Lenp = [prefix(ncbi),to_value_1(pos_integer),to_value_2(pfx_by_de_v('ENS')),datetime(DnDt),source(Url)],
      append( Lenp, Opts, ALenp ),
      csv_ids_map( File, ncbi, ensp, Mtx, GEnsPF, [header(row('Entrez ID','Ensembl Protein'))|ALenp] ),
      Renp = [prefix(ncbi),to_value_2(pos_integer),to_value_1(pfx_by_de_v('ENS')),datetime(DnDt),source(Url)],
      append( Renp, Opts, ARenp ),
      csv_ids_map( File, ensp, ncbi, Mtx, EnsPGF, [header(row('Ensembl Protein','Entrez ID'))|ARenp] ),
-     % Nens = [to_value_1(pos_integer),datetime(DnDt),source(Url)|Opts],
-     % csv_ids_map( File, ncbi, 'Symbol', Mtx, NcbiSymbF, [header(row(ncbi,symbol))|Nens] ),
      maplist( link_to_bio_sub(ncbi), [GEnsGF,EnsGGF,GEnsPF,EnsPGF] ).
 
 maps_ncbi_rnuc_symb( Self, DnDir, Opts ) :-

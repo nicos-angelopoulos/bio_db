@@ -59,8 +59,8 @@ ERROR: Trail: [bio_db:example/1]
 @author nicos angelopoulos
 @version  0.1 2023/09/22
 @see bio_db_source_base_url/2
-*/
 
+*/
 bio_db_source_url( Url, RnmS, Args ) :-
      Self = bio_db_source_url,
      options_append( Self, Args, OptsPrv ),

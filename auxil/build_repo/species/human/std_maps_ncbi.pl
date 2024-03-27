@@ -223,6 +223,7 @@ std_maps_ncbi( Args ) :-
      working_directory( _ParentD, MapsD ),
      @ gunzip( GnsF ),
      file_name_extension( RemS, gz, GnsF ),
+     trace,
      ncbi_species_grep( RemS, HsStem, [hdr(row(tax_id,ncbi,ensg,nucl_acc,ensr,prot_acc,ensp)),sep(tab)|Opts] ),
      std_maps_ncbi_1( Self, HsStem, Url, DnDt, Opts ),
      delete_file( RemS ),

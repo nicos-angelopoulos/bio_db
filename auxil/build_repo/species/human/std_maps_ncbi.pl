@@ -131,7 +131,9 @@ maps_ncbi_rnuc_symb( Self, DnDir, Opts ) :-
      bio_db_source_base_url( ncbi, NcbiRepo ),
      ncbi_humanise_data( gene2accession, DnDir, NcbiRepo, Old, HsStem, HsUrl, HsDnDt, Opts ),
      CIMOpts = [ db(ncbi),
-                 to_value_1(de_versionise), to_value_2(is_a_symbol),
+                 to_value_1(de_versionise), 
+                 % to_value_2(is_a_symbol),
+                 to_value_2(\==(''))
                  datetime(HsDnDt), source(HsUrl), 
                  header(row('RNA Nucleotide','HGNC Symbol'))
                  | Opts
@@ -140,7 +142,9 @@ maps_ncbi_rnuc_symb( Self, DnDir, Opts ) :-
      debuc( Self, 'Csv Map for: ~w vs ~w', [RNAnucl,'Symbol'] ),
      csv_ids_map( HsStem, RNAnucl, 'Symbol', _Csv1, OutF, CIMOpts ),
      DNAOpts = [ db(ncbi),
-                 to_value_1(de_versionise), to_value_2(is_a_symbol),
+                 to_value_1(de_versionise), 
+                 % to_value_2(is_a_symbol),
+                 to_value_2(\==(''))
                  datetime(HsDnDt), source(HsUrl), 
                  header(row('DNA Nucleotide','HGNC Symbol')) 
                  | Opts
@@ -149,7 +153,9 @@ maps_ncbi_rnuc_symb( Self, DnDir, Opts ) :-
      debuc( Self, 'Csv Map for: ~w vs ~w', [GENnucl,'Symbol'] ),
      csv_ids_map( HsStem, GENnucl, 'Symbol', _Csv2, DNAF, DNAOpts ),
      NcbiSymbOpts = [ db(ncbi),
-                 to_value_1(pos_integer), to_value_2(is_a_symbol),
+                 to_value_1(pos_integer), 
+                 % to_value_2(is_a_symbol),
+                 to_value_2(\==(''))
                  datetime(HsDnDt), source(HsUrl), 
                  header(row(ncbi,symbol)) 
                  | Opts

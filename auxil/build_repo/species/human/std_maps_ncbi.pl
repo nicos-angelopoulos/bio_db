@@ -31,7 +31,7 @@ All code has moved to lib(ncbi_std_maps.pl) as it is can be used for other speci
 @version  0.1 2024/03/27
 @see ncbi_std_maps/1
 */
-std_human_maps_ncbi( Args ) :-
+std_maps_ncbi( Args ) :-
      Self = std_human_maps_ncbi,
      options_append( Self, Args, Opts ),
      ncbi_std_maps( Opts ).

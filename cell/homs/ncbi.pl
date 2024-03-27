@@ -1,12 +1,13 @@
 :- module( bio_db_homs_ncbi, [
                 bio_db_homs_ncbi/0,
                 %       + NCBI
+                ncbi_homs_dnuc_symb/2,
                 ncbi_homs_ensg_ncbi/2,
                 ncbi_homs_ensp_ncbi/2,
                 ncbi_homs_ncbi_ensg/2,
                 ncbi_homs_ncbi_ensp/2,
-                ncbi_homs_rnuc_symb/2,
-                ncbi_homs_dnuc_symb/2
+                ncbi_homs_ncbi_symb/2,
+                ncbi_homs_rnuc_symb/2 
                 % map_ncbi_unig_ncbi/2 % withdrawn 2019.02
                 ] ).
                 
@@ -18,12 +19,13 @@
 Documentation predicate for Homo sapiens data from NCBI database.
 
 Predicates defined:
+  * ncbi_homs_dnuc_symb/2
   * ncbi_homs_ensg_ncbi/2
   * ncbi_homs_ensp_ncbi/2
   * ncbi_homs_ncbi_ensg/2
   * ncbi_homs_ncbi_ensp/2
+  * ncbi_homs_ncbi_symb/2
   * ncbi_homs_rnuc_symb/2
-  * ncbi_homs_dnuc_symb/2
 
 ==
 ?- lib( & bio_db(homs(ncbi)) ).
@@ -128,3 +130,16 @@ EnsP = 'ENSG00000142235'.
 ncbi_homs_ncbi_ensg( X, Y ) :-
     bio_db:bio_db_serve( ncbi_homs_ncbi_ensg(X,Y) ).
 
+/** ncbi_homs_ncbi_symb( ?Ncbi, ?Symb).
+
+Map predicate from NCBI/entrez gene ids to Symbols. 
+
+Note that the Symbols are no checked against HGNC. They are what NCBI calls symbols.
+
+==
+?- ncbi_homs_ncbi_symb( 114783, Symb ).
+Symb = 'LMTK3'.
+==
+*/
+ncbi_homs_ncbi_symb( X, Y ) :-
+    bio_db:bio_db_serve( ncbi_homs_ncbi_symb(X,Y) ).

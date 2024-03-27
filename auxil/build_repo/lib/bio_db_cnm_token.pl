@@ -162,6 +162,7 @@ cnm_token(taxon_id, _, taxo).
 cnm_token(vgnc_id, _, vgnc).
 % mouse
 cnm_token('GenBank IDs', mgim, genb).
+cnm_token('GeneID', ncbi, ncbi).
 cnm_token('MGI Accession ID', mgim, mgim).
 cnm_token('MGI Marker Accession ID', mgim, mgim).
 cnm_token('Marker Name', mgim, mnme ).
@@ -172,5 +173,5 @@ cnm_token('Marker Synonyms (pipe-separated)', mgim, msyn).
 cnm_token('UniProt IDs', mgim, unip).
 % across multiple settings
 % this is used in mouse, any other ones ?
+cnm_token('Symbol', ncbi, symb).
 cnm_token('Synonyms', ncbi, nsyn).
-

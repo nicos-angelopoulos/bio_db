@@ -133,10 +133,12 @@ cnm_token('Approved Symbol', _, symb).
 cnm_token('CCDS IDs', _, ccds).
 cnm_token('ccds_id', _, ccds).
 cnm_token('Chromosome', _, chrb).      % chromosome base eg 2p24.1  % old
-cnm_token('ensembl_gene_id', _, ensg ).                   
-cnm_token('Ensembl gene', _, ensg ).                   
+cnm_token('ensembl_gene_id', _, ensg).                   
+cnm_token('Ensembl gene', _, ensg).                   
+cnm_token('Ensembl_gene_identifier', ncbi, ensg).
 cnm_token('Ensembl ID + supplied by Ensembl', hgnc, ensg).
 cnm_token('Ensembl Protein', _, ensp).                   
+cnm_token('Ensembl_protein_identifier', ncbi, ensp).                   
 cnm_token('Entrez Gene ID', hgnc, 'ncbi-appv').   % fixme: check this is not ncbi, and if not give it something like ncba
 cnm_token('Entrez ID', _, ncbi).
 cnm_token('entrez_id', _, ncbi).

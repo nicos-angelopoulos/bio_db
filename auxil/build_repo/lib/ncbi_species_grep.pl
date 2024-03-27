@@ -20,8 +20,10 @@ Opts
     informational, progress messages
   * hdr(Hdr) 
     if given is taken to be in row format and added as 1st line to output (via mtx/2).
-    if not given, the 1st line of the input line is returned.
+    if not given, the 1st line of the input line is returned
   * org(
+
+
 Examples
 ==
 ?- ncbi_species_grep([]).
@@ -29,9 +31,10 @@ Examples
 
 @author nicos angelopoulos
 @version  0.1 2024/03/27
+@see os_grep_mtx/4
 
 */
-ncbi_species_grep( +TsvF, Args ) :-
+ncbi_species_grep( TsvF, Args ) :-
      Self = ncbi_species_grep,
      options_append( Self, Args, Opts ),
      options( hdr(Hdr), Opts ),

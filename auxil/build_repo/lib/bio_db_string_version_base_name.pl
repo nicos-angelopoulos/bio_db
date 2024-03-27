@@ -1,9 +1,9 @@
 
-:- lib(bio_db_organism/2).
+:- lib(bio_db_taxo/3).
 :- lib(bio_db_source_url/2).
 
 bio_db_string_version_base_name( Defs ) :-
-                                   Defs = [ org(human),
+                                   Defs = [
                                             relation(links)
                                           ].
 
@@ -12,8 +12,6 @@ bio_db_string_version_base_name( Defs ) :-
 Generate remote base name, remote version directory and URL from string Version Vers and options Opts.
 
 Opts
-  * org(Org=human)
-    or =chicken=
   * relation(links)
     or =info=
 
@@ -30,9 +28,8 @@ Opts
 */
 bio_db_string_version_base_name( VersionPrv, VersD, Bname, Remote, Opts ) :-
      ( atom_concat(v,Vers,VersionPrv)->true;Vers=VersionPrv ),
-     options( [relation(Relt),debug_url(Dbg),org(KnownAs)], Opts ),
-     bio_db_organism( KnownAs, Org ),
-     ( bio_db_taxo(Org,Taxo) -> true; throw(check(bio_db_taxo(Org,Taxo))) ),
+     options( [relation(Relt),debug_url(Dbg)], Opts ),
+     bio_db_taxo( _Org, Taxo, Opts ),
      % atomic_list_concat( ['protein.',Relt,'.v',Vers,'/',Taxo,'.protein.',Relt,'.v',Vers,'.txt.gz'], Bname ),
      atomic_list_concat( ['protein.',Relt,'.v',Vers], VersD ),
      atomic_list_concat( [Taxo,'.protein.',Relt,'.v',Vers,'.txt.gz'], Bname ),
@@ -40,8 +37,4 @@ bio_db_string_version_base_name( VersionPrv, VersD, Bname, Remote, Opts ) :-
      Upts = [url_file(RelP),url_base(strg),debug(Dbg)|Opts],
      bio_db_source_url( Remote, [], Upts ).
 
-% fixme: ideally we want to hook this to NCBI taxonomy (see organism=multi)
-bio_db_taxo(chicken, 9031).
-bio_db_taxo(human,   9606).
-bio_db_taxo(mouse,  10090).
-bio_db_taxo(pig,     9823).
+

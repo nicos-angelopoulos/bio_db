@@ -153,7 +153,7 @@ ncbi_humanise_data( Stem, Dir, Repo, Old, HsStem, Url, DnDt, Opts ) :-
      @ rm( -f, Stem ),
      @ gunzip( -f, -k, GzF ),
      os_grep_mtx( Stem, '^9606', HsStem, true ),
-     @ rm( -f, Stem ). % fixme: untested
+     @ rm( -f, Stem ).
 
 hs_unig( In, In ) :-
      atom_concat( 'Hs.', _, In ).

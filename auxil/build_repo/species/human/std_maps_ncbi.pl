@@ -18,11 +18,7 @@
 % also sets lib alias to that dir
 :- ensure_loaded('../../lib/bio_db_build_aliases').  % /1.
 
-% load necessary data that has already been generated
-% :- ensure_loaded(hgnc:bio_db_build_downloads('hgnc/maps/map_hgnc_symb_hgnc')).
-
 % local libs & sources
-:- lib(de_semi/3).
 :- lib(csv_ids_map/6).
 :- lib(link_to_bio_sub/2).
 :- lib(bio_db_dnt_times/3).
@@ -31,9 +27,6 @@
 :- lib(ncbi_species_grep/3).
 :- lib(ens_fa_peptide_gene_rows/2).  % /2, fixme: should be more local
 :- lib(url_file_local_date_mirror/3).
-
-hs_unig( In, In ) :-
-     atom_concat( 'Hs.', _, In ).
 
 de_versionise( ProductVersion, Product ) :-
      atomic_list_concat( [Product,_Version], '.', ProductVersion ),
@@ -86,7 +79,6 @@ std_maps_ncbi( Args ) :-
      options_append( Self, Args, Opts ),
      bio_db_build_aliases( Opts ),
      % load necessary data that has already been generated
-     ensure_loaded(hgnc:bio_db_build_downloads('hgnc/maps/hgnc_homs_symb_hgnc')),
      build_dnload_loc( Self, DnDir, Opts ),
      bio_db_source_url( Url, [ncbi_genes_file-url_file,debug_url-debug], Opts ),
      options( debug_fetch(Fbg), Opts ),
@@ -129,36 +121,28 @@ std_maps_ncbi_1( Self, File, Url, DnDt, Opts ) :-
 maps_ncbi_rnuc_symb( Self, DnDir, Opts ) :-
      debuc( by_unix ),
      bio_db_source_base_url( ncbi, NcbiRepo ),
-     ncbi_humanise_data( gene2accession, DnDir, NcbiRepo, Old, HsStem, HsUrl, HsDnDt, Opts ),
+     ncbi_species_data( gene2accession, DnDir, NcbiRepo, Old, HsStem, HsUrl, HsDnDt, Opts ),
      CIMOpts = [ db(ncbi),
-                 to_value_1(de_versionise), 
-                 % to_value_2(is_a_symbol),
-                 to_value_2(not_empty),
-                 datetime(HsDnDt), source(HsUrl), 
-                 header(row('RNA Nucleotide','HGNC Symbol'))
+                 to_value_1(de_versionise), to_value_2(not_empty), % to_value_2(is_a_symbol),
+                 datetime(HsDnDt), source(HsUrl), header(row('RNA Nucleotide','HGNC Symbol'))
                  | Opts
      ],
      RNAnucl = 'RNA_nucleotide_accession.version',
      debuc( Self, 'Csv Map for: ~w vs ~w', [RNAnucl,'Symbol'] ),
      csv_ids_map( HsStem, RNAnucl, 'Symbol', _Csv1, OutF, CIMOpts ),
      DNAOpts = [ db(ncbi),
-                 to_value_1(de_versionise), 
-                 % to_value_2(is_a_symbol),
-                 to_value_2(not_empty),
-                 datetime(HsDnDt), source(HsUrl), 
-                 header(row('DNA Nucleotide','HGNC Symbol')) 
+                 to_value_1(de_versionise), to_value_2(not_empty), % to_value_2(is_a_symbol),
+                 datetime(HsDnDt), source(HsUrl), header(row('DNA Nucleotide','HGNC Symbol')) 
                  | Opts
      ],
      GENnucl = 'genomic_nucleotide_accession.version', 
      debuc( Self, 'Csv Map for: ~w vs ~w', [GENnucl,'Symbol'] ),
      csv_ids_map( HsStem, GENnucl, 'Symbol', _Csv2, DNAF, DNAOpts ),
-     NcbiSymbOpts = [ db(ncbi),
-                 to_value_1(pos_integer), 
-                 % to_value_2(is_a_symbol),
-                 to_value_2(not_empty),
-                 datetime(HsDnDt), source(HsUrl), 
-                 header(row(ncbi,symbol)) 
-                 | Opts
+     NcbiSymbOpts = [    db(ncbi),
+                         to_value_1(pos_integer), to_value_2(not_empty), % to_value_2(is_a_symbol),
+                         datetime(HsDnDt), source(HsUrl), 
+                         header(row(ncbi,symbol)) 
+                         | Opts
      ],
      csv_ids_map( HsStem, 'GeneID', 'Symbol', _Csv3, NcbiSymbF, NcbiSymbOpts ),
      % delete_file( TmpF ),
@@ -172,7 +156,7 @@ maps_ncbi_rnuc_symb( Self, DnDir, Opts ) :-
      link_to_bio_sub(ncbi, NcbiSymbF ),
      working_directory( _, Old ).
 
-ncbi_humanise_data( Stem, Dir, Repo, Old, HsStem, Url, DnDt, Opts ) :-
+ncbi_species_data( Stem, Dir, Repo, Old, HsStem, Url, DnDt, Opts ) :-
      file_name_extension( Stem, gz, GzF ),
      os_path( Repo, GzF, Url ),
      url_file_local_date_mirror( Url, Dir, [debug(true),interface(wget)|Opts] ),
@@ -185,6 +169,37 @@ ncbi_humanise_data( Stem, Dir, Repo, Old, HsStem, Url, DnDt, Opts ) :-
      @ gunzip( -f, -k, GzF ),
      ncbi_species_grep( Stem, HsStem, Opts ),
      @ rm( -f, Stem ).
+
+pos_integer( Numb, Numb ) :-
+     integer( Numb ),
+     !,
+     Numb > 0.
+pos_integer( Atom, Numb ) :-
+     atom_number( Atom, Numb ),
+     !,
+     integer( Numb ), 
+     Numb > 0.
+
+pfx_by_de_v( Pfx, Full, UnV ) :-
+     prefix_atom( Pfx, Full ),
+    ( atomic_list_concat([UnV,_],'.',Full) ->
+        true
+        ;
+        UnV = Full
+    ).
+
+not_empty( '', _ ) :- !, fail.
+not_empty( X, X ).
+
+pfx_by( Pfx, Full, Full ) :-
+     prefix_atom( Pfx, Full ).
+
+is_a_symbol( Symb, Symb ) :-
+     hgnc:hgnc_homs_symb_hgnc( Symb, _ ),
+     !.
+
+/* code that is not currently used from here on
+*/
 
 % maps_ncbi_ensp_ensg.
 %
@@ -219,34 +234,9 @@ maps_ncbi_ncbi_gont( Opts ) :-
      % system( 'grep "^9606" gene2go | cat gene2go_hs' ),
      working_directory( _, Old ).
 
-pos_integer( Numb, Numb ) :-
-     integer( Numb ),
-     !,
-     Numb > 0.
-pos_integer( Atom, Numb ) :-
-     atom_number( Atom, Numb ),
-     !,
-     integer( Numb ), 
-     Numb > 0.
-
-pfx_by_de_v( Pfx, Full, UnV ) :-
-     prefix_atom( Pfx, Full ),
-    ( atomic_list_concat([UnV,_],'.',Full) ->
-        true
-        ;
-        UnV = Full
-    ).
-
-not_empty( '', _ ) :- !, fail.
-not_empty( X, X ).
-
-pfx_by( Pfx, Full, Full ) :-
-     prefix_atom( Pfx, Full ).
-
-is_a_symbol( Symb, Symb ) :-
-     hgnc:hgnc_homs_symb_hgnc( Symb, _ ),
-     !.
-
+/** retired code, from here on
+     ensure_loaded(hgnc:bio_db_build_downloads('hgnc/maps/hgnc_homs_symb_hgnc')),
+     */
 /** %unigene is no longer maintained as of Feb.2019
 maps_ncbi_unig_ncbi :-
      ncbi_dnload( Dir ),
@@ -264,4 +254,8 @@ maps_ncbi_unig_ncbi :-
      working_directory( _, maps ),
      link_to_bio_sub( ncbi, OutF ), 
      working_directory( _, Old ).
+
+hs_unig( In, In ) :-
+     atom_concat( 'Hs.', _, In ).
+
 */

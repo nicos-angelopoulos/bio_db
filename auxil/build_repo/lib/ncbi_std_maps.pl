@@ -22,7 +22,7 @@
 :- lib(ncbi_species_grep/3).
 :- lib(url_file_local_date_mirror/3).
 
-std_maps_ncbi_defaults( Defs ) :-
+ncbi_std_maps_defaults( Defs ) :-
                                    Defs = [ db(ncbi),
                                             debug(true),
                                             debug_fetch(true),

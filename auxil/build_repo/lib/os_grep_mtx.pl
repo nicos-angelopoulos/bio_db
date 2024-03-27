@@ -51,7 +51,7 @@ os_grep_mtx(File, Pattern, OutF, Args ) :-
                               mtx( OutF, [Hdr], Opts )
                 )
      ),
-     os_grep_mtx( Ifc, App, Hdr, File, Pattern, OutF ).
+     os_grep_mtx( Ifc, App, File, Pattern, OutF ).
 
 os_grep_mtx( shell, App, File, Pattern, OutF ) :-
     ( App == false ->

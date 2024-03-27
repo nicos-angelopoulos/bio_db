@@ -4,6 +4,7 @@
 % stoics
 :- lib(os_lib).
 :- lib(options).
+:- lib(by_unix).
 :- lib(debug_call).
 
 % bio_db/auxil
@@ -41,4 +42,5 @@ ncbi_species_grep( TsvF, GreF, Args ) :-
      bio_db_taxo( Org, Tax, Opts ),
      atomic_concat( '^', Tax, Patt ),
      os_postfix( Org, TsvF, GreF ),
+     @ rm( -f, GreF ),
      os_grep_mtx( TsvF, Patt, GreF, Opts ).

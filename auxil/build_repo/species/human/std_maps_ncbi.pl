@@ -75,22 +75,6 @@ maps_ncbi_rnuc_symb( Self, DnDir, Opts ) :-
      debuc( by_unix ),
      bio_db_source_base_url( ncbi, NcbiRepo ),
      ncbi_humanise_data( gene2accession, DnDir, NcbiRepo, Old, HsStem, HsUrl, HsDnDt, Opts ),
-     % file_name_extension( HsStem, tmp, TmpF ),
-     % @ mv( -f, HsStem, TmpF ),
-     % open( HsStem, write, HsOut ),
-% 
-     % Cnms = [ 'tax_id','GeneID','status','RNA_nucleotide_accession.version','RNA_nucleotide_gi','protein_accession.version','protein_gi',
-              % 'genomic_nucleotide_accession.version','genomic_nucleotide_gi','start_position_on_the_genomic_accession','end_position_on_the_genomic_accession',
-               % 'orientation','assembly','mature_peptide_accession.version','mature_peptide_gi','Symbol'],
-     % at_con( Cnms, '\t', HdrLn ),
-     % write( HsOut, HdrLn ),
-     % nl( HsOut ),
-     % close( HsOut ),
-     % atomic_list_concat( [cat,TmpF,'>>',HsStem], ' ', Cat ),
-     % debuc( Self, 'Shelling: ~w', [Cat] ),
-     % shell( Cat ),
-     % @ mv( -f, HsStem, HsStem ),
-
      CIMOpts = [ db(ncbi),
                  to_value_1(de_versionise), to_value_2(is_a_symbol),
                  datetime(HsDnDt), source(HsUrl), 
@@ -245,9 +229,9 @@ std_maps_ncbi_1( Self, File, Url, DnDt, Opts ) :-
      Renp = [prefix(ncbi),to_value_2(pos_integer),to_value_1(pfx_by_de_v('ENS')),datetime(DnDt),source(Url)],
      append( Renp, Opts, ARenp ),
      csv_ids_map( File, ensp, ncbi, Mtx, EnsPGF, [header(row('Ensembl Protein','Entrez ID'))|ARenp] ),
-     Nens = [to_value_1(pos_integer),datetime(DnDt),source(Url)|Opts],
-     csv_ids_map( File, ncbi, 'Symbol', Mtx, NcbiSymbF, [header(row(ncbi,symbol))|Nens] ),
-     maplist( link_to_bio_sub(ncbi), [GEnsGF,EnsGGF,GEnsPF,EnsPGF,NcbiSymbF] ).
+     % Nens = [to_value_1(pos_integer),datetime(DnDt),source(Url)|Opts],
+     % csv_ids_map( File, ncbi, 'Symbol', Mtx, NcbiSymbF, [header(row(ncbi,symbol))|Nens] ),
+     maplist( link_to_bio_sub(ncbi), [GEnsGF,EnsGGF,GEnsPF,EnsPGF] ).
 
 pos_integer( Numb, Numb ) :-
      integer( Numb ),

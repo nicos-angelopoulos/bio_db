@@ -167,6 +167,7 @@ ncbi_species_data( Stem, DnD, Old, SpeciesF, Url, DnDt, Opts ) :-
      os_path( DnD, GzF, DnF ),
      bio_db_dnt_times( DnF, DnDt, _DnEn ),
      working_directory( Old, DnD ),
+     trace,
      @ rm( -f, DnStem ),
      @ gunzip( -f, -k, GzF ),
      ncbi_species_grep( DnStem, SpeciesF, Opts ),

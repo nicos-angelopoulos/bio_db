@@ -5,6 +5,7 @@
 os_grep_mtx_defaults( Defs ) :- 
           Defs =  [  append(true),
                      iface(shell),
+                     hdr(_),
                      options_types(iface-oneof([shell,process]))
                   ].
 
@@ -35,6 +36,7 @@ Examples
 
 @author nicos angelopoulos
 @version  0.1 2024/03/27
+@mtx/3 for retrieving the Hdr
 
 */
 os_grep_mtx(File, Pattern, OutF, Args ) :-
@@ -46,7 +48,8 @@ os_grep_mtx(File, Pattern, OutF, Args ) :-
      ( App \== false -> 
                 ( var(Hdr) -> 
                               at_con( ['head -1',File,'>',OutF], ' ', Shell ),
-                              os_shell(Shell)
+                              os_shell(Shell),
+                              mtx( OutF, [Hdr|_], Opts )
                               ;
                               mtx( OutF, [Hdr], Opts )
                 )

@@ -54,7 +54,7 @@ maps_ncbi_ensp_ensg :-
      working_directory( _, Old ).
 
 % fixme: this is not in the loop ? either fix or remove
-maps_ncbi_ncbi_gont :-
+maps_ncbi_ncbi_gont( Opts ) :-
      % Dir = '/usr/local/users/nicos/work/db/data/ncbi',
      ncbi_dnload( Dir ),
      ncbi_repo( Repo ),

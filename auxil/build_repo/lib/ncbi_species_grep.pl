@@ -40,5 +40,5 @@ ncbi_species_grep( TsvF, GreF, Args ) :-
      options_append( Self, Args, Opts ),
      bio_db_taxo( Org, Tax, Opts ),
      atomic_concat( '^', Tax, Patt ),
-     os_postfix( Org, TsvF, GreF )
+     os_postfix( Org, TsvF, GreF ),
      os_grep_mtx( TsvF, Patt, GreF, Opts ).

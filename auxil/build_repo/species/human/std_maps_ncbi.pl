@@ -3,7 +3,6 @@
 
 :- use_module(library(csv)).        % csv_read_file/2.
 :- use_module(library(process)).    % process_create/3.
-:- use_module(library(readutil)).   % read_line_to_codes/2.
 
 % if library(lib) is missing, install via pack_install(lib).
 %
@@ -64,7 +63,7 @@ maps_ncbi_ncbi_gont :-
      @ rm( -f, gene2go ),
      @ gunzip( -f, -k, 'gene2go.gz' ),
      % debuc( by_unix ),
-     grep(gene2go, '^9606', gene2go_hs),
+     os_grep(gene2go, '^9606', gene2go_hs, true ),
      % system( 'grep "^9606" gene2go | cat gene2go_hs' ),
      working_directory( _, Old ).
 
@@ -152,8 +151,8 @@ ncbi_humanise_data( Stem, Dir, Repo, Old, HsStem, Url, DnDt, Opts ) :-
      @ rm( -f, HsStem ),
      @ rm( -f, Stem ),
      @ gunzip( -f, -k, GzF ),
-     grep( Stem, '^9606', HsStem ),
-    @ rm( -f, Stem ). % fixme: untested
+     os_grep( Stem, '^9606', HsStem, true ),
+     @ rm( -f, Stem ). % fixme: untested
 
 hs_unig( In, In ) :-
      atom_concat( 'Hs.', _, In ).
@@ -239,7 +238,7 @@ std_maps_ncbi_1( Self, File, Url, DnDt, Opts ) :-
      % GEnsGF = entrez_gene_id_ensg.pl,
      % csv_filter_by_column( New, tax_id, =(9606), HS ),
      mtx_column_values_select( New, tax_id, 9606, HS, _, true ),
-    debuc( Self, length, hs_len/HS ),
+     debuc( Self, length, hs_len/HS ),
      Lens = [prefix(ncbi),to_value_1(pos_integer),to_value_2(pfx_by('ENS')),datetime(DnDt),source(Url)|Opts],
      Rens = [prefix(ncbi),to_value_2(pos_integer),to_value_1(pfx_by('ENS')),datetime(DnDt),source(Url)|Opts],
      csv_ids_map( File, ncbi, ensg, HS, GEnsGF, [header(row('Entrez ID','Ensembl Gene'))|Lens] ),
@@ -273,26 +272,6 @@ pfx_by_de_v( Pfx, Full, UnV ) :-
 
 pfx_by( Pfx, Full, Full ) :-
      prefix_atom( Pfx, Full ).
-
-grep(File, Pattern, OutF) :-
-        process_create(path(grep), [ Pattern, file(File) ],
-                       [ stdout(pipe(Out))
-                       ]),
-        % read_lines(Out, Lines).
-        open( OutF, write, Write ),
-        write_lines_out(Out, Write),
-        close( Write ).
-
-write_lines_out(Out, Write) :-
-        read_line_to_codes( Out, Line1 ),
-        write_lines(Line1, Out, Write ).
-
-write_lines(end_of_file, _, _) :- !.
-write_lines(Codes, Out, Write) :-
-        atom_codes(Line, Codes),
-        write( Write, Line ), nl( Write ),
-        read_line_to_codes(Out, Line2),
-        write_lines(Line2, Out, Write).
 
 ncbi_cname_known( 'HGNC Symbol', symb ).
 ncbi_cname_known( 'Ensembl Gene', ensg ).

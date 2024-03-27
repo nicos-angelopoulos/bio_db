@@ -28,6 +28,7 @@
 :- lib(bio_db_dnt_times/3).
 :- lib(build_dnload_loc/3).
 :- lib(bio_db_source_url/3).
+:- lib(ncbi_species_grep/3).
 :- lib(ens_fa_peptide_gene_rows/2).  % /2, fixme: should be more local
 :- lib(url_file_local_date_mirror/3).
 
@@ -152,7 +153,7 @@ ncbi_humanise_data( Stem, Dir, Repo, Old, HsStem, Url, DnDt, Opts ) :-
      @ rm( -f, HsStem ),
      @ rm( -f, Stem ),
      @ gunzip( -f, -k, GzF ),
-     os_grep_mtx( Stem, '^9606', HsStem, true ),
+     ncbi_species_grep( Stem, HsStem, Opts ),
      @ rm( -f, Stem ).
 
 hs_unig( In, In ) :-
@@ -251,7 +252,9 @@ std_maps_ncbi_1( Self, File, Url, DnDt, Opts ) :-
      Renp = [prefix(ncbi),to_value_2(pos_integer),to_value_1(pfx_by_de_v('ENS')),datetime(DnDt),source(Url)],
      append( Renp, Opts, ARenp ),
      csv_ids_map( File, ensp, ncbi, HS, EnsPGF, [header(row('Ensembl Protein','Entrez ID'))|ARenp] ),
-     maplist( link_to_bio_sub(ncbi), [GEnsGF,EnsGGF,GEnsPF,EnsPGF] ).
+     Nens = [to_value_1(pos_integer),datetime(DnDt),source(Url)|Opts],
+     csv_ids_map( PigF, ncbi, 'Symbol', Pig, NcbiSymbF, [header(row(ncbi,symbol))|Nens] ),
+     maplist( link_to_bio_sub(ncbi), [GEnsGF,EnsGGF,GEnsPF,EnsPGF,NcbiSymbF] ).
 
 pos_integer( Numb, Numb ) :-
      integer( Numb ),

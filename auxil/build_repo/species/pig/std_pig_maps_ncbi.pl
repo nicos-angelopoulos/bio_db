@@ -28,6 +28,7 @@
 :- lib(bio_db_dnt_times/3).
 :- lib(build_dnload_loc/3).
 :- lib(bio_db_source_url/3).
+:- lib(ncbi_species_grep/3).
 :- lib(ens_fa_peptide_gene_rows/2).     % /2, fixme: should be more local
 :- lib(url_file_local_date_mirror/3).
 
@@ -90,8 +91,7 @@ std_pig_maps_ncbi( Args ) :-
      working_directory( _ParentD, MapsD ),
      @ gunzip( -k, -f, GnsF ),
      file_name_extension( RemS, gz, GnsF ),
-     at_con( [RemS,pig], '_', PigG2NF ),
-     grep( RemS, '^9823', PigG2NF ),
+     ncbi_species_grep( RemS, PigG2NF, Opts ),
      debuc( Self, 'Grepped pig gene2ensembl into: ~p', [PigG2NF] ),
      std_pig_maps_ncbi( Self, PigG2NF, Url, DnDt, Opts ),
      delete_file( RemS ),
@@ -117,7 +117,9 @@ std_pig_maps_ncbi( Self, PigF, Url, DnDt, Opts ) :-
      csv_ids_map( PigF, ncbi, ensp, Pig, GEnsPF, [header(row('Entrez ID','Ensembl Protein'))|Lenp] ),
      Renp = [to_value_2(pos_integer),to_value_1(pfx_by_de_v('ENS')),datetime(DnDt),source(Url)|Opts],
      csv_ids_map( PigF, ensp, ncbi, Pig, EnsPGF, [header(row('Ensembl Protein','Entrez ID'))|Renp] ),
-     link_to_bio_sub( ncbi, [GEnsGF,EnsGGF,GEnsPF,EnsPGF], [type(maps)|Opts] ).
+     Nens = [to_value_1(pos_integer),datetime(DnDt),source(Url)|Opts],
+     csv_ids_map( PigF, ncbi, 'Symbol', Pig, NcbiSymbF, [header(row(ncbi,symbol))|Nens] ),
+     link_to_bio_sub( ncbi, [GEnsGF,EnsGGF,GEnsPF,EnsPGF,NcbiSymbF], [type(maps)|Opts] ).
 
 pos_integer( Numb, Numb ) :-
      integer( Numb ),
@@ -139,23 +141,3 @@ pfx_by_de_v( Pfx, Full, UnV ) :-
 
 pfx_by( Pfx, Full, Full ) :-
      prefix_atom( Pfx, Full ).
-
-grep(File, Pattern, OutF) :-
-        process_create(path(grep), [ Pattern, file(File) ],
-                       [ stdout(pipe(Out))
-                       ]),
-        % read_lines(Out, Lines).
-        open( OutF, write, Write ),
-        write_lines_out(Out, Write),
-        close( Write ).
-
-write_lines_out(Out, Write) :-
-        read_line_to_codes( Out, Line1 ),
-        write_lines(Line1, Out, Write ).
-
-write_lines(end_of_file, _, _) :- !.
-write_lines(Codes, Out, Write) :-
-        atom_codes(Line, Codes),
-        write( Write, Line ), nl( Write ),
-        read_line_to_codes(Out, Line2),
-        write_lines(Line2, Out, Write).

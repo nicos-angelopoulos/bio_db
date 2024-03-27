@@ -13,6 +13,7 @@
 :- lib(os_lib).
 :- lib(by_unix).
 :- lib(debug_call).
+:- lib(ncbi_species_grep/3).
 :- lib(stoics_lib:prefix_atom/2).
 
 % also sets lib alias to that dir
@@ -90,8 +91,7 @@ std_chicken_maps_ncbi( Args ) :-
      working_directory( _ParentD, MapsD ),
      @ gunzip( -k, -f, GnsF ),
      file_name_extension( RemS, gz, GnsF ),
-     at_con( [RemS,chicken], '_', ChickG2NF ),
-     grep( RemS, '^9031', ChickG2NF ),
+     ncbi_species_grep( RemS, ChickG2NF, Opts ),
      debuc( Self, 'Grepped chicken gene2ensembl into: ~p', [ChickG2NF] ),
      std_chicken_maps_ncbi( Self, ChickG2NF, Url, DnDt, Opts ),
      delete_file( RemS ),
@@ -139,15 +139,6 @@ pfx_by_de_v( Pfx, Full, UnV ) :-
 
 pfx_by( Pfx, Full, Full ) :-
      prefix_atom( Pfx, Full ).
-
-grep(File, Pattern, OutF) :-
-        process_create(path(grep), [ Pattern, file(File) ],
-                       [ stdout(pipe(Out))
-                       ]),
-        % read_lines(Out, Lines).
-        open( OutF, write, Write ),
-        write_lines_out(Out, Write),
-        close( Write ).
 
 write_lines_out(Out, Write) :-
         read_line_to_codes( Out, Line1 ),

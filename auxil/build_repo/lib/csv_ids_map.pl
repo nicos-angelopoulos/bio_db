@@ -247,3 +247,21 @@ filter_columns( Opts, Tbl, Clm1, Clm2, Filt1, Filt2 ) :-
     sieve_indices( FiltIdc, Clm1, _, Filt1 ),
     sieve_indices( FiltIdc, Clm2, _, Filt2 ).
 filter_columns( _Opts, _Csv, Clm1, Clm2, Clm1, Clm2 ).
+
+not_empty( '', _ ) :- !, fail.
+not_empty( X, X ).
+
+pfx_by( Pfx, Full, Full ) :-
+     prefix_atom( Pfx, Full ).
+
+pfx_by_de_v( Pfx, Full, UnV ) :-
+     prefix_atom( Pfx, Full ),
+    ( atomic_list_concat([UnV,_],'.',Full) ->
+        true
+        ;
+        UnV = Full
+    ).
+
+de_versionise( ProductVersion, Product ) :-
+     atomic_list_concat( [Product,_Version], '.', ProductVersion ),
+     !.

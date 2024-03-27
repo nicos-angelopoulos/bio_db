@@ -105,8 +105,7 @@ ncbi_ensembl( Self, DnDir, Opts ) :-
      @ mv( -f, EnsGGF, maps ),
      @ mv( -f, GEnsPF, maps ),
      @ mv( -f, EnsPGF, maps ),
-     delete_file( RemS ),
-     workin_directory( _, maps ),
+     working_directory( _, maps ),
      maplist( link_to_bio_sub(ncbi), [GEnsGF,EnsGGF,GEnsPF,EnsPGF] ),
      working_directory( _, Old ).
 
@@ -137,7 +136,6 @@ ncbi_accesion( Self, DnD, Opts ) :-
                          | Opts
      ],
      csv_ids_map( SpeciesF, 'GeneID', 'Symbol', Mtx, NcbiSymbF, NcbiSymbOpts ),
-     % delete_file( TmpF ),
      os_make_path( maps ),
      @ mv( -f, OutF, maps ),
      @ mv( -f, DNAF, maps ),

@@ -9,6 +9,7 @@
 :- use_module(library(lib)).
 
 % external code, lib knowns how to deal with these (will install if missing)
+:- lib(mtx).
 :- lib(os_lib).
 :- lib(by_unix).
 :- lib(debug_call).
@@ -223,7 +224,6 @@ std_maps_ncbi( Args ) :-
      working_directory( _ParentD, MapsD ),
      @ gunzip( GnsF ),
      file_name_extension( RemS, gz, GnsF ),
-     trace,
      ncbi_species_grep( RemS, HsStem, [hdr(row(tax_id,ncbi,ensg,nucl_acc,ensr,prot_acc,ensp)),sep(tab)|Opts] ),
      std_maps_ncbi_1( Self, HsStem, Url, DnDt, Opts ),
      delete_file( RemS ),
@@ -232,7 +232,7 @@ std_maps_ncbi( Args ) :-
      working_directory( _, Old ).
 
 std_maps_ncbi_1( Self, File, Url, DnDt, Opts ) :-
-     csv_read_file( File, Mtx, sep(tab) ),
+     mtx( File, Mtx, sep(tab) ),
      debuc( Self, length, hs_len/Mtx ),
      Lens = [prefix(ncbi),to_value_1(pos_integer),to_value_2(pfx_by('ENS')),datetime(DnDt),source(Url)|Opts],
      Rens = [prefix(ncbi),to_value_2(pos_integer),to_value_1(pfx_by('ENS')),datetime(DnDt),source(Url)|Opts],

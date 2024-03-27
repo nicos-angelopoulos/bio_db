@@ -9,11 +9,11 @@
 :- lib(options).
 :- lib(debug_call).
 
+% also sets lib alias to thadir
+:- ensure_loaded('../../lib/bio_db_build_aliases').  % /1.
+
 % local
 :- lib(ncbi_std_maps).
-
-% also sets lib alias to that dir
-:- ensure_loaded('../../lib/bio_db_build_aliases').  % /1.
 
 std_human_maps_ncbi_defaults( [org(human)] ).
 

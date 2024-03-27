@@ -99,7 +99,7 @@ ncbi_ensembl( Self, DnDir, Opts ) :-
      csv_ids_map( SpeciesF, 'GeneID', 'Ensembl_protein_identifier', Mtx, GEnsPF, [header(row('NCBI ID','Ensembl Protein'))|ALenp] ),
      Renp = [prefix(ncbi),to_value_2(pos_integer),to_value_1(pfx_by_de_v('ENS')),datetime(DnDt),source(Url)],
      append( Renp, Opts, ARenp ),
-     csv_ids_map( SpeciesF, ensp, 'GeneID', Mtx, EnsPGF, [header(row('Ensembl Protein','NCBI ID'))|ARenp] ),
+     csv_ids_map( SpeciesF, 'Ensembl_protein_identifier', 'GeneID', Mtx, EnsPGF, [header(row('Ensembl Protein','NCBI ID'))|ARenp] ),
      os_make_path( maps ),
      @ mv( -f, GEnsGF, maps ),
      @ mv( -f, EnsGGF, maps ),

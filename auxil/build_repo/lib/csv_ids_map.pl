@@ -9,6 +9,7 @@
 :- lib(options).
 :- lib(stoics_lib:holds/2).
 :- lib(stoics_lib:portray_clauses/2).
+:- lib(stoics_lib:prefix_atom/2).
 
 :- lib(bio_db_cnm_token/2).
 :- lib(map_predicate_name/4).
@@ -248,6 +249,10 @@ filter_columns( Opts, Tbl, Clm1, Clm2, Filt1, Filt2 ) :-
     sieve_indices( FiltIdc, Clm2, _, Filt2 ).
 filter_columns( _Opts, _Csv, Clm1, Clm2, Clm1, Clm2 ).
 
+
+de_versionise( ProductVersion, Product ) :-
+     atomic_list_concat( [Product,_Version], '.', ProductVersion ),
+     !.
 not_empty( '', _ ) :- !, fail.
 not_empty( X, X ).
 
@@ -262,6 +267,13 @@ pfx_by_de_v( Pfx, Full, UnV ) :-
         UnV = Full
     ).
 
-de_versionise( ProductVersion, Product ) :-
-     atomic_list_concat( [Product,_Version], '.', ProductVersion ),
-     !.
+pos_integer( Numb, Numb ) :-
+     integer( Numb ),
+     !,
+     Numb > 0.
+pos_integer( Atom, Numb ) :-
+     atom_number( Atom, Numb ),
+     !,
+     integer( Numb ), 
+     Numb > 0.
+

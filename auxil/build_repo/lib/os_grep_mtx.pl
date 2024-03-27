@@ -5,7 +5,7 @@
 os_grep_mtx_defaults( Defs ) :- 
           Defs =  [  append(true),
                      iface(shell),
-                     options_types(iface-oneof(shell,process))
+                     options_types(iface-oneof([shell,process]))
                   ].
 
 /** os_grep_mtx( +InF, +Patt, +OutF ).

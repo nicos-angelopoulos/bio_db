@@ -87,7 +87,7 @@ maps_ncbi_rnuc_symb( Self, DnDir, Opts ) :-
 
 
      DNAOpts = [ db(ncbi),
-                 to_value_1(de_versionise), to_valuse_2(is_a_symbol),
+                 to_value_1(de_versionise), to_value_2(is_a_symbol),
                  datetime(HsDnDt), source(HsUrl), 
                  header(row('DNA Nucleotide','HGNC Symbol')) 
                  | Opts
@@ -95,13 +95,22 @@ maps_ncbi_rnuc_symb( Self, DnDir, Opts ) :-
      GENnucl = 'genomic_nucleotide_accession.version', 
      debuc( Self, 'Csv Map for: ~w vs ~w', [GENnucl,'Symbol'] ),
      csv_ids_map( HsStem, GENnucl, 'Symbol', _Csv2, DNAF, DNAOpts ),
+     NcbiSymbOpts = [ db(ncbi),
+                 to_value_1(pos_integer), to_value_2(is_a_symbol),
+                 datetime(HsDnDt), source(HsUrl), 
+                 header(row(ncbi,symbol)) 
+                 | Opts
+     ],
+     csv_ids_map( HsStem, 'GeneID', 'Symbol', _Csv3, NcbiSymbF, NcbiSymbOpts ),
      % delete_file( TmpF ),
      os_make_path( maps ),
      @ mv( -f, OutF, maps ),
      @ mv( -f, DNAF, maps ),
+     @ mv( -f, NcbiSymbF, maps ),
      working_directory( _, maps ),
      link_to_bio_sub(ncbi, OutF ),
      link_to_bio_sub(ncbi, DNAF ),
+     link_to_bio_sub(ncbi, NcbiSymbF ),
      working_directory( _, Old ).
 
 /** %unigene is no longer maintained as of Feb.2019

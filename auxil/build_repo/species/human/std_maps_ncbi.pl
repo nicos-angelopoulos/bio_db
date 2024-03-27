@@ -39,6 +39,7 @@ std_maps_ncbi_defaults( Defs ) :-
                                             debug_url(false),
                                             iactive(true),
                                             ncbi_to_ensembl('gene2ensembl.gz'),
+                                            ncbi_accession('gene2accession.gz'),
                                             org(human),
                                             sep(tab)
                                           ].
@@ -58,8 +59,10 @@ Opts
     whether to debug the concatenation of the url (via bio_db_source_url/3)
   * iactive(Iact=true)
     whether the session is interactive, otherwise wget gets --no-verbose
-  * ncbi_to_ensembl(GnsF='')
-    the url base for the genes download
+  * ncbi_accession(AccF='gene2accession.gz')
+    the url base for the ncbi genes map
+  * ncbi_to_ensembl(GnsF='gene2ensembl.gz')
+    the url base for the ncbi to ensembl map
   * org(Org=human)
     organism
   * sep(tab)
@@ -79,71 +82,72 @@ std_maps_ncbi( Args ) :-
      options_append( Self, Args, Opts ),
      bio_db_build_aliases( Opts ),
      build_dnload_loc( Self, DnDir, Opts ),
+     % debuc( by_unix ),
      ncbi_ensembl( Self, DnDir, Opts ),
-     ncbi_
-     maps_ncbi_rnuc_symb( Self, DnDir, Opts ),
+     ncbi_accesion( Self, DnDir, Opts ).
 
 ncbi_ensembl( Self, DnDir, Opts ) :-
-     bio_db_source_url( Url, [ncbi_to_ensembl-url_file,debug_url-debug], Opts ),
-     options( debug_fetch(Fbg), Opts ),
-     url_file_local_date_mirror( Url, DnDir, [debug(Fbg),interface(wget),dnld_file(GnsF)|Opts] ),
-     working_directory( Old, DnDir ),
-     MapsD = maps,
-     make_directory_path( MapsD ),
-     directory_file_path( MapsD, GnsF, ToP ),
-     copy_file( GnsF, ToP ),
-     bio_db_dnt_times( GnsF, DnDt, _DnEn ),
-     working_directory( _ParentD, MapsD ),
-     @ gunzip( GnsF ),
-     file_name_extension( RemS, gz, GnsF ),
-     ncbi_species_grep( RemS, HsStem, [hdr(row(tax_id,ncbi,ensg,nucl_acc,ensr,prot_acc,ensp)),sep(tab)|Opts] ),
-     std_maps_ncbi_1( Self, HsStem, Url, DnDt, Opts ),
-     delete_file( RemS ),
-     % maps_ncbi_unig_ncbi,  % unigene is no longer maintained as of Feb.2019
-     working_directory( _, Old ).
-
-std_maps_ncbi_1( Self, File, Url, DnDt, Opts ) :-
-     mtx( File, Mtx, sep(tab) ),
+     ncbi_species_data( ncbi_to_ensembl, DnDir, Old, SpeciesF, Url, DnDt, Opts ),
+     % bio_db_source_url( Url, [ncbi_to_ensembl-url_file,debug_url-debug], Opts ),
+     % options( debug_fetch(Fbg), Opts ),
+     % url_file_local_date_mirror( Url, DnDir, [debug(Fbg),interface(wget),dnld_file(GnsF)|Opts] ),
+     % working_directory( Old, DnDir ),
+     % directory_file_path( MapsD, SpeciesF, WorkP ),
+     % copy_file( GnsF, WorkP ),
+     % bio_db_dnt_times( GnsF, DnDt, _DnEn ),
+     % working_directory( _ParentD, MapsD ),
+     % @ gunzip( GnsF ),
+     % file_name_extension( RemS, gz, GnsF ),
+     ncbi_species_grep( RemS, SpeciesF, [hdr(row(tax_id,ncbi,ensg,nucl_acc,ensr,prot_acc,ensp)),sep(tab)|Opts] ),
+     mtx( SpeciesF, Mtx, sep(tab) ),
      debuc( Self, length, hs_len/Mtx ),
      Lens = [prefix(ncbi),to_value_1(pos_integer),to_value_2(pfx_by('ENS')),datetime(DnDt),source(Url)|Opts],
      Rens = [prefix(ncbi),to_value_2(pos_integer),to_value_1(pfx_by('ENS')),datetime(DnDt),source(Url)|Opts],
-     csv_ids_map( File, ncbi, ensg, Mtx, GEnsGF, [header(row('Entrez ID','Ensembl Gene'))|Lens] ),
-     csv_ids_map( File, ensg, ncbi, Mtx, EnsGGF, [header(row('Ensembl Gene','Entrez ID'))|Rens] ),
+     csv_ids_map( SpeciesF, ncbi, ensg, Mtx, GEnsGF, [header(row('Entrez ID','Ensembl Gene'))|Lens] ),
+     csv_ids_map( SpeciesF, ensg, ncbi, Mtx, EnsGGF, [header(row('Ensembl Gene','Entrez ID'))|Rens] ),
      Lenp = [prefix(ncbi),to_value_1(pos_integer),to_value_2(pfx_by_de_v('ENS')),datetime(DnDt),source(Url)],
      append( Lenp, Opts, ALenp ),
-     csv_ids_map( File, ncbi, ensp, Mtx, GEnsPF, [header(row('Entrez ID','Ensembl Protein'))|ALenp] ),
+     csv_ids_map( SpeciesF, ncbi, ensp, Mtx, GEnsPF, [header(row('Entrez ID','Ensembl Protein'))|ALenp] ),
      Renp = [prefix(ncbi),to_value_2(pos_integer),to_value_1(pfx_by_de_v('ENS')),datetime(DnDt),source(Url)],
      append( Renp, Opts, ARenp ),
-     csv_ids_map( File, ensp, ncbi, Mtx, EnsPGF, [header(row('Ensembl Protein','Entrez ID'))|ARenp] ),
-     maplist( link_to_bio_sub(ncbi), [GEnsGF,EnsGGF,GEnsPF,EnsPGF] ).
+     csv_ids_map( SpeciesF, ensp, ncbi, Mtx, EnsPGF, [header(row('Ensembl Protein','Entrez ID'))|ARenp] ),
+     os_make_path( maps ),
+     @ mv( -f, GEnsGF, maps ),
+     @ mv( -f, EnsGGF, maps ),
+     @ mv( -f, GEnsPF, maps ),
+     @ mv( -f, EnsPGF, maps ),
+     delete_file( RemS ),
+     workin_directory( _, maps ),
+     maplist( link_to_bio_sub(ncbi), [GEnsGF,EnsGGF,GEnsPF,EnsPGF] ),
+     working_directory( _, Old ).
 
-maps_ncbi_rnuc_symb( Self, DnDir, Opts ) :-
-     debuc( by_unix ),
-     bio_db_source_base_url( ncbi, NcbiRepo ),
-     ncbi_species_data( gene2accession, DnDir, NcbiRepo, Old, HsStem, HsUrl, HsDnDt, Opts ),
+ncbi_accesion( Self, DnD, Opts ) :-
+     ncbi_species_data( ncbi_accession, DnD, Old, SpeciesF, Url, DnDt, Opts ),
+     mtx( SpeciesF, Mtx, sep(tab) ),
+     debuc( Self, dims, ncbi_accession/Mtx ),
      CIMOpts = [ db(ncbi),
                  to_value_1(de_versionise), to_value_2(not_empty), % to_value_2(is_a_symbol),
-                 datetime(HsDnDt), source(HsUrl), header(row('RNA Nucleotide','HGNC Symbol'))
+                 datetime(DnDt), source(Url), header(row('RNA Nucleotide','HGNC Symbol'))
                  | Opts
      ],
      RNAnucl = 'RNA_nucleotide_accession.version',
      debuc( Self, 'Csv Map for: ~w vs ~w', [RNAnucl,'Symbol'] ),
-     csv_ids_map( HsStem, RNAnucl, 'Symbol', _Csv1, OutF, CIMOpts ),
+     csv_ids_map( SpeciesF, RNAnucl, 'Symbol', Mtx, OutF, CIMOpts ),
      DNAOpts = [ db(ncbi),
                  to_value_1(de_versionise), to_value_2(not_empty), % to_value_2(is_a_symbol),
-                 datetime(HsDnDt), source(HsUrl), header(row('DNA Nucleotide','HGNC Symbol')) 
+                 datetime(DnDt), source(Url), header(row('DNA Nucleotide','HGNC Symbol')) 
                  | Opts
      ],
      GENnucl = 'genomic_nucleotide_accession.version', 
      debuc( Self, 'Csv Map for: ~w vs ~w', [GENnucl,'Symbol'] ),
-     csv_ids_map( HsStem, GENnucl, 'Symbol', _Csv2, DNAF, DNAOpts ),
+     csv_ids_map( SpeciesF, GENnucl, 'Symbol', Mtx, DNAF, DNAOpts ),
      NcbiSymbOpts = [    db(ncbi),
                          to_value_1(pos_integer), to_value_2(not_empty), % to_value_2(is_a_symbol),
-                         datetime(HsDnDt), source(HsUrl), 
+                         datetime(DnDt), source(Url), 
                          header(row(ncbi,symbol)) 
                          | Opts
      ],
-     csv_ids_map( HsStem, 'GeneID', 'Symbol', _Csv3, NcbiSymbF, NcbiSymbOpts ),
+     csv_ids_map( SpeciesF, 'GeneID', 'Symbol', Mtx, NcbiSymbF, NcbiSymbOpts ),
      % delete_file( TmpF ),
      os_make_path( maps ),
      @ mv( -f, OutF, maps ),
@@ -155,19 +159,18 @@ maps_ncbi_rnuc_symb( Self, DnDir, Opts ) :-
      link_to_bio_sub(ncbi, NcbiSymbF ),
      working_directory( _, Old ).
 
-ncbi_species_data( Stem, Dir, Repo, Old, HsStem, Url, DnDt, Opts ) :-
-     file_name_extension( Stem, gz, GzF ),
-     os_path( Repo, GzF, Url ),
-     url_file_local_date_mirror( Url, Dir, [debug(true),interface(wget)|Opts] ),
-     os_path( Dir, GzF, DnlF ),
-     bio_db_dnt_times( DnlF, DnDt, _DnEn ),
-     working_directory( Old, Dir ),
-     % atomic_list_concat( [Stem,hs], '_', HsStem ),
-     % @ rm( -f, HsStem ),
-     @ rm( -f, Stem ),
+ncbi_species_data( Stem, DnD, Old, SpeciesF, Url, DnDt, Opts ) :-
+     bio_db_source_url( Url, [Stem-url_file,debug_url-debug], Opts ),
+     options( debug_fetch(Fbg), Opts ),
+     url_file_local_date_mirror( Url, DnD, [debug(Fbg),interface(wget),dnld_file(GzF)|Opts] ),
+     file_name_extension( DnStem, gz, GzF ),
+     os_path( DnD, GzF, DnF ),
+     bio_db_dnt_times( DnF, DnDt, _DnEn ),
+     working_directory( Old, DnD ),
+     @ rm( -f, DnStem ),
      @ gunzip( -f, -k, GzF ),
-     ncbi_species_grep( Stem, HsStem, Opts ),
-     @ rm( -f, Stem ).
+     ncbi_species_grep( DnStem, SpeciesF, Opts ),
+     @ rm( -f, DnStem ).
 
 pos_integer( Numb, Numb ) :-
      integer( Numb ),

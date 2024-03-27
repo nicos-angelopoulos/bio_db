@@ -133,7 +133,7 @@ maps_ncbi_rnuc_symb( Self, DnDir, Opts ) :-
      CIMOpts = [ db(ncbi),
                  to_value_1(de_versionise), 
                  % to_value_2(is_a_symbol),
-                 to_value_2(\==(''))
+                 to_value_2(\==('')),
                  datetime(HsDnDt), source(HsUrl), 
                  header(row('RNA Nucleotide','HGNC Symbol'))
                  | Opts
@@ -144,7 +144,7 @@ maps_ncbi_rnuc_symb( Self, DnDir, Opts ) :-
      DNAOpts = [ db(ncbi),
                  to_value_1(de_versionise), 
                  % to_value_2(is_a_symbol),
-                 to_value_2(\==(''))
+                 to_value_2(\==('')),
                  datetime(HsDnDt), source(HsUrl), 
                  header(row('DNA Nucleotide','HGNC Symbol')) 
                  | Opts
@@ -155,7 +155,7 @@ maps_ncbi_rnuc_symb( Self, DnDir, Opts ) :-
      NcbiSymbOpts = [ db(ncbi),
                  to_value_1(pos_integer), 
                  % to_value_2(is_a_symbol),
-                 to_value_2(\==(''))
+                 to_value_2(\==('')),
                  datetime(HsDnDt), source(HsUrl), 
                  header(row(ncbi,symbol)) 
                  | Opts

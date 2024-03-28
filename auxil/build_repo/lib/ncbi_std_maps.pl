@@ -28,6 +28,7 @@ ncbi_std_maps_defaults( Defs ) :-
                                             debug_fetch(true),
                                             debug_url(false),
                                             iactive(true),
+                                            ncbi_gene_info(false),
                                             ncbi_to_ensembl('gene2ensembl.gz'),
                                             ncbi_accession('gene2accession.gz'),
                                             org(human),
@@ -74,8 +75,14 @@ ncbi_std_maps( Args ) :-
      bio_db_build_aliases( Opts ),
      build_dnload_loc( Self, DnDir, Opts ),
      % debuc( by_unix ),
+     options( ncbi_gene_info(GeneInfo), Opts ),
+     ncbi_genes( GeneInfo, Self, DnDir, Opts ),
      ncbi_ensembl( Self, DnDir, Opts ),
      ncbi_accesion( Self, DnDir, Opts ).
+
+ncbi_genes( false, Self, DnDir, Opts ) :-
+     !,
+     debuc( Self, 'No NCBI genes info were asked for this organism.'
 
 ncbi_ensembl( Self, DnDir, Opts ) :-
      ncbi_species_data( ncbi_to_ensembl, DnDir, Old, SpeciesF, Url, DnDt, Opts ),

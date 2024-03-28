@@ -253,6 +253,12 @@ filter_columns( _Opts, _Csv, Clm1, Clm2, Clm1, Clm2 ).
 de_versionise( ProductVersion, Product ) :-
      atomic_list_concat( [Product,_Version], '.', ProductVersion ),
      !.
+
+non_dash_sep_by( _, '', _ ) :- !, fail. % do not include empties
+non_dash_sep_by( _, '-', _ ) :- !, fail. % do not include empties
+non_dash_sep_by( Sep, Atom, List ) :-
+    atomic_list_concat(  List, Sep, Atom ).
+
 not_empty( '', _ ) :- !, fail.
 not_empty( X, X ).
 
@@ -276,4 +282,5 @@ pos_integer( Atom, Numb ) :-
      !,
      integer( Numb ), 
      Numb > 0.
+
 

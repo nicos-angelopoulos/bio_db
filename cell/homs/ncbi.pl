@@ -90,7 +90,7 @@ ncbi_homs_rnuc_symb( Rnuc, Symb ) :-
 
 /** ncbi_homs_dnuc_symb( DnaNucl, Symb ).
 
-Map predicate from DNA nucleic sequence to HGNC symbol.
+Map predicate from DNA nucleic sequence to NCBI symbol.
 
 ==
 ?- ncbi_homs_dnuc_symb( 'AL669831', Symb ).

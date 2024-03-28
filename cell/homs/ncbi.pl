@@ -2,8 +2,8 @@
                 bio_db_homs_ncbi/0,
                 %       + NCBI
                 ncbi_homs_dnuc_symb/2,
-                ncbi_homs_ensg_ncbi/2,
-                ncbi_homs_ensp_ncbi/2,
+                % ncbi_homs_ensg_ncbi/2,
+                % ncbi_homs_ensp_ncbi/2,
                 ncbi_homs_ncbi_ensg/2,
                 ncbi_homs_ncbi_ensp/2,
                 ncbi_homs_ncbi_symb/2,

@@ -15,9 +15,9 @@
 % local
 :- lib(ncbi_std_maps/1).
 
-std_human_maps_ncbi_defaults( [org(human)] ).
+std_maps_ncbi_defaults( [org(human)] ).
 
-/** std_human_maps_ncbi(+Opts).
+/** std_maps_ncbi(+Opts).
 
 Build starndard NCBI maps for human. 
 
@@ -32,7 +32,7 @@ All code has moved to lib(ncbi_std_maps.pl) as it is can be used for other speci
 @see ncbi_std_maps/1
 */
 std_maps_ncbi( Args ) :-
-     Self = std_human_maps_ncbi,
+     Self = std_maps_ncbi,
      options_append( Self, Args, Opts ),
      ncbi_std_maps( Opts ).
 

@@ -81,7 +81,7 @@ ncbi_std_maps( Args ) :-
      ncbi_ensembl( Self, DnDir, Opts ),
      ncbi_accesion( Self, DnDir, Opts ).
 
-ncbi_genes( false, Self, DnDir, Opts ) :-
+ncbi_genes( false, Self, _DnDir, _Opts ) :-
      !,
      debuc( Self, 'No NCBI genes info were asked for this organism.', [] ).
 ncbi_genes( _GeneInfo, Self, DnDir, Opts ) :-

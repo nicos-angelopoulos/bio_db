@@ -7,6 +7,7 @@
                 ncbi_homs_ncbi_ensg/2,
                 ncbi_homs_ncbi_ensp/2,
                 ncbi_homs_ncbi_symb/2,
+                ncbi_homs_nsyn_symb/2,
                 ncbi_homs_rnuc_symb/2 
                 % map_ncbi_unig_ncbi/2 % withdrawn 2019.02
                 ] ).
@@ -25,6 +26,7 @@ Predicates defined:
   * ncbi_homs_ncbi_ensg/2
   * ncbi_homs_ncbi_ensp/2
   * ncbi_homs_ncbi_symb/2
+  * ncbi_homs_nsyn_symb/2
   * ncbi_homs_rnuc_symb/2
 
 ==
@@ -75,18 +77,6 @@ EnsP = 'ENSP00000270238'.
 */
 ncbi_homs_ncbi_ensp( X, Y ) :-
     bio_db:bio_db_serve( ncbi_homs_ncbi_ensp(X,Y) ).
-
-/** ncbi_homs_rnuc_symb( RnaNucl, Symb ).
-
-Map predicate from RNA nucleic sequence to HGNC symbol.
-
-==
-?- ncbi_homs_rnuc_symb( 'BC140794', Symb ).
-Symb = 'CEP170'.
-==
-*/
-ncbi_homs_rnuc_symb( Rnuc, Symb ) :-
-    bio_db:bio_db_serve( ncbi_homs_rnuc_symb(Rnuc,Symb) ).
 
 /** ncbi_homs_dnuc_symb( DnaNucl, Symb ).
 
@@ -143,3 +133,29 @@ Symb = 'LMTK3'.
 */
 ncbi_homs_ncbi_symb( X, Y ) :-
     bio_db:bio_db_serve( ncbi_homs_ncbi_symb(X,Y) ).
+
+/** ncbi_homs_nsyn_symb( ?Nsyn, ?Symb).
+
+Map predicate (NCBI) synonym to (NCBI) Symbol.
+
+==
+?- ncbi_homs_nsyn_symb( Syno, 'LMTK3' ).
+Syno = 'LMR3' ;
+Syno = 'PPP1R101' ;
+Syno = 'TYKLM3'.
+==
+*/
+ncbi_homs_nsyn_symb( X, Y ) :-
+    bio_db:bio_db_serve( ncbi_homs_nsyn_symb(X,Y) ).
+
+/** ncbi_homs_rnuc_symb( RnaNucl, Symb ).
+
+Map predicate from RNA nucleic sequence to HGNC symbol.
+
+==
+?- ncbi_homs_rnuc_symb( 'BC140794', Symb ).
+Symb = 'CEP170'.
+==
+*/
+ncbi_homs_rnuc_symb( Rnuc, Symb ) :-
+    bio_db:bio_db_serve( ncbi_homs_rnuc_symb(Rnuc,Symb) ).

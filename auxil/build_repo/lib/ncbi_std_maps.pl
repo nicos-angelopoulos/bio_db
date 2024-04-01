@@ -69,6 +69,7 @@ Opts
 @version  1.0 2024/3/27,  moved from human to common lib, major re-factoring
 
 */
+
 ncbi_std_maps( Args ) :-
      Self = ncbi_std_maps,
      options_append( Self, Args, Opts ),
@@ -82,7 +83,30 @@ ncbi_std_maps( Args ) :-
 
 ncbi_genes( false, Self, DnDir, Opts ) :-
      !,
-     debuc( Self, 'No NCBI genes info were asked for this organism.'
+     debuc( Self, 'No NCBI genes info were asked for this organism.', [] ).
+ncbi_genes( _GeneInfo, Self, DnDir, Opts ) :-
+     bio_db_build_aliases( Opts ),
+     build_dnload_loc( Self, DnDir, Opts ),
+     bio_db_source_url( Url, [debug_url-debug,ncbi_gene_info-url_file], Opts ),
+     options_rename( [interface(wget),dnld_file(GzF),dnt_stamp(DntStamp)|Opts], debug_url-debug, Fpts, true ),
+     url_file_local_date_mirror( Url, DnDir, Fpts ),
+     working_directory( Old, DnDir ),
+     @ gunzip( -f, -k, GzF ),
+     os_ext( gz, GeneInfoF, GzF ),
+     mtx( GeneInfoF, Mtx, sep(tab) ),
+     MapOpts = [     
+                    to_value_1(non_dash_sep_by('|')),
+                    to_value_2(=),
+                    datetime(DntStamp),
+                    source(Url),
+                    header(row('Ncbi Synonym','Symbol'))
+                    |Opts
+        ],
+     os_make_path( maps ),
+     working_directory( _, maps ),
+     csv_ids_map( _, 'Synonyms', 'Symbol', Mtx, EntzSynoF, MapOpts ),
+     link_to_bio_sub( ncbi, EntzSynoF, [type(maps)|Opts] ),
+     working_directory( _, Old ).
 
 ncbi_ensembl( Self, DnDir, Opts ) :-
      ncbi_species_data( ncbi_to_ensembl, DnDir, Old, SpeciesF, Url, DnDt, Opts ),
@@ -157,5 +181,3 @@ ncbi_species_data( Stem, DnD, Old, SpeciesF, Url, DnDt, Opts ) :-
      @ gunzip( -f, -k, GzF ),
      ncbi_species_grep( DnStem, SpeciesF, Opts ),
      @ rm( -f, DnStem ).
-
-

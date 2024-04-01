@@ -94,10 +94,6 @@ std_mouse_maps_ncbi( Args ) :-
      os_make_path( maps ),
      working_directory( _, maps ),
      csv_ids_map( _, 'Synonyms', 'Symbol', Mtx, EntzSynoF, MapOpts ),
-     link_to_bio_sub( ncbi, EntzSynoF, [org(mouse),type(maps)] ),
+     link_to_bio_sub( ncbi, EntzSynoF, [type(maps)|Opts] ),
      working_directory( _, Old ).
 
-non_dash_sep_by( _, '', _ ) :- !, fail. % do not include empties
-non_dash_sep_by( _, '-', _ ) :- !, fail. % do not include empties
-non_dash_sep_by( Sep, Atom, List ) :-
-    atomic_list_concat(  List, Sep, Atom ).

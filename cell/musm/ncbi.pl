@@ -1,12 +1,11 @@
 :- module( bio_db_musm_ncbi, [
                 bio_db_musm_ncbi/0,
                 %       (mouse) NCBI (entrez synonyms only, for now)
-                ncbi_musm_nsyn_symb/2
-                % 
                 ncbi_musm_dnuc_symb/2,
                 ncbi_musm_ncbi_ensg/2,
                 ncbi_musm_ncbi_ensp/2,
                 ncbi_musm_ncbi_symb/2,
+                ncbi_musm_nsyn_symb/2,
                 ncbi_musm_rnuc_symb/2 
                 ] ).
 

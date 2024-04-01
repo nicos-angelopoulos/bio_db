@@ -4,6 +4,7 @@
                 ncbi_galg_ncbi_ensg/2,
                 ncbi_galg_ncbi_ensp/2,
                 ncbi_galg_ncbi_symb/2,
+                ncbi_galg_nsyn_symb/2,
                 ncbi_galg_rnuc_symb/2 
              ]
          ).
@@ -18,6 +19,7 @@ Defined predicates:
   * ncbi_galg_ncbi_ensg/2
   * ncbi_galg_ncbi_ensp/2
   * ncbi_galg_ncbi_symb/2
+  * ncbi_galg_nsyn_symb/2
   * ncbi_galg_rnuc_symb/2 
 
 @author nicos angelopoulos
@@ -72,6 +74,19 @@ Note that the Symbols are no checked against HGNC. They are what NCBI calls symb
 */
 ncbi_galg_ncbi_symb( X, Y ) :-
     bio_db:bio_db_serve( ncbi_galg_ncbi_symb(X,Y) ).
+
+/** ncbi_galg_nsyn_symb( ?Nsyn, ?Symb ).
+
+Map of NCBI synonym to symbols.
+
+==
+?- ncbi_galg_nsyn_symb(Nsyn,'LRP1').
+Nsyn = 'A2MR' ;
+Nsyn = 'LRP-1'.
+==
+*/
+ncbi_galg_nsyn_symb( X, Y ) :-
+    bio_db:bio_db_serve( ncbi_galg_nsyn_symb(X,Y) ).
 
 /** ncbi_galg_rnuc_symb( RnaNucl, Symb ).
 

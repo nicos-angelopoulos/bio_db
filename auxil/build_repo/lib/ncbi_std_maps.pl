@@ -126,9 +126,9 @@ ncbi_ensembl( Self, DnDir, Opts ) :-
      @ mv( -f, GEnsGF, maps ),
      % @ mv( -f, EnsGGF, maps ),
      @ mv( -f, GEnsPF, maps ),
-     @ mv( -f, EnsPGF, maps ),
+     % @ mv( -f, EnsPGF, maps ),
      working_directory( _, maps ),
-     maplist( link_to_bio_sub(ncbi), [GEnsGF,GEnsPF,EnsPGF] ),
+     maplist( link_to_bio_sub(ncbi), [GEnsGF,GEnsPF] ),
      % maplist( link_to_bio_sub(ncbi), [GEnsGF,EnsGGF,GEnsPF,EnsPGF] ),
      working_directory( _, Old ).
 

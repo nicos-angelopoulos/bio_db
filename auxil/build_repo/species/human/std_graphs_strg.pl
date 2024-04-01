@@ -95,7 +95,7 @@ std_graphs_strg( Args ) :-
     options_append( Self, Args, Opts ),
     bio_db_build_aliases( Opts ),
     % load necessary data that has already been generated
-    ensure_loaded(ncbi:bio_db_build_downloads('ncbi/maps/ncbi_homs_ensp_ncbi')),
+    ensure_loaded(ncbi:bio_db_build_downloads('ncbi/maps/ncbi_homs_ncbi_ensp')),
     ensure_loaded(hgnc:bio_db_build_downloads('hgnc/maps/hgnc_homs_ncbi_symb')),
     options( string_version(VersionPrv), Opts ),
     ( number(VersionPrv) -> atom_number(Version,VersionPrv); Version = VersionPrv ),
@@ -181,7 +181,7 @@ strg_human_symbolise_edges_stream( InTerm, Pn, InS, Edges ) :-
      strg_human_symbolise_edges_stream( NxtTerm, Pn, InS, TEdges ).
 
 ensp_human_symb( EnsP, Symb ) :-
-     ncbi:ncbi_homs_ensp_ncbi( EnsP, Ncbi ),
+     ncbi:ncbi_homs_ncbi_ensp( EnsP, Ncbi ),
      hgnc:hgnc_homs_ncbi_symb( Ncbi, Symb ),
      !.
 

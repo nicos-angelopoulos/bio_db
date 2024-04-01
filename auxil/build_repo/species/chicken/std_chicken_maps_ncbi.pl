@@ -15,7 +15,11 @@
 % local
 :- lib(ncbi_std_maps/1).
 
-std_chicken_maps_ncbi_defaults( [org(chicken)] ).
+std_chicken_maps_ncbi_defaults( Defs ) :-
+               Defs = [
+                         ncbi_gene_info('GENE_INFO/Non-mammalian_vertebrates/Gallus_gallus.gene_info.gz'),
+                         org(chicken)
+                      ].
 
 /** std_chicken_maps_ncbi(+Opts).
 
@@ -34,5 +38,5 @@ All code has moved to lib(ncbi_std_maps.pl) as it is can be used for other speci
 std_chicken_maps_ncbi( Args ) :-
      Self = std_chicken_maps_ncbi,
      options_append( Self, Args, Opts ),
-     ncbi_chicken_std_maps( Opts ).
+     ncbi_std_maps( Opts ).
 

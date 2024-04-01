@@ -155,8 +155,8 @@ hgnc_std_map( Cid1, Cid2, CsvF, Csv, StdO, SrcUrl/DnDt, OutF ) :-
     csv_ids_map( CsvF, Cid1, Cid2, Csv, OutF, [source(SrcUrl),datetime(DnDt)|Opts] ),
     debuc( std_maps_hgnc, 'deposited on: ~w (columns: ~w, ~w)', [OutF,Cid1,Cid2] ).
 
-hgnc_std_column_to_value_call('HGNC ID', de_semi('HGNC') ).  % old
-hgnc_std_column_to_value_call('hgnc_id', de_semi('HGNC') ).
+hgnc_std_column_to_value_call('HGNC ID', de_semi('HGNC')).  % old
+hgnc_std_column_to_value_call('hgnc_id', de_semi('HGNC')).
 hgnc_std_column_to_value_call('Approved Symbol', non_empty). % old
 hgnc_std_column_to_value_call('symbol', non_empty).
 hgnc_std_column_to_value_call('alias_symbol', sep_split('|')).

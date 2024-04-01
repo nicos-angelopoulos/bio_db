@@ -15,13 +15,19 @@
 % local
 :- lib(ncbi_std_maps/1).
 
-std_pig_maps_ncbi_defaults( [org(pig)] ).
+std_pig_maps_ncbi_defaults( Defs ) :-
+          Defs = [
+                    ncbi_gene_info('GENE_INFO/Mammalia/Sus_scrofa.gene_info.gz'),
+                    org(pig)
+                 ].
 
 /** std_pig_maps_ncbi(+Opts).
 
-Build starndard NCBI maps for pig. 
+Build standard NCBI maps for pig. 
 
 Opts
+ * ncbi_gene_info(GnInf='GENE_INFO/Mammalia/Sus_scrofa.gene_info.gz')
+   genes file for pig
  * org(Org=pig)
    organism
 
@@ -34,4 +40,4 @@ All code has moved to lib(ncbi_std_maps.pl) as it is can be used for other speci
 std_pig_maps_ncbi( Args ) :-
      Self = std_pig_maps_ncbi,
      options_append( Self, Args, Opts ),
-     ncbi_pig_std_maps( Opts ).
+     ncbi_std_maps( Opts ).

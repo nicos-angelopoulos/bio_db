@@ -16,6 +16,14 @@
 
 Documentation predicate for mouse data from NCBI database.
 
+Predicates defined:
+ * ncbi_musm_dnuc_symb/2
+ * ncbi_musm_ncbi_ensg/2
+ * ncbi_musm_ncbi_ensp/2
+ * ncbi_musm_ncbi_symb/2
+ * ncbi_musm_nsyn_symb/2
+ * ncbi_musm_rnuc_symb/2 
+
 ==
 ?- lib( &bio_db(musm(ncbi)) ).
 ?- [ pack('bio_db/cell/musm/ncbi') ].

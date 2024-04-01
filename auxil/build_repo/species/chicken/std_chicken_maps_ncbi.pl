@@ -26,6 +26,8 @@ std_chicken_maps_ncbi_defaults( Defs ) :-
 Build starndard NCBI maps for chicken. 
 
 Opts
+ * ncbi_gene_info(GnInf='GENE_INFO/Non-mammalian_vertebrates/Gallus_gallus.gene_info.gz'),
+   ncbi genes file for chicken
  * org(Org=chicken)
    organism
 

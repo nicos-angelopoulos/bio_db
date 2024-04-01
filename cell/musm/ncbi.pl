@@ -29,6 +29,55 @@ Documentation predicate for mouse data from NCBI database.
 */
 bio_db_musm_ncbi.
 
+/**  ncbi_musm_dnuc_symb(+Dnuc, -Symb).
+
+Map predicate from DNA nucleic sequence to NCBI symbol.
+
+== 
+?- ncbi_musm_dnuc_symb(D,S).
+==
+
+*/
+ncbi_musm_dnuc_symb( Dnuc, Symb ) :-
+    bio_db:bio_db_serve( ncbi_musm_dnuc_symb(Dnuc,Symb) ).
+
+/** ncbi_musm_ncbi_ensg( ?Ncbi, ?EnsG ).
+
+Map predicate from NCBI/entrez gene ids to Ensembl genes.
+
+==
+?- ncbi_musm_ncbi_ensg( Ncbi, EnsG ).
+==
+*/
+ncbi_musm_ncbi_ensg( X, Y ) :-
+    bio_db:bio_db_serve( ncbi_musm_ncbi_ensg(X,Y) ).
+
+/**  ncbi_musm_ncbi_ensp( ?Ncbi, ?EnsP ).
+
+Map predicate from NCBI/entrez gene ids to Ensembl proteins.
+
+==
+?- ncbi_musm_ncbi_ensp( 114783, EnsP ).
+EnsP = 'ENSP00000270238'.
+
+==
+*/
+ncbi_musm_ncbi_ensp( X, Y ) :-
+    bio_db:bio_db_serve( ncbi_musm_ncbi_ensp(X,Y) ).
+
+/** ncbi_musm_ncbi_symb( ?Ncbi, ?Symb).
+
+Map predicate from NCBI/entrez gene ids to Symbols. 
+
+Note that the Symbols are no checked against HGNC. They are what NCBI calls symbols.
+
+==
+?- ncbi_musm_ncbi_symb( Ncbi, Symb ).
+==
+*/
+ncbi_musm_ncbi_symb( X, Y ) :-
+    bio_db:bio_db_serve( ncbi_musm_ncbi_symb(X,Y) ).
+
 /**  ncbi_musm_nsyn_symb( +Syno, -Symb ).
 
 Map of symbol synonyms based on the NCBI (Entrez) data.
@@ -44,3 +93,14 @@ Symb = 'Stx5a'.
 */
 ncbi_musm_nsyn_symb( X, Y ) :-
     bio_db:bio_db_serve( ncbi_musm_nsyn_symb(X,Y) ).
+
+/** ncbi_musm_rnuc_symb( RnaNucl, Symb ).
+
+Map predicate from RNA nucleic sequence to HGNC symbol.
+
+==
+?- ncbi_musm_rnuc_symb( Rnuc, Symb ).
+==
+*/
+ncbi_musm_rnuc_symb( Rnuc, Symb ) :-
+    bio_db:bio_db_serve( ncbi_musm_rnuc_symb(Rnuc,Symb) ).

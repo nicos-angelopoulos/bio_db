@@ -15,13 +15,19 @@
 % local
 :- lib(ncbi_std_maps/1).
 
-std_maps_ncbi_defaults( [org(human)] ).
+std_maps_ncbi_defaults( Defs ) :-
+          Defs = [
+                    ncbi_gene_info('GENE_INFO/Mammalia/Homo_sapiens.gene_info.gz'),
+                    org(human)
+                 ].
 
 /** std_maps_ncbi(+Opts).
 
 Build starndard NCBI maps for human. 
 
 Opts
+ * ncbi_gene_info(GnInf='GENE_INFO/Mammalia/Homo_sapiens.gene_info.gz'),
+   genes info file for human
  * org(Org=human)
    organism
 

@@ -181,7 +181,7 @@ strg_human_symbolise_edges_stream( InTerm, Pn, InS, Edges ) :-
      strg_human_symbolise_edges_stream( NxtTerm, Pn, InS, TEdges ).
 
 ensp_human_symb( EnsP, Symb ) :-
-     ncbi:ncbi_homs_ncbi_ensp( EnsP, Ncbi ),
+     ncbi:ncbi_homs_ncbi_ensp( Ncbi, EnsP ),
      hgnc:hgnc_homs_ncbi_symb( Ncbi, Symb ),
      !.
 

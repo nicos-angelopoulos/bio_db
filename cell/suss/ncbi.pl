@@ -4,6 +4,7 @@
                 ncbi_suss_ncbi_ensg/2,
                 ncbi_suss_ncbi_ensp/2
                 ncbi_suss_ncbi_symb/2,
+                ncbi_suss_nsyn_symb/2,
                 ncbi_suss_rnuc_symb/2
              ]
          ).
@@ -14,10 +15,12 @@
 Documentation predicate for pig (sus scrofa) data from NCBI databases.
 
 Defined predicates:
-  * ncbi_suss_ensg_ncbi/2
-  * ncbi_suss_ensp_ncbi/2
+  * ncbi_suss_dnuc_symb/2
   * ncbi_suss_ncbi_ensg/2
   * ncbi_suss_ncbi_ensp/2
+  * ncbi_suss_ncbi_symb/2
+  * ncbi_suss_nsyn_symb/2
+  * ncbi_suss_rnuc_symb/2
 
 @author nicos angelopoulos
 @version  0.1 2023/6/2
@@ -96,6 +99,19 @@ Note that the Symbols are no checked against HGNC. They are what NCBI calls symb
 ncbi_suss_ncbi_symb( X, Y ) :-
     bio_db:bio_db_serve( ncbi_suss_ncbi_symb(X,Y) ).
 
+/** ncbi_suss_nsyn_symb( ?Nsyn, ?Symb).
+
+Map predicate (NCBI) synonym to (NCBI) Symbol.
+
+==
+?- ncbi_suss_nsyn_symb( Syno, 'LMTK3' ).
+Syno = 'LMR3' ;
+Syno = 'PPP1R101' ;
+Syno = 'TYKLM3'.
+==
+*/
+ncbi_suss_nsyn_symb( X, Y ) :-
+    bio_db:bio_db_serve( ncbi_suss_nsyn_symb(X,Y) ).
 
 /** ncbi_suss_rnuc_symb( RnaNucl, Symb ).
 

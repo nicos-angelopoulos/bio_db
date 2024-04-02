@@ -50,6 +50,8 @@ Opts
     whether to debug the concatenation of the url (via bio_db_source_url/3)
   * iactive(Iact=true)
     whether the session is interactive, otherwise wget gets --no-verbose
+  * ncbi_gene_info(GenIf=false)
+    gene information relative path to gene file for synonyms
   * ncbi_accession(AccF='gene2accession.gz')
     the url base for the ncbi genes map
   * ncbi_to_ensembl(GnsF='gene2ensembl.gz')
@@ -128,7 +130,7 @@ ncbi_ensembl( Self, DnDir, Opts ) :-
      @ mv( -f, GEnsPF, maps ),
      % @ mv( -f, EnsPGF, maps ),
      working_directory( _, maps ),
-     maplist( link_to_bio_sub(ncbi), [GEnsGF,GEnsPF] ),
+     map_list_options( link_to_bio_sub(ncbi), [GEnsGF,GEnsPF], Opts ), 
      % maplist( link_to_bio_sub(ncbi), [GEnsGF,EnsGGF,GEnsPF,EnsPGF] ),
      working_directory( _, Old ).
 
@@ -164,9 +166,9 @@ ncbi_accesion( Self, DnD, Opts ) :-
      @ mv( -f, DNAF, maps ),
      @ mv( -f, NcbiSymbF, maps ),
      working_directory( _, maps ),
-     link_to_bio_sub(ncbi, OutF ),
-     link_to_bio_sub(ncbi, DNAF ),
-     link_to_bio_sub(ncbi, NcbiSymbF ),
+     link_to_bio_sub(ncbi, OutF, Opts ),
+     link_to_bio_sub(ncbi, DNAF, Opts ),
+     link_to_bio_sub(ncbi, NcbiSymbF, Opts ),
      working_directory( _, Old ).
 
 ncbi_species_data( Stem, DnD, Old, SpeciesF, Url, DnDt, Opts ) :-

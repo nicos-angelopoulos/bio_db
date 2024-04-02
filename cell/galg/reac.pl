@@ -5,7 +5,7 @@
                     reac_galg_ncbi_reap/3,
                     reac_galg_reac_reap/3,
                     reac_galg_reac_recl/2,
-                    reac_galg_reac_recn/3,
+                    reac_galg_reac_recn/2,
                     reac_galg_reap_repn/2
                 ] ).
 
@@ -77,16 +77,16 @@ Map Reactome product identifiers to localisation tokens.
 reac_galg_reac_recl( X, Z ) :-
     bio_db:bio_db_serve( reac_galg_reac_recl(X,Z) ).
 
-/**  reac_galg_reac_recn( ?Reac, ?Evid, ?Recn ).
+/**  reac_galg_reac_recn( ?Reac, ?Recn ).
 
-Map Reactome product identifiers to product names.
+Map Reactome identifiers to names.
 
 ==
-?- reac_galg_reac_recn( 191429, Recn ).
+?- reac_galg_reac_recn( Reac, Recn ).
 ==
 */
-reac_galg_reac_recn( X, Y, Z ) :-
-    bio_db:bio_db_serve( reac_galg_reac_recn(X,Y,Z) ).
+reac_galg_reac_recn( X, Z ) :-
+    bio_db:bio_db_serve( reac_galg_reac_recn(X,Z) ).
 
 /**  reac_galg_reap_repn( ?Reap, ?Repn ).
 

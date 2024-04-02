@@ -163,12 +163,12 @@ cgnc_std_map( Cid1, Cid2, DnlF, Csv, Self, StdO, SrcUrl/DnDt, OutF ) :-
 
 cgnc_std_column_to_value_call('CGNC id', pos_integer). % check they are unique and present (key) % de_semi('CGNC') ).
 cgnc_std_column_to_value_call('Entrez Gene id', pos_integer).
-cgnc_std_column_to_value_call('Ensembl Gene id', non_empty).   % fixme: prefixed
-cgnc_std_column_to_value_call('gene symbol', non_empty).
-cgnc_std_column_to_value_call('gene name', non_empty).
+cgnc_std_column_to_value_call('Ensembl Gene id', not_empty).   % fixme: prefixed
+cgnc_std_column_to_value_call('gene symbol', not_empty).
+cgnc_std_column_to_value_call('gene name', not_empty).
 cgnc_std_column_to_value_call('gene synonym', sep_split('|')).      % fixme: check for multis
-cgnc_std_column_to_value_call('curation status', non_empty).  
-cgnc_std_column_to_value_call('last edit date', non_empty).    % fixme: a date
+cgnc_std_column_to_value_call('curation status', not_empty).  
+cgnc_std_column_to_value_call('last edit date', not_empty).    % fixme: a date
     
 cohese_ensebl_gene_id( Dom, _Subo, Gid ) :-
     Dom \== '', 

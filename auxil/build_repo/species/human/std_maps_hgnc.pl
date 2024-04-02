@@ -157,22 +157,22 @@ hgnc_std_map( Cid1, Cid2, CsvF, Csv, StdO, SrcUrl/DnDt, OutF ) :-
 
 hgnc_std_column_to_value_call('HGNC ID', de_semi('HGNC')).  % old
 hgnc_std_column_to_value_call('hgnc_id', de_semi('HGNC')).
-hgnc_std_column_to_value_call('Approved Symbol', non_empty). % old
-hgnc_std_column_to_value_call('symbol', non_empty).
+hgnc_std_column_to_value_call('Approved Symbol', not_empty). % old
+hgnc_std_column_to_value_call('symbol', not_empty).
 hgnc_std_column_to_value_call('alias_symbol', sep_split('|')).
 hgnc_std_column_to_value_call('prev_symbol', sep_split('|')).
-hgnc_std_column_to_value_call('Approved Name', non_empty). % old
-hgnc_std_column_to_value_call('name', non_empty). % old
+hgnc_std_column_to_value_call('Approved Name', not_empty). % old
+hgnc_std_column_to_value_call('name', not_empty). % old
 % hgnc_std_column_to_value_call( 'Entrez Gene ID + supplied by NCBI', pos_integer ).
 hgnc_std_column_to_value_call('Entrez Gene ID', pos_integer).  % old
 hgnc_std_column_to_value_call('entrez_id', pos_integer).  % old
 % hgnc_std_column_to_value_call( 'Entrez Gene ID (supplied by NCBI)', pos_integer ).
-% hgnc_std_column_to_value_call( 'Ensembl ID + supplied by Ensembl', non_empty_atom ). 
-hgnc_std_column_to_value_call('ensembl_gene_id', non_empty).
-hgnc_std_column_to_value_call('Chromosome', non_empty).   % old
-hgnc_std_column_to_value_call('location', non_empty).  
-hgnc_std_column_to_value_call('CCDS IDs', non_empty).  % old
-hgnc_std_column_to_value_call('ccds_id', non_empty). 
+% hgnc_std_column_to_value_call( 'Ensembl ID + supplied by Ensembl', not_empty). 
+hgnc_std_column_to_value_call('ensembl_gene_id', not_empty).
+hgnc_std_column_to_value_call('Chromosome', not_empty).   % old
+hgnc_std_column_to_value_call('location', not_empty).  
+hgnc_std_column_to_value_call('CCDS IDs', not_empty).  % old
+hgnc_std_column_to_value_call('ccds_id', not_empty). 
       % fixme: prefixed ENSG
     
 cohese_ensebl_gene_id( Dom, _Subo, Gid ) :-

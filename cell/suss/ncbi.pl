@@ -2,7 +2,7 @@
                 bio_db_suss_ncbi/0,
                 ncbi_suss_dnuc_symb/2,
                 ncbi_suss_ncbi_ensg/2,
-                ncbi_suss_ncbi_ensp/2
+                ncbi_suss_ncbi_ensp/2,
                 ncbi_suss_ncbi_symb/2,
                 ncbi_suss_nsyn_symb/2,
                 ncbi_suss_rnuc_symb/2

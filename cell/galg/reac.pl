@@ -77,7 +77,7 @@ Map Reactome product identifiers to localisation tokens.
 reac_galg_reac_recl( X, Z ) :-
     bio_db:bio_db_serve( reac_galg_reac_recl(X,Z) ).
 
-/**  reac_galg_reac_recn( ?Reac, ?Recn ).
+/**  reac_galg_reac_recn( ?Reac, ?Evid, ?Recn ).
 
 Map Reactome product identifiers to product names.
 

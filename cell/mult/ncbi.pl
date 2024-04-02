@@ -42,4 +42,4 @@ Taxonomy id (integer) to Genbank name.
 
 */
 ncbi_mult_taxo_gbnm( Taxo, Gbnm ) :-
-    bio_db:bio_db_serve( ncbi_suss_ensp_ncbi(Taxo,Gbnm) ).
+    bio_db:bio_db_serve( ncbi_mult_taxo_gbnm(Taxo,Gbnm) ).

@@ -2,7 +2,7 @@
                 bio_db_suss_vgnc/0,
                 vgnc_suss_vgnc_ensg/2,
                 vgnc_suss_vgnc_name/2,
-                vgnc_suss_vgnc_ncbi/2
+                vgnc_suss_vgnc_ncbi/2,
                 vgnc_suss_vgnc_symb/2
              ]
          ).

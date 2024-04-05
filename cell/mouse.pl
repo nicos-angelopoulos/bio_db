@@ -8,6 +8,7 @@
 :- lib( &(bio_db(musm(ense))) ).
 :- lib( &(bio_db(musm(ncbi))) ).
 :- lib( &(bio_db(musm(unip))) ).
+:- lib( &(bio_db(musm(reac))) ).
 :- lib( &(bio_db(musm(gont))) ).
 :- lib( &(bio_db(musm(strg))) ).
 

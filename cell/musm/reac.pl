@@ -2,7 +2,7 @@
                     bio_db_musm_reac/0,
                     %       + Reactome
                     reac_musm_ncbi_reac/2,
-                    reac_musm_ncbi_reap/2,
+                    reac_musm_ncbi_reap/3,
                     reac_musm_reac_reap/3,
                     reac_musm_reac_recl/2,
                     reac_musm_reac_recn/2,
@@ -49,7 +49,7 @@ Evidence is the type of evidence supporting the pathway membership.
 ?- reac_musm_reac_reap(191429, Evi, Reac), write(Evi-Reac), nl, fail.
 ==
 */
-reac_musm_ncbi_reap( X, Y, Z ) :-
+reac_musm_reac_reap( X, Y, Z ) :-
     bio_db:bio_db_serve( reac_musm_reac_reap(X,Y,Z) ).
 
 /**  reac_musm_ncbi_reap( ?Ncbi, -Evidence, ?Reap ).
@@ -85,8 +85,8 @@ Map Reactome product identifiers to product names.
 ?- reac_musm_reac_recn( 191429, Recn ).
 ==
 */
-reac_musm_reac_recn( X, Y, Z ) :-
-    bio_db:bio_db_serve( reac_musm_reac_recn(X,Y,Z) ).
+reac_musm_reac_recn( X, Z ) :-
+    bio_db:bio_db_serve( reac_musm_reac_recn(X,Z) ).
 
 /**  reac_musm_reap_repn( ?Reap, ?Repn ).
 

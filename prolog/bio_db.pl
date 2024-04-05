@@ -265,11 +265,7 @@ library: bio_db_qcompile (def: true) and bio_db_interface (def: prolog).
 When the first one is set to false, it can disable the compilation to 
 
 Bio_db itself does include any of the datasets. You can either download the separate pack(bio_db_repo)
-which contains all of the Prolog datasets.
-bio_db_repo   will install all the Prolog database files. The single tar and gzipped file is  
-246 Mb in size and the fully expanded version of a Prolog installation can take up to 3.1Gb. 
-The precise size depends on how many tables 
-are accessed at least once (each producing an expanded .pl and a .qlf file).
+which contains all of the Prolog datasets or let pack(bio_db) download the data file one at the time- as needed.
 As of version v4.4 there are 144 associated data predicates serving 76398976 records.
 
 This pack can be installed as per usual via

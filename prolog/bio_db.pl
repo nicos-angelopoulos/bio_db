@@ -240,15 +240,15 @@ bio_db_default_interface( prolog ).
 
 :- lib(stoics_lib:at_con/3).
 :- lib(stoics_lib:portray_clauses/2).
-:- lib(stoics_lib:url_file/2).
+:- lib(stoics_lib:url_file/3).
 :- lib(stoics_lib:message_report/3).
 
 :- lib(ui_yes_no/5).
 :- lib(bio_db_map/2).
-:- ensure_loaded( '../auxil/build_repo/lib/bio_db_pl_info' ).   % /2.
-:- lib( end(bio_db) ).
+:- ensure_loaded('../auxil/build_repo/lib/bio_db_pl_info').   % /2.
+:- lib(end(bio_db)).
 
-stoics( 'http://stoics.org.uk/~nicos/sware/packs/bio_db_repo/data' ).
+stoics( 'https://stoics.org.uk/~nicos/sware/packs/bio_db_repo/data' ).
 
 /** <module> Access, use and manage big, biological datasets.
 
@@ -1514,8 +1514,8 @@ bio_db_serve_pname_reply( true, Ictive, Load, Org, Db, Pname, Arity, Iface, Call
     Mess = 'Downloading dataset from server: ~w',
     phrase('$messages':translate_message(debug(Mess,[Stoics])), Lines),
     print_message_lines(current_output, kind(informational), Lines),
-    atomic_list_concat( [PredType|_], '_', Pname ), 
-    bio_db_predicate_type_sub_dir( PredType, Sub ),
+    atomic_list_concat( [_,_,Comp3|_], '_', Pname ), 
+    bio_db_predicate_type_sub_dir( Comp3, Sub ),
     atomic_list_concat( [Stoics,Org,Sub,Db,Pname], '/', StoicsStem ),
     atomic_list_concat( [StoicsStem,pl,zip], '.', StoicsFile ),
     bio_db_pname_source( Org, Db, Pname, none, 'pl.zip', Local ),
@@ -1525,7 +1525,7 @@ bio_db_serve_pname_reply( true, Ictive, Load, Org, Db, Pname, Arity, Iface, Call
     % here
     bio_db_repo_skeleton_pack,
     make_directory_path( LocalDir ),
-    url_file( StoicsFile, Local ),
+    url_file( StoicsFile, Local, iface(wget) ),
     % fixme: delete the .pl file here if it exists before unpacking ?  % although this is inconsistent with calling logic
     archive_extract( Local, LocalDir, [] ),
     % here( 'Unzip the pl, create the Iface and if not Iface==Prolog, suggest deleting the .pl db' ),
@@ -1928,8 +1928,8 @@ bio_db_load_call( true, Pname, Arity, Iface, File, Call ) :-
     assert( bio_db_handle(Pname/Arity,Iface,File,Handle,From) ),
     call( Call ).
 
-bio_db_predicate_type_sub_dir( map, maps ).
-bio_db_predicate_type_sub_dir( edge, graphs ).
+bio_db_predicate_type_sub_dir( edge, graphs ) :- !.
+bio_db_predicate_type_sub_dir( _, maps ).
 
 bio_db_map_call_db_pname( Call, Db, Pname, Arity ) :-
     functor( Call, Pname, Arity ),

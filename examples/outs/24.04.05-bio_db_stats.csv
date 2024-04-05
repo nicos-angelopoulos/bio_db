@@ -1,6 +1,6 @@
-bio_db_version,4:3:0,2023.10.5
+bio_db_version,4:4:0,2024.4.5
 bio_db_repo_version,24:4:5,2024.4.5
-total_tables_records,138,76148802
+total_tables_records,144,76398976
 cgnc_galg_cgnc_curs,2,26023
 cgnc_galg_cgnc_edat,2,26023
 cgnc_galg_cgnc_ensg,2,15314
@@ -105,6 +105,12 @@ reac_homs_reac_reap,3,233652
 reac_homs_reac_recl,2,28306
 reac_homs_reac_recn,2,28306
 reac_homs_reap_repn,2,2652
+reac_musm_ncbi_reac,2,17051
+reac_musm_ncbi_reap,3,81767
+reac_musm_reac_reap,3,117385
+reac_musm_reac_recl,2,16113
+reac_musm_reac_recn,2,16113
+reac_musm_reap_repn,2,1745
 strg_galg_edge_ensp,3,6709066
 strg_galg_edge_symb,3,3354533
 strg_galg_ensp_symb,2,16778

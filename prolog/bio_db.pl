@@ -270,16 +270,21 @@ bio_db_repo   will install all the Prolog database files. The single tar and gzi
 246 Mb in size and the fully expanded version of a Prolog installation can take up to 3.1Gb. 
 The precise size depends on how many tables 
 are accessed at least once (each producing an expanded .pl and a .qlf file).
-As of version 4.4 there are 138 associated data predicates serving 76148802 records.
+As of version v4.4 there are 144 associated data predicates serving 76398976 records.
+
 This pack can be installed as per usual via
 ==
 ?- pack(bio_db_repo).
 ==
 
-If you do not install all datasets, each data table will be auto-downloaded the first 
+However, please note this will download all available tables (zipped) with a total download of 477Mb (v4.4).
+The first time a table is interrogated it is unzipped ot the .pl version and the interpreter automatically
+also create a .qlf. When the all the tables have been access at least once, the pack will take around 6.3Gb (v4.4).
+
+If you do not want to install all datasets, you should not install the pack as above.
+Instead pack(bio_db) will download individual data tables the first 
 time you try to access some of its data.  Auto-downloading works 
 transparently to the user, where a data set is downloaded by simply calling the predicate.
-
 
 For example
 ==

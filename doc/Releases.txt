@@ -13,6 +13,8 @@ TBD:
                   (map_ense_mouse_enst_chrl/5 was opening map_ense_enst_chrl/5).
 
 
+4.5               @ 24.04.05
+      24.04.05    FIXED:   currently stoics.org certificate is not recognised added insecure(true) in url_file/3 opts
 4.4               @ 24.04.05
       24.03.27    BioDB:   added ncbi_homs_ncbi_symb/2 (and seriously reorganised ncbi builds)
       24.03.26    BioDB:   added vgnc_suss_vgnc_ncbi/2 + vgnc_suss_vgnc_ensg/2

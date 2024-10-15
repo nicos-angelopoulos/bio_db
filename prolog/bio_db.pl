@@ -392,6 +392,9 @@ Databases
   * MGI=mgim
     Mouse Genome Informatics, mouse specific datasets (last M for marker, their identifier)
 
+  * Reactome=reac
+    Pathway database
+
 For each database, a relation token with the same name, maps the field is the unique identifier of that database.
 
 Other relation tokens
@@ -568,6 +571,7 @@ Thanks to Jan Wielemaker for a retractall fix and for code for fast loading of p
 @version  4:2 2023/06/06,  support for pig
 @version  4:3 2023/10/05,  mult for multi organisms; vgnc database; ncbi taxonomy db; build-reorganisation
 @version  4:4 2024/04/05,  db(ncbi) preds were complete rehaul, better and more complete db(reactome) support, fixed pig cells
+@version  4:5 2024/04/05,  fixed certificate issue when downloading individual files of bio_db_repo
 @see doc/Releases.txt      for version details
 @see bio_db_data_predicate/4 for a way to enumerate all data predicates
 @see cell/ for the definitions of the data predicates
@@ -757,18 +761,18 @@ Version Mj:Mn:Fx, and release date date(Y,M,D).
 
 ==
 ?- bio_db_version( V, D ).
-V = 4:4:0,
+V = 4:5:0,
 D = date(2024, 4, 5).
 ==
 
 @author Nicos Angelopoulos
-@version  4:4 2024/4/5,   db(ncbi) preds were complete rehaul, better and more complete db(reactome) support, fixed pig cells
+@version  4:5 2024/4/5,   fixed broken download of individual repo data preds
 @see bio_db_data_predicate/4  (which should be generated for each new version)
 @see doc/Releases.txt for more detail on change log
 @see module documentation for brief comments on versioning history of this pack
 
 */
-bio_db_version(4:4:0, date(2024,4,5)).
+bio_db_version(4:5:0, date(2024,4,5)).
 
 %% bio_db_citation( -Atom, -Bibterm ).
 %
@@ -1519,13 +1523,13 @@ bio_db_serve_pname_reply( true, Ictive, Load, Org, Db, Pname, Arity, Iface, Call
     atomic_list_concat( [Stoics,Org,Sub,Db,Pname], '/', StoicsStem ),
     atomic_list_concat( [StoicsStem,pl,zip], '.', StoicsFile ),
     bio_db_pname_source( Org, Db, Pname, none, 'pl.zip', Local ),
-    debug( bio_db, 'Trying to get: ~w', url_file(StoicsFile,Local) ),
+    debug( bio_db, 'Trying to get: ~w', url_file(StoicsFile,Local,insecure(true)) ),
     % directory_file_path( LocDir, _, Local ),
     file_directory_name( Local, LocalDir ),
     % here
     bio_db_repo_skeleton_pack,
     make_directory_path( LocalDir ),
-    url_file( StoicsFile, Local, iface(wget) ),
+    url_file( StoicsFile, Local, insecure(true) ),  % 2024.04.05 you needed latest stoics_lib; fixme: temp
     % fixme: delete the .pl file here if it exists before unpacking ?  % although this is inconsistent with calling logic
     archive_extract( Local, LocalDir, [] ),
     % here( 'Unzip the pl, create the Iface and if not Iface==Prolog, suggest deleting the .pl db' ),

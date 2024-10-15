@@ -92,7 +92,6 @@ std_chicken_maps_ense( Tkn, Args ) :-
     bio_db_build_aliases( Opts ),
     build_dnload_loc( Self, DnDir, Opts ),
     SrcRnms = [ense_galg_file-url_file,debug_url-debug],
-    trace,
     bio_db_source_url( Url, SrcRnms, [org(Tkn)|Opts] ),
     url_file_local_date_mirror( Url, DnDir, [dnld_file(File),interface(wget)|Opts] ),
     debuc( Self, 'Dnload done, file is: ~p', File ),

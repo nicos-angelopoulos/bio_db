@@ -83,7 +83,7 @@ Tue 27 Dec 13:09:40 GMT 2022
 */
 
 std_chicken_maps_ense( Args ) :-
-    % std_chicken_maps_ense( galg, Args ),
+    std_chicken_maps_ense( galg, Args ),
     std_chicken_maps_ense( gg6a, Args ).
 
 std_chicken_maps_ense( Tkn, Args ) :-

@@ -23,16 +23,16 @@ ERROR: Not a valid organism, for mapping to an Ensembl directory: cow (2nd arg: 
 */
 org_ense_dir( Org, Dir, Stem, Opts ) :-
      % bio_db_organism( Org, Canon ),  % this should throw an error
-     (  (bio_db_organism(Org,Canon),org_ense_dir_known(Canon,Dir,Stem)) -> 
+     ( org_ense_dir_known(Org,Dir,Stem) ->  
+          true
+          ; 
+          (  (bio_db_organism(Org,Canon),org_ense_dir_known(Canon,Dir,Stem)) -> 
                         true
                         ; 
-                        ( org_ense_dir_known(Org,Dir,Stem) ->
-                              true
-                              ; 
-                              throw(org_ense_miss(Org,Dir), [bio_db:org_ense_dir/3|Opts]) 
-                        )
+                        throw(org_ense_miss(Org,Dir), [bio_db:org_ense_dir/3|Opts]) 
+          )
      ).
-     
+
 % gaallus_gallus/Gallus_gallus.bGalGal1.mat.broiler.GRCg7b.110.abinitio.gtf.gz
 org_ense_dir_known(chicken,'gallus_gallus','Gallus_gallus.bGalGal1.mat.broiler').
 org_ense_dir_known(galg,'gallus_gallus','Gallus_gallus.bGalGal1.mat.broiler').

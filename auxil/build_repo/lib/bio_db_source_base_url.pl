@@ -10,7 +10,10 @@ bio_db_source_base_url(     cgnc, 'http://birdgenenames.org/cgnc/downloads.jsp?f
 bio_db_source_base_url(     ense, 'ftp://ftp.ensembl.org/pub/current_gtf/').
 bio_db_source_base_url( gont_goa, 'https://geneontology.org/gene-associations/').
 bio_db_source_base_url( gont_obo, 'https://purl.obolibrary.org/obo/').
-bio_db_source_base_url(     hgnc, 'https://ftp.ebi.ac.uk/pub/databases/genenames/new/tsv/').
+% bio_db_source_base_url(     hgnc, 'https://ftp.ebi.ac.uk/pub/databases/genenames/new/tsv/').
+% 24.10.16 above doesnot exist, neither does: ftp://ftp.ebi.ac.uk/pub/databases/genenames/hgnc/tsv/
+% 24.10.16 using:
+bio_db_source_base_url(     hgnc, 'https://storage.googleapis.com/public-download-files/hgnc/tsv/tsv/' ).
 % bio_db_source_base_url    ncbi, 'https://ftp.ncbi.nih.gov/gene/DATA/GENE_INFO/').
 bio_db_source_base_url(     ncbi, 'https://ftp.ncbi.nih.gov/gene/DATA/').
 bio_db_source_base_url(ncbi_taxo, 'https://ftp.ncbi.nih.gov/pub/taxonomy/').

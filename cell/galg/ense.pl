@@ -36,6 +36,7 @@ because is what _Ensembl_ provides at the unqualified _gallus_gallus_ directory.
 
 @author nicos angelopoulos
 @version  0.1 2022/12/19
+@version  0.2 2024/10/16, added gg7w preds
 
 */
 bio_db_galg_ense.

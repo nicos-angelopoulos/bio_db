@@ -14,6 +14,7 @@ TBD:
 
 
 4.6
+      24.10.16    BioDB:   added ense_gg7w_* predicates to support white loghorn
       24.10.15    REMOVE:  obsolete second argument in std_chicken_maps_ense/3
                   FIXED:   build_repo, broken gg6a:ense (was identical to chicken)
 4.5               @ 24.04.05

@@ -142,3 +142,54 @@ Ensembl Transcript to Ensembl Gene id with data drawn from Ensembl.
 */
 ense_gg6a_enst_ensg( EnsT, EnsG ) :-
     bio_db:bio_db_serve( ense_gg6a_enst_ensg(EnsT,EnsG) ).
+
+/**  ense_gg7w_ensg_symb( ?EnsG, ?MgimID ).
+
+Ensembl gene id to symbol with data drawn from Ensembl.
+
+==
+?- ense_gg7w_ensg_symb( A, B ).
+==
+*/
+ense_gg7w_ensg_symb( EnsG, Symb ) :-
+    bio_db:bio_db_serve( ense_gg7w_ensg_symb(EnsG,Symb) ).
+
+/**  ense_gg7w_enst_chrl( +EnsT, -Chr, -Start, -End, -Dir ).
+
+Ensembl transcript chromosomal location.
+
+Chr is the chromosome, Start the start position, End the end position and 
+Dir is the direction of the transcript.
+
+==
+?- ense_gg7w_enst_chrl( EnsT, Chr, Start, End, Dir ).
+==
+
+*/
+ense_gg7w_enst_chrl( EnsT, Chr, Start, End, Dir ) :-
+    bio_db:bio_db_serve( ense_gg7w_enst_chrl(EnsT,Chr,Start,End,Dir) ).
+
+
+/*  ense_gg7w_ensg_chrl( +EnsG, -Chr, -Start, -End, -Dir ).
+
+Ensembl gene id to chromosomal location.
+Chr is the chromosome, Start the start position, End the end position and 
+Dir is the direction of the transcript.
+
+==
+?- ense_gg7w_ensg_chrl( EnsG, Chr, Start, End, Dir ).
+==
+*/
+ense_gg7w_ensg_chrl( EnsG, Chr, Start, End, Dir ) :-
+    bio_db:bio_db_serve( ense_gg7w_ensg_chrl(EnsG,Chr,Start,End,Dir) ).
+
+/**  ense_gg7w_enst_ensg( +EnsT, -EnsG ).
+
+Ensembl Transcript to Ensembl Gene id with data drawn from Ensembl.
+
+==
+?- ense_mouse_enst_ensg( EnsT, EnsG ).
+==
+*/
+ense_gg7w_enst_ensg( EnsT, EnsG ) :-
+    bio_db:bio_db_serve( ense_gg7w_enst_ensg(EnsT,EnsG) ).

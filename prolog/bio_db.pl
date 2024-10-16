@@ -198,6 +198,7 @@ bio_db_organism_alias( hs, human ).
 bio_db_organism_alias( gallus, chicken ).
 bio_db_organism_alias( gallus_gallus, chicken ).
 bio_db_organism_alias( gg6a, chicken ).
+bio_db_organism_alias( gg7w, chicken ).
 
 % this search path can be added to requires
 % bio_db_map/2,

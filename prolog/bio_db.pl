@@ -573,6 +573,7 @@ Thanks to Jan Wielemaker for a retractall fix and for code for fast loading of p
 @version  4:3 2023/10/05,  mult for multi organisms; vgnc database; ncbi taxonomy db; build-reorganisation
 @version  4:4 2024/04/05,  db(ncbi) preds were complete rehaul, better and more complete db(reactome) support, fixed pig cells
 @version  4:5 2024/04/05,  fixed certificate issue when downloading individual files of bio_db_repo
+@version  4:6 2024/10/17,  gg7w for loghorn chicken, hgnc change of base URL
 @see doc/Releases.txt      for version details
 @see bio_db_data_predicate/4 for a way to enumerate all data predicates
 @see cell/ for the definitions of the data predicates
@@ -762,8 +763,8 @@ Version Mj:Mn:Fx, and release date date(Y,M,D).
 
 ==
 ?- bio_db_version( V, D ).
-V = 4:5:0,
-D = date(2024, 4, 5).
+V = 4:6:0,
+D = date(2024, 10, 17).
 ==
 
 @author Nicos Angelopoulos
@@ -773,7 +774,7 @@ D = date(2024, 4, 5).
 @see module documentation for brief comments on versioning history of this pack
 
 */
-bio_db_version(4:5:0, date(2024,4,5)).
+bio_db_version(4:6:0, date(2024,10,17)).
 
 %% bio_db_citation( -Atom, -Bibterm ).
 %

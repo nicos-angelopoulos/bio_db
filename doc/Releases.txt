@@ -13,8 +13,9 @@ TBD:
                   (map_ense_mouse_enst_chrl/5 was opening map_ense_enst_chrl/5).
 
 
-4.6
+4.6               @ 24.10.17
       24.10.16    BioDB:   added ense_gg7w_* predicates to support white loghorn
+                  CHANGE:  of hgnc base URL
       24.10.15    REMOVE:  obsolete second argument in std_chicken_maps_ense/3
                   FIXED:   build_repo, broken gg6a:ense (was identical to chicken)
 4.5               @ 24.04.05

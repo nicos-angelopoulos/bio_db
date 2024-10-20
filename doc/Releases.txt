@@ -12,6 +12,8 @@ TBD:
          21.12.03 make sure existing handles are checked before opening another handle to same predicate 
                   (map_ense_mouse_enst_chrl/5 was opening map_ense_enst_chrl/5).
 
+4.7
+      24.10.19    FIXED:   missing is_symbol/2 for chicen and pig
 
 4.6               @ 24.10.17
       24.10.16    BioDB:   added ense_gg7w_* predicates to support white loghorn

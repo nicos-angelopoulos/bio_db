@@ -14,7 +14,7 @@
 
 /**  bio_db_galg_reac.
 
-Documentation predicate for Homo sapiens data from reactome database.
+Documentation predicate for gallus gallus data from reactome database.
 
 ==
 ?- lib( &bio_db(galg(reac)) ).

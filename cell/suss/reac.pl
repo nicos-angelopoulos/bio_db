@@ -29,7 +29,7 @@ bio_db_suss_reac.
 
 /**  reac_suss_ncbi_reac( ?Ncbi, ?Reac ).
 
-Map (chicken) NCBI identifiers to Reactome product ids.
+Map pig NCBI identifiers to Reactome product ids.
 
 ==
 ?- reac_suss_ncbi_reac( 1000, Reac ).
@@ -54,7 +54,7 @@ reac_suss_reac_reap( X, Y, Z ) :-
 
 /**  reac_suss_ncbi_reap( ?Ncbi, -Evidence, ?Reap ).
 
-Map (chicken) NCBI identifiers to Reactome pathway ids.
+Map pig NCBI identifiers to Reactome pathway ids.
 
 Evidence is the type of evidence supporting the pathway membership.
 

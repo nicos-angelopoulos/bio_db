@@ -8,6 +8,7 @@
 :- lib( &(bio_db(suss(ense))) ).
 :- lib( &(bio_db(suss(gont))) ).
 :- lib( &(bio_db(suss(ncbi))) ).
+:- lib( &(bio_db(suss(reac))) ).
 :- lib( &(bio_db(suss(strg))) ).
 :- lib( &(bio_db(suss(vgnc))) ).
 % :- lib( &(bio_db(suss(unip))) ).

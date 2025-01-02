@@ -191,3 +191,4 @@ std_maps_reac_org( hs, 'HSA', 'Homo sapiens' ).
 std_maps_reac_org( human, 'HSA', 'Homo sapiens' ).
 std_maps_reac_org( mouse, 'MMU', 'Mus musculus' ).
 std_maps_reac_org( musm, 'MMU', 'Mus musculus' ).
+std_maps_reac_org( pig, 'SSC', 'Sus Scrofa' ).

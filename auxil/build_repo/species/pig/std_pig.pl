@@ -48,5 +48,5 @@ std(pig, maps, ense).
 std(pig, maps, gont).
 std(pig, maps, ncbi).
 std(pig, maps, vgnc).
-% std(pig, maps, reac).
+std(pig, maps, reac).
 % std(pig, maps, unip).  % this is not avaiable at: https://ftp.ebi.ac.uk/pub/databases/uniprot/current_release/knowledgebase/idmapping/by_organism/

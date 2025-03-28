@@ -2,6 +2,7 @@
 :- use_module(library(lib)).
 
 % external code, lib knowns how to deal with these (will install if missing)
+:- lib(by_unix).
 :- lib(options).
 :- lib(debug_call).
 :- lib(pack_errors).  % throw/2.

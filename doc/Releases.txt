@@ -12,7 +12,7 @@ TBD:
          21.12.03 make sure existing handles are checked before opening another handle to same predicate 
                   (map_ense_mouse_enst_chrl/5 was opening map_ense_enst_chrl/5).
 
-4.7
+4.7               @ 25.03.28
       25.03.28    BUILD:   Increase stack for multi/ncbi
       25.01.02    BioDB:   added building and using preds for reactome predicate in sus scrofa
       24.10.19    FIXED:   missing is_symbol/2 for chicken and pig

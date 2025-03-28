@@ -10,7 +10,8 @@
 
 /**  bio_db_data_pred_gen.
 
-Generates bio_db_data_predicate/3 from the bio_db cell file sources.<br>
+Creates definition of bio_db_data_predicate/3, in '../src/'  from the bio_db cell file sources.
+
 It assumes a 2-level tier structure in cell/. There is a pl file for each supported organism, with a number of mutually
 exclusive cell files in the homonym sub directory.
 

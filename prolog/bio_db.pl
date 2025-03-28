@@ -1,7 +1,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %    Authors:       Nicos Angelopoulos
 %    E-mail:        Nicos Angelopoulos http://stoics.org.uk/~nicos/sware/contact.html
-%    Copyright (C): Nicos Angelopoulos, 2015-2024
+%    Copyright (C): Nicos Angelopoulos, 2015-2025
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 /*
    This program is free software; you can redistribute it and/or
@@ -574,6 +574,7 @@ Thanks to Jan Wielemaker for a retractall fix and for code for fast loading of p
 @version  4:4 2024/04/05,  db(ncbi) preds were complete rehaul, better and more complete db(reactome) support, fixed pig cells
 @version  4:5 2024/04/05,  fixed certificate issue when downloading individual files of bio_db_repo
 @version  4:6 2024/10/17,  gg7w for loghorn chicken, hgnc change of base URL
+@version  4:7 2025/3/28,   reactome predicate in sus scrofa; missing is_symbol/2 for chicken and pig
 @see doc/Releases.txt      for version details
 @see bio_db_data_predicate/4 for a way to enumerate all data predicates
 @see cell/ for the definitions of the data predicates
@@ -763,18 +764,18 @@ Version Mj:Mn:Fx, and release date date(Y,M,D).
 
 ==
 ?- bio_db_version( V, D ).
-V = 4:6:0,
-D = date(2024, 10, 17).
+V = 4:7:0,
+D = date(2025, 3, 28).
 ==
 
 @author Nicos Angelopoulos
-@version  4:5 2024/4/5,   fixed broken download of individual repo data preds
+@version  4:7 2025/3/28,  fixes, and building scripts
 @see bio_db_data_predicate/4  (which should be generated for each new version)
 @see doc/Releases.txt for more detail on change log
 @see module documentation for brief comments on versioning history of this pack
 
 */
-bio_db_version(4:6:0, date(2024,10,17)).
+bio_db_version(4:7:0, date(2025,3,28)).
 
 %% bio_db_citation( -Atom, -Bibterm ).
 %

@@ -1,5 +1,5 @@
 
-:- set_prolog_flag(stack_limit, 8 000 000 000).
+:- set_prolog_flag(stack_limit, 16 000 000 000).
 
 % if library(lib) is missing, install via pack_install(lib).
 %

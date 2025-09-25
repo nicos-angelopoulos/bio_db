@@ -1,5 +1,5 @@
 
-:- set_prolog_flag(stack_limit, 2 000 000 000).
+:- set_prolog_flag(stack_limit, 8 000 000 000).
 
 % if library(lib) is missing, install via pack_install(lib).
 %
@@ -39,7 +39,7 @@ std_maps_ense_defaults( Defs ) :-
                                             debug(true),
                                             debug_fetch(true),
                                             debug_url(false),
-                                            ense_homs_file(call(ense_url_file)),
+                                            ene_homs_file(call(ense_url_file)),
                                             iactive(true),
                                             org(human)
                                           ].

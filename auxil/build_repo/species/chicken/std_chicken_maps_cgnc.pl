@@ -255,13 +255,13 @@ cgnc_download_file_fix( Self, Dst ) :-
      NewBParts = [CGNC,Ncbi,'Ensembl Gene id',Symb,Name,Syno,Curs,Edat],
      at_con( NewBParts, '\t', NewB ),
      atom_codes( NewB, NewBCs ),
-     maplist( cgnc_download_file_fix_line(Self), Tines, Nines ),
+     % maplist( cgnc_download_file_fix_line(Self), Tines, Nines ), % this is now fixed
      io_lines( Dst, [NewBCs|Nines] ),
      debuc( Self, wrote, Dst ).
 cgnc_download_file_fix( Self, Dst ) :-
      debuc( Self, 'CGNC download seems in good order: ~p', [Dst] ).
 
-% There is an extra TAB, reported 25.09.25
+% There is an extra TAB, reported 25.09.25 % fixed on the same day
 cgnc_download_file_fix_line( Self, Line, Nine ) :-
      Line == `64661	100858424	ENSGALG00010024587	IL34	interleukin 34	interleukin 34	Interleukin-34|IL-34|chIL-34	Approved	2025-04-04`,
      !,

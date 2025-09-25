@@ -248,12 +248,23 @@ cgnc_download_file_fix( Self, Dst ) :-
      atom_codes( B, BCs ),
      at_con( BParts, '\t', B ),
      % debuc( Self, enum, cgnc_2nd_line_parts/BParts ),
+     % fixme: REPORT, there is "Ensembl Gene id missing on the header !"
      BParts = ['CGNC id','Entrez Gene id','gene symbol','gene name','gene synonym','curation status','last edit date'],
      BParts = [CGNC,Ncbi,Symb,Name,Syno,Curs,Edat],
      !,
      NewBParts = [CGNC,Ncbi,'Ensembl Gene id',Symb,Name,Syno,Curs,Edat],
      at_con( NewBParts, '\t', NewB ),
      atom_codes( NewB, NewBCs ),
-     io_lines( Dst, [NewBCs|Tines] ).
+     maplist( cgnc_download_file_fix_line(Self), Tines, Nines ),
+     io_lines( Dst, [NewBCs|Nines] ),
+     debuc( Self, wrote, Dst ).
 cgnc_download_file_fix( Self, Dst ) :-
      debuc( Self, 'CGNC download seems in good order: ~p', [Dst] ).
+
+% There is an extra TAB, reported 25.09.25
+cgnc_download_file_fix_line( Self, Line, Nine ) :-
+     Line == `64661	100858424	ENSGALG00010024587	IL34	interleukin 34	interleukin 34	Interleukin-34|IL-34|chIL-34	Approved	2025-04-04`,
+     !,
+     debuc( Self, 'Fixing line: ~d', [64661] ),
+     Nine = `64661	100858424	ENSGALG00010024587	IL34	interleukin 34	Interleukin-34|IL-34|chIL-34	Approved	2025-04-04`.
+cgnc_download_file_fix_line( _Self, Line, Line ).

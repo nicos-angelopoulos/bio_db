@@ -92,8 +92,7 @@ Opts
     sub-directory for creating the maps
 
 The download of CGNC is non standard as the full url is 
-=|http://birdgenenames.org/cgnc/downloads.jsp?file=standard|=
-
+=|https://www.birdgenenames.org/downloads.jsp?file=standard|=
 
 ==
 ?- std_chicken_maps_cgnc.
@@ -104,7 +103,8 @@ The download of CGNC is non standard as the full url is
 
 @author nicos angelopoulos
 @version  0.1 2022/12/17,  from hgnc
-@see http://birdgenenames.org/cgnc/downloads.jsp?file=standard
+@version  0.2 2025/09/25,  url change
+@see http://www.birdgenenames.org/downloads.jsp?file=standard
 */
 std_chicken_maps_cgnc :-
     std_chicken_maps_cgnc( [] ).
@@ -234,11 +234,12 @@ cgnc_download_file( true, DnDir, Self, Url, DnlF, Opts ) :-
      memberchk( dnld_file(DnlF), Opts ),
      os_path( DnDir, DnlF, Dst ),
      cgnc_download_file_fix( Self, Dst ).
-cgnc_download_file( false, _DnDir, Self, Url, DnlF, Opts ) :-
+cgnc_download_file( false, _DnDir, Self, _Url, DnlF, Opts ) :-
      memberchk( dnld_file(DnlF), Opts ),
      % options( cgnc_file(File), Opts ),
-     debuc( Self, 'Asked not to download: ~p', [DnlF] ),
-     Url = 'http://birdgenenames.org/cgnc/downloads.jsp?file=standard'.
+     debuc( Self, 'Asked not to download: ~p', [DnlF] ).
+     % fixme: 25.9.25  commented this out, this has changed, and it should be set here.
+     % Url = 'http://birdgenenames.org/cgnc/downloads.jsp?file=standard'.
 
 cgnc_download_file_fix( Self, Dst ) :-
      io_lines( Dst, Lines ),

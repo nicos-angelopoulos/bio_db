@@ -12,6 +12,8 @@ TBD:
          21.12.03 make sure existing handles are checked before opening another handle to same predicate 
                   (map_ense_mouse_enst_chrl/5 was opening map_ense_enst_chrl/5).
 
+4.8
+      25.09.25    FIXED:   changed cgnc to new location
 4.7               @ 25.03.28
       25.03.28    BUILD:   Increase stack for multi/ncbi
       25.01.02    BioDB:   added building and using preds for reactome predicate in sus scrofa

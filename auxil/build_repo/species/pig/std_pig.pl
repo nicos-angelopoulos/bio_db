@@ -18,7 +18,11 @@
 % local libs & sources
 % :- lib(debug_colours/1).
 
-std_pig_defaults([debug(true),org(pig)]).
+std_pig_defaults(  [ debug(true),
+                     iactive(true),
+                     org(pig)
+                   ]
+                ).
 
 /** std_chicken.
 
@@ -28,8 +32,17 @@ There doesn't seem to be a nonmeclature committee for pig.
 Currently supported database are ense, gont ncbi and strg.
 There are no building dependencies between the datasets.
 
+Opts
+  * debug(Dbg=true)
+    progress, informational messages
+  * iactive(Iact=true)
+    whether the session is interactive, otherwise wget gets --no-verbose
+  * org(Org=pig)
+    organism
+
 @author nicos angelopoulos
 @version  0.1 2023/06/02
+@version  0.2 2025/09/26,  option(iactive(Iact))
 
 */
 std_pig( Args ) :-

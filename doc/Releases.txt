@@ -13,6 +13,7 @@ TBD:
                   (map_ense_mouse_enst_chrl/5 was opening map_ense_enst_chrl/5).
 
 4.8
+      25.09.26    FIXED:   missing iactive(true) in std_mouse default options
       25.09.25    FIXED:   changed cgnc to new location
 4.7               @ 25.03.28
       25.03.28    BUILD:   Increase stack for multi/ncbi

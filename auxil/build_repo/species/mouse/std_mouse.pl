@@ -19,7 +19,11 @@
 % local libs & sources
 % :- lib(debug_colours/1).
 
-std_mouse_defaults([debug(true),org(mouse)]).
+std_mouse_defaults(  [ debug(true),
+                       iactive(true),
+                       org(mouse)
+                      ]
+                  ).
 
 /** std_mouse.
 
@@ -32,6 +36,14 @@ Dependencies
    maps_ense, maps_gont
  * on([maps_mgim,maps_unip])
    mouse_graphs_strg
+
+Opts
+  * debug(Dbg=true)
+    progress, informational messages
+  * iactive(Iact=true)
+    whether the session is interactive, otherwise wget gets --no-verbose
+  * org(Org=chicken)
+    organism
 
 @author nicos angelopoulos
 @version  0.1 2017/10/12

@@ -42,7 +42,7 @@ Opts
     progress, informational messages
   * iactive(Iact=true)
     whether the session is interactive, otherwise wget gets --no-verbose
-  * org(Org=chicken)
+  * org(Org=mouse)
     organism
 
 @author nicos angelopoulos
@@ -51,6 +51,7 @@ Opts
 @version  0.3 2018/11/05, everything tested, and working
 @version  0.4 2020/09/11, added ense
 @version  0.5 2022/12/27, added reac
+@version  0.6 2025/09/26, added option(iactive(Iact))
 @tbd add timings (in file)
 
 */

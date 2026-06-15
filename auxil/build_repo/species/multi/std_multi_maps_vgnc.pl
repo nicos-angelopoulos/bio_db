@@ -34,7 +34,7 @@ std_multi_maps_vgnc_defaults( Defs ) :-
                                             debug_url(false),
                                             download(true),
                                             iactive(true),
-                                            vgnc_genes_file('vgnc_gene_set_All.txt.gz'),
+                                            vgnc_genes_file('vgnc_gene_set_All.tsv.gz'),
                                             maps_sub_dir(maps),
                                             org(multi)
                                           ].
@@ -59,7 +59,7 @@ Opts
     relative name for generated maps within downloads directory
   * org(Org=multi)
     organism, multi covers the case of relations over multiple organisms
-  * vgnc_genes_file(VgncF='vgnc_gene_set_All.txt.gz')
+  * vgnc_genes_file(VgncF='vgnc_gene_set_All.tsv.gz')
     the file name for the URL download
 
 ==

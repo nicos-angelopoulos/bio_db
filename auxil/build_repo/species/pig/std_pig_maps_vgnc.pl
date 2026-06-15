@@ -34,7 +34,7 @@ std_pig_maps_vgnc_defaults( Defs ) :-
                                             debug_url(false),
                                             iactive(true),
                                             download(true),
-                                            vgnc_genes_file('vgnc_gene_set_All.txt.gz'),
+                                            vgnc_genes_file('vgnc_gene_set_All.tsv.gz'),
                                             maps_sub_dir(maps),
                                             org(pig)
                                           ].
@@ -59,7 +59,7 @@ Opts
     relative name for generated maps within downloads directory
   * org(Org=pig)
     organism
-  * vgnc_genes_file(VgncF='vgnc_gene_set_All.txt.gz')
+  * vgnc_genes_file(VgncF='vgnc_gene_set_All.tsv.gz')
     the file name for the URL download
 
 ==

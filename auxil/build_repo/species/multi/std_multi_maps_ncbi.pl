@@ -72,7 +72,7 @@ Opts
     local filename for the unzip download
   * org(Org=pig)
     organism
-  * vgnc_genes_file(VgncF='vgnc_gene_set_All.txt.gz')
+  * vgnc_genes_file(VgncF='vgnc_gene_set_All.tsv.gz')
     the file name for the URL download
 ==
   ?- std_multi_maps_ncbi([]).

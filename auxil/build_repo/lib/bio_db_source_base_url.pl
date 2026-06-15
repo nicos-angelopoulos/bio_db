@@ -25,4 +25,6 @@ bio_db_source_base_url(     strg, 'https://stringdb-downloads.org/download/').
 bio_db_source_base_url(     unip, 'https://ftp.ebi.ac.uk/pub/databases/uniprot/current_release/knowledgebase/idmapping/by_organism/').
 bio_db_source_base_url(unip_taxo, 'https://ftp.ebi.ac.uk/pub/databases/uniprot/current_release/knowledgebase/taxonomic_divisions/').
 bio_db_source_base_url(    useqs, 'https://ftp.ebi.ac.uk/pub/databases/uniprot/current_release/knowledgebase/taxonomic_divisions/').
-bio_db_source_base_url(     vgnc, 'https://ftp.ebi.ac.uk/pub/databases/genenames/vgnc/tsv/' ).
+% bio_db_source_base_url(     vgnc, 'https://ftp.ebi.ac.uk/pub/databases/genenames/vgnc/tsv/' ).
+% 26.06.15:
+bio_db_source_base_url(     vgnc, 'https://storage.googleapis.com/public-download-files/vgnc/tsv/' ).

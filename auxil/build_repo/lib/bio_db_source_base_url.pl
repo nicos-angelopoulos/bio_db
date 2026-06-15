@@ -8,7 +8,9 @@ Url is the base Url of the database identified by Db.
 
 */
 bio_db_source_base_url(     cgnc, 'https://www.birdgenenames.org/downloads.jsp?file=').
-bio_db_source_base_url(     ense, 'ftp://ftp.ensembl.org/pub/current_gtf/').
+% bio_db_source_base_url(     ense, 'ftp://ftp.ensembl.org/pub/current_gtf/').
+% 26.06.15:
+bio_db_source_base_url(     ense, 'https://ftp.ensembl.org/pub/current/gtf/').
 bio_db_source_base_url( gont_goa, 'https://geneontology.org/gene-associations/').
 bio_db_source_base_url( gont_obo, 'https://purl.obolibrary.org/obo/').
 % bio_db_source_base_url(     hgnc, 'https://ftp.ebi.ac.uk/pub/databases/genenames/new/tsv/').

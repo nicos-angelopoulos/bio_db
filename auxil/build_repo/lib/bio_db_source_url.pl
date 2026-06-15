@@ -106,7 +106,9 @@ ense_url_file( Url, Org, SrcF, Opts ) :-
      atomic_list_concat( [Url,Eir,'/'], Orl ),  % organism specific sub-directory
      Found @@ curl( -l, '--no-progress-meter', Orl ),
      at_con( Stemics, '.', Stem ),
-     findall( HsGtfRel-Amb-Rel, ( member(HsGtf,Found),
+     findall( HsGtfRel-Amb-Rel, ( member(Line,Found),
+                                  at_con([_,Psfx|_], 'href="', Line),
+                                  at_con([HsGtf|_], '">', Psfx),
                                   at_con(Parts,'.',HsGtf),
                                   ense_url_file_parts( Org, Stemics, Parts, Amb, Rel ),
                                   atomic_list_concat( [Eir,HsGtf], '/', HsGtfRel )

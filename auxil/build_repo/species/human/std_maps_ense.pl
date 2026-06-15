@@ -115,7 +115,7 @@ std_maps_ense( Args ) :-
 	os_ext( tab, Stem, TabF ),
 	% fixme: ???:
 	% Stem = 'Homo_sapiens.GRCh38.84.gtf-16.06.20', 
-	% TabF = 'Homo_sapiens.GRCh38.84.gtf-16.06.20.tab', 
+	% TabF = 'Homo_sapiens.GRCh38.84.gtf-16.06.20.tab',
      % fixme: swi has skipping of initial comment lines...
 	% atomic_list_concat( [grep,'-v','"^#"',Stem,'>',TabF], ' ', Shell ),
      % debuc( Self, '~w, shelling/1 : ~w', [Self,Shell] ),

@@ -16,7 +16,7 @@
 :- lib(stoics_lib:portray_clauses/2).
 
 % also sets lib alias that dir
-:- ensure_loaded('../../lib/bio_db_build_aliases').  % /1.
+:- ensure_loaded(pack(bio_db/src/bio_db_build_aliases)).
 
 % local libs & sources
 :- lib(de_semi/3).
@@ -26,6 +26,7 @@
 :- lib(build_dnload_loc/3).
 :- lib(bio_db_source_url/3).
 :- lib(url_file_local_date_mirror/3).
+:- lib(vgnc_fix_dnload/3).
 
 std_multi_maps_vgnc_defaults( Defs ) :-
                                    Defs = [ db(vgnc),
@@ -87,10 +88,11 @@ std_multi_maps_vgnc( Args ) :-
      options( maps_sub_dir(MapsD), Opts ),
      os_make_path( MapsD ),
      % options_propagate( map_prefix, Opts, StdOT, true ),
-     MOpts = [mtx(_Mtx),sep(tab),db(vgnc),org(multi),odir(MapsD),
-              datetime(DnDt),source(SrcUrl)|Opts],
      os_ext( gz, TxtF, GzF ),
-     std_multi_maps_vgnc_fix_dnload( Self, TxtF ),
+     vgnc_fix_dnload( Self, TxtF, Ftx ),
+     debuc( Self, dims, full_matrix/Ftx ),
+     MOpts = [mtx(Ftx),sep(tab),db(vgnc),org(multi),odir(MapsD),
+              datetime(DnDt),source(SrcUrl)|Opts],
      mtx_map( TxtF, [vgnc_id:vgnc:de_semi('VGNC'),taxon_id,symbol], VgncSymbF, MOpts ),
      mtx_map( TxtF, [vgnc_id:vgnc:de_semi('VGNC'),taxon_id,name], VgncNameF, MOpts ),
      % debuc( Self, 'doing links...', [] ),
@@ -99,17 +101,3 @@ std_multi_maps_vgnc( Args ) :-
      % file_name_extension( TxtF, gz, GzF ),
      % delete_file( TxtF ),
      working_directory( _, Old ).
-
-% I reported that in September, but never heard from them.
-std_multi_maps_vgnc_fix_dnload( Self, TxtF ) :-
-     mtx( TxtF, Mtx, [match(false),sep(tab)] ),
-     Mtx = [Faulty,Row|Rows],
-     functor( Faulty, _, Farity ),
-     functor( Row, _, Rarity ),
-     ( Farity =:= Rarity ->   % this will always be false, as the caller gzip afresh...
-          debuc( Self, 'File: ~p had already been corrected.', [TxtF] )
-          ;
-          debuc( Self, 'Correcting header of file: ~p. Arities were ~d/~d .', [TxtF,Farity,Rarity] )
-     ),
-     arg_add( -2, Faulty, '', Naulty ),
-     mtx( TxtF, [Naulty|Rows], sep(tab) ).

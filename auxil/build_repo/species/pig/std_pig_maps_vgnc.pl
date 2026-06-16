@@ -28,6 +28,7 @@
 :- lib(build_dnload_loc/3).
 :- lib(bio_db_source_url/3).
 :- lib(url_file_local_date_mirror/3).
+:- lib(vgnc_fix_dnload/3).
 
 std_pig_maps_vgnc_defaults( Defs ) :-
                                    Defs = [ db(vgnc),
@@ -92,7 +93,7 @@ std_pig_maps_vgnc( Args ) :-
      MOpts = [mtx(Mtx),sep(tab),db(vgnc),org(pig),odir(MapsD),
               datetime(DnDt),source(SrcUrl)|Opts],
      os_ext( gz, TxtF, GzF ),
-     std_multi_maps_vgnc_fix_dnload( Self, TxtF, Ftx ),
+     vgnc_fix_dnload( Self, TxtF, Ftx ),
      debuc( Self, dims, full_matrix/Ftx ),
      mtx_column_values_select( Ftx, taxon_id, 9823, Mtx, _, [] ),
      debuc( Self, dims, pig_matrix/Mtx ),
@@ -112,17 +113,3 @@ std_pig_maps_vgnc( Args ) :-
      % file_name_extension( TxtF, gz, GzF ),
      % delete_file( TxtF ),
      working_directory( _, Old ).
-
-% I reported that in September, but never heard from them.
-std_multi_maps_vgnc_fix_dnload( Self, TxtF, [Naulty|Rows] ) :-
-     mtx( TxtF, Mtx, [match(false),sep(tab)] ),
-     Mtx = [Faulty,Row|Rows],
-     functor( Faulty, _, Farity ),
-     functor( Row, _, Rarity ),
-     ( Farity =:= Rarity ->   % this will always be false, as the caller gzip afresh...
-          debuc( Self, 'File: ~p had already been corrected.', [TxtF] )
-          ;
-          debuc( Self, 'Correcting header of file: ~p. Arities were ~d/~d .', [TxtF,Farity,Rarity] )
-     ),
-     arg_add( -2, Faulty, '', Naulty ),
-     mtx( TxtF, [Naulty|Rows], sep(tab) ).

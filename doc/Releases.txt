@@ -13,6 +13,7 @@ TBD:
                   (map_ense_mouse_enst_chrl/5 was opening map_ense_enst_chrl/5).
 
 4.8
+      26.06.16    CHANGE:  restructuring code to avooid loading relative paths, which gives SWI warnings
       26.06.15    CHANGE:  of VGNC base URL + base filename tsv -> txt
                   CHANGE:  of ENSE base URL + code for stripping the filename for download
       25.09.26    FIXED:   missing iactive(true) in std_mouse default options

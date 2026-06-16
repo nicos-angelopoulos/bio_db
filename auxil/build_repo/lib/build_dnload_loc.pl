@@ -1,6 +1,4 @@
 
-:- ensure_loaded(bio_db_build_aliases).     % defines build_db_build_downlads(Db) file alias
-
 :- lib(os_lib).
 :- lib(options).
 :- lib(debug_call).

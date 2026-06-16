@@ -59,11 +59,12 @@
 
 :- use_module(library(lib)).
 
-:- ensure_loaded('../src/bio_db_data_predicate').
+% :- ensure_loaded('../src/bio_db_data_predicate').
 
 :- lib(source(bio_db), homonyms(true)).
 
 :- lib(stoics_lib:date_two_digit_dotted/1).
+:- lib(bio_db_data_predicate/4).
 :- lib(go_id/2).
 :- lib(is_symbol/2).
 :- lib(ncbi_symb/3).
@@ -231,10 +232,10 @@ bio_db_default_interface( prolog ).
    create_prolog_flag( bio_db_pl_from_zip, user, Opts ).  % true/false/user
 
 :- Opts = [access(read_write),type(atom),keep(true)],
-   create_prolog_flag( bio_db_del_zip, user, Opts ).  % true/false/user, only asked for pl files
+   create_prolog_flag(bio_db_del_zip, user, Opts).        % true/false/user, only asked for pl files
 
 :- use_module( library(lib) ).
-:- lib( source(bio_db), homonyms(true) ).
+:- lib(source(bio_db), homonyms(true)).
 
 :- lib(options).
 :- lib(pack_errors).

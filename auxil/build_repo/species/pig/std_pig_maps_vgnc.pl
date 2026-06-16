@@ -16,9 +16,11 @@
 :- lib(stoics_lib:portray_clauses/2).
 
 % also sets lib alias that dir
-:- ensure_loaded('../../lib/bio_db_build_aliases').  % /1.
+% :- ensure_loaded('../../lib/bio_db_build_aliases').  % /1.
 
 % local libs & sources
+:- ensure_loaded(pack(bio_db/src/bio_db_build_aliases)).
+
 :- lib(de_semi/3).
 :- lib(mtx_map/4).
 :- lib(link_to_bio_sub/2).

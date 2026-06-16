@@ -8,14 +8,19 @@
 :- lib(debug_call).
 :- lib(stoics_lib:date_two_digit_dotted/1).
 
-:- ensure_loaded(bio_db_build_messages).
 
-:- prolog_load_context(directory, Lib ),
-   lib(Lib),
-   directory_file_path( Pa, lib, Lib ),
-   directory_file_path( GPa, build_repo, Pa ),
-   directory_file_path( GPa, lib, PaLib ),
-   lib(PaLib).
+:- prolog_load_context(directory, Src ),
+   write(src(Src)), nl,
+   % lib(Lib),
+   directory_file_path( Pack, src, Src ),
+   % directory_file_path( Pa, lib, Lib ),
+   directory_file_path( Pack, auxil, Auxil ),
+   directory_file_path( Auxil, lib, AuxLib ),
+   lib( AuxLib ),
+   directory_file_path( Auxil, build_repo, Brepo ),
+   directory_file_path( Brepo, lib, BldLib ),
+   write(build_lib(BldLib)), nl,
+   lib(BldLib).
 
 :- debuc(bio_db_build_aliases).
 

@@ -14,11 +14,11 @@
 :- lib(stoics_lib:portray_clauses/2).
 :- lib(stoics_lib:map_list_options/3).
 
-% also sets lib alias to that dir
-:- ensure_loaded('../lib/bio_db_build_aliases').  % /1.
+% sets libs and download aliases
+:- ensure_loaded(pack(bio_db/src/bio_db_build_aliases)).    % /1
 
-% local libs & sources
-:- ensure_loaded( '../../lib/bio_db_repo_info.pl' ).
+% local libs
+:- lib(bio_db_repo_info/1).
 
 
 :- set_prolog_flag(allow_dot_in_atom, false).   % for portaying correctly

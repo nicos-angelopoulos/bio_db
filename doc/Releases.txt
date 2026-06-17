@@ -13,6 +13,7 @@ TBD:
                   (map_ense_mouse_enst_chrl/5 was opening map_ense_enst_chrl/5).
 
 4.8
+      26.06.17    FIXED:   debuc/4 -> debuc/3 prefixes are now in option not 3rd arg
       26.06.16    CHANGE:  restructuring code to avoid loading relative paths, which gives SWI warnings
                   FIXED:   error with multi/vgnc -> share code with pig
       26.06.15    CHANGE:  of VGNC base URL + base filename tsv -> txt

@@ -72,7 +72,7 @@ map_uniprot( Foreign, Uniprot, Fouts, Args ) :-
 							call( Fcall, FAccPrv, FAcc )
 						 ),
 									PFRows ),
-	debuc( uniprot, length, '', pf_rows/PFRows ),
+	debuc( uniprot, length, pf_rows/PFRows ),
 	memberchk( interface(FcePrv), Opts ),
 	en_list( FcePrv, Fces ),
 	memberchk( destination(Dst), Opts ),

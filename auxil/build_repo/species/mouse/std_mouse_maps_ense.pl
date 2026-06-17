@@ -1,5 +1,5 @@
 
-:- set_prolog_flag(stack_limit, 2 000 000 000).
+:- set_prolog_flag(stack_limit, 4 000 000 000).
 
 :- use_module(library(lists)).
 :- use_module(library(apply)).

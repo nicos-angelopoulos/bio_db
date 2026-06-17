@@ -9,7 +9,7 @@
 :- lib(options).
 :- lib(debug_call).
 
-% also sets lib alias to that dir
+% sets libs and download aliases
 :- ensure_loaded(pack(bio_db/src/bio_db_build_aliases)).    % /1
 
 % local libs

@@ -10,11 +10,10 @@
 % external code, lib knowns how to deal with these (will install if missing)
 :- lib(options).
 
-% also sets lib alias to that dir
+% sets libs and download aliases
 :- ensure_loaded(pack(bio_db/src/bio_db_build_aliases)).    % /1
 
 % local libs
-% :- lib(debug_colours/1).  % /1.
 :- lib(std_org/2).
 
 std_human_defaults( [ org(human),

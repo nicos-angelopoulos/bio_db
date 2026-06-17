@@ -17,10 +17,10 @@
 :- lib(stoics_lib:portray_clauses/2).
 :- lib(stoics_lib:url_file/3).
 
-% also sets lib alias to that dir
-:- ensure_loaded( '../../lib/bio_db_build_aliases' ).  % /1.
+% sets libs and download aliases
+:- ensure_loaded(pack(bio_db/src/bio_db_build_aliases)).    % /1
 
-% local libs & sources
+% local libs
 :- lib(link_to_bio_sub/3).
 :- lib(bio_db_dnt_times/3).
 :- lib(bio_db_add_infos/1).             % bio_db_add_infos_to/2.

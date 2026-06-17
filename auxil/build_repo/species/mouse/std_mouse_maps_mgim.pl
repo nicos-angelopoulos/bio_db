@@ -13,9 +13,8 @@
 :- lib(debug_call).
 :- lib(stoics_lib:portray_clauses/2).
 
-
-% also sets lib alias to that dir
-:- ensure_loaded('../../lib/bio_db_build_aliases').  % /1.
+% sets libs and download aliases
+:- ensure_loaded(pack(bio_db/src/bio_db_build_aliases)).    % /1
 
 % local libs & sources
 :- lib(url_file_local_date_mirror/3).

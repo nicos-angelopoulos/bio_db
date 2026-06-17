@@ -13,7 +13,7 @@
 :- lib(debug_call).
 
 % also sets lib alias to that dir
-:- ensure_loaded( '../../lib/bio_db_build_aliases' ).  % /1.
+:- ensure_loaded(pack(bio_db/src/bio_db_build_aliases)).    % /1
 
 % local libs & sources
 :- lib(link_to_bio_sub/3).

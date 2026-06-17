@@ -12,10 +12,10 @@
 
 :- lib(stoics_lib:at_con/3).
 
-% also loads lib locations for locals below
-:- ensure_loaded('../../lib/bio_db_build_aliases').  % /1.
+% sets libs and download aliases
+:- ensure_loaded(pack(bio_db/src/bio_db_build_aliases)).    % /1
 
-% local
+% local libs
 :- lib(csv_to_pl/2).
 :- lib(link_to_bio_sub/3).
 :- lib(bio_db_dnt_times/3).

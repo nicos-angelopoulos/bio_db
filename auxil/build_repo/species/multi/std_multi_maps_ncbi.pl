@@ -14,13 +14,14 @@
 :- lib(by_unix).
 :- lib(debug_call).
 :- lib(stoics_lib:prefix_atom/2).
-% also sets lib alias to that dir
-:- ensure_loaded('../../lib/bio_db_build_aliases').  % /1.
+
+% sets libs and download aliases
+:- ensure_loaded(pack(bio_db/src/bio_db_build_aliases)).    % /1
 
 % load necessary data that has already been generated
 % :- ensure_loaded(hgnc:bio_db_build_downloads('hgnc/maps/map_hgnc_symb_hgnc')).
 
-% local libs & sources
+% local libs
 :- lib(csv_ids_map/6).
 :- lib(link_to_bio_sub/2).
 :- lib(bio_db_dnt_times/3).

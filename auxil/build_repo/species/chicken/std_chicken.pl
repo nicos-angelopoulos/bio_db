@@ -12,11 +12,11 @@
 :- lib(debug_call).
 
 % also sets lib alias to that dir
-% :- ensure_loaded('../../lib/bio_db_build_aliases').  % /1.
-:- ensure_loaded('../../lib/std_org').   % /2.
+:- ensure_loaded(pack(bio_db/src/bio_db_build_aliases)).    % /1
 
-% local libs & sources
+% local libs
 % :- lib(debug_colours/1).
+:- lib(std_org/2).
 
 std_chicken_defaults( [ debug(true),
                         iactive(true),

@@ -16,8 +16,8 @@
 :- lib(stoics_lib:portray_clauses/2).
 :- lib(stoics_lib:io_lines/2).
 
-% also sets lib alias to that dir
-:- ensure_loaded( '../../lib/bio_db_build_aliases' ).  % /1.
+% sets libs and download aliases
+:- ensure_loaded(pack(bio_db/src/bio_db_build_aliases)).    % /1
 
 % load necessary data that has already been generated
 % :- unip:ensure_loaded( bio_db_build_downloads('unip/maps/map_unip_sprt_seqn') ). % /2

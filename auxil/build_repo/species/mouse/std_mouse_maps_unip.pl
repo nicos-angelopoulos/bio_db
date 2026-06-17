@@ -19,10 +19,10 @@
 :- lib(debug_call).                     % debuc/1,3.
 :- lib(stoics_lib:map_list_options/3).
 
-% also sets lib alias to that dir
-:- ensure_loaded('../../lib/bio_db_build_aliases').  % /1.
+% sets libs and download aliases
+:- ensure_loaded(pack(bio_db/src/bio_db_build_aliases)).    % /1
 
-% local libs & sources
+% local libs
 :- lib(map_uniprot/4).
 :- lib(csv_ids_map/6).
 :- lib(link_to_bio_sub/3).

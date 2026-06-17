@@ -9,11 +9,11 @@
 :- lib(options).
 :- lib(debug_call).
 
-% also sets lib alias to thadir
-:- ensure_loaded('../../lib/bio_db_build_aliases').  % /1.
+% sets libs and download aliases
+:- ensure_loaded(pack(bio_db/src/bio_db_build_aliases)).    % /1
 
 % local
-:- lib(ncbi_std_maps/1).
+:- lib(maps_ncbi/1).
 
 std_pig_maps_ncbi_defaults( Defs ) :-
           Defs = [
@@ -31,13 +31,13 @@ Opts
  * org(Org=pig)
    organism
 
-All code has moved to lib(ncbi_std_maps.pl) as it is can be used for other species.
+All code has moved to lib(maps_ncbi.pl) as it is can be used for other species.
 
 @author nicos 
 @version  0.1 2024/03/27
-@see ncbi_std_maps/1
+@see maps_ncbi/1
 */
 std_pig_maps_ncbi( Args ) :-
      Self = std_pig_maps_ncbi,
      options_append( Self, Args, Opts ),
-     ncbi_std_maps( Opts ).
+     maps_ncbi( Opts ).

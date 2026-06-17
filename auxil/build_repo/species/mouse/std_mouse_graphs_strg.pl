@@ -16,8 +16,9 @@
 :- lib(stoics_lib:url_file/3).
 :- lib(stoics_lib:message_report/3).
 :- lib(stoics_lib:portray_clauses/2).
-% also sets lib alias to that dir
-:- ensure_loaded( '../../lib/bio_db_build_aliases' ).  % /1.
+
+% sets libs and download aliases
+:- ensure_loaded(pack(bio_db/src/bio_db_build_aliases)).    % /1
 
 % load necessary data that has already been generated
 % :- ensure_loaded(unip:bio_db_build_downloads('unip/maps/map_unip_mouse_ensp_unip')).

@@ -19,9 +19,9 @@
 :- lib(debug_call).                     % debuc/1,3.
 
 % also sets lib alias to that dir
-:- ensure_loaded('../../lib/bio_db_build_aliases').  % /1.
+:- ensure_loaded(pack(bio_db/src/bio_db_build_aliases)).    % /1
 
-% local libs & sources
+% local libs
 :- lib(map_uniprot/4).
 :- lib(bio_db_add_infos/1). % bio_db_add_infos_to/2.
 :- lib(csv_ids_map/6).

@@ -576,6 +576,7 @@ Thanks to Jan Wielemaker for a retractall fix and for code for fast loading of p
 @version  4:5 2024/04/05,  fixed certificate issue when downloading individual files of bio_db_repo
 @version  4:6 2024/10/17,  gg7w for loghorn chicken, hgnc change of base URL
 @version  4:7 2025/3/28,   reactome predicate in sus scrofa; missing is_symbol/2 for chicken and pig
+@version  4:8 2026/6/18,   updates to a number of download URLs :vgnc, cgnc & ense; factor out code for vgnc (multi+pig)
 @see doc/Releases.txt      for version details
 @see bio_db_data_predicate/4 for a way to enumerate all data predicates
 @see cell/ for the definitions of the data predicates
@@ -759,24 +760,24 @@ upcase_first( Atom, Upped ) :-
     sub_atom( atom, 1, Ken, 0, Tail ),
     atom_concat( Fup, Tail, Upped ).
 
-/** bio_db_version( -Vers, -Date ).
+/** bio_db_version(-Vers, -Date).
 
 Version Mj:Mn:Fx, and release date date(Y,M,D).
 
 ==
-?- bio_db_version( V, D ).
-V = 4:7:0,
-D = date(2025, 3, 28).
+?- bio_db_version(V, D).
+V = 4:8:0,
+D = date(2026, 6, 18).
 ==
 
 @author Nicos Angelopoulos
-@version  4:7 2025/3/28,  fixes, and building scripts
+@version  4:8 2026/6/18,  fixes, and building scripts
 @see bio_db_data_predicate/4  (which should be generated for each new version)
 @see doc/Releases.txt for more detail on change log
 @see module documentation for brief comments on versioning history of this pack
 
 */
-bio_db_version(4:7:0, date(2025,3,28)).
+bio_db_version(4:8:0, date(2026,6,18)).
 
 %% bio_db_citation( -Atom, -Bibterm ).
 %

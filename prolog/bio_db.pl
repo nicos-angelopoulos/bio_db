@@ -777,7 +777,7 @@ D = date(2026, 6, 18).
 @see module documentation for brief comments on versioning history of this pack
 
 */
-bio_db_version(4:8:0, date(2026,6,18)).
+bio_db_version(4:8:1, date(2026,6,19)).
 
 %% bio_db_citation( -Atom, -Bibterm ).
 %

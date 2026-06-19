@@ -43,4 +43,4 @@ test_import_preds(Self) :-
     once( Head ),
     debuc( Self, 'First: ~w', [Head] ),
     fail.
-test_repo_preds.
+test_import_preds(Self).

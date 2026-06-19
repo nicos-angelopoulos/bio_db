@@ -12,6 +12,9 @@ TBD:
          21.12.03 make sure existing handles are checked before opening another handle to same predicate 
                   (map_ense_mouse_enst_chrl/5 was opening map_ense_enst_chrl/5).
 
+4.9
+      26.06.19    UPDATE:  rename test_repo.pl -> test_imports.pl + updated with current organisms and pred naming
+
 4.8               @ 26.06.18
       26.06.17    FIXED:   debuc/4 -> debuc/3 prefixes are now in option not 3rd arg
       26.06.16    CHANGE:  restructuring code to avoid loading relative paths, which gives SWI warnings
